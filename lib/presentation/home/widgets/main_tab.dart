@@ -29,7 +29,12 @@ class VerticalTab extends StatelessWidget {
                 ),
                 gap_10,
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context
+                        .read<HomeBloc>()
+                        .add(const HomeEvent.onLongPressedDeleteTab());
+                    Navigator.of(context).pop();
+                  },
                   child: const Text('Delete'),
                 ),
               ],

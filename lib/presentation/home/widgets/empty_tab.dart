@@ -15,9 +15,19 @@ class EmptyTab extends StatelessWidget {
           context: context,
           title: const Text('New Tab'),
           actions: <Widget>[
-            const ElevatedButton(
-              onPressed: null,
-              child: Text('ok'),
+            ElevatedButton(
+              onPressed: () {
+                context.read<HomeBloc>().add(
+                      const HomeEvent.onPressedAddTab(
+                        VerticalTab(
+                          title: 'new',
+                          subtitle: 'new',
+                        ),
+                      ),
+                    );
+                Navigator.of(context).pop();
+              },
+              child: const Text('ok'),
             ),
           ],
         );
