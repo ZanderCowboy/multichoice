@@ -18,19 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$HomeEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() onPressedAddTab,
+    required TResult Function(VerticalTab verticalTab) onPressedAddTab,
     required TResult Function() onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? onPressedAddTab,
+    TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult? Function()? onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? onPressedAddTab,
+    TResult Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult Function()? onLongPressedDeleteTab,
     required TResult orElse(),
   }) =>
@@ -79,6 +79,8 @@ abstract class _$$onPressedAddTabImplCopyWith<$Res> {
   factory _$$onPressedAddTabImplCopyWith(_$onPressedAddTabImpl value,
           $Res Function(_$onPressedAddTabImpl) then) =
       __$$onPressedAddTabImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({VerticalTab verticalTab});
 }
 
 /// @nodoc
@@ -88,54 +90,80 @@ class __$$onPressedAddTabImplCopyWithImpl<$Res>
   __$$onPressedAddTabImplCopyWithImpl(
       _$onPressedAddTabImpl _value, $Res Function(_$onPressedAddTabImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? verticalTab = null,
+  }) {
+    return _then(_$onPressedAddTabImpl(
+      null == verticalTab
+          ? _value.verticalTab
+          : verticalTab // ignore: cast_nullable_to_non_nullable
+              as VerticalTab,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$onPressedAddTabImpl implements onPressedAddTab {
-  const _$onPressedAddTabImpl();
+  const _$onPressedAddTabImpl(this.verticalTab);
+
+  @override
+  final VerticalTab verticalTab;
 
   @override
   String toString() {
-    return 'HomeEvent.onPressedAddTab()';
+    return 'HomeEvent.onPressedAddTab(verticalTab: $verticalTab)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$onPressedAddTabImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$onPressedAddTabImpl &&
+            (identical(other.verticalTab, verticalTab) ||
+                other.verticalTab == verticalTab));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, verticalTab);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$onPressedAddTabImplCopyWith<_$onPressedAddTabImpl> get copyWith =>
+      __$$onPressedAddTabImplCopyWithImpl<_$onPressedAddTabImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() onPressedAddTab,
+    required TResult Function(VerticalTab verticalTab) onPressedAddTab,
     required TResult Function() onLongPressedDeleteTab,
   }) {
-    return onPressedAddTab();
+    return onPressedAddTab(verticalTab);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? onPressedAddTab,
+    TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult? Function()? onLongPressedDeleteTab,
   }) {
-    return onPressedAddTab?.call();
+    return onPressedAddTab?.call(verticalTab);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? onPressedAddTab,
+    TResult Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult Function()? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
-      return onPressedAddTab();
+      return onPressedAddTab(verticalTab);
     }
     return orElse();
   }
@@ -174,7 +202,13 @@ class _$onPressedAddTabImpl implements onPressedAddTab {
 }
 
 abstract class onPressedAddTab implements HomeEvent {
-  const factory onPressedAddTab() = _$onPressedAddTabImpl;
+  const factory onPressedAddTab(final VerticalTab verticalTab) =
+      _$onPressedAddTabImpl;
+
+  VerticalTab get verticalTab;
+  @JsonKey(ignore: true)
+  _$$onPressedAddTabImplCopyWith<_$onPressedAddTabImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -218,7 +252,7 @@ class _$onLongPressedDeleteTabImpl implements onLongPressedDeleteTab {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() onPressedAddTab,
+    required TResult Function(VerticalTab verticalTab) onPressedAddTab,
     required TResult Function() onLongPressedDeleteTab,
   }) {
     return onLongPressedDeleteTab();
@@ -227,7 +261,7 @@ class _$onLongPressedDeleteTabImpl implements onLongPressedDeleteTab {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? onPressedAddTab,
+    TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult? Function()? onLongPressedDeleteTab,
   }) {
     return onLongPressedDeleteTab?.call();
@@ -236,7 +270,7 @@ class _$onLongPressedDeleteTabImpl implements onLongPressedDeleteTab {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? onPressedAddTab,
+    TResult Function(VerticalTab verticalTab)? onPressedAddTab,
     TResult Function()? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
@@ -322,14 +356,14 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? verticalTab = freezed,
+    Object? verticalTab = null,
     Object? isLoading = null,
     Object? isDeleted = null,
     Object? isAdded = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
-      verticalTab: freezed == verticalTab
+      verticalTab: null == verticalTab
           ? _value.verticalTab
           : verticalTab // ignore: cast_nullable_to_non_nullable
               as VerticalTab,
@@ -380,14 +414,14 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? verticalTab = freezed,
+    Object? verticalTab = null,
     Object? isLoading = null,
     Object? isDeleted = null,
     Object? isAdded = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_$HomeStateImpl(
-      verticalTab: freezed == verticalTab
+      verticalTab: null == verticalTab
           ? _value.verticalTab
           : verticalTab // ignore: cast_nullable_to_non_nullable
               as VerticalTab,
@@ -442,8 +476,8 @@ class _$HomeStateImpl implements _HomeState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$HomeStateImpl &&
-            const DeepCollectionEquality()
-                .equals(other.verticalTab, verticalTab) &&
+            (identical(other.verticalTab, verticalTab) ||
+                other.verticalTab == verticalTab) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.isDeleted, isDeleted) ||
@@ -455,12 +489,7 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(verticalTab),
-      isLoading,
-      isDeleted,
-      isAdded,
-      errorMessage);
+      runtimeType, verticalTab, isLoading, isDeleted, isAdded, errorMessage);
 
   @JsonKey(ignore: true)
   @override
