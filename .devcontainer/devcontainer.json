@@ -1,0 +1,10 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
+        "ghcr.io/jarrodcolburn/features/flutter-sdk:0": {}
+    }
+}
