@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
 part 'widgets/main_tab.dart';
@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.lightBlue,
       ),
       body: const Padding(
-        padding: EdgeInsets.all(12),
+        padding: allPadding12,
         child: SizedBox(
           height: 300,
           child: Row(
@@ -28,12 +28,12 @@ class HomePage extends StatelessWidget {
                 title: 'To Watch',
                 subtitle: 'things to watch',
               ),
-              gap_12,
+              gap12,
               VerticalTab(
                 title: 'Watching',
                 subtitle: 'things busy watching',
               ),
-              gap_12,
+              gap12,
               VerticalTab(
                 title: 'Finished',
                 subtitle: 'things we finised watching',

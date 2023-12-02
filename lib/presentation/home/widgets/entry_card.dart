@@ -9,7 +9,7 @@ class EntryCard extends StatelessWidget {
       elevation: 5,
       shadowColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: circularBorder5,
       ),
       color: Colors.blueGrey,
       child: const SizedBox(
@@ -20,7 +20,7 @@ class EntryCard extends StatelessWidget {
         //   color: Colors.blueGrey,
         // ),
         child: Padding(
-          padding: EdgeInsets.all(4.0),
+          padding: allPadding4,
           child: Row(
             children: [
               Expanded(
