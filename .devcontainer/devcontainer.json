@@ -1,5 +1,5 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18", // uncomment
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
     "features": {
         "ghcr.io/devcontainers/features/git:1": {
             "version": "latest"
@@ -8,3 +8,24 @@
         "ghcr.io/jarrodcolburn/features/flutter-sdk:0": {}
     }
 }
+// {
+//     "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+//     "features": {
+//         "ghcr.io/devcontainers/features/git:1": {
+//             "options": {
+//                 "ppa": true,
+//                 "version": "latest"
+//             }
+//         },
+//         "npm.pkg.github.com/zandercowboy/features/flutter-sdk": {
+//             // "options": {
+//             //     "release": "stable"
+//             // }
+//         }
+//         // "github.com/ZanderCowboy/features/tree/main/src/flutter-sdk:0": {
+//         //     "options": {
+//         //         "release": "stable"
+//         //     }
+//         // }
+//     }
+// }
