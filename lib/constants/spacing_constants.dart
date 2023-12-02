@@ -1,9 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-const gap_10 = Gap(10);
+// Gaps
+const gap10 = Gap(10);
 
-const gap_12 = Gap(12);
+const gap12 = Gap(12);
 
-const gap_16 = Gap(16);
+const gap16 = Gap(16);
 
-const gap_24 = Gap(24);
+const gap24 = Gap(24);
+
+// Padding
+const allPadding4 = EdgeInsets.all(4);
+
+const allPadding6 = EdgeInsets.all(6);
+
+const allPadding12 = EdgeInsets.all(12);
