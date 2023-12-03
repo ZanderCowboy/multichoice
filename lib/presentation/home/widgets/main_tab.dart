@@ -42,49 +42,116 @@ class VerticalTab extends StatelessWidget {
           ],
         );
       },
-      child: Card(
-        elevation: 5,
-        shadowColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: circularBorder12,
-        ),
-        child: Padding(
-          padding: allPadding6,
-          child: SizedBox(
-            width: MediaQuery.sizeOf(context).width / 4,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: Text(title)),
-                    const IconButton(
-                      onPressed: null,
-                      icon: Icon(Icons.add_outlined),
+      child: RepositoryProvider(
+        create: (_) => EntryRepository(),
+        child: BlocProvider(
+          create: (_) => coreSl<EntryBloc>(),
+          child: BlocConsumer<EntryBloc, EntryState>(
+            listener: (context, state) {
+              if (state.isLoading) {
+                ScaffoldMessenger.of(context)
+                  ..clearSnackBars()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text('loading entry...'),
                     ),
-                  ],
+                  );
+              }
+              if (state.isAdded) {
+                ScaffoldMessenger.of(context)
+                  ..clearSnackBars()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text('added entry...'),
+                    ),
+                  );
+              }
+              if (state.isDeleted) {
+                ScaffoldMessenger.of(context)
+                  ..clearSnackBars()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text('deleted entry...'),
+                    ),
+                  );
+              }
+            },
+            builder: (context, state) {
+              final entriesInTab =
+                  context.read<EntryRepository>().readEntries(0);
+
+              return Card(
+                elevation: 5,
+                shadowColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: circularBorder12,
                 ),
-                gap10,
-                Expanded(
-                  child: ScrollConfiguration(
-                    behavior: CustomScrollBehaviour(),
-                    child: ListView(
-                      controller: scrollController,
-                      children: const [
-                        EntryCard(),
-                        gap16,
-                        EntryCard(),
-                        gap16,
-                        EntryCard(),
-                        gap16,
-                        EntryCard(),
-                        gap16,
-                        EntryCard(),
+                child: Padding(
+                  padding: allPadding6,
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width / 4,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(child: Text(title)),
+                            const IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.add_outlined),
+                            ),
+                          ],
+                        ),
+                        gap10,
+                        Expanded(
+                          child: ScrollConfiguration(
+                            behavior: CustomScrollBehaviour(),
+                            // child: ListView(
+                            //   controller: scrollController,
+                            //   children: [
+                            //     GestureDetector(
+                            //       onTap: null,
+                            //       child: const EntryCard(),
+                            //     ),
+                            //     gap16,
+                            //     const EntryCard(),
+                            //     gap16,
+                            //     const EntryCard(),
+                            //     gap16,
+                            //     const EntryCard(),
+                            //     gap16,
+                            //     const EntryCard(),
+                            //     gap16,
+                            //     const EntryCard(),
+                            //     gap16,
+                            //     const EmptyEntry(),
+                            //   ],
+                            // ),
+                            child: ListView.builder(
+                              controller: scrollController,
+                              scrollDirection: Axis.vertical,
+                              itemCount: entriesInTab?.length,
+                              itemBuilder: (context, index) {
+                                // if (index == entriesInTab?.length ||
+                                //     entriesInTab == null) {
+                                //   return const EmptyEntry();
+                                // } else {
+                                //   return entriesInTab[index];
+                                // }
+                                if (index != entriesInTab?.length) {
+                                  return entriesInTab?[index];
+                                } else {
+                                  return const EmptyEntry();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

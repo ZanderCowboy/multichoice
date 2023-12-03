@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
-import 'package:multichoice/infrastructure/tabs/tabs_repository.dart';
-import 'package:multichoice/presentation/home/widgets/custom_dialog.dart';
+import 'package:multichoice/infrastructure/export_infrastructure.dart';
+import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
 part 'widgets/main_tab.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/empty_tab.dart';
+part 'widgets/empty_entry.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -24,7 +25,6 @@ class HomePage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Multichoice'),
             centerTitle: true,
-            leading: const Drawer(),
             backgroundColor: Colors.lightBlue,
             actions: const <Widget>[
               IconButton(
@@ -34,6 +34,9 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          drawer: const Drawer(
+            child: Text('text'),
           ),
           body: _HomePage(),
         ),
