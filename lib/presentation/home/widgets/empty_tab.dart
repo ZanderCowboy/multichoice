@@ -7,7 +7,7 @@ class EmptyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
+    // final ScrollController scrollController = ScrollController();
 
     return GestureDetector(
       onTap: () {
@@ -35,7 +35,6 @@ class EmptyTab extends StatelessWidget {
       child: Card(
         elevation: 5,
         color: Colors.grey[600],
-        // shadowColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: circularBorder12,
         ),

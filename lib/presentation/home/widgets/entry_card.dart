@@ -15,10 +15,6 @@ class EntryCard extends StatelessWidget {
       child: const SizedBox(
         height: 60,
         width: 200,
-        // decoration: BoxDecoration(
-        //   boxShadow: [BoxShadow(color: Colors.white)],
-        //   color: Colors.blueGrey,
-        // ),
         child: Padding(
           padding: allPadding4,
           child: Row(

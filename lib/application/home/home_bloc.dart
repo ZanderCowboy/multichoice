@@ -41,7 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isDeleted: true,
             ),
           );
-          _tabsRepository.deleteTab(0);
+          _tabsRepository.deleteTab(0); // todo implement deletion at location
 
           emit(
             state.copyWith(
