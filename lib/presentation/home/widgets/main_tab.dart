@@ -46,10 +46,10 @@ class VerticalTab extends StatelessWidget {
         elevation: 5,
         shadowColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: circularBorder12,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: allPadding6,
           child: SizedBox(
             width: MediaQuery.sizeOf(context).width / 4,
             child: Column(
@@ -63,7 +63,7 @@ class VerticalTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                gap_10,
+                gap10,
                 Expanded(
                   child: ScrollConfiguration(
                     behavior: CustomScrollBehaviour(),
@@ -71,13 +71,13 @@ class VerticalTab extends StatelessWidget {
                       controller: scrollController,
                       children: const [
                         EntryCard(),
-                        gap_16,
+                        gap16,
                         EntryCard(),
-                        gap_16,
+                        gap16,
                         EntryCard(),
-                        gap_16,
+                        gap16,
                         EntryCard(),
-                        gap_16,
+                        gap16,
                         EntryCard(),
                       ],
                     ),

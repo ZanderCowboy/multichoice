@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/export_application.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/infrastructure/tabs/tabs_repository.dart';
 import 'package:multichoice/presentation/home/widgets/custom_dialog.dart';
