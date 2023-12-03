@@ -83,7 +83,7 @@ class _HomePage extends StatelessWidget {
         final tabs = context.read<TabsRepository>().readTabs();
 
         return Padding(
-          padding: const EdgeInsets.all(24),
+          padding: allPadding24,
           child: SizedBox(
             height: MediaQuery.sizeOf(context).height / 1.375,
             child: Row(

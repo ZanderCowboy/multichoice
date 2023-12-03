@@ -37,10 +37,10 @@ class EmptyTab extends StatelessWidget {
         color: Colors.grey[600],
         // shadowColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: circularBorder12,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: allPadding6,
           child: SizedBox(
             width: MediaQuery.sizeOf(context).width / 4,
             child: const IconButton(

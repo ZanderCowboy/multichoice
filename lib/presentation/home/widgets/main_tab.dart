@@ -27,7 +27,7 @@ class VerticalTab extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Cancel'),
                 ),
-                gap_10,
+                gap10,
                 ElevatedButton(
                   onPressed: () {
                     context
