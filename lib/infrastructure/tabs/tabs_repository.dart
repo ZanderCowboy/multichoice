@@ -20,7 +20,7 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
-  void deleteTab(int index) {
+  Future<void> deleteTab(int index) async {
     tabsList.deleteTab(index);
   }
 }
