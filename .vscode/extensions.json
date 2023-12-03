@@ -1,0 +1,7 @@
+// .vscode/extensions.json
+{
+    "recommendations": [
+        "dart-code.dart-code",
+        "dart-code.flutter"
+    ]
+}
