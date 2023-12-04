@@ -5,5 +5,5 @@ abstract class ITabsRepository {
 
   List<VerticalTab> readTabs();
 
-  Future<void> deleteTab(int index);
+  Future<void> deleteTab(int tabIndex, VerticalTab verticalTab);
 }
