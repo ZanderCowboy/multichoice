@@ -35,9 +35,9 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          drawer: const Drawer(
-            child: Text('text'),
-          ),
+          // drawer: const Drawer(
+          //   child: Text('text'),
+          // ),
           body: _HomePage(),
         ),
       ),
