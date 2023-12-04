@@ -14,38 +14,41 @@ class VerticalTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
 
-    return GestureDetector(
-      onLongPress: () {
-        CustomDialog.show(
-          context: context,
-          title: const Text('delete'),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
-                gap10,
-                ElevatedButton(
-                  onPressed: () {
-                    context
-                        .read<HomeBloc>()
-                        .add(const HomeEvent.onLongPressedDeleteTab());
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Delete'),
-                ),
+    return RepositoryProvider(
+      create: (_) => EntryRepository(),
+      child: BlocProvider(
+        create: (_) => coreSl<EntryBloc>(),
+        child: GestureDetector(
+          onLongPress: () {
+            CustomDialog.show(
+              context: context,
+              title: const Text('delete'),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                    gap10,
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(
+                              const HomeEvent.onLongPressedDeleteTab(
+                                VerticalTab(
+                                    title: 'title', subtitle: 'subtitle'),
+                              ),
+                            );
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
-        );
-      },
-      child: RepositoryProvider(
-        create: (_) => EntryRepository(),
-        child: BlocProvider(
-          create: (_) => coreSl<EntryBloc>(),
+            );
+          },
           child: BlocConsumer<EntryBloc, EntryState>(
             listener: (context, state) {
               if (state.isLoading) {
@@ -77,8 +80,10 @@ class VerticalTab extends StatelessWidget {
               }
             },
             builder: (context, state) {
+              final tab = context.read<TabsRepository>().readTabs().first;
+
               final entriesInTab =
-                  context.read<EntryRepository>().readEntries(0);
+                  context.read<EntryRepository>().readEntries(0, tab);
 
               return Card(
                 elevation: 5,
@@ -129,19 +134,18 @@ class VerticalTab extends StatelessWidget {
                             child: ListView.builder(
                               controller: scrollController,
                               scrollDirection: Axis.vertical,
-                              itemCount: entriesInTab?.length,
+                              itemCount: entriesInTab!.length + 1,
                               itemBuilder: (context, index) {
-                                // if (index == entriesInTab?.length ||
-                                //     entriesInTab == null) {
-                                //   return const EmptyEntry();
-                                // } else {
-                                //   return entriesInTab[index];
-                                // }
-                                if (index != entriesInTab?.length) {
-                                  return entriesInTab?[index];
-                                } else {
+                                if (index == entriesInTab.length) {
                                   return const EmptyEntry();
+                                } else {
+                                  return entriesInTab[index];
                                 }
+                                // if (index != entriesInTab?.length) {
+                                //   return entriesInTab?[index];
+                                // } else {
+                                //   return const EmptyEntry();
+                                // }
                               },
                             ),
                           ),

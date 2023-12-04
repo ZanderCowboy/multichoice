@@ -7,8 +7,6 @@ class EmptyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final ScrollController scrollController = ScrollController();
-
     return GestureDetector(
       onTap: () {
         CustomDialog.show(

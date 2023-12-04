@@ -15,7 +15,11 @@ class EmptyEntry extends StatelessWidget {
               onPressed: () {
                 context
                     .read<EntryBloc>()
-                    .add(const onPressedAddEntry(EntryCard()));
+                    .add(const EntryEvent.onPressedAddEntry(
+                      VerticalTab(title: 'title', subtitle: 'subtitle'),
+                      EntryCard(),
+                    ));
+                // Provider.of<Bloc> ...
                 Navigator.of(context).pop();
               },
               child: const Text('press'),
