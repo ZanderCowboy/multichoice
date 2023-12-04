@@ -10,7 +10,9 @@ part 'home_bloc.freezed.dart';
 
 @Injectable()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc(this._tabsRepository) : super(HomeState.initial()) {
+  HomeBloc(
+    this._tabsRepository,
+  ) : super(HomeState.initial()) {
     on<HomeEvent>((event, emit) {
       event.map(
         onPressedAddTab: (value) async {
@@ -32,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onLongPressedDeleteTab: (_) {
+        onLongPressedDeleteTab: (value) {
           emit(state.copyWith(isLoading: true));
 
           emit(
@@ -41,7 +43,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isDeleted: true,
             ),
           );
-          _tabsRepository.deleteTab(0); // todo implement deletion at location
+          _tabsRepository.deleteTab(
+              0, value.verticalTab); // todo implement deletion at location
 
           emit(
             state.copyWith(

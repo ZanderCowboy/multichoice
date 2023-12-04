@@ -5,5 +5,6 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onPressedAddTab(VerticalTab verticalTab) =
       onPressedAddTab;
 
-  const factory HomeEvent.onLongPressedDeleteTab() = onLongPressedDeleteTab;
+  const factory HomeEvent.onLongPressedDeleteTab(VerticalTab verticalTab) =
+      onLongPressedDeleteTab;
 }

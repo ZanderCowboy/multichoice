@@ -27,7 +27,8 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
               isAdded: true,
             ),
           );
-          await _entryRepository.addEntry(0, value.entryCard);
+          await _entryRepository.addEntry(
+              0, value.verticalTab, value.entryCard);
 
           emit(
             state.copyWith(
@@ -45,7 +46,12 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
               isDeleted: true,
             ),
           );
-          _entryRepository.deleteEntry(0, EntryCard());
+          _entryRepository.deleteEntry(
+            0,
+            const VerticalTab(title: 'title', subtitle: 'subtitle'),
+            0,
+            const EntryCard(),
+          );
 
           emit(
             state.copyWith(

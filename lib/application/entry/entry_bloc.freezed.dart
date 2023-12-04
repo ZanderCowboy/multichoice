@@ -18,19 +18,22 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EntryEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EntryCard entryCard) onPressedAddEntry,
+    required TResult Function(VerticalTab verticalTab, EntryCard entryCard)
+        onPressedAddEntry,
     required TResult Function() onLongPressedDeleteEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult? Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult? Function()? onLongPressedDeleteEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult Function()? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) =>
@@ -81,7 +84,7 @@ abstract class _$$onPressedAddEntryImplCopyWith<$Res> {
           $Res Function(_$onPressedAddEntryImpl) then) =
       __$$onPressedAddEntryImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({EntryCard entryCard});
+  $Res call({VerticalTab verticalTab, EntryCard entryCard});
 }
 
 /// @nodoc
@@ -95,9 +98,14 @@ class __$$onPressedAddEntryImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? verticalTab = null,
     Object? entryCard = null,
   }) {
     return _then(_$onPressedAddEntryImpl(
+      null == verticalTab
+          ? _value.verticalTab
+          : verticalTab // ignore: cast_nullable_to_non_nullable
+              as VerticalTab,
       null == entryCard
           ? _value.entryCard
           : entryCard // ignore: cast_nullable_to_non_nullable
@@ -109,14 +117,16 @@ class __$$onPressedAddEntryImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$onPressedAddEntryImpl implements onPressedAddEntry {
-  const _$onPressedAddEntryImpl(this.entryCard);
+  const _$onPressedAddEntryImpl(this.verticalTab, this.entryCard);
 
+  @override
+  final VerticalTab verticalTab;
   @override
   final EntryCard entryCard;
 
   @override
   String toString() {
-    return 'EntryEvent.onPressedAddEntry(entryCard: $entryCard)';
+    return 'EntryEvent.onPressedAddEntry(verticalTab: $verticalTab, entryCard: $entryCard)';
   }
 
   @override
@@ -124,12 +134,14 @@ class _$onPressedAddEntryImpl implements onPressedAddEntry {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$onPressedAddEntryImpl &&
+            (identical(other.verticalTab, verticalTab) ||
+                other.verticalTab == verticalTab) &&
             (identical(other.entryCard, entryCard) ||
                 other.entryCard == entryCard));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, entryCard);
+  int get hashCode => Object.hash(runtimeType, verticalTab, entryCard);
 
   @JsonKey(ignore: true)
   @override
@@ -141,30 +153,33 @@ class _$onPressedAddEntryImpl implements onPressedAddEntry {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EntryCard entryCard) onPressedAddEntry,
+    required TResult Function(VerticalTab verticalTab, EntryCard entryCard)
+        onPressedAddEntry,
     required TResult Function() onLongPressedDeleteEntry,
   }) {
-    return onPressedAddEntry(entryCard);
+    return onPressedAddEntry(verticalTab, entryCard);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult? Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult? Function()? onLongPressedDeleteEntry,
   }) {
-    return onPressedAddEntry?.call(entryCard);
+    return onPressedAddEntry?.call(verticalTab, entryCard);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult Function()? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
-      return onPressedAddEntry(entryCard);
+      return onPressedAddEntry(verticalTab, entryCard);
     }
     return orElse();
   }
@@ -203,9 +218,11 @@ class _$onPressedAddEntryImpl implements onPressedAddEntry {
 }
 
 abstract class onPressedAddEntry implements EntryEvent {
-  const factory onPressedAddEntry(final EntryCard entryCard) =
+  const factory onPressedAddEntry(
+          final VerticalTab verticalTab, final EntryCard entryCard) =
       _$onPressedAddEntryImpl;
 
+  VerticalTab get verticalTab;
   EntryCard get entryCard;
   @JsonKey(ignore: true)
   _$$onPressedAddEntryImplCopyWith<_$onPressedAddEntryImpl> get copyWith =>
@@ -253,7 +270,8 @@ class _$onLongPressedDeleteEntryImpl implements onLongPressedDeleteEntry {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EntryCard entryCard) onPressedAddEntry,
+    required TResult Function(VerticalTab verticalTab, EntryCard entryCard)
+        onPressedAddEntry,
     required TResult Function() onLongPressedDeleteEntry,
   }) {
     return onLongPressedDeleteEntry();
@@ -262,7 +280,8 @@ class _$onLongPressedDeleteEntryImpl implements onLongPressedDeleteEntry {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult? Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult? Function()? onLongPressedDeleteEntry,
   }) {
     return onLongPressedDeleteEntry?.call();
@@ -271,7 +290,8 @@ class _$onLongPressedDeleteEntryImpl implements onLongPressedDeleteEntry {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EntryCard entryCard)? onPressedAddEntry,
+    TResult Function(VerticalTab verticalTab, EntryCard entryCard)?
+        onPressedAddEntry,
     TResult Function()? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) {
