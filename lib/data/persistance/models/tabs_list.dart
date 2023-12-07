@@ -3,12 +3,10 @@ import 'package:multichoice/presentation/home/home_page.dart';
 class TabsList {
   TabsList();
 
-  static final List<VerticalTab> tabsList = [];
   static final Map<VerticalTab, List<EntryCard>> tabsData = {};
 
   // create
   void addTab(VerticalTab verticalTab) {
-    tabsList.add(verticalTab);
     tabsData[verticalTab] = [];
   }
 
@@ -18,7 +16,6 @@ class TabsList {
 
   // read
   List<VerticalTab> readTabs() {
-    // return tabsList;
     return tabsData.keys.toList();
   }
 
@@ -33,7 +30,6 @@ class TabsList {
     int tabIndex,
     VerticalTab verticalTab,
   ) {
-    tabsList.removeAt(tabIndex);
     tabsData.remove(verticalTab);
   }
 
