@@ -16,22 +16,23 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$HomeEvent {
+  VerticalTab get verticalTab => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(VerticalTab verticalTab) onPressedAddTab,
-    required TResult Function() onLongPressedDeleteTab,
+    required TResult Function(VerticalTab verticalTab) onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult? Function()? onLongPressedDeleteTab,
+    TResult? Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult Function()? onLongPressedDeleteTab,
+    TResult Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -55,12 +56,18 @@ mixin _$HomeEvent {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $HomeEventCopyWith<HomeEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $HomeEventCopyWith<$Res> {
   factory $HomeEventCopyWith(HomeEvent value, $Res Function(HomeEvent) then) =
       _$HomeEventCopyWithImpl<$Res, HomeEvent>;
+  @useResult
+  $Res call({VerticalTab verticalTab});
 }
 
 /// @nodoc
@@ -72,13 +79,28 @@ class _$HomeEventCopyWithImpl<$Res, $Val extends HomeEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? verticalTab = null,
+  }) {
+    return _then(_value.copyWith(
+      verticalTab: null == verticalTab
+          ? _value.verticalTab
+          : verticalTab // ignore: cast_nullable_to_non_nullable
+              as VerticalTab,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$onPressedAddTabImplCopyWith<$Res> {
+abstract class _$$onPressedAddTabImplCopyWith<$Res>
+    implements $HomeEventCopyWith<$Res> {
   factory _$$onPressedAddTabImplCopyWith(_$onPressedAddTabImpl value,
           $Res Function(_$onPressedAddTabImpl) then) =
       __$$onPressedAddTabImplCopyWithImpl<$Res>;
+  @override
   @useResult
   $Res call({VerticalTab verticalTab});
 }
@@ -141,7 +163,7 @@ class _$onPressedAddTabImpl implements onPressedAddTab {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(VerticalTab verticalTab) onPressedAddTab,
-    required TResult Function() onLongPressedDeleteTab,
+    required TResult Function(VerticalTab verticalTab) onLongPressedDeleteTab,
   }) {
     return onPressedAddTab(verticalTab);
   }
@@ -150,7 +172,7 @@ class _$onPressedAddTabImpl implements onPressedAddTab {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult? Function()? onLongPressedDeleteTab,
+    TResult? Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
   }) {
     return onPressedAddTab?.call(verticalTab);
   }
@@ -159,7 +181,7 @@ class _$onPressedAddTabImpl implements onPressedAddTab {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult Function()? onLongPressedDeleteTab,
+    TResult Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
@@ -205,18 +227,24 @@ abstract class onPressedAddTab implements HomeEvent {
   const factory onPressedAddTab(final VerticalTab verticalTab) =
       _$onPressedAddTabImpl;
 
+  @override
   VerticalTab get verticalTab;
+  @override
   @JsonKey(ignore: true)
   _$$onPressedAddTabImplCopyWith<_$onPressedAddTabImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$onLongPressedDeleteTabImplCopyWith<$Res> {
+abstract class _$$onLongPressedDeleteTabImplCopyWith<$Res>
+    implements $HomeEventCopyWith<$Res> {
   factory _$$onLongPressedDeleteTabImplCopyWith(
           _$onLongPressedDeleteTabImpl value,
           $Res Function(_$onLongPressedDeleteTabImpl) then) =
       __$$onLongPressedDeleteTabImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({VerticalTab verticalTab});
 }
 
 /// @nodoc
@@ -227,55 +255,80 @@ class __$$onLongPressedDeleteTabImplCopyWithImpl<$Res>
       _$onLongPressedDeleteTabImpl _value,
       $Res Function(_$onLongPressedDeleteTabImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? verticalTab = null,
+  }) {
+    return _then(_$onLongPressedDeleteTabImpl(
+      null == verticalTab
+          ? _value.verticalTab
+          : verticalTab // ignore: cast_nullable_to_non_nullable
+              as VerticalTab,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$onLongPressedDeleteTabImpl implements onLongPressedDeleteTab {
-  const _$onLongPressedDeleteTabImpl();
+  const _$onLongPressedDeleteTabImpl(this.verticalTab);
+
+  @override
+  final VerticalTab verticalTab;
 
   @override
   String toString() {
-    return 'HomeEvent.onLongPressedDeleteTab()';
+    return 'HomeEvent.onLongPressedDeleteTab(verticalTab: $verticalTab)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$onLongPressedDeleteTabImpl);
+            other is _$onLongPressedDeleteTabImpl &&
+            (identical(other.verticalTab, verticalTab) ||
+                other.verticalTab == verticalTab));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, verticalTab);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$onLongPressedDeleteTabImplCopyWith<_$onLongPressedDeleteTabImpl>
+      get copyWith => __$$onLongPressedDeleteTabImplCopyWithImpl<
+          _$onLongPressedDeleteTabImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(VerticalTab verticalTab) onPressedAddTab,
-    required TResult Function() onLongPressedDeleteTab,
+    required TResult Function(VerticalTab verticalTab) onLongPressedDeleteTab,
   }) {
-    return onLongPressedDeleteTab();
+    return onLongPressedDeleteTab(verticalTab);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult? Function()? onLongPressedDeleteTab,
+    TResult? Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
   }) {
-    return onLongPressedDeleteTab?.call();
+    return onLongPressedDeleteTab?.call(verticalTab);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(VerticalTab verticalTab)? onPressedAddTab,
-    TResult Function()? onLongPressedDeleteTab,
+    TResult Function(VerticalTab verticalTab)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
-      return onLongPressedDeleteTab();
+      return onLongPressedDeleteTab(verticalTab);
     }
     return orElse();
   }
@@ -314,7 +367,15 @@ class _$onLongPressedDeleteTabImpl implements onLongPressedDeleteTab {
 }
 
 abstract class onLongPressedDeleteTab implements HomeEvent {
-  const factory onLongPressedDeleteTab() = _$onLongPressedDeleteTabImpl;
+  const factory onLongPressedDeleteTab(final VerticalTab verticalTab) =
+      _$onLongPressedDeleteTabImpl;
+
+  @override
+  VerticalTab get verticalTab;
+  @override
+  @JsonKey(ignore: true)
+  _$$onLongPressedDeleteTabImplCopyWith<_$onLongPressedDeleteTabImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
