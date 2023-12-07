@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onLongPressedDeleteTab: (value) {
+        onLongPressedDeleteTab: (value) async {
           emit(state.copyWith(isLoading: true));
 
           emit(
@@ -43,7 +43,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isDeleted: true,
             ),
           );
-          _tabsRepository.deleteTab(
+          await _tabsRepository.deleteTab(
               0, value.verticalTab); // todo implement deletion at location
 
           emit(
