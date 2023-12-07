@@ -14,6 +14,8 @@ class VerticalTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
 
+    // final tab = context.read<TabsRepository>();
+
     return RepositoryProvider(
       create: (_) => EntryRepository(),
       child: BlocProvider(
@@ -35,9 +37,8 @@ class VerticalTab extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onLongPressedDeleteTab(
-                                VerticalTab(
-                                    title: 'title', subtitle: 'subtitle'),
+                              HomeEvent.onLongPressedDeleteTab(
+                                VerticalTab(title: title, subtitle: subtitle),
                               ),
                             );
                         Navigator.of(context).pop();
@@ -102,7 +103,7 @@ class VerticalTab extends StatelessWidget {
                             Expanded(child: Text(title)),
                             const IconButton(
                               onPressed: null,
-                              icon: Icon(Icons.add_outlined),
+                              icon: Icon(Icons.minor_crash_rounded),
                             ),
                           ],
                         ),
@@ -110,27 +111,6 @@ class VerticalTab extends StatelessWidget {
                         Expanded(
                           child: ScrollConfiguration(
                             behavior: CustomScrollBehaviour(),
-                            // child: ListView(
-                            //   controller: scrollController,
-                            //   children: [
-                            //     GestureDetector(
-                            //       onTap: null,
-                            //       child: const EntryCard(),
-                            //     ),
-                            //     gap16,
-                            //     const EntryCard(),
-                            //     gap16,
-                            //     const EntryCard(),
-                            //     gap16,
-                            //     const EntryCard(),
-                            //     gap16,
-                            //     const EntryCard(),
-                            //     gap16,
-                            //     const EntryCard(),
-                            //     gap16,
-                            //     const EmptyEntry(),
-                            //   ],
-                            // ),
                             child: ListView.builder(
                               controller: scrollController,
                               scrollDirection: Axis.vertical,
@@ -141,11 +121,6 @@ class VerticalTab extends StatelessWidget {
                                 } else {
                                   return entriesInTab[index];
                                 }
-                                // if (index != entriesInTab?.length) {
-                                //   return entriesInTab?[index];
-                                // } else {
-                                //   return const EmptyEntry();
-                                // }
                               },
                             ),
                           ),

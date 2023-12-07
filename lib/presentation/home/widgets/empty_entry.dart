@@ -10,7 +10,7 @@ class EmptyEntry extends StatelessWidget {
         CustomDialog.show(
           context: context,
           title: const Text('title'),
-          actions: [
+          actions: <Widget>[
             ElevatedButton(
               onPressed: () {
                 context

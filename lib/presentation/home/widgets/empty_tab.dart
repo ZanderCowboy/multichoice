@@ -2,8 +2,11 @@ part of '../home_page.dart';
 
 class EmptyTab extends StatelessWidget {
   const EmptyTab({
+    required this.tabCount,
     super.key,
   });
+
+  final int tabCount;
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +19,10 @@ class EmptyTab extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.read<HomeBloc>().add(
-                      const HomeEvent.onPressedAddTab(
+                      HomeEvent.onPressedAddTab(
                         VerticalTab(
-                          title: 'new',
-                          subtitle: 'new',
+                          title: 'new $tabCount',
+                          subtitle: 'new $tabCount',
                         ),
                       ),
                     );
