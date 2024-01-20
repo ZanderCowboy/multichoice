@@ -38,7 +38,10 @@ class VerticalTab extends StatelessWidget {
                       onPressed: () {
                         context.read<HomeBloc>().add(
                               HomeEvent.onLongPressedDeleteTab(
-                                VerticalTab(title: title, subtitle: subtitle),
+                                VerticalTab(
+                                  title: title,
+                                  subtitle: subtitle,
+                                ),
                               ),
                             );
                         Navigator.of(context).pop();

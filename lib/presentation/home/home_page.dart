@@ -85,8 +85,6 @@ class _HomePage extends StatelessWidget {
       builder: (context, state) {
         final tabs = context.read<TabsRepository>().readTabs();
 
-        final tabCount = tabs.length;
-
         return Padding(
           padding: allPadding24,
           child: SizedBox(
@@ -103,7 +101,7 @@ class _HomePage extends StatelessWidget {
                       itemCount: tabs.length + 1,
                       itemBuilder: (context, index) {
                         if (index == tabs.length) {
-                          return EmptyTab(tabCount: tabCount);
+                          return const EmptyTab();
                         } else {
                           return tabs[index];
                         }
