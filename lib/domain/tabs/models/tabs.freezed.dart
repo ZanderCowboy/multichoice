@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Tabs {
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
@@ -28,7 +29,7 @@ abstract class $TabsCopyWith<$Res> {
   factory $TabsCopyWith(Tabs value, $Res Function(Tabs) then) =
       _$TabsCopyWithImpl<$Res, Tabs>;
   @useResult
-  $Res call({String title, String subtitle});
+  $Res call({String id, String title, String subtitle});
 }
 
 /// @nodoc
@@ -44,10 +45,15 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -67,7 +73,7 @@ abstract class _$$TabsImplCopyWith<$Res> implements $TabsCopyWith<$Res> {
       __$$TabsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String title, String subtitle});
+  $Res call({String id, String title, String subtitle});
 }
 
 /// @nodoc
@@ -80,10 +86,15 @@ class __$$TabsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_$TabsImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -99,8 +110,11 @@ class __$$TabsImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TabsImpl implements _Tabs {
-  const _$TabsImpl({required this.title, required this.subtitle});
+  const _$TabsImpl(
+      {required this.id, required this.title, required this.subtitle});
 
+  @override
+  final String id;
   @override
   final String title;
   @override
@@ -108,7 +122,7 @@ class _$TabsImpl implements _Tabs {
 
   @override
   String toString() {
-    return 'Tabs(title: $title, subtitle: $subtitle)';
+    return 'Tabs(id: $id, title: $title, subtitle: $subtitle)';
   }
 
   @override
@@ -116,13 +130,14 @@ class _$TabsImpl implements _Tabs {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TabsImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, subtitle);
+  int get hashCode => Object.hash(runtimeType, id, title, subtitle);
 
   @JsonKey(ignore: true)
   @override
@@ -133,9 +148,12 @@ class _$TabsImpl implements _Tabs {
 
 abstract class _Tabs implements Tabs {
   const factory _Tabs(
-      {required final String title,
+      {required final String id,
+      required final String title,
       required final String subtitle}) = _$TabsImpl;
 
+  @override
+  String get id;
   @override
   String get title;
   @override

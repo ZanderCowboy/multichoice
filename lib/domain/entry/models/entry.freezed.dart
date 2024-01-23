@@ -16,6 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Entry {
+  String get id => throw _privateConstructorUsedError;
+  String get tabId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
@@ -28,7 +30,7 @@ abstract class $EntryCopyWith<$Res> {
   factory $EntryCopyWith(Entry value, $Res Function(Entry) then) =
       _$EntryCopyWithImpl<$Res, Entry>;
   @useResult
-  $Res call({String title, String subtitle});
+  $Res call({String id, String tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -44,10 +46,20 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
+    Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      tabId: null == tabId
+          ? _value.tabId
+          : tabId // ignore: cast_nullable_to_non_nullable
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -67,7 +79,7 @@ abstract class _$$EntryImplCopyWith<$Res> implements $EntryCopyWith<$Res> {
       __$$EntryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String title, String subtitle});
+  $Res call({String id, String tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -81,10 +93,20 @@ class __$$EntryImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
+    Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_$EntryImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      tabId: null == tabId
+          ? _value.tabId
+          : tabId // ignore: cast_nullable_to_non_nullable
+              as String,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -100,8 +122,16 @@ class __$$EntryImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$EntryImpl implements _Entry {
-  const _$EntryImpl({required this.title, required this.subtitle});
+  const _$EntryImpl(
+      {required this.id,
+      required this.tabId,
+      required this.title,
+      required this.subtitle});
 
+  @override
+  final String id;
+  @override
+  final String tabId;
   @override
   final String title;
   @override
@@ -109,7 +139,7 @@ class _$EntryImpl implements _Entry {
 
   @override
   String toString() {
-    return 'Entry(title: $title, subtitle: $subtitle)';
+    return 'Entry(id: $id, tabId: $tabId, title: $title, subtitle: $subtitle)';
   }
 
   @override
@@ -117,13 +147,15 @@ class _$EntryImpl implements _Entry {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntryImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.tabId, tabId) || other.tabId == tabId) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, subtitle);
+  int get hashCode => Object.hash(runtimeType, id, tabId, title, subtitle);
 
   @JsonKey(ignore: true)
   @override
@@ -134,9 +166,15 @@ class _$EntryImpl implements _Entry {
 
 abstract class _Entry implements Entry {
   const factory _Entry(
-      {required final String title,
+      {required final String id,
+      required final String tabId,
+      required final String title,
       required final String subtitle}) = _$EntryImpl;
 
+  @override
+  String get id;
+  @override
+  String get tabId;
   @override
   String get title;
   @override
