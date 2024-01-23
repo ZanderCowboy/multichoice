@@ -15,7 +15,7 @@ import 'application/entry/entry_bloc.dart' as _i7;
 import 'application/home/home_bloc.dart' as _i8;
 import 'domain/entry/i_entry_repository.dart' as _i3;
 import 'domain/tabs/i_tabs_repository.dart' as _i5;
-import 'infrastructure/entries/entries_repository.dart' as _i4;
+import 'infrastructure/entries/entry_repository.dart' as _i4;
 import 'infrastructure/tabs/tabs_repository.dart' as _i6;
 
 extension GetItInjectableX on _i1.GetIt {
