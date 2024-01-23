@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/application/export_application.dart';
+import 'package:multichoice/constants/enums.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
@@ -12,6 +14,7 @@ part 'widgets/vertical_tab.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/empty_tab.dart';
 part 'widgets/empty_entry.dart';
+part 'widgets/menu_items.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
