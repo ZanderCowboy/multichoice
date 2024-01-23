@@ -5,14 +5,18 @@ part 'tabs.freezed.dart';
 @freezed
 class Tabs with _$Tabs {
   const factory Tabs({
-    required String id,
+    required String uuid,
     required String title,
     required String subtitle,
   }) = _Tabs;
 
+  const Tabs._();
+
   factory Tabs.empty() => const Tabs(
-        id: '',
+        uuid: '',
         title: '',
         subtitle: '',
       );
+
+  String get id => uuid;
 }
