@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Tabs {
-  String get id => throw _privateConstructorUsedError;
+  String get uuid => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
@@ -29,7 +29,7 @@ abstract class $TabsCopyWith<$Res> {
   factory $TabsCopyWith(Tabs value, $Res Function(Tabs) then) =
       _$TabsCopyWithImpl<$Res, Tabs>;
   @useResult
-  $Res call({String id, String title, String subtitle});
+  $Res call({String uuid, String title, String subtitle});
 }
 
 /// @nodoc
@@ -45,14 +45,14 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uuid = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uuid: null == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
               as String,
       title: null == title
           ? _value.title
@@ -73,7 +73,7 @@ abstract class _$$TabsImplCopyWith<$Res> implements $TabsCopyWith<$Res> {
       __$$TabsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String title, String subtitle});
+  $Res call({String uuid, String title, String subtitle});
 }
 
 /// @nodoc
@@ -86,14 +86,14 @@ class __$$TabsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uuid = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_$TabsImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uuid: null == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
               as String,
       title: null == title
           ? _value.title
@@ -109,12 +109,13 @@ class __$$TabsImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$TabsImpl implements _Tabs {
+class _$TabsImpl extends _Tabs {
   const _$TabsImpl(
-      {required this.id, required this.title, required this.subtitle});
+      {required this.uuid, required this.title, required this.subtitle})
+      : super._();
 
   @override
-  final String id;
+  final String uuid;
   @override
   final String title;
   @override
@@ -122,22 +123,22 @@ class _$TabsImpl implements _Tabs {
 
   @override
   String toString() {
-    return 'Tabs(id: $id, title: $title, subtitle: $subtitle)';
+    return 'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle)';
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TabsImpl &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.uuid, uuid) || other.uuid == uuid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, subtitle);
+  int get hashCode => Object.hash(runtimeType, uuid, title, subtitle);
 
   @JsonKey(ignore: true)
   @override
@@ -146,14 +147,15 @@ class _$TabsImpl implements _Tabs {
       __$$TabsImplCopyWithImpl<_$TabsImpl>(this, _$identity);
 }
 
-abstract class _Tabs implements Tabs {
+abstract class _Tabs extends Tabs {
   const factory _Tabs(
-      {required final String id,
+      {required final String uuid,
       required final String title,
       required final String subtitle}) = _$TabsImpl;
+  const _Tabs._() : super._();
 
   @override
-  String get id;
+  String get uuid;
   @override
   String get title;
   @override

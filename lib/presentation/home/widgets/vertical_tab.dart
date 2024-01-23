@@ -4,43 +4,45 @@ class VerticalTab extends StatelessWidget {
   const VerticalTab({
     required this.tabId,
     required this.tabTitle,
-    required this.tabSubtitle,
     super.key,
   });
 
   final String tabId;
   final String tabTitle;
-  final String tabSubtitle;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shadowColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: circularBorder12,
-      ),
-      child: Padding(
-        padding: allPadding6,
-        child: SizedBox(
-          width: MediaQuery.sizeOf(context).width / 4,
-          child: Column(
-            children: [
-              Row(
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Card(
+          elevation: 5,
+          shadowColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: circularBorder12,
+          ),
+          child: Padding(
+            padding: allPadding6,
+            child: SizedBox(
+              width: MediaQuery.sizeOf(context).width / 4,
+              child: Column(
                 children: [
-                  Expanded(child: Text(tabTitle)),
-                  const IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.minor_crash_rounded),
+                  Row(
+                    children: [
+                      Expanded(child: Text(tabTitle)),
+                      const IconButton(
+                        onPressed: null,
+                        icon: Icon(Icons.minor_crash_rounded),
+                      ),
+                    ],
                   ),
+                  gap10,
+                  Cards(tabId: tabId),
                 ],
               ),
-              gap10,
-              Cards(tabId: tabId),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

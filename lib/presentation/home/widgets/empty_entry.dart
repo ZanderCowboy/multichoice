@@ -19,7 +19,12 @@ class EmptyEntry extends StatelessWidget {
             CustomDialog.show(
               context: context,
               title: const Text('Add New Entry'),
-              content: const SizedBox(height: 20),
+              content: const SizedBox(
+                height: 20,
+                child: Text(
+                  "TODO: Add FormFields to add data",
+                ),
+              ),
               actions: <Widget>[
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -30,12 +35,8 @@ class EmptyEntry extends StatelessWidget {
                     context.read<EntryBloc>().add(
                           EntryEvent.onPressedAddEntry(
                             tabId,
-                            Entry(
-                              id: 'e-ID: $entryCount',
-                              tabId: tabId,
-                              title: 'e-title $entryCount',
-                              subtitle: 'e-s.title $entryCount',
-                            ),
+                            'e-title $entryCount',
+                            'e-s.title $entryCount',
                           ),
                         );
                     if (Navigator.canPop(context)) {

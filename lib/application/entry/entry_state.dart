@@ -13,7 +13,7 @@ class EntryState with _$EntryState {
 
   factory EntryState.initial() => const EntryState(
         entry: Entry(
-          id: '',
+          uuid: '',
           tabId: '',
           title: '',
           subtitle: '',

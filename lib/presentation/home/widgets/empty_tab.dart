@@ -16,7 +16,7 @@ class EmptyTab extends StatelessWidget {
             CustomDialog.show(
               context: context,
               title: const Text('Add New Tab'),
-              content: const Text('text form'),
+              content: const Text('TODO: Add FormFields to enter data.'),
               actions: <Widget>[
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -26,23 +26,22 @@ class EmptyTab extends StatelessWidget {
                   onPressed: () {
                     context.read<HomeBloc>().add(
                           HomeEvent.onPressedAddTab(
-                            Tabs(
-                              id: 'tabId $tabCount',
-                              title: 'tab title $tabCount',
-                              subtitle: 'tab s.title $tabCount',
-                            ),
+                            't-title $tabCount',
+                            't-s.title $tabCount',
                           ),
                         );
                     if (Navigator.canPop(context)) {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: const Text('Ok'),
+                  child: const Text('Add'),
                 ),
               ],
             );
           },
-          child: const AddTabCard(),
+          child: AddTabCard(
+            width: MediaQuery.sizeOf(context).width / 4,
+          ),
         );
       },
     );

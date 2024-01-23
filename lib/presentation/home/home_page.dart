@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
 import 'package:multichoice/get_it_injection.dart';
-import 'package:multichoice/presentation/home/widgets/add_entry_card.dart';
-import 'package:multichoice/presentation/home/widgets/empty_tab_add_card.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
+import 'package:multichoice/presentation/shared/widgets/add_cards/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
@@ -64,15 +61,25 @@ class _HomePage extends StatelessWidget {
                         if (index == tabs.length) {
                           return const EmptyTab();
                         } else {
+                          //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
+
                           final tab = tabs[index];
+                          // if (state.tab.id.isEmpty && state.tab.id != tab.id) {
+                          //   context
+                          //       .read<HomeBloc>()
+                          //       .add(HomeEvent.onUpdateTab(tab));
+                          // }
 
                           return GestureDetector(
                             onLongPress: () {
                               CustomDialog.show(
                                 context: context,
                                 title: Text('Delete ${tab.title}'),
-                                content: const SizedBox(
+                                content: SizedBox(
                                   height: 20,
+                                  child: Text(
+                                    "Are you sure you want to delete ${tab.title} and all it's data?",
+                                  ),
                                 ),
                                 actions: <Widget>[
                                   Row(
@@ -106,7 +113,6 @@ class _HomePage extends StatelessWidget {
                             child: VerticalTab(
                               tabId: tab.id,
                               tabTitle: tab.title,
-                              tabSubtitle: tab.subtitle,
                             ),
                           );
                         }

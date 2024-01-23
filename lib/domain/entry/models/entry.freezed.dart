@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Entry {
-  String get id => throw _privateConstructorUsedError;
+  String get uuid => throw _privateConstructorUsedError;
   String get tabId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
@@ -30,7 +30,7 @@ abstract class $EntryCopyWith<$Res> {
   factory $EntryCopyWith(Entry value, $Res Function(Entry) then) =
       _$EntryCopyWithImpl<$Res, Entry>;
   @useResult
-  $Res call({String id, String tabId, String title, String subtitle});
+  $Res call({String uuid, String tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -46,15 +46,15 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uuid = null,
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uuid: null == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
               as String,
       tabId: null == tabId
           ? _value.tabId
@@ -79,7 +79,7 @@ abstract class _$$EntryImplCopyWith<$Res> implements $EntryCopyWith<$Res> {
       __$$EntryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String tabId, String title, String subtitle});
+  $Res call({String uuid, String tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -93,15 +93,15 @@ class __$$EntryImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uuid = null,
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
   }) {
     return _then(_$EntryImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uuid: null == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
               as String,
       tabId: null == tabId
           ? _value.tabId
@@ -121,15 +121,16 @@ class __$$EntryImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$EntryImpl implements _Entry {
+class _$EntryImpl extends _Entry {
   const _$EntryImpl(
-      {required this.id,
+      {required this.uuid,
       required this.tabId,
       required this.title,
-      required this.subtitle});
+      required this.subtitle})
+      : super._();
 
   @override
-  final String id;
+  final String uuid;
   @override
   final String tabId;
   @override
@@ -139,15 +140,15 @@ class _$EntryImpl implements _Entry {
 
   @override
   String toString() {
-    return 'Entry(id: $id, tabId: $tabId, title: $title, subtitle: $subtitle)';
+    return 'Entry(uuid: $uuid, tabId: $tabId, title: $title, subtitle: $subtitle)';
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntryImpl &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.uuid, uuid) || other.uuid == uuid) &&
             (identical(other.tabId, tabId) || other.tabId == tabId) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
@@ -155,7 +156,7 @@ class _$EntryImpl implements _Entry {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, tabId, title, subtitle);
+  int get hashCode => Object.hash(runtimeType, uuid, tabId, title, subtitle);
 
   @JsonKey(ignore: true)
   @override
@@ -164,15 +165,16 @@ class _$EntryImpl implements _Entry {
       __$$EntryImplCopyWithImpl<_$EntryImpl>(this, _$identity);
 }
 
-abstract class _Entry implements Entry {
+abstract class _Entry extends Entry {
   const factory _Entry(
-      {required final String id,
+      {required final String uuid,
       required final String tabId,
       required final String title,
       required final String subtitle}) = _$EntryImpl;
+  const _Entry._() : super._();
 
   @override
-  String get id;
+  String get uuid;
   @override
   String get tabId;
   @override
