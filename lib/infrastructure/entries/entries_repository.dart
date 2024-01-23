@@ -1,59 +1,31 @@
 import 'package:injectable/injectable.dart';
 import 'package:multichoice/data/persistance/models/tabs_list.dart';
 import 'package:multichoice/domain/entry/i_entry_repository.dart';
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/domain/entry/models/entry.dart';
 
 @LazySingleton(as: IEntryRepository)
 class EntryRepository implements IEntryRepository {
   EntryRepository();
 
-  TabsList tabsList = TabsList();
+  final tabsList = TabsList.instance;
 
   @override
-  Future<void> addEntry(
-    int tabIndex,
-    VerticalTab verticalTab,
-    EntryCard entryCard,
-  ) async {
-    tabsList.addEntryToTab(verticalTab, entryCard);
+  Future<int> addEntry(String tabId, Entry entry) async {
+    tabsList.addEntryToTab(tabId, entry);
+
+    return 0;
   }
 
   @override
-  Future<void> deleteEntry(
-    int tabIndex,
-    VerticalTab verticalTab,
-    int entryIndex,
-    EntryCard entryCard,
-  ) async {
-    tabsList.deleteEntryInTab(
-      verticalTab,
-      entryIndex,
-      entryCard,
-    );
+  List<Entry> readEntries(String tabId) {
+    final entries = tabsList.readEntries(tabId) ?? [];
+    return entries;
   }
 
   @override
-  List<EntryCard>? readEntries(
-    int tabIndex,
-    VerticalTab verticalTab,
-  ) {
-    return tabsList.readEntries(verticalTab);
+  Future<int> deleteEntry(String tabId, String entryId) async {
+    tabsList.deleteEntryInTab(tabId, entryId);
+
+    return 0;
   }
-
-  // EntriesList entriesList = EntriesList();
-
-  // @override
-  // Future<void> addEntry(int tabIndex, EntryCard entryCard) async {
-  //   entriesList.addEntry(tabIndex, entryCard);
-  // }
-
-  // @override
-  // Future<void> deleteEntry(int tabIndex, EntryCard entryCard) async {
-  //   entriesList.deleteEntry(tabIndex, entryCard);
-  // }
-
-  // @override
-  // List<EntryCard>? readEntries(int tabIndex) {
-  //   return entriesList.readEntries(tabIndex);
-  // }
 }

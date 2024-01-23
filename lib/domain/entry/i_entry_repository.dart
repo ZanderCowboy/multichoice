@@ -1,15 +1,17 @@
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/domain/entry/models/entry.dart';
 
 abstract class IEntryRepository {
-  Future<void> addEntry(
-      int tabIndex, VerticalTab verticalTab, EntryCard entryCard);
+  Future<int> addEntry(
+    String tabId,
+    Entry entry,
+  );
 
-  List<EntryCard>? readEntries(int tabIndex, VerticalTab verticalTab);
+  List<Entry>? readEntries(
+    String tabId,
+  );
 
-  Future<void> deleteEntry(
-    int tabIndex,
-    VerticalTab verticalTab,
-    int entryIndex,
-    EntryCard entryCard,
+  Future<int> deleteEntry(
+    String tabId,
+    String entryId,
   );
 }
