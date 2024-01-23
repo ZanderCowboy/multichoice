@@ -152,7 +152,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnGetEntryCardsImpl &&
@@ -315,7 +315,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnPressedAddEntryImpl &&
@@ -480,7 +480,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnLongPressedDeleteEntryImpl &&
@@ -780,7 +780,7 @@ class _$EntryStateImpl implements _EntryState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntryStateImpl &&

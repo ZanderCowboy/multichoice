@@ -113,7 +113,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$OnGetTabsImpl);
   }
@@ -256,7 +256,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnUpdateTabImpl &&
@@ -409,7 +409,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnPressedAddTabImpl &&
@@ -562,7 +562,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnLongPressedDeleteTabImpl &&
@@ -908,7 +908,7 @@ class _$HomeStateImpl implements _HomeState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$HomeStateImpl &&
