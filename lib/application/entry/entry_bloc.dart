@@ -39,14 +39,14 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
 
           emit(
             state.copyWith(
-              entry: value.entryCard,
               isLoading: false,
               isAdded: true,
             ),
           );
           await _entryRepository.addEntry(
             value.tabId,
-            value.entryCard,
+            value.title,
+            value.subtitle,
           );
 
           emit(

@@ -20,7 +20,8 @@ mixin _$EntryEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String tabId) onGetEntryCards,
-    required TResult Function(String tabId, Entry entryCard) onPressedAddEntry,
+    required TResult Function(String tabId, String title, String subtitle)
+        onPressedAddEntry,
     required TResult Function(String tabId, String entryId)
         onLongPressedDeleteEntry,
   }) =>
@@ -28,14 +29,16 @@ mixin _$EntryEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String tabId)? onGetEntryCards,
-    TResult? Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult? Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult? Function(String tabId, String entryId)? onLongPressedDeleteEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String tabId)? onGetEntryCards,
-    TResult Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult Function(String tabId, String entryId)? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) =>
@@ -170,7 +173,8 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String tabId) onGetEntryCards,
-    required TResult Function(String tabId, Entry entryCard) onPressedAddEntry,
+    required TResult Function(String tabId, String title, String subtitle)
+        onPressedAddEntry,
     required TResult Function(String tabId, String entryId)
         onLongPressedDeleteEntry,
   }) {
@@ -181,7 +185,8 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String tabId)? onGetEntryCards,
-    TResult? Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult? Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult? Function(String tabId, String entryId)? onLongPressedDeleteEntry,
   }) {
     return onGetEntryCards?.call(tabId);
@@ -191,7 +196,8 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String tabId)? onGetEntryCards,
-    TResult Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult Function(String tabId, String entryId)? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) {
@@ -256,9 +262,7 @@ abstract class _$$OnPressedAddEntryImplCopyWith<$Res>
       __$$OnPressedAddEntryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String tabId, Entry entryCard});
-
-  $EntryCopyWith<$Res> get entryCard;
+  $Res call({String tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -273,42 +277,41 @@ class __$$OnPressedAddEntryImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? tabId = null,
-    Object? entryCard = null,
+    Object? title = null,
+    Object? subtitle = null,
   }) {
     return _then(_$OnPressedAddEntryImpl(
       null == tabId
           ? _value.tabId
           : tabId // ignore: cast_nullable_to_non_nullable
               as String,
-      null == entryCard
-          ? _value.entryCard
-          : entryCard // ignore: cast_nullable_to_non_nullable
-              as Entry,
+      null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == subtitle
+          ? _value.subtitle
+          : subtitle // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EntryCopyWith<$Res> get entryCard {
-    return $EntryCopyWith<$Res>(_value.entryCard, (value) {
-      return _then(_value.copyWith(entryCard: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
-  const _$OnPressedAddEntryImpl(this.tabId, this.entryCard);
+  const _$OnPressedAddEntryImpl(this.tabId, this.title, this.subtitle);
 
   @override
   final String tabId;
   @override
-  final Entry entryCard;
+  final String title;
+  @override
+  final String subtitle;
 
   @override
   String toString() {
-    return 'EntryEvent.onPressedAddEntry(tabId: $tabId, entryCard: $entryCard)';
+    return 'EntryEvent.onPressedAddEntry(tabId: $tabId, title: $title, subtitle: $subtitle)';
   }
 
   @override
@@ -317,12 +320,13 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
         (other.runtimeType == runtimeType &&
             other is _$OnPressedAddEntryImpl &&
             (identical(other.tabId, tabId) || other.tabId == tabId) &&
-            (identical(other.entryCard, entryCard) ||
-                other.entryCard == entryCard));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.subtitle, subtitle) ||
+                other.subtitle == subtitle));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tabId, entryCard);
+  int get hashCode => Object.hash(runtimeType, tabId, title, subtitle);
 
   @JsonKey(ignore: true)
   @override
@@ -335,33 +339,36 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String tabId) onGetEntryCards,
-    required TResult Function(String tabId, Entry entryCard) onPressedAddEntry,
+    required TResult Function(String tabId, String title, String subtitle)
+        onPressedAddEntry,
     required TResult Function(String tabId, String entryId)
         onLongPressedDeleteEntry,
   }) {
-    return onPressedAddEntry(tabId, entryCard);
+    return onPressedAddEntry(tabId, title, subtitle);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String tabId)? onGetEntryCards,
-    TResult? Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult? Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult? Function(String tabId, String entryId)? onLongPressedDeleteEntry,
   }) {
-    return onPressedAddEntry?.call(tabId, entryCard);
+    return onPressedAddEntry?.call(tabId, title, subtitle);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String tabId)? onGetEntryCards,
-    TResult Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult Function(String tabId, String entryId)? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
-      return onPressedAddEntry(tabId, entryCard);
+      return onPressedAddEntry(tabId, title, subtitle);
     }
     return orElse();
   }
@@ -403,12 +410,14 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
 }
 
 abstract class OnPressedAddEntry implements EntryEvent {
-  const factory OnPressedAddEntry(final String tabId, final Entry entryCard) =
+  const factory OnPressedAddEntry(
+          final String tabId, final String title, final String subtitle) =
       _$OnPressedAddEntryImpl;
 
   @override
   String get tabId;
-  Entry get entryCard;
+  String get title;
+  String get subtitle;
   @override
   @JsonKey(ignore: true)
   _$$OnPressedAddEntryImplCopyWith<_$OnPressedAddEntryImpl> get copyWith =>
@@ -493,7 +502,8 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String tabId) onGetEntryCards,
-    required TResult Function(String tabId, Entry entryCard) onPressedAddEntry,
+    required TResult Function(String tabId, String title, String subtitle)
+        onPressedAddEntry,
     required TResult Function(String tabId, String entryId)
         onLongPressedDeleteEntry,
   }) {
@@ -504,7 +514,8 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String tabId)? onGetEntryCards,
-    TResult? Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult? Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult? Function(String tabId, String entryId)? onLongPressedDeleteEntry,
   }) {
     return onLongPressedDeleteEntry?.call(tabId, entryId);
@@ -514,7 +525,8 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String tabId)? onGetEntryCards,
-    TResult Function(String tabId, Entry entryCard)? onPressedAddEntry,
+    TResult Function(String tabId, String title, String subtitle)?
+        onPressedAddEntry,
     TResult Function(String tabId, String entryId)? onLongPressedDeleteEntry,
     required TResult orElse(),
   }) {

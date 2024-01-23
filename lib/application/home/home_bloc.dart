@@ -30,6 +30,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             isLoading: false,
           ));
         },
+        onUpdateTab: (value) {
+          emit(state.copyWith(
+            tab: value.tab,
+          ));
+        },
         onPressedAddTab: (value) async {
           emit(
             state.copyWith(
@@ -38,15 +43,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
 
           emit(state.copyWith(
-            tab: value.tab,
+            // tab: value.tab,
             isLoading: false,
             isAdded: true,
           ));
 
-          await _tabsRepository.addTab(value.tab);
+          await _tabsRepository.addTab(value.title, value.subtitle);
 
           emit(
             state.copyWith(
+              tab: Tabs(
+                uuid: '',
+                title: value.title,
+                subtitle: value.subtitle,
+              ),
               tabs: _tabsRepository.readTabs(),
               isLoading: false,
               isAdded: false,
@@ -63,7 +73,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(
             state.copyWith(
               tab: Tabs(
-                id: value.tabId,
+                uuid: value.tabId,
                 title: 'title',
                 subtitle: 'subtitle',
               ),
