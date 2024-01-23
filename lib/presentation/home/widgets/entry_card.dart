@@ -5,12 +5,14 @@ class EntryCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.tabId,
+    this.entryId,
     super.key,
   });
 
   final String title;
   final String subtitle;
   final String? tabId;
+  final String? entryId;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,8 @@ class EntryCard extends StatelessWidget {
                     Text(title),
                     Text(subtitle),
                     Text(tabId ?? ''),
+                    gap4,
+                    Text(entryId ?? ''),
                   ],
                 ),
               ),

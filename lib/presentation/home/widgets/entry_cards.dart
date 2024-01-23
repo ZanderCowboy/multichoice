@@ -18,15 +18,16 @@ class Cards extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
 
     return BlocProvider(
-      create: (_) =>
-          coreSl<EntryBloc>()..add(EntryEvent.onGetEntryCards(tabId)),
-      child: BlocConsumer<EntryBloc, EntryState>(
-        listener: (context, state) {},
+      create: (_) => coreSl<EntryBloc>()
+        ..add(
+          EntryEvent.onGetEntryCards(tabId),
+        ),
+      child: BlocBuilder<EntryBloc, EntryState>(
         builder: (context, state) {
-          //! Idea: Add a check here to only take the entries from the state is tabId and state.entry.id is the same.
-
           if (state.entry.tabId != tabId) {
-            context.read<EntryBloc>().add(EntryEvent.onGetEntryCards(tabId));
+            context.read<EntryBloc>().add(
+                  EntryEvent.onGetEntryCards(tabId),
+                );
           }
 
           final entriesInTab = state.entryCards ?? [];
@@ -54,6 +55,7 @@ class Cards extends StatelessWidget {
                       title: entry.title,
                       subtitle: entry.subtitle,
                       tabId: tabId,
+                      entryId: entry.id,
                     );
                   }
                 },
