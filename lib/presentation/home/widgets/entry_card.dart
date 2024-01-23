@@ -1,7 +1,16 @@
 part of '../home_page.dart';
 
 class EntryCard extends StatelessWidget {
-  const EntryCard({super.key});
+  const EntryCard({
+    required this.title,
+    required this.subtitle,
+    this.tabId,
+    super.key,
+  });
+
+  final String title;
+  final String subtitle;
+  final String? tabId;
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +21,8 @@ class EntryCard extends StatelessWidget {
         borderRadius: circularBorder5,
       ),
       color: Colors.blueGrey,
-      child: const SizedBox(
-        height: 60,
+      child: SizedBox(
+        // height: 60,
         width: 200,
         child: Padding(
           padding: allPadding4,
@@ -22,12 +31,13 @@ class EntryCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    Text('Title'),
-                    Text('Subtitle'),
+                    Text(title),
+                    Text(subtitle),
+                    Text(tabId ?? ''),
                   ],
                 ),
               ),
-              Placeholder(
+              const Placeholder(
                 fallbackHeight: 40,
                 fallbackWidth: 40,
               ),

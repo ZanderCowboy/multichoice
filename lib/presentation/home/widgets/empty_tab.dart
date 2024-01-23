@@ -9,49 +9,40 @@ class EmptyTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final tabCount = context.read<TabsRepository>().readTabs().length;
+        final tabCount = state.tabs.length;
 
         return GestureDetector(
           onTap: () {
             CustomDialog.show(
               context: context,
-              title: const Text('New Tab'),
+              title: const Text('Add New Tab'),
+              content: const Text('text form'),
               actions: <Widget>[
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
                 ElevatedButton(
                   onPressed: () {
                     context.read<HomeBloc>().add(
                           HomeEvent.onPressedAddTab(
-                            VerticalTab(
-                              title: 'new $tabCount',
-                              subtitle: 'new $tabCount',
+                            Tabs(
+                              id: 'tabId $tabCount',
+                              title: 'tab title $tabCount',
+                              subtitle: 'tab s.title $tabCount',
                             ),
                           ),
                         );
-                    Navigator.of(context).pop();
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context).pop();
+                    }
                   },
-                  child: const Text('ok'),
+                  child: const Text('Ok'),
                 ),
               ],
             );
           },
-          child: Card(
-            elevation: 5,
-            color: Colors.grey[600],
-            shape: RoundedRectangleBorder(
-              borderRadius: circularBorder12,
-            ),
-            child: Padding(
-              padding: allPadding6,
-              child: SizedBox(
-                width: MediaQuery.sizeOf(context).width / 4,
-                child: const IconButton(
-                  iconSize: 36,
-                  onPressed: null,
-                  icon: Icon(Icons.add_outlined),
-                ),
-              ),
-            ),
-          ),
+          child: const AddTabCard(),
         );
       },
     );
