@@ -1,43 +1,67 @@
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/database_service.dart';
+import 'package:multichoice/domain/entry/models/entry.dart';
+import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:multichoice/get_it_injection.dart';
 
 class TabsList {
-  TabsList();
+  static final TabsList _instance = TabsList._internal();
+  static TabsList get instance => _instance;
 
-  static final Map<VerticalTab, List<EntryCard>> tabsData = {};
+  static final tabsData = coreSl<DatabaseService>().database;
+
+  TabsList._internal(); // Private Constructor
 
   // create
-  void addTab(VerticalTab verticalTab) {
-    tabsData[verticalTab] = [];
+  int addTab(Tabs tab) {
+    tabsData[tab] = [];
+
+    return 0;
   }
 
-  void addEntryToTab(VerticalTab verticalTab, EntryCard entryCard) {
-    tabsData[verticalTab]?.add(entryCard);
+  int addEntryToTab(String tabId, Entry entryCard) {
+    final tabs = tabsData.keys;
+    final Tabs tab = tabs.firstWhere((element) {
+      return element.id == tabId;
+    });
+
+    if (tab.id.isNotEmpty) {
+      tabsData[tab]?.add(entryCard);
+    }
+
+    return 0;
   }
 
   // read
-  List<VerticalTab> readTabs() {
+  List<Tabs> readTabs() {
     return tabsData.keys.toList();
   }
 
-  List<EntryCard>? readEntries(VerticalTab verticalTab) {
-    return tabsData[verticalTab]?.toList();
+  List<Entry>? readEntries(String tabId) {
+    final tab = tabsData.keys.firstWhere((element) => element.id == tabId);
+
+    final entries = tabsData[tab]?.toList();
+    return entries;
   }
 
   // update
 
-  // delete
-  void deleteTab(
-    int tabIndex,
-    VerticalTab verticalTab,
-  ) {
-    tabsData.remove(verticalTab);
+  // delete tab
+  void deleteTab(String tabId) {
+    final tab = tabsData.keys.firstWhere(
+      (element) => element.id == tabId,
+    );
+
+    tabsData.remove(tab);
   }
 
+  // delete entry in tab
   void deleteEntryInTab(
-    VerticalTab verticalTab,
-    int entryIndex,
-    EntryCard entryCard,
+    String tabId,
+    String entryId,
   ) {
-    tabsData[verticalTab]?.removeAt(entryIndex);
+    final tab = tabsData.keys.firstWhere((element) => element.id == tabId);
+    final entry = tabsData[tab]?.firstWhere((element) => element.id == entryId);
+
+    tabsData[tab]?.remove(entry);
   }
 }
