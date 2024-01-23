@@ -24,6 +24,7 @@ dependencies:
       path: plugins/window_size
 
   cupertino_icons: ^1.0.2
+  uuid: ^4.3.3
 
 dev_dependencies:
   build_runner: ^2.4.6

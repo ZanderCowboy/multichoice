@@ -1,9 +1,9 @@
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/domain/tabs/models/tabs.dart';
 
 abstract class ITabsRepository {
-  Future<void> addTab(VerticalTab verticalTab);
+  Future<int> addTab(String title, String subtitle);
 
-  List<VerticalTab> readTabs();
+  List<Tabs> readTabs();
 
-  void deleteTab(int index);
+  Future<int> deleteTab(String tabId);
 }

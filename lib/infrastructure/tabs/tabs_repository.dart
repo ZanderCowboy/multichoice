@@ -1,26 +1,37 @@
 import 'package:injectable/injectable.dart';
 import 'package:multichoice/data/persistance/models/tabs_list.dart';
 import 'package:multichoice/domain/tabs/i_tabs_repository.dart';
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)
 class TabsRepository implements ITabsRepository {
   TabsRepository();
 
-  TabsList tabsList = TabsList();
+  final tabsList = TabsList.instance;
 
   @override
-  Future<void> addTab(VerticalTab verticalTab) async {
-    tabsList.addTab(verticalTab);
+  Future<int> addTab(String title, String subtitle) async {
+    tabsList.addTab(
+      Tabs(
+        uuid: const Uuid().v4(),
+        title: title,
+        subtitle: subtitle,
+      ),
+    );
+
+    return 0;
   }
 
   @override
-  List<VerticalTab> readTabs() {
+  List<Tabs> readTabs() {
     return tabsList.readTabs();
   }
 
   @override
-  void deleteTab(int index) {
-    tabsList.deleteTab(index);
+  Future<int> deleteTab(String tabId) async {
+    tabsList.deleteTab(tabId);
+
+    return 0;
   }
 }

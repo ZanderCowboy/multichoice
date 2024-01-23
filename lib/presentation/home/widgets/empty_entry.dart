@@ -1,22 +1,30 @@
 part of '../home_page.dart';
 
-class EmptyTab extends StatelessWidget {
-  const EmptyTab({
+class EmptyEntry extends StatelessWidget {
+  const EmptyEntry({
+    required this.tabId,
     super.key,
   });
 
+  final String tabId;
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<EntryBloc, EntryState>(
       builder: (context, state) {
-        final tabCount = state.tabs.length;
+        final entryCount = state.entryCards?.length;
 
         return GestureDetector(
           onTap: () {
             CustomDialog.show(
               context: context,
-              title: const Text('Add New Tab'),
-              content: const Text('TODO: Add FormFields to enter data.'),
+              title: const Text('Add New Entry'),
+              content: const SizedBox(
+                height: 20,
+                child: Text(
+                  "TODO: Add FormFields to add data",
+                ),
+              ),
               actions: <Widget>[
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -24,24 +32,23 @@ class EmptyTab extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<HomeBloc>().add(
-                          HomeEvent.onPressedAddTab(
-                            't-title $tabCount',
-                            't-s.title $tabCount',
+                    context.read<EntryBloc>().add(
+                          EntryEvent.onPressedAddEntry(
+                            tabId,
+                            'e-title $entryCount',
+                            'e-s.title $entryCount',
                           ),
                         );
                     if (Navigator.canPop(context)) {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: const Text('Add'),
+                  child: const Text('Ok'),
                 ),
               ],
             );
           },
-          child: AddTabCard(
-            width: MediaQuery.sizeOf(context).width / 4,
-          ),
+          child: const AddEntryCard(),
         );
       },
     );

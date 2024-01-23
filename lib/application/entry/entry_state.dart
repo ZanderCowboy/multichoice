@@ -1,22 +1,23 @@
-part of 'home_bloc.dart';
+part of 'entry_bloc.dart';
 
 @freezed
-class HomeState with _$HomeState {
-  const factory HomeState({
-    required Tabs tab,
-    required List<Tabs> tabs,
+class EntryState with _$EntryState {
+  const factory EntryState({
     required Entry entry,
     required List<Entry>? entryCards,
     required bool isLoading,
     required bool isDeleted,
     required bool isAdded,
     required String? errorMessage,
-  }) = _HomeState;
+  }) = _EntryState;
 
-  factory HomeState.initial() => HomeState(
-        tab: Tabs.empty(),
-        tabs: [],
-        entry: Entry.empty(),
+  factory EntryState.initial() => const EntryState(
+        entry: Entry(
+          uuid: '',
+          tabId: '',
+          title: '',
+          subtitle: '',
+        ),
         entryCards: [],
         isLoading: false,
         isDeleted: false,

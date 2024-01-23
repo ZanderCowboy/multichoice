@@ -1,19 +1,21 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'tabs.freezed.dart';
+part 'entry.freezed.dart';
 
 @freezed
-class Tabs with _$Tabs {
-  const factory Tabs({
+class Entry with _$Entry {
+  const factory Entry({
     required String uuid,
+    required String tabId,
     required String title,
     required String subtitle,
-  }) = _Tabs;
+  }) = _Entry;
 
-  const Tabs._();
+  const Entry._();
 
-  factory Tabs.empty() => const Tabs(
+  factory Entry.empty() => const Entry(
         uuid: '',
+        tabId: '',
         title: '',
         subtitle: '',
       );

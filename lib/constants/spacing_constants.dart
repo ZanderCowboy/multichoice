@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 // Gaps
+const gap4 = Gap(4);
+
 const gap10 = Gap(10);
 
 const gap12 = Gap(12);

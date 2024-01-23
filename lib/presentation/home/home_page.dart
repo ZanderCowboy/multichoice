@@ -3,40 +3,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
-import 'package:multichoice/infrastructure/tabs/tabs_repository.dart';
-import 'package:multichoice/presentation/home/widgets/custom_dialog.dart';
+import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
+import 'package:multichoice/presentation/shared/widgets/add_cards/_base.dart';
+import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
-part 'widgets/main_tab.dart';
+part 'widgets/vertical_tab.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/empty_tab.dart';
+part 'widgets/empty_entry.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (_) => TabsRepository(),
-      child: BlocProvider(
-        create: (_) => coreSl<HomeBloc>(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Multichoice'),
-            centerTitle: true,
-            leading: const Drawer(),
-            backgroundColor: Colors.lightBlue,
-            actions: const <Widget>[
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  Icons.add_outlined,
-                ),
-              ),
-            ],
-          ),
-          body: _HomePage(),
+    return BlocProvider(
+      create: (_) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Multichoice'),
+          centerTitle: true,
+          backgroundColor: Colors.lightBlue,
         ),
+        body: _HomePage(),
       ),
     );
   }
@@ -49,38 +39,9 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {
-        if (state.isLoading) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('loading...'),
-              ),
-            );
-        }
-        if (state.isAdded) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('added...'),
-              ),
-            );
-        }
-        if (state.isDeleted) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('deleted...'),
-              ),
-            );
-        }
-      },
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final tabs = context.read<TabsRepository>().readTabs();
+        final tabs = state.tabs;
 
         return Padding(
           padding: allPadding24,
@@ -100,7 +61,60 @@ class _HomePage extends StatelessWidget {
                         if (index == tabs.length) {
                           return const EmptyTab();
                         } else {
-                          return tabs[index];
+                          //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
+
+                          final tab = tabs[index];
+                          // if (state.tab.id.isEmpty && state.tab.id != tab.id) {
+                          //   context
+                          //       .read<HomeBloc>()
+                          //       .add(HomeEvent.onUpdateTab(tab));
+                          // }
+
+                          return GestureDetector(
+                            onLongPress: () {
+                              CustomDialog.show(
+                                context: context,
+                                title: Text('Delete ${tab.title}'),
+                                content: SizedBox(
+                                  height: 20,
+                                  child: Text(
+                                    "Are you sure you want to delete ${tab.title} and all it's data?",
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      OutlinedButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      gap10,
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          context.read<HomeBloc>().add(
+                                                HomeEvent
+                                                    .onLongPressedDeleteTab(
+                                                  tab.id,
+                                                ),
+                                              );
+                                          if (Navigator.canPop(context)) {
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              );
+                            },
+                            child: VerticalTab(
+                              tabId: tab.id,
+                              tabTitle: tab.title,
+                            ),
+                          );
                         }
                       },
                     ),
