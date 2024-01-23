@@ -1,7 +1,7 @@
 import 'package:multichoice/domain/tabs/models/tabs.dart';
 
 abstract class ITabsRepository {
-  Future<int> addTab(Tabs tab);
+  Future<int> addTab(String title, String subtitle);
 
   List<Tabs> readTabs();
 
