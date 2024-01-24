@@ -42,11 +42,13 @@ class _HomePage extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final tabs = state.tabs;
+        final screenHeight = MediaQuery.sizeOf(context).height;
+        final screenWidth = MediaQuery.sizeOf(context).width;
 
         return Padding(
           padding: allPadding24,
           child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.375,
+            height: screenHeight / 1.375,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -70,49 +72,71 @@ class _HomePage extends StatelessWidget {
                           //       .add(HomeEvent.onUpdateTab(tab));
                           // }
 
-                          return GestureDetector(
-                            onLongPress: () {
-                              CustomDialog.show(
-                                context: context,
-                                title: Text('Delete ${tab.title}'),
-                                content: SizedBox(
-                                  height: 20,
-                                  child: Text(
-                                    "Are you sure you want to delete ${tab.title} and all it's data?",
-                                  ),
+                          return Draggable<Widget>(
+                            feedback: SizedBox(
+                              height: screenHeight / 1.625,
+                              width: screenWidth / 5,
+                              child: MoveTab(
+                                width: double.infinity,
+                                child: Center(child: Text(tab.title)),
+                              ),
+                            ),
+                            //! TODO(@ZanderCowboy): Look into why the size gets smaller
+                            childWhenDragging: SizedBox(
+                              height: screenHeight / 1.375,
+                              width: screenWidth / 4,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: MoveTab(
+                                  width: double.infinity,
+                                  child: Center(child: Text(tab.title)),
                                 ),
-                                actions: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlinedButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                        child: const Text('Cancel'),
-                                      ),
-                                      gap10,
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          context.read<HomeBloc>().add(
-                                                HomeEvent
-                                                    .onLongPressedDeleteTab(
-                                                  tab.id,
-                                                ),
-                                              );
-                                          if (Navigator.canPop(context)) {
-                                            Navigator.of(context).pop();
-                                          }
-                                        },
-                                        child: const Text('Delete'),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              );
-                            },
-                            child: VerticalTab(
-                              tabId: tab.id,
-                              tabTitle: tab.title,
+                              ),
+                            ),
+                            child: GestureDetector(
+                              onLongPress: () {
+                                CustomDialog.show(
+                                  context: context,
+                                  title: Text('Delete ${tab.title}'),
+                                  content: SizedBox(
+                                    height: 20,
+                                    child: Text(
+                                      "Are you sure you want to delete ${tab.title} and all it's data?",
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        OutlinedButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        gap10,
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            context.read<HomeBloc>().add(
+                                                  HomeEvent
+                                                      .onLongPressedDeleteTab(
+                                                    tab.id,
+                                                  ),
+                                                );
+                                            if (Navigator.canPop(context)) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              },
+                              child: VerticalTab(
+                                tabId: tab.id,
+                                tabTitle: tab.title,
+                              ),
                             ),
                           );
                         }
