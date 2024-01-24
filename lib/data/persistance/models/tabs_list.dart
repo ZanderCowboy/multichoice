@@ -44,6 +44,42 @@ class TabsList {
   }
 
   // update
+  List<Tabs> updateTabs(int oldIndex, int newIndex) {
+    final List<Tabs> tempTabs = tabsData.keys.toList();
+    final int tempLength = tempTabs.length;
+    final List<List<Entry>> tempListEntry = tabsData.values.toList();
+
+    final Tabs movedTab = tempTabs.removeAt(oldIndex);
+    final List<Entry> movedListEntry = tempListEntry.removeAt(oldIndex);
+
+    if (oldIndex < newIndex && newIndex != tempLength) {
+      if (newIndex - oldIndex == 2) {
+        tempTabs.insert(newIndex - 1, movedTab);
+        tempListEntry.insert(newIndex - 1, movedListEntry);
+      } else {
+        tempTabs.insert(newIndex - 1, movedTab);
+        tempListEntry.insert(newIndex - 1, movedListEntry);
+      }
+    } else if (oldIndex > newIndex) {
+      tempTabs.insert(newIndex, movedTab);
+      tempListEntry.insert(newIndex, movedListEntry);
+    } else {
+      tempTabs.add(movedTab);
+      tempListEntry.add(movedListEntry);
+    }
+
+    tabsData.clear();
+    if (tempTabs.length == tempListEntry.length) {
+      for (var i = 0; i < tempTabs.length; i++) {
+        final tab = tempTabs[i];
+        final listEntry = tempListEntry[i];
+
+        tabsData[tab] = listEntry;
+      }
+    }
+
+    return tabsData.keys.toList();
+  }
 
   // delete tab
   void deleteTab(String tabId) {
