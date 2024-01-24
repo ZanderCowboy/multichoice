@@ -35,6 +35,35 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             tab: value.tab,
           ));
         },
+        onReorderTabs: (value) {
+          // final tabs = _tabsRepository.readTabs();
+          // final initialLength = tabs.length;
+          // final oldIndex = value.oldIndex;
+          // final newIndex = value.newIndex;
+
+          // final movedTab = tabs.removeAt(oldIndex);
+
+          // if (oldIndex < newIndex && newIndex != initialLength) {
+          //   tabs.insert(newIndex, movedTab);
+          // } else if (oldIndex > newIndex) {
+          //   tabs.insert(newIndex, movedTab);
+          // } else {
+          //   tabs.add(movedTab);
+          // }
+          final tabs =
+              _tabsRepository.updateTabs(value.oldIndex, value.newIndex);
+
+          emit(
+            state.copyWith(
+              tabs: tabs,
+            ),
+          );
+
+          // final oldTab =
+          //     tabs.firstWhere((element) => element.id == value.oldIndexId);
+          // final newTab =
+          //     tabs.firstWhere((element) => element.id == value.newIndexId);
+        },
         onPressedAddTab: (value) async {
           emit(
             state.copyWith(

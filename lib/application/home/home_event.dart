@@ -6,6 +6,11 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.onUpdateTab(Tabs tab) = OnUpdateTab;
 
+  const factory HomeEvent.onReorderTabs(
+    int oldIndex,
+    int newIndex,
+  ) = OnReorderTabs;
+
   const factory HomeEvent.onPressedAddTab(
     String title,
     String subtitle,

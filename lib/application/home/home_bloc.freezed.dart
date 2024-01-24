@@ -20,6 +20,7 @@ mixin _$HomeEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
     required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
     required TResult Function(String title, String subtitle) onPressedAddTab,
     required TResult Function(String tabId) onLongPressedDeleteTab,
   }) =>
@@ -28,6 +29,7 @@ mixin _$HomeEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
     TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
     TResult? Function(String tabId)? onLongPressedDeleteTab,
   }) =>
@@ -36,6 +38,7 @@ mixin _$HomeEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
     TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult Function(String title, String subtitle)? onPressedAddTab,
     TResult Function(String tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -45,6 +48,7 @@ mixin _$HomeEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
     required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -54,6 +58,7 @@ mixin _$HomeEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
     TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) =>
@@ -62,6 +67,7 @@ mixin _$HomeEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
     TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -126,6 +132,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
     required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
     required TResult Function(String title, String subtitle) onPressedAddTab,
     required TResult Function(String tabId) onLongPressedDeleteTab,
   }) {
@@ -137,6 +144,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
     TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
     TResult? Function(String tabId)? onLongPressedDeleteTab,
   }) {
@@ -148,6 +156,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
     TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult Function(String title, String subtitle)? onPressedAddTab,
     TResult Function(String tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -163,6 +172,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
     required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -175,6 +185,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
     TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -186,6 +197,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
     TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -277,6 +289,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
     required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
     required TResult Function(String title, String subtitle) onPressedAddTab,
     required TResult Function(String tabId) onLongPressedDeleteTab,
   }) {
@@ -288,6 +301,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
     TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
     TResult? Function(String tabId)? onLongPressedDeleteTab,
   }) {
@@ -299,6 +313,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
     TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult Function(String title, String subtitle)? onPressedAddTab,
     TResult Function(String tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -314,6 +329,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
     required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -326,6 +342,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
     TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -337,6 +354,7 @@ class _$OnUpdateTabImpl implements OnUpdateTab {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
     TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -354,6 +372,170 @@ abstract class OnUpdateTab implements HomeEvent {
   Tabs get tab;
   @JsonKey(ignore: true)
   _$$OnUpdateTabImplCopyWith<_$OnUpdateTabImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnReorderTabsImplCopyWith<$Res> {
+  factory _$$OnReorderTabsImplCopyWith(
+          _$OnReorderTabsImpl value, $Res Function(_$OnReorderTabsImpl) then) =
+      __$$OnReorderTabsImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int oldIndex, int newIndex});
+}
+
+/// @nodoc
+class __$$OnReorderTabsImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnReorderTabsImpl>
+    implements _$$OnReorderTabsImplCopyWith<$Res> {
+  __$$OnReorderTabsImplCopyWithImpl(
+      _$OnReorderTabsImpl _value, $Res Function(_$OnReorderTabsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? oldIndex = null,
+    Object? newIndex = null,
+  }) {
+    return _then(_$OnReorderTabsImpl(
+      null == oldIndex
+          ? _value.oldIndex
+          : oldIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == newIndex
+          ? _value.newIndex
+          : newIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnReorderTabsImpl implements OnReorderTabs {
+  const _$OnReorderTabsImpl(this.oldIndex, this.newIndex);
+
+  @override
+  final int oldIndex;
+  @override
+  final int newIndex;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onReorderTabs(oldIndex: $oldIndex, newIndex: $newIndex)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnReorderTabsImpl &&
+            (identical(other.oldIndex, oldIndex) ||
+                other.oldIndex == oldIndex) &&
+            (identical(other.newIndex, newIndex) ||
+                other.newIndex == newIndex));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, oldIndex, newIndex);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnReorderTabsImplCopyWith<_$OnReorderTabsImpl> get copyWith =>
+      __$$OnReorderTabsImplCopyWithImpl<_$OnReorderTabsImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
+    required TResult Function(String title, String subtitle) onPressedAddTab,
+    required TResult Function(String tabId) onLongPressedDeleteTab,
+  }) {
+    return onReorderTabs(oldIndex, newIndex);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
+    TResult? Function(String title, String subtitle)? onPressedAddTab,
+    TResult? Function(String tabId)? onLongPressedDeleteTab,
+  }) {
+    return onReorderTabs?.call(oldIndex, newIndex);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
+    TResult Function(String title, String subtitle)? onPressedAddTab,
+    TResult Function(String tabId)? onLongPressedDeleteTab,
+    required TResult orElse(),
+  }) {
+    if (onReorderTabs != null) {
+      return onReorderTabs(oldIndex, newIndex);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+  }) {
+    return onReorderTabs(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+  }) {
+    return onReorderTabs?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    required TResult orElse(),
+  }) {
+    if (onReorderTabs != null) {
+      return onReorderTabs(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnReorderTabs implements HomeEvent {
+  const factory OnReorderTabs(final int oldIndex, final int newIndex) =
+      _$OnReorderTabsImpl;
+
+  int get oldIndex;
+  int get newIndex;
+  @JsonKey(ignore: true)
+  _$$OnReorderTabsImplCopyWith<_$OnReorderTabsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -433,6 +615,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
     required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
     required TResult Function(String title, String subtitle) onPressedAddTab,
     required TResult Function(String tabId) onLongPressedDeleteTab,
   }) {
@@ -444,6 +627,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
     TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
     TResult? Function(String tabId)? onLongPressedDeleteTab,
   }) {
@@ -455,6 +639,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
     TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult Function(String title, String subtitle)? onPressedAddTab,
     TResult Function(String tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -470,6 +655,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
     required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -482,6 +668,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
     TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -493,6 +680,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
     TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -584,6 +772,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
     required TResult Function(Tabs tab) onUpdateTab,
+    required TResult Function(int oldIndex, int newIndex) onReorderTabs,
     required TResult Function(String title, String subtitle) onPressedAddTab,
     required TResult Function(String tabId) onLongPressedDeleteTab,
   }) {
@@ -595,6 +784,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
     TResult? Function(Tabs tab)? onUpdateTab,
+    TResult? Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
     TResult? Function(String tabId)? onLongPressedDeleteTab,
   }) {
@@ -606,6 +796,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
     TResult Function(Tabs tab)? onUpdateTab,
+    TResult Function(int oldIndex, int newIndex)? onReorderTabs,
     TResult Function(String title, String subtitle)? onPressedAddTab,
     TResult Function(String tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -621,6 +812,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
     required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnReorderTabs value) onReorderTabs,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -633,6 +825,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
     TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnReorderTabs value)? onReorderTabs,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -644,6 +837,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
     TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnReorderTabs value)? onReorderTabs,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
