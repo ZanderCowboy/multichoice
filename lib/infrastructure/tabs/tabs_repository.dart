@@ -29,6 +29,11 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
+  List<Tabs> updateTabs(int oldIndex, int newIndex) {
+    return tabsList.updateTabs(oldIndex, newIndex);
+  }
+
+  @override
   Future<int> deleteTab(String tabId) async {
     tabsList.deleteTab(tabId);
 

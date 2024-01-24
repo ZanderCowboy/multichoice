@@ -5,5 +5,7 @@ abstract class ITabsRepository {
 
   List<Tabs> readTabs();
 
+  List<Tabs> updateTabs(int oldIndex, int newIndex);
+
   Future<int> deleteTab(String tabId);
 }
