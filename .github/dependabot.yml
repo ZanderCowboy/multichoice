@@ -7,9 +7,9 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "sunday"
-      time: "16:00"
+      interval: "daily"
+      # day: "sunday"
+      time: "06:00"
     target-branch: "develop"
     labels:
       - "github actions dependencies"
@@ -19,9 +19,9 @@ updates:
   - package-ecosystem: "pub"
     directory: "/pub/helpers"
     schedule:
-      interval: "weekly"
-      day: "sunday"
-      time: "16:00"
+      interval: "daily"
+      # day: "sunday"
+      time: "06:00"
     target-branch: "develop"
     labels:
       - "pub dependencies"
