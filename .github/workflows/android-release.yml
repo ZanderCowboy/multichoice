@@ -86,7 +86,7 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Get dependencies
+      - name: Get pub dependencies
         run: flutter pub get
 
       - name: Start release build
