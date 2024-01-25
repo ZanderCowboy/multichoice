@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+        uses: gittools/actions/gitversion/setup@v0.9.7 # 0.10.2
         with:
           versionSpec: "5.x"
 
@@ -75,11 +75,11 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: "12.x"
+          java-version: "17"
           cache: 'gradle'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.16.0"
+          flutter-version: "3.16.x"
           channel: 'stable'
           cache: true
 
@@ -87,34 +87,33 @@ jobs:
         run: flutter pub get
 
       - name: Start release build
-        run: flutter build appbundle
+        run: flutter build apk
 
 
       - name: Upload Android Release
         uses: actions/upload-artifact@v2
         with:
           name: android-release
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: build/app/outputs/bundle/release/app-release.apk
 
-  # deploy:
-  #   name: Deploy Android Build
-  #   # 1
-  #   needs: build
-  #   runs-on: ubuntu-latest
+  deploy:
+    name: Deploy Android Build
+    needs: build
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #     # 2
-  #   - name: Get Android Build from artifacts
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: android-release
-  #     # 3
-  #   - name: Release Build to internal track
-  #     uses: r0adkll/upload-google-play@v1
-  #     with:
-  #       serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
-  #       packageName: <YOUR_PACKAGE_NAME>
-  #       releaseFiles: app-release.aab
-  #       track: alpha
-  #       status: completed
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Get Android Build from artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: android-release
+
+    - name: Release Build to internal track
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+        packageName: <YOUR_PACKAGE_NAME>
+        releaseFiles: app-release.apk
+        track: alpha
+        status: completed
