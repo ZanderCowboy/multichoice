@@ -1,0 +1,27 @@
+---
+version: 2
+updates:
+  #---------------------------
+  # Github Actions
+  #---------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "16:00"
+    target-branch: "develop"
+    labels:
+      - "github actions dependencies"
+  #---------------------------
+  # Flutter Packages
+  #---------------------------
+  - package-ecosystem: "pub"
+    directory: "/pub/helpers"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "16:00"
+    target-branch: "develop"
+    labels:
+      - "pub dependencies"
