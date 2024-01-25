@@ -42,6 +42,8 @@ jobs:
     name: Deploy Web Build
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Download Web Release
@@ -51,7 +53,7 @@ jobs:
 
     - name: Deploy to gh-pages
       uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/gh-pages'
+      # if: github.ref == 'refs/heads/gh-pages'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
