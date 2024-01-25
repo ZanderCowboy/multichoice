@@ -18,11 +18,11 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: "12.x"
+          java-version: "17"
           cache: gradle
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.0.0"
+          flutter-version: "3.16.x"
           channel: 'stable'
           cache: true
       
