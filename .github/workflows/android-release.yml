@@ -123,3 +123,5 @@ jobs:
         releaseFiles: build/app/outputs/flutter-apk/app-release.apk
         track: alpha
         status: inProgress
+        inAppUpdatePriority: 2
+        userFraction: 0.5
