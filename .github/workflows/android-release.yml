@@ -116,8 +116,10 @@ jobs:
     - name: Release Build to internal track
       uses: r0adkll/upload-google-play@v1
       with:
-        serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
-        packageName: <YOUR_PACKAGE_NAME>
-        releaseFiles: app-release.apk
+        # serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+        serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        packageName: co.za.zanderkotze.multichoice
+        # releaseFiles: app-release.apk
+        releaseFiles: build/app/outputs/flutter-apk/app-release.apk
         track: alpha
-        status: completed
+        status: inProgress

@@ -20,6 +20,7 @@ upload-keystore.*
 
 # Keys and Passwords
 password.txt
+**\multichoice-*.json
 
 # Avoid committing generated Javascript files:
 *.dart.js
