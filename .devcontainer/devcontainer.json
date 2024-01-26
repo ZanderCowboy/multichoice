@@ -1,31 +1,27 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
-    "features": {
-        "ghcr.io/devcontainers/features/git:1": {
-            "version": "latest"
+    "name": "Multichoice",
+    "build": {
+      "dockerfile": "Dockerfile"
+    },
+    "forwardPorts": [8080, 5000],
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.shell.linux": "/bin/bash"
         },
-        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
-        "ghcr.io/jarrodcolburn/features/flutter-sdk:0": {}
-    }
-}
-// {
-//     "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
-//     "features": {
-//         "ghcr.io/devcontainers/features/git:1": {
-//             "options": {
-//                 "ppa": true,
-//                 "version": "latest"
-//             }
-//         },
-//         "npm.pkg.github.com/zandercowboy/features/flutter-sdk": {
-//             // "options": {
-//             //     "release": "stable"
-//             // }
-//         }
-//         // "github.com/ZanderCowboy/features/tree/main/src/flutter-sdk:0": {
-//         //     "options": {
-//         //         "release": "stable"
-//         //     }
-//         // }
-//     }
-// }
+        "extensions": [
+          "dart-code.flutter",
+          "dart-code.dart",
+          "eamodio.gitlens",
+          "nash.awesome-flutter-snippets",
+          "aaron-bond.better-comments",
+          "felixangelov.bloc",
+          "circlecodesolution.ccs-flutter-color",
+          "alexisvt.flutter-snippets",
+          "vscode-icons-team.vscode-icons",
+          "redhat.vscode-yaml"
+        ]
+      }
+    },
+    "postCreateCommand": "flutter pub get"
+  }
