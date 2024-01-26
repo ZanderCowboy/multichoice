@@ -8,6 +8,7 @@
       "vscode": {
         "settings": {
           "terminal.integrated.shell.linux": "/bin/bash"
+          // "terminal.integrated.shell.linux": "/bin/zsh"
         },
         "extensions": [
           "dart-code.flutter",
@@ -22,6 +23,17 @@
           "redhat.vscode-yaml"
         ]
       }
+    },
+    "features": {
+      "ghcr.io/rocker-org/devcontainer-features/r-history:0": {}
+      // "ghcr.io/devcontainers-contrib/features/actions-runner:1": {
+      //   "options": {
+      //     "version": "latest"
+      //   }
+      // },
+      // "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+      // "ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
+      // "ghcr.io/jarrodcolburn/features/android-sdk:0": {}
     },
     "postCreateCommand": "flutter pub get"
   }
