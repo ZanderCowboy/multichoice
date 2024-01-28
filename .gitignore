@@ -16,8 +16,7 @@ doc/api/
 
 # Keys and Secrets
 password.txt
-multichoice-412309-*.json
-devtools_options.yaml
+**/multichoice-*.json
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -42,6 +41,7 @@ devtools_options.yaml
 .history
 .svn/
 migrate_working_dir/
+devtools_options.yaml
 
 # IntelliJ related
 *.iml
