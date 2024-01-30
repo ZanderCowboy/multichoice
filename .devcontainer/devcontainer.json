@@ -1,10 +1,7 @@
 {
   "name": "Multichoice",
   "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "name": "multichoice_image"
-    }
+    "dockerfile": "Dockerfile"
   },
   "forwardPorts": [
     8080,
@@ -14,9 +11,10 @@
     "vscode": {
       "settings": {
         "terminal.integrated.shellIntegration.enabled": false,
-        "terminal.integrated.shell.linux": "/bin/bash",
+        "terminal.integrated.shell.linux": "/bin/zsh",
         "terminal.integrated.shellIntegration.history": 100,
-        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.defaultProfile.windows": "PowerShell",
+        "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.cursorBlinking": true,
         "remote.SSH.defaultKey": "~/.ssh/personal_github"
       },
@@ -45,13 +43,5 @@
     // "ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
     // "ghcr.io/jarrodcolburn/features/android-sdk:0": {}
   },
-  // "mounts": [
-  //   {
-  //     "source": "/Users/zanderk/.ssh/personal_github",
-  //     "target": "/home/developer/.ssh/personal_github",
-  //     "type": "volume"
-  //   }
-  // ],
-  // "postCreateCommand": "flutter pub get"
   "postCreateCommand": "/usr/local/bin/post_create_command.sh"
 }
