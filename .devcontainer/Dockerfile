@@ -13,6 +13,7 @@ RUN chown -R developer:developer /app
 RUN mkdir -p /home/developer/.ssh
 COPY .ssh /home/developer/.ssh
 RUN chown -R developer:developer /home/developer/.ssh
+RUN chmod 600 /home/developer/.ssh/personal_github
 
 RUN apt-get update
 RUN apt-get install -y \
@@ -37,21 +38,24 @@ RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN git clone -b 3.16.9 https://github.com/flutter/flutter.git /usr/local/flutter
+ENV PATH="/usr/local/flutter/bin:${PATH}"
+RUN flutter channel stable
 RUN chown -R developer:developer /usr/local/flutter
+
 RUN apt-get update 
 RUN apt-get clean
 
 
 USER developer
 # Set Flutter bin directory to the user's PATH
-ENV PATH="/usr/local/flutter/bin:${PATH}"
+
 
 RUN flutter doctor -v
 RUN flutter config --no-analytics
 RUN flutter precache
 
 RUN chown -R developer:developer /usr/local/flutter/bin/cache
-RUN flutter channel stable
+# RUN flutter channel stable
 
 USER developer
 
