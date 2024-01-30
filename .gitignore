@@ -17,6 +17,7 @@ doc/api/
 # Keys and Secrets
 password.txt
 **/multichoice-*.json
+**/**/.ssh
 
 # Avoid committing generated Javascript files:
 *.dart.js

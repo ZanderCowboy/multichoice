@@ -1,39 +1,57 @@
 {
-    "name": "Multichoice",
-    "build": {
-      "dockerfile": "Dockerfile"
-    },
-    "forwardPorts": [8080, 5000],
-    "customizations": {
-      "vscode": {
-        "settings": {
-          "terminal.integrated.shell.linux": "/bin/bash"
-          // "terminal.integrated.shell.linux": "/bin/zsh"
-        },
-        "extensions": [
-          "dart-code.flutter",
-          "dart-code.dart",
-          "eamodio.gitlens",
-          "nash.awesome-flutter-snippets",
-          "aaron-bond.better-comments",
-          "felixangelov.bloc",
-          "circlecodesolution.ccs-flutter-color",
-          "alexisvt.flutter-snippets",
-          "vscode-icons-team.vscode-icons",
-          "redhat.vscode-yaml"
-        ]
-      }
-    },
-    "features": {
-      "ghcr.io/rocker-org/devcontainer-features/r-history:0": {}
-      // "ghcr.io/devcontainers-contrib/features/actions-runner:1": {
-      //   "options": {
-      //     "version": "latest"
-      //   }
-      // },
-      // "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
-      // "ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
-      // "ghcr.io/jarrodcolburn/features/android-sdk:0": {}
-    },
-    "postCreateCommand": "flutter pub get"
-  }
+  "name": "Multichoice",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "name": "multichoice_image"
+    }
+  },
+  "forwardPorts": [
+    8080,
+    5000
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shellIntegration.enabled": false,
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "terminal.integrated.shellIntegration.history": 100,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.cursorBlinking": true,
+        "remote.SSH.defaultKey": "~/.ssh/personal_github"
+      },
+      "extensions": [
+        "dart-code.flutter",
+        "dart-code.dart",
+        "eamodio.gitlens",
+        "nash.awesome-flutter-snippets",
+        "aaron-bond.better-comments",
+        "felixangelov.bloc",
+        "circlecodesolution.ccs-flutter-color",
+        "alexisvt.flutter-snippets",
+        "vscode-icons-team.vscode-icons",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
+    // "ghcr.io/devcontainers-contrib/features/actions-runner:1": {
+    //   "options": {
+    //     "version": "latest"
+    //   }
+    // },
+    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+    // "ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
+    // "ghcr.io/jarrodcolburn/features/android-sdk:0": {}
+  },
+  // "mounts": [
+  //   {
+  //     "source": "/Users/zanderk/.ssh/personal_github",
+  //     "target": "/home/developer/.ssh/personal_github",
+  //     "type": "volume"
+  //   }
+  // ],
+  // "postCreateCommand": "flutter pub get"
+  "postCreateCommand": "/usr/local/bin/post_create_command.sh"
+}
