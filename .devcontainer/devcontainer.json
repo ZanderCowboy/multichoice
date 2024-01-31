@@ -1,5 +1,6 @@
 {
   "name": "Multichoice",
+  // "image": "multichoice:androidsdk",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -28,7 +29,8 @@
         "circlecodesolution.ccs-flutter-color",
         "alexisvt.flutter-snippets",
         "vscode-icons-team.vscode-icons",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "bierner.markdown-checkbox"
       ]
     }
   },
