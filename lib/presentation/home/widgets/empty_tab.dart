@@ -13,7 +13,7 @@ class EmptyTab extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            CustomDialog.show(
+            CustomDialog<Widget>.show(
               context: context,
               title: const Text('Add New Tab'),
               content: const Text('TODO: Add FormFields to enter data.'),
