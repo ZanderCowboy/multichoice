@@ -4,8 +4,8 @@ class CustomDialog<T> {
   CustomDialog.show({
     required this.context,
     required this.title,
-    this.content,
     required this.actions,
+    this.content,
   }) {
     showDialog<T>(
       context: context,

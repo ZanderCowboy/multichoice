@@ -1,18 +1,17 @@
 # multichoice
 
-A simple flutter app to keep track of movies and series that has been watched, currently being watched, and on the agenda to watch.
+[![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 
-A new Flutter project.
+## Setup
 
-## Getting Started
+If permissions denied while running `flutter pub get` run the following
 
-This project is a starting point for a Flutter application.
+```sh
+sudo chown -R ${whoami}:${whoami} /flutter
+```
 
-A few resources to get you started if this is your first Flutter project:
+OR
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+sudo chown -R node:node /flutter
+```
