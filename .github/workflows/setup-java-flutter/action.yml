@@ -1,4 +1,5 @@
 name: Common Setup
+description: "Sets up Java and Flutter for reusability"
 runs:
   using: "composite"
   steps:
@@ -20,6 +21,7 @@ runs:
         cache: true
 
     - name: Get dependencies
+      shell: bash
       run: flutter pub get
 
     # Add any other common setup steps here
