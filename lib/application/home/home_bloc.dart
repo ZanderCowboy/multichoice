@@ -25,15 +25,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
           final tabs = _tabsRepository.readTabs();
 
-          emit(state.copyWith(
-            tabs: tabs,
-            isLoading: false,
-          ));
+          emit(
+            state.copyWith(
+              tabs: tabs,
+              isLoading: false,
+            ),
+          );
         },
         onUpdateTab: (value) {
-          emit(state.copyWith(
-            tab: value.tab,
-          ));
+          emit(
+            state.copyWith(
+              tab: value.tab,
+            ),
+          );
         },
         onPressedAddTab: (value) async {
           emit(
@@ -42,11 +46,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
 
-          emit(state.copyWith(
-            // tab: value.tab,
-            isLoading: false,
-            isAdded: true,
-          ));
+          emit(
+            state.copyWith(
+              // tab: value.tab,
+              isLoading: false,
+              isAdded: true,
+            ),
+          );
 
           await _tabsRepository.addTab(value.title, value.subtitle);
 

@@ -17,7 +17,7 @@ class Cards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
+    final scrollController = ScrollController();
 
     return BlocProvider(
       create: (_) => coreSl<EntryBloc>()
@@ -45,7 +45,6 @@ class Cards extends StatelessWidget {
               behavior: CustomScrollBehaviour(),
               child: ListView.builder(
                 controller: scrollController,
-                scrollDirection: Axis.vertical,
                 itemCount: entriesInTab.length + 1,
                 itemBuilder: (context, index) {
                   if (index == entriesInTab.length) {
@@ -55,7 +54,7 @@ class Cards extends StatelessWidget {
 
                     return GestureDetector(
                       onLongPress: () {
-                        CustomDialog.show(
+                        CustomDialog<Widget>.show(
                           context: context,
                           title: Text('Delete ${entry.title}'),
                           content: SizedBox(
@@ -76,10 +75,11 @@ class Cards extends StatelessWidget {
                                 ElevatedButton(
                                   onPressed: () {
                                     context.read<EntryBloc>().add(
-                                            EntryEvent.onLongPressedDeleteEntry(
-                                          tabId,
-                                          entry.id,
-                                        ));
+                                          EntryEvent.onLongPressedDeleteEntry(
+                                            tabId,
+                                            entry.id,
+                                          ),
+                                        );
                                     if (Navigator.canPop(context)) {
                                       Navigator.of(context).pop();
                                     }
@@ -87,7 +87,7 @@ class Cards extends StatelessWidget {
                                   child: const Text('Delete'),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         );
                       },

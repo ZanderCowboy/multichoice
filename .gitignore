@@ -11,16 +11,17 @@ pubspec.lock
 # If you don't generate documentation locally you can remove this line.
 doc/api/
 
-# Keys
+# Keys and Secrets
 password.txt
 upload-keystore.*
 
 # dotenv environment variables file
 .env*
 
-# Keys and Passwords
+# Keys and Secrets
 password.txt
-**\multichoice-*.json
+**/multichoice-*.json
+**/**/.ssh
 
 # Avoid committing generated Javascript files:
 *.dart.js
