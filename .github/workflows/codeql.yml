@@ -59,12 +59,13 @@ jobs:
         with:
           languages: dart
           category: "/language:${{matrix.language}}"
+          output: ~/results
 
       - name: Upload results as artifact
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: "./results/"
+          path: ~/results
 
   upload:
     needs: analyze
@@ -77,14 +78,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: codeql-results
-          # path: codeql-results
+          path: ~/codeql-results
+
           # path: "/home/runner/work/multichoice/results/javascript.sarif"
 
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
           # sarif_file: /home/runner/work/multichoice/results/javascript.sarif
-          sarif_file: $GITHUB_WORKSPACE
+          sarif_file: ~/codeql-results/javascript.sarif
           # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
 
