@@ -11,22 +11,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: gradle
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
 
-      - name: Get dependencies
-        shell: bash
-        run: flutter pub get
+      # - name: Set up Java
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: "zulu"
+      #     java-version: "17"
+      #     cache: gradle
 
-      # Add any other common setup steps here
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: "3.16.x"
+      #     channel: "stable"
+      #     cache: true
+
+      # - name: Get dependencies
+      #   shell: bash
+      #   run: flutter pub get
+
+      # # Add any other common setup steps here

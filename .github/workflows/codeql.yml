@@ -48,10 +48,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
       - name: Setup Flutter and Java
-        uses: setup-flutter
+        uses: ./.github/workflows/setup-java-flutter
+      # - name: Setup Flutter and Java
+      #   uses: setup-flutter
 
       # - name: Get dependencies
       #   run: flutter pub get
