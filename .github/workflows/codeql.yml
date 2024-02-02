@@ -50,11 +50,6 @@ jobs:
 
       - name: Setup Flutter and Java
         uses: ./.github/workflows/setup-java-flutter
-      # - name: Setup Flutter and Java
-      #   uses: setup-flutter
-
-      # - name: Get dependencies
-      #   run: flutter pub get
 
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --release
@@ -104,7 +99,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: /home/runner/work/multichoice/results/javascript.sarif
-          category: javascript-analysis
+          category: javascript-upload
 
       - name: Debug information
         run: |
