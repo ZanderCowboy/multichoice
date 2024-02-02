@@ -93,7 +93,14 @@ jobs:
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ./codeql-results.sarif
+          sarif_file: ${{ github.workspace }}/codeql-results.sarif
+
+      - name: Debug information
+        run: |
+          ls -R ${{ github.workspace }}
+          echo "Contents of ./codeql-results.sarif:"
+          cat ${{ github.workspace }}/codeql-results.sarif
+
 # .github/workflows/codeql-analysis.yml
 
 # name: CodeQL Analysis
