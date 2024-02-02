@@ -11,7 +11,7 @@ runs:
 
     - name: Start release build
       shell: bash
-      run: flutter build appbundle
+      run: flutter build appbundle --release
 
     - name: Upload Android Release
       uses: actions/upload-artifact@v4

@@ -17,10 +17,13 @@ jobs:
   setup:
     uses: ./.github/workflows/setup.yml
 
+  build:
+    uses: ./.github/workflows/build.yml
+
   analyze:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    needs: setup
+    needs: [setup, build]
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       security-events: write
