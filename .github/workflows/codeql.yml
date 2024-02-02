@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Flutter and Java
-        uses: ./.github/workflows/setup/setup
+        uses: ./.github/workflows/setup-java-flutter
 
       # - name: Get dependencies
       #   run: flutter pub get
