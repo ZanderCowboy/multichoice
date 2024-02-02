@@ -45,23 +45,11 @@ jobs:
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --release
 
-      # - name: Start Android Release Build
-      #   run: flutter build appbundle --release
-
-      # - name: Start Linux Release Build
-      #   run: flutter build linux --release
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-
-          # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
-
-      # - run: |
-      #     echo ${{ github.workspace }}
-      #     echo $GITHUB_WORKSPACE
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
@@ -78,7 +66,7 @@ jobs:
 
   upload:
     needs: analyze
-    runs-on: ubuntu-latest
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

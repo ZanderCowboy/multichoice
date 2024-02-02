@@ -33,5 +33,3 @@ runs:
     - name: Get dependencies
       shell: bash
       run: flutter pub get
-
-    # Add any other common setup steps here
