@@ -54,18 +54,22 @@ jobs:
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
 
+      - run: |
+          echo ${{ github.workspace }}
+          echo $GITHUB_WORKSPACE
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           languages: dart
           category: "/language:${{matrix.language}}"
-          output: ~/results
+          output: ${{ github.workspace }}/results
 
       - name: Upload results as artifact
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: ~/results
+          path: ${{ github.workspace }}/results
 
   upload:
     needs: analyze
@@ -78,7 +82,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: codeql-results
-          path: ~/codeql-results
+          path: ${{ github.workspace }}/results
 
           # path: "/home/runner/work/multichoice/results/javascript.sarif"
 
@@ -86,7 +90,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           # sarif_file: /home/runner/work/multichoice/results/javascript.sarif
-          sarif_file: ~/codeql-results/javascript.sarif
+          sarif_file: ${{ github.workspace }}/results/codeql-results/javascript.sarif
           # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
 
