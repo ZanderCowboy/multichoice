@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: codeql-results
-          path: "/home/runner/work/multichoice/results/${{ matrix.language }}.sarif"
+          path: "/home/runner/work/multichoice/results/javascript.sarif"
 
   upload:
     needs: analyze
@@ -75,12 +75,13 @@ jobs:
         with:
           name: codeql-results
           path: codeql-results
+          # path: "/home/runner/work/multichoice/results/javascript.sarif"
 
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          # sarif_file: /home/runner/work/multichoice/results/javascript.sarif
-          sarif_file: ./codeql-results/javascript.sarif
+          sarif_file: /home/runner/work/multichoice/results/javascript.sarif
+          # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
 
       - name: Debug information
