@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
-        language: ["javascript-typescript"]
+        language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
+        # language: ["javascript-typescript"]
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
         # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
         # Use only 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
@@ -44,19 +44,23 @@ jobs:
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --release
 
-      # Initializes the CodeQL tools for scanning.
+      # - name: Start Android Release Build
+      #   run: flutter build appbundle --release
+
+      - name: Start Linux Release Build
+        run: flutter build linux --release
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          # languages: javascript-typescript
 
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
 
-      - run: |
-          echo ${{ github.workspace }}
-          echo $GITHUB_WORKSPACE
+      # - run: |
+      #     echo ${{ github.workspace }}
+      #     echo $GITHUB_WORKSPACE
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
@@ -87,13 +91,5 @@ jobs:
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          # sarif_file: /home/runner/work/multichoice/results/javascript.sarif
           sarif_file: ${{ github.workspace }}/results/codeql-results/javascript.sarif
-          # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
-
-      # - name: Debug information
-      #   run: |
-      #     ls -R ~/
-      #     echo "Contents of results.sarif:"
-      #     cat r/home/runner/work/multichoice/results/javascript.sarif #     touch ~/codeql-results.sarif
