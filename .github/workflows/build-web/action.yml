@@ -1,0 +1,20 @@
+name: Build Web
+description: "Builds a web version of the app"
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter and Java
+      uses: ./.github/workflows/setup-java-flutter
+
+    - name: Start Web Release Build
+      shell: bash
+      run: flutter build web --base-href='/multichoice/' --release
+
+    - name: Upload Web Build Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: web-release
+        path: ./build/web

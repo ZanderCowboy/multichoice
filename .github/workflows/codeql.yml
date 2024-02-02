@@ -2,20 +2,25 @@ name: "CodeQL"
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - "main"
   pull_request:
-    branches: ["main", "develop"]
+    branches:
+      - "main"
+      - "develop"
   schedule:
     - cron: "33 10 * * 6"
 
+  workflow_dispatch:
+
 jobs:
-  setup-flutter:
+  setup:
     uses: ./.github/workflows/setup.yml
 
   analyze:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    needs: setup-flutter
+    needs: setup
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       security-events: write
@@ -39,11 +44,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter and Java
-        uses: ./.github/workflows/setup-java-flutter
+      - name: Build Web
+        uses: ./.github/workflows/build-web
 
-      - name: Start Web Release Build
-        run: flutter build web --base-href='/multichoice/' --release
+      - name: Download Web Release
+        uses: actions/download-artifact@v4
+        with:
+          name: web-release
+      # - name: Setup Flutter and Java
+      #   uses: ./.github/workflows/setup-java-flutter
+
+      # - name: Start Web Release Build
+      #   run: flutter build web --base-href='/multichoice/' --release
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
