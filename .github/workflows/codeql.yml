@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: "../results"
+          path: "./results/"
 
   upload:
     needs: analyze
