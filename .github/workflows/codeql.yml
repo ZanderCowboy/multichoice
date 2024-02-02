@@ -7,12 +7,15 @@ on:
     branches: ["main", "develop"]
   schedule:
     - cron: "33 10 * * 6"
-  workflow_run:
-    workflows: ["Common Setup"]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Common Setup"]
+  #   types:
+  #     - completed
 
 jobs:
+  call_workflow:
+    uses: ./.github/workflows/setup-java-flutter/setup.yml
+
   analyze:
     name: Analyze
     # Runner size impacts CodeQL analysis time. To learn more, please see:
@@ -43,8 +46,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # - name: Setup Flutter and Java
+      #   uses: ./.github/workflows/setup-java-flutter
       - name: Setup Flutter and Java
-        uses: ./.github/workflows/setup-java-flutter
+        uses: ./.github/workflows/setup-java-flutter/setup.yml
 
       # - name: Get dependencies
       #   run: flutter pub get
