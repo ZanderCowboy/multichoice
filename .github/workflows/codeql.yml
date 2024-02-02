@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: codeql-results
-          path: "/home/runner/work/multichoice/results/javascript.sarif"
+          path: javascript.sarif
 
   upload:
     needs: analyze
@@ -77,8 +77,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: codeql-results
-          path: codeql-results
-          # path: "/home/runner/work/multichoice/results/javascript.sarif"
+          # path: codeql-results
+          path: "/home/runner/work/multichoice/results/javascript.sarif"
 
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
