@@ -93,54 +93,19 @@ jobs:
           category: "/language:${{matrix.language}}"
           # query:
 
-      - name: Create SARIF File
-        run: |
-          # Create an empty SARIF file if it doesn't exist
-          # touch codeql-results.sarif
-          touch ${{ github.workspace }}/codeql-results.sarif
+      # - name: Create SARIF File
+      #   run: |
+      #     # Create an empty SARIF file if it doesn't exist
+      #     # touch codeql-results.sarif
+      #     touch ~/codeql-results.sarif
 
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ github.workspace }}/codeql-results.sarif
+          sarif_file: ~/codeql-results.sarif
 
       - name: Debug information
         run: |
-          ls -R ${{ github.workspace }}
+          ls -R ~/
           echo "Contents of ./codeql-results.sarif:"
-          cat ${{ github.workspace }}/codeql-results.sarif
-
-# .github/workflows/codeql-analysis.yml
-
-# name: CodeQL Analysis
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-
-#       - name: Set up Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: stable
-
-#       - name: Build Flutter app
-#         run: flutter build linux --release
-
-#       - name: Initialize CodeQL
-#         uses: github/codeql-action/init@v1
-
-# - name: Analyze code
-#   uses: github/codeql-action/analyze@v1
-#   with:
-#     languages: dart
-#     query: path/to/your/codeql-queries
-
+          cat ~/codeql-results.sarif

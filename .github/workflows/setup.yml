@@ -5,7 +5,7 @@ on:
 
 jobs:
   setup:
-    name: Set up Java and Flutter
+    # name: Set up Java and Flutter
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
