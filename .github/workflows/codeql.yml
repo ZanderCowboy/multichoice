@@ -32,8 +32,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
-        language: ["javascript-typescript"] # TODO(ZK): Add the rest after separate build workflows are created
+        language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
+        # language: ["javascript-typescript"] # TODO(ZK): Add the rest after separate build workflows are created
 
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
         # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
@@ -47,7 +47,7 @@ jobs:
       - name: Build Web
         uses: ./.github/workflows/build-web
 
-      - name: Download Web Release
+      - name: Get Web Build from Artifacts
         uses: actions/download-artifact@v4
         with:
           name: web-release
@@ -56,6 +56,14 @@ jobs:
 
       # - name: Start Web Release Build
       #   run: flutter build web --base-href='/multichoice/' --release
+
+      - name: Build Android
+        uses: ./.github/workflows/build-android
+
+      - name: Get Android Build from Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3

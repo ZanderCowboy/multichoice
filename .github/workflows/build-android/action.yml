@@ -1,0 +1,20 @@
+name: Build Android
+description: "Builds an android version of the app"
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter and Java
+      uses: ./.github/workflows/setup-java-flutter
+
+    - name: Start release build
+      shell: bash
+      run: flutter build appbundle
+
+    - name: Upload Android Release
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-release
+        path: build/app/outputs/bundle/release/app-release.aab
