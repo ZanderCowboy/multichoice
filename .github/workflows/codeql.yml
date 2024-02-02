@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: codeql-results
-          path: ${{ steps.codeql-analysis.outputs.results-path }}
+          path: "/home/runner/work/multichoice/results/${{ matrix.language }}.sarif"
 
   upload:
     needs: analyze
