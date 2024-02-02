@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17"
@@ -91,9 +91,9 @@ jobs:
           # query:
 
       - name: Upload results
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: codeql-results.sarif
+          sarif_file: ./codeql-results.sarif
 # .github/workflows/codeql-analysis.yml
 
 # name: CodeQL Analysis
