@@ -7,6 +7,10 @@ on:
     branches: ["main", "develop"]
   schedule:
     - cron: "33 10 * * 6"
+  workflow_run:
+    workflows: ["Common Setup"]
+    types:
+      - completed
 
 jobs:
   analyze:
