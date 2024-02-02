@@ -38,20 +38,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: gradle
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
 
-      - name: Get dependencies
-        run: flutter pub get
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup/setup.yml
+
+      # - name: Get dependencies
+      #   run: flutter pub get
 
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --release
@@ -89,6 +81,12 @@ jobs:
           languages: dart
           category: "/language:${{matrix.language}}"
           # query:
+
+      - name: Create SARIF File
+        run: |
+          # Create an empty SARIF file if it doesn't exist
+          # touch codeql-results.sarif
+          touch ${{ github.workspace }}/codeql-results.sarif
 
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
