@@ -98,11 +98,10 @@ jobs:
       #     # Create an empty SARIF file if it doesn't exist
       #     # touch codeql-results.sarif
       #     touch ~/codeql-results.sarif
-
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ~/codeql-results.sarif
+        # with:
+        #   sarif_file: ~/codeql-results.sarif
 
       - name: Debug information
         run: |
