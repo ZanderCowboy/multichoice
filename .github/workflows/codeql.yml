@@ -14,7 +14,7 @@ on:
 
 jobs:
   call_workflow:
-    uses: ./.github/workflows/setup-java-flutter/setup.yml
+    uses: ./.github/workflows/setup.yml
 
   analyze:
     name: Analyze
@@ -36,7 +36,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
+        # language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
+        language: ["javascript-typescript"]
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
         # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
         # Use only 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
@@ -49,7 +50,7 @@ jobs:
       # - name: Setup Flutter and Java
       #   uses: ./.github/workflows/setup-java-flutter
       - name: Setup Flutter and Java
-        uses: ./.github/workflows/setup-java-flutter/setup.yml
+        uses: ./.github/workflows/setup.yml
 
       # - name: Get dependencies
       #   run: flutter pub get
