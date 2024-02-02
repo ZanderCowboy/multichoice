@@ -92,8 +92,8 @@ jobs:
           # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
 
-      - name: Debug information
-        run: |
-          ls -R ~/
-          echo "Contents of results.sarif:"
-          cat r/home/runner/work/multichoice/results/javascript.sarif #     touch ~/codeql-results.sarif
+      # - name: Debug information
+      #   run: |
+      #     ls -R ~/
+      #     echo "Contents of results.sarif:"
+      #     cat r/home/runner/work/multichoice/results/javascript.sarif #     touch ~/codeql-results.sarif
