@@ -84,7 +84,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           # sarif_file: /home/runner/work/multichoice/results/javascript.sarif
-          sarif_file: ${{ GITHUB_WORKSPACE }}
+          sarif_file: $GITHUB_WORKSPACE
           # sarif_file: ./codeql-results/javascript.sarif
           category: "/language:${{matrix.language}}"
 
