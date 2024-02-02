@@ -13,7 +13,7 @@ on:
   #     - completed
 
 jobs:
-  call_workflow:
+  setup-flutter:
     uses: ./.github/workflows/setup.yml
 
   analyze:
@@ -24,7 +24,7 @@ jobs:
     #   - https://gh.io/using-larger-runners
     # Consider using larger runners for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    needs: call_workflow
+    needs: setup-flutter
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       # required for all workflows
@@ -50,8 +50,8 @@ jobs:
 
       # - name: Setup Flutter and Java
       #   uses: ./.github/workflows/setup-java-flutter
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup.yml
+      - name: Setup Flutter and Java
+        uses: setup-flutter
 
       # - name: Get dependencies
       #   run: flutter pub get
