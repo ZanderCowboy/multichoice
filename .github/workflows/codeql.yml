@@ -103,11 +103,11 @@ jobs:
       - name: Upload results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: results.sarif
+          sarif_file: /home/runner/work/multichoice/results/javascript.sarif
           category: javascript-analysis
 
       - name: Debug information
         run: |
           ls -R ~/
           echo "Contents of results.sarif:"
-          cat results.sarif
+          cat r/home/runner/work/multichoice/results/javascript.sarif
