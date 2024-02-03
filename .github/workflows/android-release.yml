@@ -81,19 +81,19 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
-      - name: Build Android
-        uses: ./.github/workflows/build-android
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
+      # - name: Build Android
+      #   uses: ./.github/workflows/build-android
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter
 
-      # - name: Start release build
-      #   run: flutter build appbundle
+      - name: Start release build
+        run: flutter build appbundle
 
-      # - name: Upload Android Release
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: android-release
-      #     path: build/app/outputs/bundle/release/app-release.aab
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.aab
 
   deploy:
     name: Deploy Android Build

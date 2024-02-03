@@ -13,16 +13,6 @@ jobs:
   setup:
     uses: ./.github/workflows/setup.yml
 
-  build:
-    name: Create Web Build
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build Web
-        uses: ./.github/workflows/build-web
   # build:
   #   name: Create Web Build
   #   needs: setup
@@ -31,17 +21,27 @@ jobs:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
 
-  #     - name: Setup Flutter and Java
-  #       uses: ./.github/workflows/setup-java-flutter
+  #     - name: Build Web
+  #       uses: ./.github/workflows/build-web
+  build:
+    name: Create Web Build
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Start Web Release Build
-  #       run: flutter build web --base-href='/multichoice/' --release
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter
 
-  #     - name: Upload Web Build Files
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: web-release
-  #         path: ./build/web
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --release
+
+      - name: Upload Web Build Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: ./build/web
 
   deploy:
     name: Deploy Web Build
