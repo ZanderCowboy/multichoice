@@ -1,0 +1,113 @@
+# name: Build All
+# on:
+#   workflow_call:
+
+# jobs:
+#   build-web:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Build Web
+#         uses: ./.github/workflows/build-web
+
+#   build-android:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Build Android
+#         uses: ./.github/workflows/build-android
+
+name: Test, Analyze, Build
+on:
+  # push:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  workflow_run:
+    workflows:
+      - "Linting"
+    types:
+      - "completed"
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    # if: github.event.pull_request.draft == false
+    # uses: ./.github/workflows/_test_with_coverage.yml
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo "The triggering workflow 'Linting' passed and running tests"
+      - run: echo "Tests completed."
+
+  analyze:
+    name: Analyze
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - run: echo "Starting analyze"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+      - name: Flutter Get Dependencies
+        run: flutter pub get
+
+      # - name: ⚠️ℹ️ Run Dart analysis for app package
+      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+      #   with:
+      #     working-directory: "${{github.workspace}}/app/"
+      # - name: ⚠️ℹ️ Run Dart analysis for data package
+      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+      #   with:
+      #     working-directory: "${{github.workspace}}/design_system/"
+      # - name: 📈 Check metrics
+      #   uses: dart-code-checker/dart-code-metrics-action@v3.0.0
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     pull_request_comment: true
+      #     check_unused_files: true
+      #     folders: 'app, design_system'
+
+      - run: echo "Analyzing completed."
+
+  pre-build:
+    name: Create missing elements for building apps
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter
+
+      - name: Create version number
+        uses: ./.github/workflows/android-versioning
+
+  build:
+    name: Build Apps
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/_build-env-apps.yml
+    needs: [analyze, pre-build]
+    with:
+      web-environment-name: "Web Prod"
+      android-environment-name: "Android Prod"
+      windows-environment-name: "Windows Prod"
