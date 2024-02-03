@@ -32,10 +32,8 @@ on:
   #     - "main"
   #     - "develop"
   workflow_run:
-    workflows:
-      - "linting_workflow.yml"
-    types:
-      - "completed"
+    workflows: [Linting]
+    types: [completed]
 
   workflow_dispatch:
 

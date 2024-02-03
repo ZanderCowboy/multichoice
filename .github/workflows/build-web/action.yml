@@ -13,7 +13,13 @@ runs:
       shell: bash
       run: flutter build web --base-href='/multichoice/' --release
 
+    - name: Check if Artifact Already Exists
+      id: check-artifact
+      shell: bash
+      run: echo "::set-output name=artifact_exists::$(if [ -e path/to/your/artifact.zip ]; then echo true; else echo false; fi)"
+
     - name: Upload Web Build Files
+      if: steps.check-artifact.outputs.artifact_exists == false
       uses: actions/upload-artifact@v4
       with:
         name: web-release
