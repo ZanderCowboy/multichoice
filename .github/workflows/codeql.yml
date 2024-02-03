@@ -33,6 +33,7 @@ jobs:
       contents: read
 
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
