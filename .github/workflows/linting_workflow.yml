@@ -65,4 +65,6 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IGNORE_GITIGNORED_FILES: true
-          FILTER_REGEX_EXCLUDE: "**/*.freezed.dart "
+          FILTER_REGEX_EXCLUDE: ".*.freezed.dart"
+          CREATE_LOG_FILE: true
+          DISABLE_ERRORS: true
