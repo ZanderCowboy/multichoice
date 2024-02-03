@@ -16,10 +16,11 @@ runs:
     - name: Check if Artifact Already Exists
       id: check-artifact
       shell: bash
-      run: echo "::set-output name=artifact_exists::$(if [ -e web-release ]; then echo true; else echo false; fi)"
+      # run: echo "::set-output name=artifact_exists::$(if [ -e web-release ]; then echo true; else echo false; fi)"
+      run: echo "ARTIFACT_EXISTS=$(if [ -e ./web-release.zip ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
 
     - name: Upload Web Build Files
-      if: steps.check-artifact.outputs.artifact_exists == false
+      if: env.ARTIFACT_EXISTS == false
       uses: actions/upload-artifact@v4
       with:
         name: web-release
