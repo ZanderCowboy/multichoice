@@ -33,7 +33,7 @@ on:
   #     - "develop"
   workflow_run:
     workflows:
-      - "Linting"
+      - "linting_workflow.yml"
     types:
       - "completed"
 
