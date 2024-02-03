@@ -32,10 +32,12 @@ on:
   #     - "main"
   #     - "develop"
   workflow_run:
-    workflows: [Linting]
-    types: [completed]
+    workflows:
+      - Linting
+    types:
+      - completed
 
-  workflow_dispatch:
+  # workflow_dispatch:
 
 jobs:
   test:
