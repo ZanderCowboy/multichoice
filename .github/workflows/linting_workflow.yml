@@ -58,8 +58,10 @@ jobs:
       - name: Flutter analyze
         run: flutter analyze
 
+      # TODO Move Super-linter to Analyze in build
       - name: Super-linter
         uses: super-linter/super-linter@v6.0.0
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IGNORE_GITIGNORED_FILES: true
