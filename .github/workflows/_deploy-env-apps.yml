@@ -1,0 +1,48 @@
+name: Deploy Android, Web, & Windows Apps
+on:
+  # push:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  workflow_call:
+    inputs:
+      web-environment-name:
+        required: true
+        type: string
+      android-environment-name:
+        required: true
+        type: string
+      android-package-name:
+        required: true
+        type: string
+      android-deploy-status:
+        required: true
+        type: string
+      windows-environment-name:
+        required: true
+        type: string
+
+  workflow_dispatch:
+
+jobs:
+  deployWeb:
+    name: "Deploy Web app"
+    uses: ./.github/workflows/_deploy-web-app.yml
+    with:
+      environment-name: ${{ inputs.web-environment-name }}
+  deployAndroid:
+    name: "Deploy Android app"
+    uses: ./.github/workflows/_deploy-android-app.yml
+    with:
+      environment-name: ${{ inputs.android-environment-name }}
+      package-name: ${{ inputs.android-package-name }}
+      deploy-status: ${{ inputs.android-deploy-status }}
+  deployWindows:
+    name: "Deploy Windows app"
+    uses: ./.github/workflows/_deploy-windows-app.yml
+    with:
+      environment-name: ${{ inputs.windows-environment-name }}

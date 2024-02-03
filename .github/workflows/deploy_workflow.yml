@@ -1,0 +1,35 @@
+---
+name: Deploy Apps
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  workflow_run:
+    workflows:
+      - "Test, Analyze, Build"
+    types:
+      - "completed"
+
+  workflow_dispatch:
+
+jobs:
+  predeploy:
+    name: Pre-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: something
+        uses: ""
+  deploy:
+    name: Deploy Apps
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/_deploy-env-apps.yml
+    needs: predeploy
+    with:
+      web-environment-name: "Web Prod"
+      android-environment-name: "Android Prod"
+      android-package-name: "multichoice-412309"
+      android-deploy-status: "inProgress"
+      windows-environment-name: "Windows Prod"
