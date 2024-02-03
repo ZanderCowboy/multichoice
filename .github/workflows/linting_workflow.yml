@@ -1,0 +1,56 @@
+---
+name: Linting
+on:
+  push:
+    branches:
+      - "main"
+      - "develop"
+  pull_request:
+    branches:
+      - "main"
+      - "develop"
+  workflow_dispatch:
+
+jobs:
+  # setup:
+  #   uses: ./.github/workflows/setup.yml
+  setup:
+    name: Flutter Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+      - name: Flutter Get Dependencies
+        run: flutter pub get
+
+  run-lint:
+    name: Flutter Lint
+    needs: setup
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Flutter analyze
+        run: flutter analyze
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v6.0.0
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
