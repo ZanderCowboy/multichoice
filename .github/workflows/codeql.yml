@@ -61,13 +61,46 @@ jobs:
       # - name: Start Web Release Build
       #   run: flutter build web --base-href='/multichoice/' --release
 
-      - name: Build Android
-        uses: ./.github/workflows/build-android
-
-      - name: Get Android Build from Artifacts
-        uses: actions/download-artifact@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          name: android-release
+          distribution: "zulu"
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        shell: bash
+        run: flutter pub get
+
+      # - name: Setup Flutter and Java
+      #   uses: ./.github/workflows/setup-java-flutter
+
+      # - name: Clean Flutter
+      #   shell: bash
+      #   run: flutter clean
+
+      # - name: Flutter Pub Get
+      #   shell: bash
+      #   run: flutter pub get
+
+      - name: Start release build
+        shell: bash
+        run: flutter build appbundle --release
+
+      # - name: Build Android
+      #   uses: ./.github/workflows/build-android
+
+      # - name: Get Android Build from Artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: android-release
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
