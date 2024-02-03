@@ -87,6 +87,7 @@ jobs:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [analyze, pre-build]
+    secrets: inherit
     with:
       web-environment-name: "Web Prod"
       android-environment-name: "Android Prod"
