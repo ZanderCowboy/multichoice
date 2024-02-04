@@ -14,8 +14,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
+  # setup:
+  #   uses: ./.github/workflows/setup.yml
 
   # build:
   #   uses: ./.github/workflows/build.yml
@@ -23,7 +23,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    needs: [setup]
+    # needs: setup
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       security-events: write
@@ -33,10 +33,10 @@ jobs:
       contents: read
 
     strategy:
-      max-parallel: 1
+      # max-parallel: 1
       fail-fast: false
       matrix:
-        language: ["c-cpp", "java-kotlin", "swift", "javascript-typescript"]
+        language: ["javascript-typescript", "c-cpp", "java-kotlin",]
         # language: ["javascript-typescript"] # TODO(ZK): Add the rest after separate build workflows are created
 
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
@@ -48,18 +48,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Web
-        uses: ./.github/workflows/build-web
-
-      - name: Get Web Build from Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: web-release
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
-
-      # - name: Start Web Release Build
-      #   run: flutter build web --base-href='/multichoice/' --release
+      # - name: Cache dependencies
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ~/.gradle/caches
+      #       ~/.pub-cache
+      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -76,22 +73,54 @@ jobs:
           cache: true
 
       - name: Get dependencies
-        shell: bash
         run: flutter pub get
 
       # - name: Setup Flutter and Java
       #   uses: ./.github/workflows/setup-java-flutter
 
-      # - name: Clean Flutter
-      #   shell: bash
-      #   run: flutter clean
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --release
 
-      # - name: Flutter Pub Get
+      # - name: Upload Web Build Files
+      #   # if: env.ARTIFACT_EXISTS == false
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: web-release
+      #     path: ./build/web
+      #     overwrite: true
+
+      # - name: Build Web
+      #   uses: ./.github/workflows/build-web
+
+      # - name: Get Web Build from Artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: web-release
+      # - name: Setup Flutter and Java
+      #   uses: ./.github/workflows/setup-java-flutter
+
+      # - name: Start Web Release Build
+      #   run: flutter build web --base-href='/multichoice/' --release
+
+      # - name: Set up Java
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: "zulu"
+      #     java-version: "17"
+      #     cache: gradle
+
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: "3.16.x"
+      #     channel: "stable"
+      #     cache: true
+
+      # - name: Get dependencies
       #   shell: bash
       #   run: flutter pub get
 
       - name: Start release build
-        shell: bash
         run: flutter build appbundle --release
 
       # - name: Build Android
@@ -111,7 +140,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          languages: dart
+          # languages: dart
           category: "/language:${{matrix.language}}"
           output: ${{ github.workspace }}/results
 
@@ -123,7 +152,15 @@ jobs:
 
   upload:
     needs: analyze
+
+
+    
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+
+    strategy:
+      matrix:
+        language: ["javascript-typescript", "c-cpp", "java-kotlin",]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -138,4 +175,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ github.workspace }}/results/codeql-results/javascript.sarif
-          category: "/language:${{matrix.language}}"
+          category: "/language:${{ matrix.language }}"
