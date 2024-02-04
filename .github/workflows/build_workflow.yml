@@ -11,7 +11,7 @@ on:
       - "develop"
   workflow_run: # this will get triggered on main branch only
     workflows:
-      - ./.github/workflows/linting_workflow.yml
+      - Linting
     types:
       - completed
 
