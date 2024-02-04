@@ -56,12 +56,22 @@ runs:
     - name: Update version in YAML
       id: pubspec-file
       shell: bash
-      run: sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+      run: |
+        sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+        echo "PUBSPEC_CONTENT=${PUBSPEC_CONTENT}" >> $GITHUB_ENV
+
+    - name: Print pubspec.yaml
+      shell: bash
+      run: cat pubspec.yaml
+
+    - name: Print pubspec.yaml
+      shell: bash
+      run: echo "${{ env.PUBSPEC_CONTENT }}" 
 
     - name: Set pubspec.yml
       id: set-pubspec-file
       shell: bash
-      run: echo "pubspecContent=${{ steps.pubspec-file.outputs.content }}" >> $GITHUB_ENV
+      run: echo "pubspecContent=${{ steps.pubspec-file.outputs.content }}" >> $GITHUB_OUTPUT
 
     - name: Download Android keystore
       id: android_keystore
