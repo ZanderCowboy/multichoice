@@ -1,15 +1,15 @@
 name: "CodeQL"
 
 on:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
-      - "develop"
-  schedule:
-    - cron: "33 10 * * 6"
+  # push:
+  #   branches:
+  #     - "main"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  # schedule:
+  #   - cron: "33 10 * * 6"
 
   workflow_dispatch:
 
@@ -85,9 +85,9 @@ jobs:
         id: update-pubspec
         uses: stikkyapp/update-pubspec-version@v1
         with:
-          strategy: 'none'
+          strategy: "none"
           # bump-build: true
-          path: './pubspec.yaml'
+          path: "./pubspec.yaml"
 
       - name: Set pubspec version
         id: set-pubspec
@@ -95,7 +95,7 @@ jobs:
         run: |
           echo ${{ steps.update-pubspec.outputs.old-version }}
           echo ${{ steps.update-pubspec.outputs.new-version }}
-        
+
       - name: Print pubspec.yaml
         shell: bash
         run: cat pubspec.yaml
@@ -116,7 +116,6 @@ jobs:
 
       - name: Start release build
         run: flutter build appbundle --release
-
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -139,12 +138,12 @@ jobs:
 
   upload:
     needs: analyze
-    
+
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
 
     strategy:
       matrix:
-        language: ["javascript-typescript", "c-cpp", "java-kotlin",]
+        language: ["javascript-typescript"]
 
     steps:
       - name: Checkout repository
