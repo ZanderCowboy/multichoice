@@ -16,13 +16,13 @@ class EmptyEntry extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            CustomDialog.show(
+            CustomDialog<Widget>.show(
               context: context,
               title: const Text('Add New Entry'),
               content: const SizedBox(
                 height: 20,
                 child: Text(
-                  "TODO: Add FormFields to add data",
+                  'TODO: Add FormFields to add data',
                 ),
               ),
               actions: <Widget>[

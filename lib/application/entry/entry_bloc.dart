@@ -24,11 +24,13 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
               ? entryCards.first
               : Entry.empty().copyWith(tabId: value.tabId);
 
-          emit(state.copyWith(
-            entry: entry,
-            entryCards: entryCards,
-            isLoading: false,
-          ));
+          emit(
+            state.copyWith(
+              entry: entry,
+              entryCards: entryCards,
+              isLoading: false,
+            ),
+          );
         },
         onPressedAddEntry: (value) async {
           emit(

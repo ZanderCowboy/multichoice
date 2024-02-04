@@ -11,5 +11,7 @@ class EntryEvent with _$EntryEvent {
   ) = OnPressedAddEntry;
 
   const factory EntryEvent.onLongPressedDeleteEntry(
-      String tabId, String entryId) = OnLongPressedDeleteEntry;
+    String tabId,
+    String entryId,
+  ) = OnLongPressedDeleteEntry;
 }
