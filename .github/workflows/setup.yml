@@ -1,0 +1,15 @@
+name: Common Setup
+
+on:
+  workflow_call:
+
+jobs:
+  setup:
+    # name: Set up Java and Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter

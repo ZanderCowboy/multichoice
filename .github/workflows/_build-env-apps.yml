@@ -1,0 +1,42 @@
+name: Build Android, Web, & Windows Apps
+on:
+  # push:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #     - "develop"
+  workflow_call:
+    inputs:
+      web-environment-flag:
+        required: true
+        type: string
+      android-environment-flag:
+        required: true
+        type: string
+      windows-environment-flag:
+        required: true
+        type: string
+
+  workflow_dispatch:
+
+jobs:
+  # perhaps add a pre-build job here where the versioning and stuff is done
+  buildWeb:
+    name: "Build Web app"
+    uses: ./.github/workflows/_build-web-app.yml
+    with:
+      environment-flag: ${{ inputs.web-environment-flag }}
+  buildAndroid:
+    name: "Build Android app"
+    uses: ./.github/workflows/_build-android-app.yml
+    secrets: inherit
+    with:
+      environment-flag: ${{ inputs.android-environment-flag }}
+  buildWindows:
+    name: "Build Windows app"
+    uses: ./.github/workflows/_build-windows-app.yml
+    with:
+      environment-flag: ${{ inputs.windows-environment-flag }}

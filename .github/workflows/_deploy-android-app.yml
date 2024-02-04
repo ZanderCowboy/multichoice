@@ -1,0 +1,40 @@
+name: 📦🚀 Deploy Android app for an environment
+
+on:
+  workflow_call:
+    inputs:
+      environment-flag:
+        required: true
+        type: string
+      package-name:
+        required: true
+        type: string
+      deploy-status:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  deployAndroid:
+    name: Deploy Android Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get Android Build from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+
+      - name: Release Build to internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ inputs.package-name }}
+          releaseFiles: app-release.aab
+          track: alpha
+          releaseName: v1.0.0
+          status: ${{ inputs.deploy-status }}
+          inAppUpdatePriority: 2
+          userFraction: 0.5
