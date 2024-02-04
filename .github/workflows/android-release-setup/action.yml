@@ -26,6 +26,8 @@ outputs:
     description: 'Content from key.properties'
   pubspecContent:
     description: 'Content from pubspec.yml'
+  PUBSPEC_FILE:
+    description: 'Pubspec file'
 
 runs:
   using: composite
@@ -70,10 +72,6 @@ runs:
       shell: bash
       run: cat pubspec.yaml
 
-    # - name: Set pubspec.yml
-    #   id: set-pubspec-file
-    #   shell: bash
-    #   run: echo "pubspecContent=${{ steps.pubspec-file.outputs.PUBSPEC_CONTENT }}" >> $GITHUB_OUTPUT
     - name: Print PUBSPEC_FILE
       shell: bash
       env: 
@@ -86,7 +84,7 @@ runs:
       uses: stikkyapp/update-pubspec-version@v1
       with:
         strategy: 'patch'
-        bump-build: true
+        # bump-build: true
         path: './pubspec.yaml'
     
     - name: Set pubspec version
