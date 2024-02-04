@@ -75,7 +75,7 @@ jobs:
     needs: analyze
     secrets: inherit
     with:
-      web-environment-flag: "Web Prod"
+      web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      windows-environment-flag: "Windows Prod"
+      windows-environment-flag: "release"
