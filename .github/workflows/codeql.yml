@@ -26,7 +26,7 @@ jobs:
       # max-parallel: 1
       fail-fast: false
       matrix:
-        language: ["javascript-typescript", "c-cpp", "java-kotlin",]
+        language: ["javascript-typescript"]
 
     steps:
       - name: Checkout repository

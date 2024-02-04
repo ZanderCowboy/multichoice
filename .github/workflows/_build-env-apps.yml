@@ -23,6 +23,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # perhaps add a pre-build job here where the versioning and stuff is done
   buildWeb:
     name: "Build Web app"
     uses: ./.github/workflows/_build-web-app.yml

@@ -92,6 +92,6 @@ jobs:
     secrets: inherit
     with:
       web-environment-flag: "Web Prod"
-      # debug, profile, release
+      # profile, release
       android-environment-flag: "release"
       windows-environment-flag: "Windows Prod"
