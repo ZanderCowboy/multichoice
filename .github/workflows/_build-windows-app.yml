@@ -2,7 +2,7 @@ name: Windows Build workflow
 on:
   workflow_call:
     inputs:
-      environment-name:
+      environment-flag:
         required: true
         type: string
 

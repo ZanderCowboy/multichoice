@@ -89,6 +89,7 @@ jobs:
     needs: [analyze, pre-build]
     secrets: inherit
     with:
-      web-environment-name: "Web Prod"
-      android-environment-name: "Android Prod"
-      windows-environment-name: "Windows Prod"
+      web-environment-flag: "Web Prod"
+      # debug, profile, release
+      android-environment-flag: "release"
+      windows-environment-flag: "Windows Prod"

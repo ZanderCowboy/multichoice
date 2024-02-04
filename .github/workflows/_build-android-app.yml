@@ -2,9 +2,10 @@ name: Android Build workflow
 on:
   workflow_call:
     inputs:
-      environment-name:
+      environment-flag:
         required: true
         type: string
+      
 
 jobs:
   buildAndroid:
@@ -67,17 +68,17 @@ jobs:
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Create key.properties
+        if: ${{ inputs.environment-flag }} == 'release'
         run: |
           echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
-      - name: Start release build
-        shell: bash
-        run: flutter build appbundle --release
+      - name: Start ${{ inputs.environment-flag }} build
+        run: flutter build appbundle --${{ inputs.environment-flag }}
 
-      - name: Upload Android Release
+      - name: Upload Android ${{ inputs.environment-flag }}
         uses: actions/upload-artifact@v4
         with:
           name: android-release

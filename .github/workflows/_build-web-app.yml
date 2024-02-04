@@ -2,7 +2,7 @@ name: Web Build workflow
 on:
   workflow_call:
     inputs:
-      environment-name:
+      environment-flag:
         required: true
         type: string
 

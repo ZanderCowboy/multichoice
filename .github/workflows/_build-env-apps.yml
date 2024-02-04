@@ -10,13 +10,13 @@ on:
   #     - "develop"
   workflow_call:
     inputs:
-      web-environment-name:
+      web-environment-flag:
         required: true
         type: string
-      android-environment-name:
+      android-environment-flag:
         required: true
         type: string
-      windows-environment-name:
+      windows-environment-flag:
         required: true
         type: string
 
@@ -27,15 +27,15 @@ jobs:
     name: "Build Web app"
     uses: ./.github/workflows/_build-web-app.yml
     with:
-      environment-name: ${{ inputs.web-environment-name }}
+      environment-flag: ${{ inputs.web-environment-flag }}
   buildAndroid:
     name: "Build Android app"
     uses: ./.github/workflows/_build-android-app.yml
     secrets: inherit
     with:
-      environment-name: ${{ inputs.android-environment-name }}
+      environment-flag: ${{ inputs.android-environment-flag }}
   buildWindows:
     name: "Build Windows app"
     uses: ./.github/workflows/_build-windows-app.yml
     with:
-      environment-name: ${{ inputs.windows-environment-name }}
+      environment-flag: ${{ inputs.windows-environment-flag }}
