@@ -32,6 +32,6 @@ jobs:
     with:
       web-environment-flag: "Web Prod"
       android-environment-flag: "Android Prod"
-      android-package-name: "multichoice-412309"
+      android-package-name: "co.za.zanderkotze.multichoice"
       android-deploy-status: "inProgress"
       windows-environment-flag: "Windows Prod"
