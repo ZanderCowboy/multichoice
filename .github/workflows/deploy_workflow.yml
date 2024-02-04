@@ -27,6 +27,7 @@ jobs:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: predeploy
+    secrets: inherit
     with:
       web-environment-flag: "Web Prod"
       android-environment-flag: "Android Prod"

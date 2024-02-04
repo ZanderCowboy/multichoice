@@ -32,13 +32,13 @@ jobs:
   deployWeb:
     name: "Deploy Web app"
     uses: ./.github/workflows/_deploy-web-app.yml
-    permissions:
-      contents: write
+    secrets: inherit
     with:
       environment-flag: ${{ inputs.web-environment-flag }}
   deployAndroid:
     name: "Deploy Android app"
     uses: ./.github/workflows/_deploy-android-app.yml
+    secrets: inherit
     with:
       environment-flag: ${{ inputs.android-environment-flag }}
       package-name: ${{ inputs.android-package-name }}
