@@ -78,8 +78,8 @@ jobs:
       # - name: Setup Flutter and Java
       #   uses: ./.github/workflows/setup-java-flutter
 
-      - name: Start Web Release Build
-        run: flutter build web --base-href='/multichoice/' --release
+      # - name: Start Web Release Build
+      #   run: flutter build web --base-href='/multichoice/' --release
 
       # - name: Upload Web Build Files
       #   # if: env.ARTIFACT_EXISTS == false
