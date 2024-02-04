@@ -14,24 +14,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  # setup:
-  #   uses: ./.github/workflows/setup.yml
-
-  # build:
-  #   uses: ./.github/workflows/build.yml
-
   analyze:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    # needs: setup
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       security-events: write
-
-      # only required for workflows in private repositories
       actions: read
       contents: read
-
     strategy:
       # max-parallel: 1
       fail-fast: false
@@ -47,16 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # - name: Cache dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.gradle/caches
-      #       ~/.pub-cache
-      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-gradle-
+        with:
+          fetch-depth: 0
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -75,61 +57,64 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --release
 
-      # - name: Start Web Release Build
-      #   run: flutter build web --base-href='/multichoice/' --release
+      - name: Get Android Versioning and Keystore file
+        id: android-version-keystore
+        uses: ./.github/workflows/android-release-setup
+        with:
+          gitVersionSpec: '5.x'
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
-      # - name: Upload Web Build Files
-      #   # if: env.ARTIFACT_EXISTS == false
-      #   uses: actions/upload-artifact@v4
+      - name: Rearrange pubspec
+        run: echo ${{ steps.android-version-keystore.outputs.pubspecContent }} > pubspec.yaml
+
+
+      # - name: Install GitVersion
+      #   uses: gittools/actions/gitversion/setup@v0.10.2 # 0.9.7 / 0.10.2
       #   with:
-      #     name: web-release
-      #     path: ./build/web
-      #     overwrite: true
+      #     versionSpec: "5.x" # "5.x"
 
-      # - name: Build Web
-      #   uses: ./.github/workflows/build-web
+      # - name: Use GitVersion
+      #   id: gitversion
+      #   uses: gittools/actions/gitversion/execute@v0.10.2 # 0.9.7 / 0.10.2
 
-      # - name: Get Web Build from Artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: web-release
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
-
-      # - name: Start Web Release Build
-      #   run: flutter build web --base-href='/multichoice/' --release
-
-      # - name: Set up Java
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: "zulu"
-      #     java-version: "17"
-      #     cache: gradle
-
-      # - name: Set up Flutter
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: "3.16.x"
-      #     channel: "stable"
-      #     cache: true
-
-      # - name: Get dependencies
+      # - name: Create version.txt with nuGetVersion
       #   shell: bash
-      #   run: flutter pub get
+      #   run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
+
+      # - name: Create new file without newline char from version.txt
+      #   run: tr -d '\n' < version.txt > version1.txt
+
+      # - name: Read version
+      #   id: version
+      #   uses: juliangruber/read-file-action@v1
+      #   with:
+      #     path: version1.txt
+
+      # - name: Update version in YAML
+      #   run: sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+
+      # - name: Download Android keystore
+      #   id: android_keystore
+      #   uses: timheuer/base64-to-file@v1.2.4
+      #   with:
+      #     fileName: upload-keystore.jks
+      #     encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      # - name: Create key.properties
+      #   run: |
+      #     echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+      #     echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+      #     echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+      #     echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+      - name: Rearrange
+        run: echo ${{ steps.android-version-keystore.outputs.android_key_properties }} > android/key.properties
 
       - name: Start release build
         run: flutter build appbundle --release
 
-      # - name: Build Android
-      #   uses: ./.github/workflows/build-android
-
-      # - name: Get Android Build from Artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: android-release
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -152,8 +137,6 @@ jobs:
 
   upload:
     needs: analyze
-
-
     
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
 
