@@ -66,7 +66,7 @@ runs:
       shell: bash
       run: |
         sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
-        # sed -Ei "s/^version: (.*)/version: ${{ steps.version.outputs.content }}+${{ github.run_number }}/g" pubspec.yaml
+
 
     - name: Print pubspec.yaml
       shell: bash
@@ -82,7 +82,7 @@ runs:
     #   id: print_print_pubspec
     #   shell: bash
     #   run: |
-    #     echo "pubspecContent=$(cat pubspec.yaml)" >> $GITHUB_OUTPUT
+    #     echo "pubspecContent=$(cat pubspec.yaml)" >> $GITHUB_ENV
 
     - name: Update pubspec.yml version action
       id: update-pubspec
@@ -122,9 +122,9 @@ runs:
     - name: Set version content output
       id: set-version-content
       shell: bash
-      run: echo "versionContent=${{ steps.version.outputs.content }}" >> $GITHUB_OUTPUT
+      run: echo "versionContent=${{ steps.version.outputs.content }}" >> $GITHUB_ENV
 
     - name: Set Key.properties
       id: android_key_properties
       shell: bash
-      run: echo "keyProperties=${{ steps.key_properties.outputs.content }}" >> $GITHUB_OUTPUT
+      run: echo "keyProperties=${{ steps.key_properties.outputs.content }}" >> $GITHUB_ENV

@@ -1,0 +1,44 @@
+name: Android Release
+
+on:
+  workflow_call:
+
+jobs:
+  setup:
+    # name: Set up Java and Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --release
+
+      - name: Get Android Versioning and Keystore file
+        id: android-version-keystore
+        uses: ./.github/workflows/android-release-setup
+        with:
+          gitVersionSpec: '5.x'
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidStorePassword: ${{ secrets.STORE_PASSWORD }}
+          androidKeyPassword: ${{ secrets.KEY_PASSWORD }}
+          androidKeyAlias: ${{ secrets.KEY_ALIAS }}
