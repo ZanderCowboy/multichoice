@@ -66,6 +66,9 @@ jobs:
         with:
           gitVersionSpec: '5.x'
           androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidStorePassword: ${{ secrets.STORE_PASSWORD }}
+          androidKeyPassword: ${{ secrets.KEY_PASSWORD }}
+          androidKeyAlias: ${{ secrets.KEY_ALIAS }}
 
       - name: Rearrange pubspec
         run: echo ${{ steps.android-version-keystore.outputs.pubspecContent }} > pubspec.yaml
