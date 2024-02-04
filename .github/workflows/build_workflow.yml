@@ -1,14 +1,12 @@
 ---
 name: Test, Analyze, Build
 on:
-  # push:
-  #   branches:
-  #     # - "main"
-  #     - "develop"
-  # pull_request:
-  #   branches:
-  #     # - "main"
-  #     - "develop"
+  push:
+    branches:
+      - "develop"
+  pull_request:
+    branches:
+      - "develop"
   workflow_run: # this will get triggered on main branch only
     workflows: ["Linting"]
     types:
