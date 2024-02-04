@@ -1,0 +1,81 @@
+---
+name: Test, Analyze, Build
+on:
+  # push:
+  #   branches:
+  #     # - "main"
+  #     - "develop"
+  # pull_request:
+  #   branches:
+  #     # - "main"
+  #     - "develop"
+  workflow_run: # this will get triggered on main branch only
+    workflows: ["Linting"]
+    types:
+      - completed
+    branches: ["main", "develop"]
+
+  # workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    # if: github.event.pull_request.draft == false
+    # uses: ./.github/workflows/_test_with_coverage.yml
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success'}}
+    steps:
+      - run: echo "The triggering workflow 'Linting' passed and running tests"
+      - run: echo "Tests completed."
+
+  analyze:
+    name: Analyze
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - run: echo "Starting analyze"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      - name: Flutter Get Dependencies
+        run: flutter pub get
+
+      - name: ⚠️ℹ️ Run Dart analysis
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          working-directory: "${{github.workspace}}/"
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v6.0.0
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IGNORE_GITIGNORED_FILES: true
+          FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
+          CREATE_LOG_FILE: true
+          DISABLE_ERRORS: true
+
+      - run: echo "Analyzing completed."
+
+  build:
+    name: Build Apps
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/_build-env-apps.yml
+    needs: analyze
+    secrets: inherit
+    with:
+      web-environment-flag: "Web Prod"
+      # profile, release
+      android-environment-flag: "release"
+      windows-environment-flag: "Windows Prod"

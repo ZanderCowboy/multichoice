@@ -1,0 +1,15 @@
+name: Windows Build workflow
+on:
+  workflow_call:
+    inputs:
+      environment-flag:
+        required: true
+        type: string
+
+jobs:
+  buildWindows:
+    name: Build Windows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
