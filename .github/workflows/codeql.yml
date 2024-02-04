@@ -72,11 +72,15 @@ jobs:
 
 
 
-      - name: Rearrange pubspec
-        run: | 
-          echo ${{ steps.android-version-keystore.outputs.PUBSPEC_FILE }} > pubspec.yaml
-          cat pubspec.yaml
+      # - name: Rearrange pubspec
+      #   run: | 
+      #     echo ${{ steps.android-version-keystore.outputs.PUBSPEC_FILE }} > pubspec.yaml
+      #     cat pubspec.yaml
 
+      - name: Get pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec
 
 
       # - name: Install GitVersion
