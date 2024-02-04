@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/entry/entry_bloc.dart';
+import 'package:multichoice/constants/spacing_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
 class Cards extends StatelessWidget {
@@ -15,7 +17,7 @@ class Cards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
+    final scrollController = ScrollController();
 
     return BlocProvider(
       create: (_) => coreSl<EntryBloc>()
@@ -43,7 +45,6 @@ class Cards extends StatelessWidget {
               behavior: CustomScrollBehaviour(),
               child: ListView.builder(
                 controller: scrollController,
-                scrollDirection: Axis.vertical,
                 itemCount: entriesInTab.length + 1,
                 itemBuilder: (context, index) {
                   if (index == entriesInTab.length) {
@@ -51,11 +52,51 @@ class Cards extends StatelessWidget {
                   } else {
                     final entry = entriesInTab[index];
 
-                    return EntryCard(
-                      title: entry.title,
-                      subtitle: entry.subtitle,
-                      tabId: tabId,
-                      entryId: entry.id,
+                    return GestureDetector(
+                      onLongPress: () {
+                        CustomDialog<Widget>.show(
+                          context: context,
+                          title: Text('Delete ${entry.title}'),
+                          content: SizedBox(
+                            height: 20,
+                            child: Text(
+                              "Are you sure you want to delete ${entry.title} and all it's data?",
+                            ),
+                          ),
+                          actions: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('Cancel'),
+                                ),
+                                gap10,
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<EntryBloc>().add(
+                                          EntryEvent.onLongPressedDeleteEntry(
+                                            tabId,
+                                            entry.id,
+                                          ),
+                                        );
+                                    if (Navigator.canPop(context)) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                      child: EntryCard(
+                        title: entry.title,
+                        subtitle: entry.subtitle,
+                        tabId: tabId,
+                        entryId: entry.id,
+                      ),
                     );
                   }
                 },

@@ -4,12 +4,12 @@ import 'package:multichoice/domain/tabs/models/tabs.dart';
 import 'package:multichoice/get_it_injection.dart';
 
 class TabsList {
+  TabsList._internal();
   static final TabsList _instance = TabsList._internal();
   static TabsList get instance => _instance;
 
-  static final tabsData = coreSl<DatabaseService>().database;
-
-  TabsList._internal(); // Private Constructor
+  static final tabsData =
+      coreSl<DatabaseService>().database; // Private Constructor
 
   // create
   int addTab(Tabs tab) {
@@ -20,7 +20,7 @@ class TabsList {
 
   int addEntryToTab(String tabId, Entry entryCard) {
     final tabs = tabsData.keys;
-    final Tabs tab = tabs.firstWhere((element) {
+    final tab = tabs.firstWhere((element) {
       return element.id == tabId;
     });
 

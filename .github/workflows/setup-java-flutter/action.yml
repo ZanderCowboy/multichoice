@@ -1,0 +1,35 @@
+name: Common Setup
+description: "Sets up Java and Flutter for reusability"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.pub-cache
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: "zulu"
+        java-version: "17"
+        cache: gradle
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: "3.16.x"
+        channel: "stable"
+        cache: true
+
+    - name: Get dependencies
+      shell: bash
+      run: flutter pub get

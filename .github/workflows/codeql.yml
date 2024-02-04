@@ -1,0 +1,162 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+      - "develop"
+  schedule:
+    - cron: "33 10 * * 6"
+
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      # max-parallel: 1
+      fail-fast: false
+      matrix:
+        language: ["javascript-typescript"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --release
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.10.2
+        with:
+          versionSpec: "5.x"
+
+      - name: Use GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.10.2
+
+      - name: Create version.txt with nuGetVersion
+        shell: bash
+        run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
+
+      - name: Create new file without newline char from version.txt
+        run: tr -d '\n' < version.txt > version1.txt
+
+      - name: Read version
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: version1.txt
+
+      - name: Update version in YAML
+        run: |
+          sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+          # sed -Ei "s/^version: (.*)/version: ${{ steps.version.outputs.content }}+${{ github.run_number }}/g" pubspec.yaml
+
+      - name: Update pubspec.yml version action
+        id: update-pubspec
+        uses: stikkyapp/update-pubspec-version@v1
+        with:
+          strategy: "none"
+          # bump-build: true
+          path: "./pubspec.yaml"
+
+      - name: Set pubspec version
+        id: set-pubspec
+        shell: bash
+        run: |
+          echo ${{ steps.update-pubspec.outputs.old-version }}
+          echo ${{ steps.update-pubspec.outputs.new-version }}
+
+      - name: Print pubspec.yaml
+        shell: bash
+        run: cat pubspec.yaml
+
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+
+      - name: Start release build
+        run: flutter build appbundle --release
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          # languages: dart
+          category: "/language:${{matrix.language}}"
+          output: ${{ github.workspace }}/results
+
+      - name: Upload results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: codeql-results
+          path: ${{ github.workspace }}/results
+
+  upload:
+    needs: analyze
+
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+
+    strategy:
+      matrix:
+        language: ["javascript-typescript"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download CodeQL results artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: codeql-results
+          path: ${{ github.workspace }}/results/codeql-results/javascript.sarif
+
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ github.workspace }}/results/codeql-results/javascript.sarif
+          category: "/language:${{ matrix.language }}"

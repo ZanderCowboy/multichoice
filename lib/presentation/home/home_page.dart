@@ -72,7 +72,7 @@ class _HomePage extends StatelessWidget {
 
                           return GestureDetector(
                             onLongPress: () {
-                              CustomDialog.show(
+                              CustomDialog<Widget>.show(
                                 context: context,
                                 title: Text('Delete ${tab.title}'),
                                 content: SizedBox(
@@ -106,7 +106,7 @@ class _HomePage extends StatelessWidget {
                                         child: const Text('Delete'),
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               );
                             },
