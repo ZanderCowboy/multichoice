@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "co.za.zanderkotze.multichoice"
+    namespace "com.example.multichoice"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
