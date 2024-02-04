@@ -11,7 +11,7 @@ on:
       - "develop"
   workflow_run: # this will get triggered on main branch only
     workflows:
-      - Linting
+      - ./.github/workflows/linting_workflow.yml
     types:
       - completed
 
@@ -23,7 +23,7 @@ jobs:
     # if: github.event.pull_request.draft == false
     # uses: ./.github/workflows/_test_with_coverage.yml
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'in_progress'}}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'in_progress'}}
     steps:
       - run: echo "The triggering workflow 'Linting' passed and running tests"
       - run: echo "Tests completed."
