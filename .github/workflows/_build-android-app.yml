@@ -6,24 +6,40 @@ on:
         required: true
         type: string
       
-
 jobs:
-  buildAndroid:
-    name: Build Android
+  pre-build:
+    name: Create missing elements for building apps
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Setup Flutter and Java
+        uses: ./.github/workflows/setup-java-flutter
+
+      - name: Create version number
+        uses: ./.github/workflows/android-versioning
+
+  buildAndroid:
+    name: Build Android
+    needs: pre-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.pub-cache
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          fetch-depth: 0
+
+      # - name: Cache dependencies
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ~/.gradle/caches
+      #       ~/.pub-cache
+      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -58,7 +74,24 @@ jobs:
           path: version1.txt
 
       - name: Update version in YAML
-        run: sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+        run: |
+          sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+          sed -Ei "s/^version: (.*)/version: ${{ steps.version.outputs.content }}+${{ github.run_number }}/g" pubspec.yaml
+
+      - name: Update pubspec.yml version action
+        id: update-pubspec
+        uses: stikkyapp/update-pubspec-version@v1
+        with:
+          strategy: 'none'
+          # bump-build: true
+          path: './pubspec.yaml'
+
+      - name: Upload pubspec.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: pubspec
+          path: pubspec.yaml
+      
 
       - name: Download Android keystore
         id: android_keystore

@@ -10,10 +10,10 @@ on:
   #     - "develop"
   workflow_call:
     inputs:
-      web-environment-name:
+      web-environment-flag:
         required: true
         type: string
-      android-environment-name:
+      android-environment-flag:
         required: true
         type: string
       android-package-name:
@@ -22,7 +22,7 @@ on:
       android-deploy-status:
         required: true
         type: string
-      windows-environment-name:
+      windows-environment-flag:
         required: true
         type: string
 
@@ -33,16 +33,16 @@ jobs:
     name: "Deploy Web app"
     uses: ./.github/workflows/_deploy-web-app.yml
     with:
-      environment-name: ${{ inputs.web-environment-name }}
+      environment-flag: ${{ inputs.web-environment-flag }}
   deployAndroid:
     name: "Deploy Android app"
     uses: ./.github/workflows/_deploy-android-app.yml
     with:
-      environment-name: ${{ inputs.android-environment-name }}
+      environment-flag: ${{ inputs.android-environment-flag }}
       package-name: ${{ inputs.android-package-name }}
       deploy-status: ${{ inputs.android-deploy-status }}
   deployWindows:
     name: "Deploy Windows app"
     uses: ./.github/workflows/_deploy-windows-app.yml
     with:
-      environment-name: ${{ inputs.windows-environment-name }}
+      environment-flag: ${{ inputs.windows-environment-flag }}

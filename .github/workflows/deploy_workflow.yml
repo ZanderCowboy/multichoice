@@ -28,8 +28,8 @@ jobs:
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: predeploy
     with:
-      web-environment-name: "Web Prod"
-      android-environment-name: "Android Prod"
+      web-environment-flag: "Web Prod"
+      android-environment-flag: "Android Prod"
       android-package-name: "multichoice-412309"
       android-deploy-status: "inProgress"
-      windows-environment-name: "Windows Prod"
+      windows-environment-flag: "Windows Prod"

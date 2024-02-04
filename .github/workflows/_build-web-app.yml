@@ -14,8 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Setup Flutter and Java
-      #   uses: ./.github/workflows/setup-java-flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -24,11 +22,10 @@ jobs:
           cache: true
 
       - name: Get dependencies
-        shell: bash
         run: flutter pub get
 
       - name: Start Web Release Build
-        run: flutter build web --base-href='/multichoice/' --release
+        run: flutter build web --base-href='/multichoice/' --${{ inputs.environment-flag }}
 
       - name: Upload Web Build Files
         uses: actions/upload-artifact@v4

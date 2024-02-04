@@ -3,7 +3,7 @@ name: 📦🚀 Deploy Windows app for an environment
 on:
   workflow_call:
     inputs:
-      environment-name:
+      environment-flag:
         required: true
         type: string
   workflow_dispatch:
