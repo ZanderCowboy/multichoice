@@ -32,6 +32,8 @@ jobs:
   deployWeb:
     name: "Deploy Web app"
     uses: ./.github/workflows/_deploy-web-app.yml
+    permissions:
+      contents: write
     with:
       environment-flag: ${{ inputs.web-environment-flag }}
   deployAndroid:
