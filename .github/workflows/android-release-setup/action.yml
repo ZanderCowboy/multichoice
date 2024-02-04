@@ -61,7 +61,7 @@ runs:
     - name: Set pubspec.yml
       id: set-pubspec-file
       shell: bash
-      run: echo "pubspecContent=${{ steps.pubspec-file.outputs.content }}" >> $pubspecContent
+      run: echo "pubspecContent=${{ steps.pubspec-file.outputs.content }}" >> $GITHUB_ENV
 
     - name: Download Android keystore
       id: android_keystore
@@ -87,4 +87,4 @@ runs:
     - name: Set Key.properties
       id: android_key_properties
       shell: bash
-      run: echo "keyProperties=${{ steps.key_properties.outputs.content }}" >> $keyProperties
+      run: echo "keyProperties=${{ steps.key_properties.outputs.content }}" >> $GITHUB_ENV
