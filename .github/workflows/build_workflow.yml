@@ -10,10 +10,10 @@ on:
       # - "main"
       - "develop"
   workflow_run: # this will get triggered on main branch only
-    workflows:
-      - Linting
+    workflows: ["Linting"]
     types:
       - completed
+    branches: "develop"
 
   # workflow_dispatch:
 
@@ -71,7 +71,7 @@ jobs:
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/_build-env-apps.yml 
+    uses: ./.github/workflows/_build-env-apps.yml
     needs: analyze
     secrets: inherit
     with:
