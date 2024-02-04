@@ -16,10 +16,17 @@ jobs:
       contents: write
 
     steps:
-      - name: Download Web Release
-        uses: actions/download-artifact@v4
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
         with:
+          # workflow:
+          # run_id: ${{ github.event.workflow_run.id }}
           name: web-release
+      # - name: Download Web Release
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: web-release
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3

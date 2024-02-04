@@ -22,10 +22,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get Android Build from artifacts
-        uses: actions/download-artifact@v4
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
         with:
+          # workflow:
+          # run_id: ${{ github.event.workflow_run.id }}
           name: android-release
+      # - name: Get Android Build from artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: android-release
 
       - name: Release Build to internal track
         uses: r0adkll/upload-google-play@v1
