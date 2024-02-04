@@ -41,11 +41,11 @@ jobs:
       - name: Release Build to internal track
         uses: r0adkll/upload-google-play@v1
         with:
+          releaseFiles: app-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: ${{ inputs.package-name }}
-          releaseFiles: app-release.aab
           track: alpha
           releaseName: v1.0.0
-          status: ${{ inputs.deploy-status }}
           inAppUpdatePriority: 2
           userFraction: 0.5
+          status: ${{ inputs.deploy-status }}
