@@ -1,12 +1,12 @@
 ---
 name: Deploy Apps
 on:
-  # push:
-  #   branches:
-  #     - "main"
-  # pull_request:
-  #   branches:
-  #     - "main"
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
   workflow_run:
     workflows:
       - "Test, Analyze, Build"
@@ -19,9 +19,10 @@ jobs:
   predeploy:
     name: Pre-deploy
     runs-on: ubuntu-latest
-    if: |
-      (${{github.event_name == 'pull_request'}} && ${{github.event.action == 'opened'}} && ${{github.event.pull_request.base.ref == 'main'}}) ||
-      (${{github.event.workflow_run.conclusion == 'success'}} && ${{github.ref == 'refs/heads/main'}})
+    if: ${{github.event.workflow_run.conclusion == 'success'}}
+    # if: |
+    #   (${{github.event_name == 'pull_request'}} && ${{github.event.action == 'opened'}} && ${{github.event.pull_request.base.ref == 'main'}}) ||
+    #   (${{github.event.workflow_run.conclusion == 'success'}} && ${{github.ref == 'refs/heads/main'}})
     steps:
       - run: echo "Predeploy Job Finished"
   deploy:
