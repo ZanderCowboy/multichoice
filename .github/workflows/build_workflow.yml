@@ -44,14 +44,17 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
+        uses: ./.github/actions/setup-flutter
 
-      - name: Flutter Get Dependencies
-        run: flutter pub get
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: "3.16.x"
+      #     channel: "stable"
+      #     cache: true
+
+      # - name: Flutter Get Dependencies
+      #   run: flutter pub get
 
       - name: ⚠️ℹ️ Run Dart analysis
         uses: zgosalvez/github-actions-analyze-dart@v3
@@ -83,6 +86,9 @@ jobs:
         id: update-version-action
         uses: ./.github/actions/app-versioning
 
+      - run: |
+          echo "version-number=${{ steps.update-version-action.env.version-number }}" >> $GITHUB_OUTPUT
+
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
@@ -108,6 +114,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
       - name: Auto commit new pubspec version
         id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v5

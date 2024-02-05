@@ -15,14 +15,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
+        uses: ./.github/actions/setup-flutter
 
-      - name: Get dependencies
-        run: flutter pub get
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: "3.16.x"
+      #     channel: "stable"
+      #     cache: true
+
+      # - name: Get dependencies
+      #   run: flutter pub get
 
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --${{ inputs.environment-flag }}
