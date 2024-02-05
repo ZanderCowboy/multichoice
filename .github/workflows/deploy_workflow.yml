@@ -12,6 +12,8 @@ on:
       - "Test, Analyze, Build"
     types:
       - "completed"
+    branches:
+      - "main"
 
   # workflow_dispatch:
 
@@ -32,6 +34,6 @@ jobs:
     with:
       web-environment-flag: "Web Prod"
       android-environment-flag: "Android Prod"
-      android-package-name: "multichoice-412309"
-      android-deploy-status: "inProgress"
+      android-package-name: "co.za.zanderkotze.multichoice"
+      android-deploy-status: "draft"
       windows-environment-flag: "Windows Prod"

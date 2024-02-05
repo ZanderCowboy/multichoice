@@ -1,15 +1,13 @@
 ---
 name: Test, Analyze, Build
 on:
-  # push:
-  #   branches:
-  #     # - "main"
-  #     - "develop"
-  # pull_request:
-  #   branches:
-  #     # - "main"
-  #     - "develop"
-  workflow_run: # this will get triggered on main branch only
+  push:
+    branches:
+      - "develop"
+  pull_request:
+    branches:
+      - "develop"
+  workflow_run:
     workflows: ["Linting"]
     types:
       - completed
@@ -20,8 +18,6 @@ on:
 jobs:
   test:
     name: Test
-    # if: github.event.pull_request.draft == false
-    # uses: ./.github/workflows/_test_with_coverage.yml
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success'}}
     steps:
@@ -75,7 +71,7 @@ jobs:
     needs: analyze
     secrets: inherit
     with:
-      web-environment-flag: "Web Prod"
+      web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      windows-environment-flag: "Windows Prod"
+      windows-environment-flag: "release"
