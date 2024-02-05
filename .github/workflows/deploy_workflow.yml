@@ -19,7 +19,7 @@ on:
 jobs:
   predeploy:
     name: Pre-deploy
-    # if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -15,6 +15,11 @@ on:
 
   # workflow_dispatch:
 
+env:
+  WEB-BUILD-FLAG: false
+  ANDROID-BUILD-FLAG: false
+  WINDOWS-BUILD-FLAG: false
+
 jobs:
   test:
     name: Test
@@ -89,21 +94,20 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: false
+      web-build-flag: $WEB-BUILD_FLAG
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: false
+      android-build-flag: $ANDROID-BUILD-FLAG
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: true
+      windows-build-flag: $WINDOWS-BUILD-FLAG
       windows-environment-flag: "release"
 
   # look into using the above jobs conclusion?
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    # if: ${{ needs.build.outputs.results == 'true' }}
-    if: jobs.build.conclusion == 'success'
+    if: $WEB-BUILD-FLAG == 'true' || $ANDROID-BUILD-FLAG == 'true' || $WINDOWS-BUILD-FLAG == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -112,20 +116,13 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - run: |
-          echo ${{ needs.build.outputs.results == 'true' }}
-          echo ${{ needs.build.outputs.results }}
-
-      - name: Download build-results.txt
-        id: download-build-results
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          workflow: _build-env-apps.yml
-          search_artifacts: true
-          name: build-results
-
-      # - name: "build version"
-      #   run: ""
+      # - name: Download build-results.txt
+      #   id: download-build-results
+      #   uses: dawidd6/action-download-artifact@v3
+      #   with:
+      #     workflow: _build-env-apps.yml
+      #     search_artifacts: true
+      #     name: build-results
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
