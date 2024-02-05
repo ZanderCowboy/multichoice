@@ -2,9 +2,9 @@
 name: Test, Analyze, Build
 
 env:
-  web_build_flag: false
-  ANDROID-BUILD-FLAG: false
-  WINDOWS-BUILD-FLAG: false
+  WEB-FLAG: false
+  ANDROID-FLAG: false
+  WINDOWS-FLAG: false
 
 on:
   push:
@@ -109,10 +109,13 @@ jobs:
     name: Post Build
     needs: [build, preBuild]
     # if: $WEB-BUILD-FLAG == 'true' || $ANDROID-BUILD-FLAG == 'true' || $WINDOWS-BUILD-FLAG == 'true'
-    if: (${{ env.web_build_flag == 'true' }} || ${{ ANDROID-BUILD-FLAG == 'true' }} || ${{ WINDOWS-BUILD-FLAG == 'true' }})
+    if: ${{ WEB-FLAG == 'true' }} || ${{ ANDROID-FLAG == 'true' }} || ${{ WINDOWS-FLAG == 'true' }}
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # env:
+    #   WEB
     steps:
       - uses: actions/checkout@v4
         with:
