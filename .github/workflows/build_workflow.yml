@@ -1,5 +1,11 @@
 ---
 name: Test, Analyze, Build
+
+env:
+  WEB-BUILD-FLAG: false
+  ANDROID-BUILD-FLAG: false
+  WINDOWS-BUILD-FLAG: false
+
 on:
   push:
     branches:
@@ -14,11 +20,6 @@ on:
     branches: ["main", "develop"]
 
   # workflow_dispatch:
-
-env:
-  WEB-BUILD-FLAG: false
-  ANDROID-BUILD-FLAG: false
-  WINDOWS-BUILD-FLAG: false
 
 jobs:
   test:
@@ -108,7 +109,7 @@ jobs:
     name: Post Build
     needs: [build, preBuild]
     # if: $WEB-BUILD-FLAG == 'true' || $ANDROID-BUILD-FLAG == 'true' || $WINDOWS-BUILD-FLAG == 'true'
-    if: ${{ env.WEB-BUILD-FLAG == 'true' || env.ANDROID-BUILD-FLAG == 'true' || env.WINDOWS-BUILD-FLAG == 'true' }}
+    if: ${{ WEB-BUILD-FLAG == 'true' }} || ${{ ANDROID-BUILD-FLAG == 'true' }} || ${{ WINDOWS-BUILD-FLAG == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -116,6 +117,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+
+      - run: |
+          echo "Yay"
 
       # - name: Download build-results.txt
       #   id: download-build-results
