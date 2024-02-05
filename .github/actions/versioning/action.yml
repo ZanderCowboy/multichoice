@@ -1,0 +1,30 @@
+name: versioning
+description: Create new version number and upload
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Update pubspec.yml version action
+      id: update-pubspec
+      uses: stikkyapp/update-pubspec-version@v1
+      with:
+        strategy: "none"
+        # bump-build: true
+        path: "./pubspec.yaml"
+
+    - name: Update version in pubspec.yaml
+      shell: bash
+      run: |
+        # sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
+        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update-pubspec.outputs.new-version }}/g" pubspec.yaml
+
+    - name: Upload pubspec.yaml
+      uses: actions/upload-artifact@v4
+      with:
+        name: pubspec-file
+        path: pubspec.yaml
+      run: echo "version-number=${{ steps.update-pubspec.outputs.new-version }}" >> $GITHUB_ENV

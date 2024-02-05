@@ -16,6 +16,9 @@ on:
       android-environment-flag:
         required: true
         type: string
+      android-versionNumber:
+        required: true
+        type: string
       windows-environment-flag:
         required: true
         type: string
@@ -23,7 +26,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # perhaps add a pre-build job here where the versioning and stuff is done
   buildWeb:
     name: "Build Web app"
     uses: ./.github/workflows/_build-web-app.yml
@@ -35,6 +37,7 @@ jobs:
     secrets: inherit
     with:
       environment-flag: ${{ inputs.android-environment-flag }}
+      versionNumber: ${{ inputs.android-versionNumber }}
   buildWindows:
     name: "Build Windows app"
     uses: ./.github/workflows/_build-windows-app.yml

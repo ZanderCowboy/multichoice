@@ -22,6 +22,10 @@ jobs:
     name: Pre-deploy
     runs-on: ubuntu-latest
     steps:
+      - name: 👁️ Check branch validity
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
       - run: echo "Predeploy Job Finished"
   deploy:
     name: Deploy Apps
