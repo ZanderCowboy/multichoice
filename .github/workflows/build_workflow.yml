@@ -89,13 +89,13 @@ jobs:
     name: Build Apps
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: analyze
+    needs: [analyze, pre-build]
     secrets: inherit
     with:
       web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      android-versionNumber: ${{ jobs.pre-build.outputs.version-number }}
+      android-versionNumber: ${{ version-number }}
       windows-environment-flag: "release"
 
   post-build:
