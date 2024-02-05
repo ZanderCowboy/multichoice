@@ -46,16 +46,6 @@ jobs:
       - name: Set up Flutter
         uses: ./.github/actions/setup-flutter
 
-      # - name: Set up Flutter
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: "3.16.x"
-      #     channel: "stable"
-      #     cache: true
-
-      # - name: Flutter Get Dependencies
-      #   run: flutter pub get
-
       - name: ⚠️ℹ️ Run Dart analysis
         uses: zgosalvez/github-actions-analyze-dart@v3
         with:
@@ -70,8 +60,6 @@ jobs:
           FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
           CREATE_LOG_FILE: true
           DISABLE_ERRORS: true
-
-      - run: echo "Analyzing completed."
 
   preBuild:
     name: Prebuild - Get versioning ready
