@@ -19,7 +19,11 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success'}}
+    if: |
+      (${{github.event_name == 'pull_request'}} && ${{github.event.action == 'opened'}} && ${{github.event.pull_request.base.ref == 'develop'}}) ||
+      (${{github.event.workflow_run.conclusion == 'success'}} &&
+      (${{github.ref == 'refs/heads/main'}} || ${{github.ref == 'refs/heads/develop'}}))
+    # if: ${{ github.event.workflow_run.conclusion == 'success'  }}
     steps:
       - run: echo "The triggering workflow 'Linting' passed and running tests"
       - run: echo "Tests completed."
@@ -47,6 +51,9 @@ jobs:
       - name: Flutter Get Dependencies
         run: flutter pub get
 
+      - name: Dart Build-runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: ⚠️ℹ️ Run Dart analysis
         uses: zgosalvez/github-actions-analyze-dart@v3
         with:
@@ -60,7 +67,7 @@ jobs:
           IGNORE_GITIGNORED_FILES: true
           FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
           CREATE_LOG_FILE: true
-          DISABLE_ERRORS: true
+          # DISABLE_ERRORS: true
 
       - run: echo "Analyzing completed."
 
