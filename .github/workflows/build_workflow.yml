@@ -95,27 +95,27 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: $web_build_flag
+      web-build-flag: $WEB-FLAG
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: $ANDROID-BUILD-FLAG
+      android-build-flag: $ANDROID-FLAG
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: $WINDOWS-BUILD-FLAG
+      windows-build-flag: $WINDOWS-FLAG
       windows-environment-flag: "release"
 
   # look into using the above jobs conclusion?
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    # if: $WEB-BUILD-FLAG == 'true' || $ANDROID-BUILD-FLAG == 'true' || $WINDOWS-BUILD-FLAG == 'true'
     if: ${{ WEB-FLAG == 'true' }} || ${{ ANDROID-FLAG == 'true' }} || ${{ WINDOWS-FLAG == 'true' }}
-
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # env:
-    #   WEB
+    env:
+      WEB-FLAG: false
+      ANDROID-FLAG: false
+      WINDOWS-FLAG: false
     steps:
       - uses: actions/checkout@v4
         with:
