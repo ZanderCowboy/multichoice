@@ -34,10 +34,10 @@ on:
     outputs:
       results:
         description: "All build results, true or false"
-        value: ${{ jobs.results.outputs.result }}
+        value: ${{ job.results.outputs.result }}
       web-success:
         description: "Web build results, true or false"
-        value: ${{ jobs.results.outputs.web }}
+        value: ${{ job.results.outputs.web }}
       android-success:
         description: "Android build results, true or false"
         value: ${{ jobs.results.outputs.android }}
