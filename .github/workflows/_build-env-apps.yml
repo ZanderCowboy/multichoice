@@ -84,6 +84,15 @@ jobs:
         if: jobs.buildWeb.result == 'success' || jobs.buildAndroid.result == 'success' || jobs.buildWindows.result == 'success'
         run: echo "result=true" >> "$GITHUB_OUTPUT"
 
+      - name: "Create build-results.txt with results"
+        run: echo ${{ steps.id-output-result.outputs.result }} > build-results.txt
+
+      - name: Upload results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-results
+          path: build-results.txt
+
       - name: "Run if Web build successfully"
         id: id-web-success
         if: jobs.buildWeb.result == 'success'

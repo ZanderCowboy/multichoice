@@ -114,6 +114,17 @@ jobs:
           echo ${{ needs.build.outputs.results == 'true' }}
           echo ${{ needs.build.outputs.results }}
 
+      - name: Download build-results.txt
+        id: download-build-results
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: _build-env-apps.yml
+          search_artifacts: true
+          name: build-results
+
+      # - name: "build version"
+      #   run: ""
+
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
