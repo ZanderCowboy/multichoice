@@ -19,6 +19,9 @@ jobs:
   predeploy:
     name: Pre-deploy
     runs-on: ubuntu-latest
+    if: |
+      (${{github.event_name == 'pull_request'}} && ${{github.event.action == 'opened'}} && ${{github.event.pull_request.base.ref == 'main'}}) ||
+      (${{github.event.workflow_run.conclusion == 'success'}} && ${{github.ref == 'refs/heads/main'}})
     steps:
       - run: echo "Predeploy Job Finished"
   deploy:
