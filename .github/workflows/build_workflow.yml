@@ -77,7 +77,7 @@ jobs:
     name: Prebuild - Get versioning ready
     runs-on: ubuntu-latest
     outputs:
-      version-number: ${{ steps.update-version-action.env.version-number }}
+      version-number: ${{ steps.update-version-action.outputs.version-number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
