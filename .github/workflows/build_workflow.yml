@@ -2,7 +2,7 @@
 name: Test, Analyze, Build
 
 env:
-  WEB-BUILD-FLAG: false
+  web_build_flag: false
   ANDROID-BUILD-FLAG: false
   WINDOWS-BUILD-FLAG: false
 
@@ -95,7 +95,7 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: $WEB-BUILD_FLAG
+      web-build-flag: $web_build_flag
       web-environment-flag: "release"
       # profile, release
       android-build-flag: $ANDROID-BUILD-FLAG
@@ -109,7 +109,7 @@ jobs:
     name: Post Build
     needs: [build, preBuild]
     # if: $WEB-BUILD-FLAG == 'true' || $ANDROID-BUILD-FLAG == 'true' || $WINDOWS-BUILD-FLAG == 'true'
-    if: ${{ WEB-BUILD-FLAG == 'true' }} || ${{ ANDROID-BUILD-FLAG == 'true' }} || ${{ WINDOWS-BUILD-FLAG == 'true' }}
+    if: (${{ env.web_build_flag == 'true' }} || ${{ ANDROID-BUILD-FLAG == 'true' }} || ${{ WINDOWS-BUILD-FLAG == 'true' }})
     runs-on: ubuntu-latest
     permissions:
       contents: write
