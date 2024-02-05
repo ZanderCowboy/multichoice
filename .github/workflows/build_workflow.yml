@@ -95,7 +95,7 @@ jobs:
       web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      android-versionNumber: ${{ version-number }}
+      android-versionNumber: ${{ needs.pre-build.outputs.version-number }}
       windows-environment-flag: "release"
 
   post-build:
