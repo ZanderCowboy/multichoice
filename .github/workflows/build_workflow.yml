@@ -2,9 +2,9 @@
 name: Test, Analyze, Build
 
 env:
-  WEB-FLAG: false
-  ANDROID-FLAG: false
-  WINDOWS-FLAG: false
+  WEB-FLAG: ${{false}}
+  ANDROID-FLAG: ${{false}}
+  WINDOWS-FLAG: ${{false}}
 
 on:
   push:
