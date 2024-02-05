@@ -98,10 +98,12 @@ jobs:
       windows-build-flag: true
       windows-environment-flag: "release"
 
+  # look into using the above jobs conclusion?
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    if: ${{ needs.build.outputs.results == 'true' }}
+    # if: ${{ needs.build.outputs.results == 'true' }}
+    if: jobs.build.conclusion == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write

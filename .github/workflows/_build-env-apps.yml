@@ -34,16 +34,16 @@ on:
     outputs:
       results:
         description: "All build results, true or false"
-        value: ${{ job.results.outputs.result }}
+        value: ${{ results.outputs.result }}
       web-success:
         description: "Web build results, true or false"
-        value: ${{ job.results.outputs.web }}
+        value: ${{ results.outputs.web }}
       android-success:
         description: "Android build results, true or false"
-        value: ${{ jobs.results.outputs.android }}
+        value: ${{ results.outputs.android }}
       windows-success:
         description: "Windows build results, true or false"
-        value: ${{ jobs.results.outputs.windows }}
+        value: ${{ results.outputs.windows }}
 
   # workflow_dispatch:
 
