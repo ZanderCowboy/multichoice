@@ -1,5 +1,5 @@
 ---
-name: Deploy Apps
+name: Deploy and Release
 on:
   push:
     branches:
@@ -8,8 +8,7 @@ on:
     branches:
       - "main"
   workflow_run:
-    workflows:
-      - "Test, Analyze, Build"
+    workflows: ["Test, Analyze, Build"]
     types:
       - "completed"
     branches:
@@ -20,7 +19,7 @@ on:
 jobs:
   predeploy:
     name: Pre-deploy
-    # if: ${{ github.event.workflow_run.conclusion == 'success'}}
+    if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -37,8 +36,7 @@ jobs:
       - run: echo "Predeploy Job Finished"
   deploy:
     name: Deploy Apps
-    if: github.event.pull_request.draft == false
-
+    if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: predeploy
     permissions:
@@ -48,5 +46,7 @@ jobs:
       web-environment-flag: "Web Prod"
       android-environment-flag: "Android Prod"
       android-package-name: "co.za.zanderkotze.multichoice"
+      android-track: "alpha"
+      android-release-name: "v1.0.0"
       android-deploy-status: "draft"
       windows-environment-flag: "Windows Prod"

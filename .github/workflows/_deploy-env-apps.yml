@@ -19,6 +19,12 @@ on:
       android-package-name:
         required: true
         type: string
+      android-track:
+        required: true
+        type: string
+      android-release-name:
+        required: true
+        type: string
       android-deploy-status:
         required: true
         type: string
@@ -44,6 +50,8 @@ jobs:
     with:
       environment-flag: ${{ inputs.android-environment-flag }}
       package-name: ${{ inputs.android-package-name }}
+      track: ${{ inputs.android-track }}
+      release-name: ${{ inputs.android-release-name }}
       deploy-status: ${{ inputs.android-deploy-status }}
   deployWindows:
     name: "Deploy Windows app"
