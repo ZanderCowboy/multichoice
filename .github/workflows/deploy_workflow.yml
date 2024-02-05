@@ -19,14 +19,16 @@ on:
 jobs:
   predeploy:
     name: Pre-deploy
-    if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - run: |
-          echo ${{ github.head_ref }}
+          echo "${{ github.head_ref }}"
+          echo "${{ github.ref == 'refs/heads/main' }}"
+          echo "${{ github.ref }}"
 
       - name: 👁️ Check branch validity
         if: ${{ github.head_ref }} != 'refs/heads/main'
@@ -34,6 +36,7 @@ jobs:
           echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
 
       - run: echo "Predeploy Job Finished"
+
   deploy:
     name: Deploy Apps
     if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }}
