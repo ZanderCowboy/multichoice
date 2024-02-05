@@ -25,4 +25,7 @@ runs:
       with:
         name: pubspec-file
         path: pubspec.yaml
+
+    - name: Echo version number
+      shell: bash
       run: echo "version-number=${{ steps.update-pubspec.outputs.new-version }}" >> $GITHUB_ENV
