@@ -71,14 +71,14 @@ jobs:
       - run: echo "Analyzing completed."
 
   pre-build:
-    name: Get versioning ready
+    name: Prebuild - Get versioning ready
     runs-on: ubuntu-latest
     outputs:
       version-number: ${{ steps.update-version-action.env.version-number }}
     steps:
       - name: Update version number and download
         id: update-version-action
-        uses: ./.github/actions/versioning
+        uses: ./.github/actions/app-versioning
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4

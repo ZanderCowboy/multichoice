@@ -20,18 +20,21 @@ on:
 jobs:
   predeploy:
     name: Pre-deploy
-    if: ${{ github.event.workflow_run.conclusion == 'success'}}
+    # if: ${{ github.event.workflow_run.conclusion == 'success'}}
     runs-on: ubuntu-latest
     steps:
-      - name: 👁️ Check branch validity
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
+      # - name: 👁️ Check branch validity
+      #   if: github.ref != 'refs/heads/main'
+      #   run: |
+      #     echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
+      - run: |
+          echo ${{ github.ref }}
 
       - run: echo "Predeploy Job Finished"
   deploy:
     name: Deploy Apps
     if: github.event.pull_request.draft == false
+
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: predeploy
     permissions:
