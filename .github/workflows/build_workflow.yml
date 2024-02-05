@@ -101,10 +101,13 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
+      web-build-flag: false
       web-environment-flag: "release"
       # profile, release
+      android-build-flag: false
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
+      windows-build-flag: false
       windows-environment-flag: "release"
 
   post-build:
@@ -131,7 +134,7 @@ jobs:
         id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          file_pattern: "pubspec.yaml pubspec.yml"
+          file_pattern: "pubspec.*"
 
       - name: "Run if changes have been detected"
         if: steps.auto-commit-action.outputs.changes_detected == 'true'
