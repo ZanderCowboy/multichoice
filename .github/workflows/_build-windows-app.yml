@@ -9,6 +9,7 @@ on:
 jobs:
   buildWindows:
     name: Build Windows
+    if: ${{ inputs.build-flag == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

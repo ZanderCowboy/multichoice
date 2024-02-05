@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - run: |
           echo "${{ github.head_ref }}"
@@ -35,7 +37,8 @@ jobs:
         run: |
           echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
 
-      - run: echo "Predeploy Job Finished"
+      - name: Job Finished
+        run: echo "Predeploy Job Finished"
 
   deploy:
     name: Deploy Apps
