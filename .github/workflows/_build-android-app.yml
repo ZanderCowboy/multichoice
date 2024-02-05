@@ -8,6 +8,10 @@ on:
       versionNumber:
         required: true
         type: string
+      build-flag:
+        required: true
+        type: boolean
+
 jobs:
   pre-build:
     name: Create missing elements for building apps
