@@ -73,11 +73,11 @@ jobs:
 
       - run: echo "Analyzing completed."
 
-  pre-build:
+  preBuild:
     name: Prebuild - Get versioning ready
     runs-on: ubuntu-latest
     outputs:
-      version-number: ${{ steps.update-version-action.outputs.version-number }}
+      version_number: "${{ steps.update-version-action.outputs.version }}"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
         uses: ./.github/actions/app-versioning
 
       - run: |
-          echo "version-number=${{ steps.update-version-action.env.version-number }}" >> $GITHUB_OUTPUT
+          echo "version=${{ steps.update-version-action.env.version-number }}" >> "$GITHUB_OUTPUT"
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -98,13 +98,13 @@ jobs:
     name: Build Apps
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: [analyze, pre-build]
+    needs: [analyze, preBuild]
     secrets: inherit
     with:
       web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      android-versionNumber: ${{ needs.pre-build.outputs.version-number }}
+      android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
       windows-environment-flag: "release"
 
   post-build:
