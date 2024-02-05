@@ -51,6 +51,9 @@ jobs:
       - name: Flutter Get Dependencies
         run: flutter pub get
 
+      - name: Dart Build-runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: ⚠️ℹ️ Run Dart analysis
         uses: zgosalvez/github-actions-analyze-dart@v3
         with:
