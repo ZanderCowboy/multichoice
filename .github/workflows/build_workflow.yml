@@ -95,20 +95,20 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: false
+      web-build-flag: true
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: false
+      android-build-flag: true
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: false
+      windows-build-flag: true
       windows-environment-flag: "release"
 
   # look into using the above jobs conclusion?
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    if: ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }}
+    if: ${{ 'true' == 'true' }} || ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
