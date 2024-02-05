@@ -45,7 +45,7 @@ on:
         description: "Windows build results, true or false"
         value: ${{ jobs.results.outputs.windows }}
 
-  workflow_dispatch:
+  # workflow_dispatch:
 
 jobs:
   buildWeb:
@@ -68,6 +68,7 @@ jobs:
     with:
       environment-flag: ${{ inputs.windows-environment-flag }}
       build-flag: ${{ inputs.windows-build-flag }}
+
   results:
     name: "Determine build sucess, failure, or skip"
     runs-on: ubuntu-latest
