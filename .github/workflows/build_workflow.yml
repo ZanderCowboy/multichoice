@@ -40,8 +40,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        # with:
+        #   fetch-depth: 0
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -76,6 +76,9 @@ jobs:
     outputs:
       version-number: ${{ steps.update-version-action.env.version-number }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Update version number and download
         id: update-version-action
         uses: ./.github/actions/app-versioning
