@@ -104,7 +104,7 @@ jobs:
       web-environment-flag: "release"
       # profile, release
       android-environment-flag: "release"
-      android-versionNumber: ${{ needs.pre-build.outputs.version-number }}
+      android-versionNumber: ${{ jobs.pre-build.outputs.version-number.contents }}
       windows-environment-flag: "release"
 
   post-build:
@@ -117,6 +117,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+
+      - name: Get pubspec.yaml version
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec-file
+          path: ${{ github.workspace }}/
+
+      - run: |
+          echo
 
       - name: Auto commit new pubspec version
         id: auto-commit-action

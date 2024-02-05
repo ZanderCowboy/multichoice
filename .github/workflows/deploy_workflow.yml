@@ -1,12 +1,12 @@
 ---
 name: Deploy Apps
 on:
-  # push:
-  #   branches:
-  #     - "main"
-  # pull_request:
-  #   branches:
-  #     - "main"
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
   workflow_run:
     workflows:
       - "Test, Analyze, Build"
@@ -26,13 +26,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - run: |
+          echo ${{ github.head_ref }}
+
       - name: 👁️ Check branch validity
-        if: github.ref != 'refs/heads/main'
+        if: ${{ github.head_ref }} != 'refs/heads/main'
         run: |
           echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
-
-      - run: |
-          echo ${{ github.ref }}
 
       - run: echo "Predeploy Job Finished"
   deploy:
