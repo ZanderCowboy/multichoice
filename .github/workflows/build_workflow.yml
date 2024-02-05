@@ -119,6 +119,7 @@ jobs:
         id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          commit_message: "Bump pubspec version to ${{ needs.preBuild.outputs.version_number }}"
           file_pattern: "pubspec.*"
 
       - name: "Run if changes have been detected"
