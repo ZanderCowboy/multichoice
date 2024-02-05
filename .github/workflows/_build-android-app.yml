@@ -15,7 +15,7 @@ on:
 jobs:
   pre-build:
     name: Create missing elements for building apps
-    if: ${{ inputs.build-flag == 'true' }}
+    if: ${{ inputs.build-flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

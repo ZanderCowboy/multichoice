@@ -57,15 +57,15 @@ jobs:
         with:
           working-directory: "${{github.workspace}}/"
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v6.0.0
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IGNORE_GITIGNORED_FILES: true
-          FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
-          CREATE_LOG_FILE: true
-          DISABLE_ERRORS: true
+      # - name: Super-linter
+      #   uses: super-linter/super-linter@v6.0.0
+      #   env:
+      #     DEFAULT_BRANCH: main
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     IGNORE_GITIGNORED_FILES: true
+      #     FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
+      #     CREATE_LOG_FILE: true
+      #     DISABLE_ERRORS: true
 
   preBuild:
     name: Prebuild - Get versioning ready
