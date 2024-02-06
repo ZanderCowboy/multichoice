@@ -9,6 +9,8 @@ on:
     branches:
       # - "main"
       - "tmp-develop"
+    # types:
+    #   - "opened"
 
   # workflow_run:
   #   workflows:
