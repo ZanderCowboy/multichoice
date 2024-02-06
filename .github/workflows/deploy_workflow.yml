@@ -1,31 +1,100 @@
 ---
-name: Deploy Apps
+name: Release and Deploy
 on:
   # push:
   #   branches:
   #     - "main"
-  # pull_request:
-  #   branches:
-  #     - "main"
+  pull_request:
+    branches:
+      - "main"
   workflow_run:
-    workflows:
-      - "Test, Analyze, Build"
+    workflows: ["Test, Analyze, Build"]
     types:
       - "completed"
+    branches:
+      - ["main", "develop"]
 
-  # workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-  predeploy:
-    name: Pre-deploy
+  tagAndRelease:
+    name: Git tagging and releases
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+
+      - name: Update version for release
+        id: id_update_pubspec_release
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "minor"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: Commit new changes for release
+        uses: ./.github/actions/auto-commit-version
+        with:
+          version_number: ${{ steps.id_update_pubspec_release.outputs.version_number }}
+          download-filename: "pubspec-file-release"
+
+      # step to check for previous tags
+
+      - name: Create tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "v${{ steps.id_update_pubspec_release.outputs.new_version }}"
+          message: "Release ${{ steps.id_update_pubspec_release.outputs.new_version }}"
+
+      - name: Create GitHub release
+        if: ${{ steps.tag_create.outputs.tag_exists == false}}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ steps.id_update_pubspec_release.outputs.new_version }}
+          name: Release v${{ steps.id_update_pubspec_release.outputs.new_version }}
+          body: Release notes here
+          draft: true
+          prerelease: true
+          generateReleaseNotes: true
+
+  preDeploy:
+    name: Setting up for Deploy
+    needs: tagAndRelease
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Predeploy Job Finished"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+
+      # - run: |
+      #     echo "${{ github.head_ref }}"
+      #     echo "${{ github.ref == 'refs/heads/main' }}"
+      #     echo "${{ github.ref }}"
+
+      # - name: 👁️ Check branch validity
+      #   if: ${{ github.head_ref }} != 'refs/heads/main'
+      #   run: |
+      #     echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
+
+      - name: Job Finished
+        run: echo "preDeploy Job Finished"
+
+      - name: "Echo commands"
+        run: |
+          echo "${{ github.head_ref }}"
+          echo "${{ github.ref == 'refs/heads/main' }}"
+          echo "${{ github.ref }}"
+
   deploy:
     name: Deploy Apps
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/_deploy-env-apps.yml
-    needs: predeploy
+    needs: preDeploy
     permissions:
       contents: write
     secrets: inherit
@@ -33,5 +102,7 @@ jobs:
       web-environment-flag: "Web Prod"
       android-environment-flag: "Android Prod"
       android-package-name: "co.za.zanderkotze.multichoice"
+      android-track: "alpha"
+      android-release-name: "v1.0.0"
       android-deploy-status: "draft"
       windows-environment-flag: "Windows Prod"

@@ -9,9 +9,16 @@ on:
       package-name:
         required: true
         type: string
+      track:
+        required: true
+        type: string
+      release-name:
+        required: true
+        type: string
       deploy-status:
         required: true
         type: string
+
   workflow_dispatch:
 
 jobs:
@@ -30,13 +37,6 @@ jobs:
           workflow_conclusion: success
           search_artifacts: true
           name: android-release
-          # workflow:
-          # run_id: ${{ github.event.workflow_run.id }}
-          # name: android-release
-      # - name: Get Android Build from artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: android-release
 
       - name: Release Build to internal track
         uses: r0adkll/upload-google-play@v1
@@ -44,8 +44,8 @@ jobs:
           releaseFiles: app-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: ${{ inputs.package-name }}
-          track: alpha
-          # releaseName: v1.0.0
+          track: ${{ inputs.track }}
+          releaseName: ${{ inputs.release-name }}
           # inAppUpdatePriority: 2
           # userFraction: 0.5
           status: ${{ inputs.deploy-status }}

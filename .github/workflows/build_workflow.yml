@@ -6,8 +6,9 @@ on:
       - "develop"
   pull_request:
     branches:
+      - "main"
       - "develop"
-  workflow_run: # this will get triggered on main branch only
+  workflow_run:
     workflows: ["Linting"]
     types:
       - completed
@@ -18,10 +19,7 @@ on:
 jobs:
   test:
     name: Test
-    # if: github.event.pull_request.draft == false
-    # uses: ./.github/workflows/_test_with_coverage.yml
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success'}}
     steps:
       - run: echo "The triggering workflow 'Linting' passed and running tests"
       - run: echo "Tests completed."
@@ -31,6 +29,12 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     needs: test
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     steps:
       - run: echo "Starting analyze"
 
@@ -40,40 +44,82 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
-
-      - name: Flutter Get Dependencies
-        run: flutter pub get
+        uses: ./.github/actions/setup-flutter
 
       - name: ⚠️ℹ️ Run Dart analysis
         uses: zgosalvez/github-actions-analyze-dart@v3
         with:
           working-directory: "${{github.workspace}}/"
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v6.0.0
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IGNORE_GITIGNORED_FILES: true
-          FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
-          CREATE_LOG_FILE: true
-          DISABLE_ERRORS: true
+      # - name: Super-linter
+      #   uses: super-linter/super-linter@v6.0.0
+      #   env:
+      #     DEFAULT_BRANCH: main
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     IGNORE_GITIGNORED_FILES: true
+      #     FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
+      #     CREATE_LOG_FILE: true
+      #     DISABLE_ERRORS: true
 
-      - run: echo "Analyzing completed."
+  preBuild:
+    name: Prebuild - Get versioning ready
+    runs-on: ubuntu-latest
+    outputs:
+      version_number: ${{ steps.id_out.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update version number and download
+        id: id_updated_version
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "none"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file"
+
+      - id: id_out
+        run: |
+          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+
+      - name: Get pubspec.yaml version
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec-file
 
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: analyze
+    needs: [analyze, preBuild]
     secrets: inherit
     with:
+      web-build-flag: true
       web-environment-flag: "release"
       # profile, release
+      android-build-flag: true
       android-environment-flag: "release"
+      android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
+      windows-build-flag: true
       windows-environment-flag: "release"
+
+  # look into using the above jobs conclusion?
+  # look into using a config file in main directory that determines conditionals
+  post-build:
+    name: Post Build
+    needs: [build, preBuild]
+    if: ${{ 'true' == 'true' }} || ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Call Auto Commit Version action
+        uses: ./.github/actions/auto-commit-version
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          download_filename: "pubspec-file"

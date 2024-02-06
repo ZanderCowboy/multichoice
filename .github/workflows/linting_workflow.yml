@@ -27,18 +27,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
-
-      - name: Get dependencies
-        run: flutter pub get
+      - name: Set up Flutter
+        uses: ./.github/actions/setup-flutter
 
       - name: Flutter analyze
         run: flutter analyze
-      
+
       - name: Analyzing code with Dart analyzer
         run: dart analyze --fatal-infos

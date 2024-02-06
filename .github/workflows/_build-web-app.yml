@@ -5,24 +5,21 @@ on:
       environment-flag:
         required: true
         type: string
+      build-flag:
+        required: true
+        type: boolean
 
 jobs:
   buildWeb:
     name: Build Web
+    if: ${{ inputs.build-flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
-
-      - name: Get dependencies
-        run: flutter pub get
+        uses: ./.github/actions/setup-flutter
 
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --${{ inputs.environment-flag }}

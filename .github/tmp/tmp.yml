@@ -1,0 +1,25 @@
+name: Build and Deploy
+on:
+  # push:
+  #   branches:
+  #     - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get version from pubspec.yaml
+        run: |
+          APP_VERSION=$(grep -o 'version:.*' pubspec.yaml | awk '{print $2}')
+          echo "Current version: $APP_VERSION"
+          # Increment the version (e.g., using semantic-release or manually)
+          # Update your pubspec.yaml with the new version
+          echo "New version: $NEW_VERSION"
+          echo "version: $NEW_VERSION" > pubspec.yaml
+      - name: Commit and push updated pubspec.yaml
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pubspec.yaml
+          git commit -m "Bump version"
+          git push

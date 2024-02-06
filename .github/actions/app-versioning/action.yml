@@ -1,0 +1,48 @@
+name: App Versioning
+description: "Create new version number and upload"
+inputs:
+  bump-strategy:
+    required: false
+    description: "Specifies which strategy need to be used for bumping version. Possible values: 'major', 'minor', 'patch', 'none'."
+    default: "none"
+  file-path:
+    required: true
+    description: "Specifies the path to the file"
+  upload-filename:
+    required: true
+    description: "Specifies the id/name for the uploaded artifact"
+outputs:
+  version-number:
+    description: "New version number"
+    value: ${{ steps.id_out.outputs.version-number }}
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Update pubspec.yml version action
+      id: update-pubspec
+      uses: stikkyapp/update-pubspec-version@v1
+      with:
+        # strategy: "none"
+        strategy: ${{ inputs.bump-strategy }}
+        # path: "./pubspec.yaml"
+        path: ${{ inputs.file-path }}
+
+    - name: Update version in pubspec.yaml
+      shell: bash
+      run: |
+        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update-pubspec.outputs.new-version }}/g" pubspec.yaml
+
+    - name: Upload pubspec.yaml
+      uses: actions/upload-artifact@v4
+      with:
+        # name: pubspec-file
+        name: ${{ inputs.upload-filename }}
+        path: pubspec.yaml
+
+    - name: Echo version number
+      id: id_out
+      shell: bash
+      run: echo "version-number=${{ steps.update-pubspec.outputs.new-version }}" >> $GITHUB_OUTPUT

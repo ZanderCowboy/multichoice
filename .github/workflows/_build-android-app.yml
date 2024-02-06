@@ -5,21 +5,27 @@ on:
       environment-flag:
         required: true
         type: string
-      
+      versionNumber:
+        required: true
+        type: string
+      build-flag:
+        required: true
+        type: boolean
+
 jobs:
   pre-build:
     name: Create missing elements for building apps
-    if: github.event.pull_request.draft == false
+    if: ${{ inputs.build-flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Flutter and Java
-        uses: ./.github/workflows/setup-java-flutter
+        uses: ./.github/actions/setup-java-flutter
 
       - name: Create version number
-        uses: ./.github/workflows/android-versioning
+        uses: ./.github/actions/android-versioning
 
   buildAndroid:
     name: Build Android
@@ -31,67 +37,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Cache dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.gradle/caches
-      #       ~/.pub-cache
-      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-gradle-
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-java-flutter
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: gradle
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.16.x"
-          channel: "stable"
-          cache: true
-
-      - name: Get dependencies
-        shell: bash
-        run: flutter pub get
-
-      - name: Get version.txt
+      - name: Get pubspec.yaml
         uses: actions/download-artifact@v4
         with:
-          name: gitversion
-
-      - name: Create new file without newline char from version.txt
-        run: tr -d '\n' < version.txt > version1.txt
-
-      - name: Read version
-        id: version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: version1.txt
-
-      - name: Update version in YAML
-        run: |
-          sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
-          sed -Ei "s/^version: (.*)/version: ${{ steps.version.outputs.content }}+${{ github.run_number }}/g" pubspec.yaml
-
-      - name: Update pubspec.yml version action
-        id: update-pubspec
-        uses: stikkyapp/update-pubspec-version@v1
-        with:
-          strategy: 'none'
-          # bump-build: true
-          path: './pubspec.yaml'
-
-      - name: Upload pubspec.yaml
-        uses: actions/upload-artifact@v4
-        with:
-          name: pubspec
-          path: pubspec.yaml
-      
+          name: pubspec-file
 
       - name: Download Android keystore
         id: android_keystore
