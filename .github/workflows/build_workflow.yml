@@ -71,7 +71,7 @@ jobs:
     name: Prebuild - Get versioning ready
     runs-on: ubuntu-latest
     outputs:
-      version_number: "${{ steps.id_updated_version.outputs.version }}"
+      version_number: ${{ steps.id_out.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,8 +84,9 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file"
 
-      - run: |
-          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> "$GITHUB_OUTPUT"
+      - id: id_out
+        run: |
+          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4

@@ -25,8 +25,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        # with:
+        #   fetch-depth: 0
 
       - name: Update version for release
         id: id_update_pubspec_release
@@ -108,20 +108,21 @@ jobs:
       #     git tag v${{ github.run_number }}
       #     git push origin v${{ github.run_number }}
 
-  predeploy:
+  preDeploy:
     name: Setting up for Deploy
+    needs: tagAndRelease
     # if: ${{ github.event.workflow_run.conclusion == 'success'}} && ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        # with:
+        #   fetch-depth: 0
 
-      - run: |
-          echo "${{ github.head_ref }}"
-          echo "${{ github.ref == 'refs/heads/main' }}"
-          echo "${{ github.ref }}"
+      # - run: |
+      #     echo "${{ github.head_ref }}"
+      #     echo "${{ github.ref == 'refs/heads/main' }}"
+      #     echo "${{ github.ref }}"
 
       # - name: 👁️ Check branch validity
       #   if: ${{ github.head_ref }} != 'refs/heads/main'
@@ -129,7 +130,7 @@ jobs:
       #     echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
 
       - name: Job Finished
-        run: echo "Predeploy Job Finished"
+        run: echo "preDeploy Job Finished"
 
       - name: "Echo commands"
         run: |
@@ -141,7 +142,7 @@ jobs:
     name: Deploy Apps
     if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/_deploy-env-apps.yml
-    needs: predeploy
+    needs: preDeploy
     permissions:
       contents: write
     secrets: inherit
