@@ -1,0 +1,12 @@
+Linting
+ON PUSH - ANY BRANCH
+ON PR - ANY BRANCH
+
+Building
+ON PR - FROM FEATURE TO DEVELOP
+
+Tag and Release
+ON PR - FROM DEVELOP TO MAIN
+
+Deploy
+ON PUSH - TO MAIN
