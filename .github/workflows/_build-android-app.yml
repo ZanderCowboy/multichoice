@@ -13,23 +13,9 @@ on:
         type: boolean
 
 jobs:
-  pre-build:
-    name: Create missing elements for building apps
-    if: ${{ inputs.build-flag == true }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter and Java
-        uses: ./.github/actions/setup-java-flutter
-
-      - name: Create version number
-        uses: ./.github/actions/android-versioning
-
   buildAndroid:
     name: Build Android
-    needs: pre-build
+    if: ${{ inputs.build-flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

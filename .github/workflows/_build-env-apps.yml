@@ -1,13 +1,5 @@
 name: Build Android, Web, & Windows Apps
 on:
-  # push:
-  #   branches:
-  #     - "main"
-  #     - "develop"
-  # pull_request:
-  #   branches:
-  #     - "main"
-  #     - "develop"
   workflow_call:
     inputs:
       web-build-flag:
@@ -68,42 +60,3 @@ jobs:
     with:
       environment-flag: ${{ inputs.windows-environment-flag }}
       build-flag: ${{ inputs.windows-build-flag }}
-
-  # results:
-  #   name: "Determine build sucess, failure, or skip"
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     result: ${{ steps.id-output-result.outputs.result }}
-  #     web: ${{ steps.id-web-success.outputs.web }}
-  #     android: ${{ steps.id-android-success.outputs.android }}
-  #     windows: ${{ steps.id-windows-success.outputs.windows }}
-
-  #   steps:
-  #     - name: "Output result"
-  #       id: id-output-result
-  #       if: jobs.buildWeb.result == 'success' || jobs.buildAndroid.result == 'success' || jobs.buildWindows.result == 'success'
-  #       run: echo "result=true" >> "$GITHUB_OUTPUT"
-
-  #     - name: "Create build-results.txt with results"
-  #       run: echo ${{ steps.id-output-result.outputs.result }} > build-results.txt
-
-  #     - name: Upload results as artifact
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: build-results
-  #         path: build-results.txt
-
-  #     - name: "Run if Web build successfully"
-  #       id: id-web-success
-  #       if: jobs.buildWeb.result == 'success'
-  #       run: echo "web=true" >> "$GITHUB_OUTPUT"
-
-  #     - name: "Run if Android build successfully"
-  #       id: id-android-success
-  #       if: jobs.buildAndroid.result == 'success'
-  #       run: echo "android=true" >> "$GITHUB_OUTPUT"
-
-  #     - name: "Run if Windows build successfully"
-  #       id: id-windows-success
-  #       if: jobs.buildWindows.result == 'success'
-  #       run: echo "windows=true" >> "$GITHUB_OUTPUT"

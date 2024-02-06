@@ -1,24 +1,24 @@
 ---
 name: Release and Deploy
 on:
-  # push:
+  # pull_request:
   #   branches:
   #     - "main"
-  pull_request:
-    branches:
-      - "main"
   workflow_run:
-    workflows: ["Test, Analyze, Build"]
+    workflows:
+      - "Test, Analyze, Build"
     types:
       - "completed"
     branches:
-      - ["main", "develop"]
+      - "main"
+      - "develop"
 
   workflow_dispatch:
 
 jobs:
   tagAndRelease:
     name: Git tagging and releases
+    # if: ${{ github.head_ref == 'main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -33,25 +33,27 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
+          bump-build: "true"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Commit new changes for release
         uses: ./.github/actions/auto-commit-version
         with:
-          version_number: ${{ steps.id_update_pubspec_release.outputs.version_number }}
-          download-filename: "pubspec-file-release"
+          version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
+          download_filename: "pubspec-file-release"
 
       # step to check for previous tags
 
       - name: Create tag
+        if: success()
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "v${{ steps.id_update_pubspec_release.outputs.new_version }}"
           message: "Release ${{ steps.id_update_pubspec_release.outputs.new_version }}"
 
       - name: Create GitHub release
-        if: ${{ steps.tag_create.outputs.tag_exists == false}}
+        if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ steps.id_update_pubspec_release.outputs.new_version }}
@@ -64,6 +66,7 @@ jobs:
   preDeploy:
     name: Setting up for Deploy
     needs: tagAndRelease
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -92,7 +95,7 @@ jobs:
 
   deploy:
     name: Deploy Apps
-    if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }}
+    if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }} && success()
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: preDeploy
     permissions:

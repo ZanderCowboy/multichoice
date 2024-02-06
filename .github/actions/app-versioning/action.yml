@@ -5,6 +5,10 @@ inputs:
     required: false
     description: "Specifies which strategy need to be used for bumping version. Possible values: 'major', 'minor', 'patch', 'none'."
     default: "none"
+  bump-build:
+    required: false
+    description: "Specifies whether to bump the build version"
+    default: "false"
   file-path:
     required: true
     description: "Specifies the path to the file"
@@ -25,9 +29,8 @@ runs:
       id: update-pubspec
       uses: stikkyapp/update-pubspec-version@v1
       with:
-        # strategy: "none"
         strategy: ${{ inputs.bump-strategy }}
-        # path: "./pubspec.yaml"
+        bump-build: ${{ inputs.bump-build }}
         path: ${{ inputs.file-path }}
 
     - name: Update version in pubspec.yaml
@@ -38,7 +41,6 @@ runs:
     - name: Upload pubspec.yaml
       uses: actions/upload-artifact@v4
       with:
-        # name: pubspec-file
         name: ${{ inputs.upload-filename }}
         path: pubspec.yaml
 
