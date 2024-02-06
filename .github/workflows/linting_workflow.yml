@@ -5,10 +5,12 @@ on:
     branches:
       - "main"
       - "develop"
+      - "tmp-develop"
   pull_request:
     branches:
       - "main"
       - "develop"
+      - "tmp-develop"
   workflow_dispatch:
 
 jobs:

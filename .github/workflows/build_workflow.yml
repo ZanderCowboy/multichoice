@@ -3,21 +3,25 @@ name: Test, Analyze, Build
 on:
   push:
     branches:
-      - "develop"
+      # - "develop"
+      - "tmp-develop"
   pull_request:
     branches:
-      - "main"
-      - "develop"
-  workflow_run:
-    workflows:
-      - "Linting"
-    types:
-      - completed
-    branches:
-      - "main"
-      - "develop"
+      # - "main"
+      - "tmp-develop"
+    # types:
+    #   - "opened"
 
-  # workflow_dispatch:
+  # workflow_run:
+  #   workflows:
+  #     - "Linting"
+  #   types:
+  #     - completed
+  #   branches:
+  #     - "main"
+  #     - "develop"
+
+  workflow_dispatch:
 
 jobs:
   test:
