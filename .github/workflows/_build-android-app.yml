@@ -16,7 +16,6 @@ jobs:
   buildAndroid:
     name: Build Android
     if: ${{ inputs.build-flag == true }}
-    needs: pre-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
