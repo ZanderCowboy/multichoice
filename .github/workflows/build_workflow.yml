@@ -9,10 +9,13 @@ on:
       - "main"
       - "develop"
   workflow_run:
-    workflows: ["Linting"]
+    workflows:
+      - "Linting"
     types:
       - completed
-    branches: ["main", "develop"]
+    branches:
+      - "main"
+      - "develop"
 
   # workflow_dispatch:
 

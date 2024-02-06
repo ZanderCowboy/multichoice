@@ -25,9 +25,7 @@ runs:
       id: update-pubspec
       uses: stikkyapp/update-pubspec-version@v1
       with:
-        # strategy: "none"
         strategy: ${{ inputs.bump-strategy }}
-        # path: "./pubspec.yaml"
         path: ${{ inputs.file-path }}
 
     - name: Update version in pubspec.yaml
@@ -38,7 +36,6 @@ runs:
     - name: Upload pubspec.yaml
       uses: actions/upload-artifact@v4
       with:
-        # name: pubspec-file
         name: ${{ inputs.upload-filename }}
         path: pubspec.yaml
 

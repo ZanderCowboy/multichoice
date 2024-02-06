@@ -1,18 +1,17 @@
 ---
 name: Release and Deploy
 on:
-  # push:
-  #   branches:
-  #     - "main"
   pull_request:
     branches:
       - "main"
   workflow_run:
-    workflows: ["Test, Analyze, Build"]
+    workflows:
+      - "Test, Analyze, Build"
     types:
       - "completed"
     branches:
-      - ["main", "develop"]
+      - "main"
+      - "develop"
 
   workflow_dispatch:
 
