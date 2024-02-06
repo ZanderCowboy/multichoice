@@ -1,0 +1,44 @@
+---
+name: Linting
+on:
+  push:
+    branches:
+      - "main"
+      - "develop"
+  pull_request:
+    branches:
+      - "main"
+      - "develop"
+  workflow_dispatch:
+
+jobs:
+  run-lint:
+    name: Flutter Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Flutter analyze
+        run: flutter analyze
+      
+      - name: Analyzing code with Dart analyzer
+        run: dart analyze --fatal-infos
