@@ -14,7 +14,6 @@ runs:
       uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref }}
-        token: ${{ secrets.PAT }}
 
     - name: Get pubspec.yaml version
       uses: actions/download-artifact@v4
@@ -28,7 +27,6 @@ runs:
       with:
         commit_message: "Bump pubspec version to '${{ inputs.version_number }}'"
         file_pattern: "pubspec.*"
-        push_options: --force
 
     - name: "Run if changes have been detected"
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
