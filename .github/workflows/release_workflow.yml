@@ -122,11 +122,11 @@ jobs:
           # tag: "v${{ steps.id_update_pubspec_release.outputs.version-number }}"
           # tag: "v${{ needs.bumpVersion.outputs.version_number }}"
           # tag: "v${{ steps.id_version.env.version }}"
-          tag: "v$version"
+          tag: "v${{ env.version }}"
           # message: "Release ${{ steps.id_update_pubspec_release.outputs.version-number }}"
           # message: "Release ${{ needs.bumpVersion.outputs.version_number }}"
           # message: "Release ${{ steps.id_version.env.version }}"
-          message: "Release $version"
+          message: "Release ${{version}}"
 
       - name: Create GitHub release
         if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
