@@ -16,6 +16,7 @@ jobs:
   # bump
   bumpVersion:
     name: Bump build number
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
@@ -81,6 +82,7 @@ jobs:
   # release
   tagAndRelease:
     name: Git tagging and releases
+    needs: [commitBump]
     if: github.event.pull_request.draft == false && success()
     runs-on: ubuntu-latest
     permissions:
