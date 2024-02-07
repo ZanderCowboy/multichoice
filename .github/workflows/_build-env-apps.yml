@@ -26,21 +26,6 @@ on:
       windows-environment-flag:
         required: true
         type: string
-    # outputs:
-    #   results:
-    #     description: "All build results, true or false"
-    #     value: ${{ results.outputs.result }}
-    #   web-success:
-    #     description: "Web build results, true or false"
-    #     value: ${{ results.outputs.web }}
-    #   android-success:
-    #     description: "Android build results, true or false"
-    #     value: ${{ results.outputs.android }}
-    #   windows-success:
-    #     description: "Windows build results, true or false"
-    #     value: ${{ results.outputs.windows }}
-
-  # workflow_dispatch:
 
 jobs:
   buildWeb:

@@ -13,7 +13,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # bump
   bumpVersion:
     name: Bump build number
     if: github.event.pull_request.draft == false
@@ -41,7 +40,6 @@ jobs:
         with:
           name: pubspec-file-release
 
-  # build
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
@@ -59,7 +57,6 @@ jobs:
       windows-build-flag: true
       windows-environment-flag: "release"
 
-  # commit
   commitBump:
     name: Auto Commit Bumped Version
     needs: [build, bumpVersion]
@@ -79,8 +76,6 @@ jobs:
           version_number: ${{ needs.bumpVersion.outputs.version_number }}
           download_filename: "pubspec-file-release"
 
-  # tag
-  # release
   tagAndRelease:
     name: Git tagging and releases
     needs: [commitBump, bumpVersion]
@@ -94,52 +89,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Update version for release
-      #   id: id_update_pubspec_release
-      #   uses: ./.github/actions/app-versioning
-      #   with:
-      #     bump-strategy: "minor"
-      #     bump-build: "true"
-      #     file-path: "./pubspec.yaml"
-      #     upload-filename: "pubspec-file-release"
-
-      # - name: Commit new changes for release
-      #   uses: ./.github/actions/auto-commit-version
-      #   with:
-      #     # version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
-      #     version_number: ${{ needs.bumpVersion.outputs.version_number }}
-      #     download_filename: "pubspec-file-release"
-
-      # step to check for previous tags
       - id: id_version
-        # uses:
         run: |
           echo "version=${{ needs.bumpVersion.outputs.version_number }}" >> $GITHUB_ENV
 
       - name: Create tag
         uses: rickstaa/action-create-tag@v1
         with:
-          # tag: "v${{ steps.id_update_pubspec_release.outputs.version-number }}"
-          # tag: "v${{ needs.bumpVersion.outputs.version_number }}"
-          # tag: "v${{ steps.id_version.env.version }}"
           tag: "v${{ env.version }}"
-          # message: "Release ${{ steps.id_update_pubspec_release.outputs.version-number }}"
-          # message: "Release ${{ needs.bumpVersion.outputs.version_number }}"
-          # message: "Release ${{ steps.id_version.env.version }}"
           message: "Release ${{ env.version}}"
 
       - name: Create GitHub release
         if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
         uses: ncipollo/release-action@v1
         with:
-          # tag: v${{ steps.id_update_pubspec_release.outputs.version-number }}
-          # tag: "v${{ needs.bumpVersion.outputs.version_number }}"
-          # tag: "v${{ steps.id_version.outputs.version }}"
-          tag: "v$version"
-          # name: Release v${{ steps.id_update_pubspec_release.outputs.version-number }}
-          # name: "Release v${{ needs.bumpVersion.outputs.version_number }}"
-          # name: "v${{ steps.id_version.outputs.version }}"
-          name: "v$version"
+          tag: "v${{ env.version }}"
+          name: "v${{ env.version }}"
           body: Release notes here
           draft: true
           prerelease: true
