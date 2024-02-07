@@ -15,15 +15,6 @@ on:
       - "reopened"
       - "ready_for_review"
 
-  # workflow_run:
-  #   workflows:
-  #     - "Linting"
-  #   types:
-  #     - completed
-  #   branches:
-  #     - "main"
-  #     - "develop"
-
   workflow_dispatch:
 
 jobs:
@@ -72,7 +63,7 @@ jobs:
       #     DISABLE_ERRORS: true
 
   preBuild:
-    name: Prebuild - Get versioning ready
+    name: Bump build number
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
@@ -99,7 +90,7 @@ jobs:
 
   build:
     name: Build Apps
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [analyze, preBuild]
     secrets: inherit
