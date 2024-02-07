@@ -49,6 +49,7 @@ jobs:
     needs: [bumpVersion]
     secrets: inherit
     with:
+      pubspec-filename: "pubspec-file-release"
       web-build-flag: true
       web-environment-flag: "release"
       # profile, release

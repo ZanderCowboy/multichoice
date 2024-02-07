@@ -2,6 +2,9 @@ name: Windows Build workflow
 on:
   workflow_call:
     inputs:
+      pubspec-filename:
+        required: true
+        type: string
       environment-flag:
         required: true
         type: string

@@ -95,6 +95,7 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
+      pubspec-filename: "pubspec-file"
       web-build-flag: true
       web-environment-flag: "release"
       # profile, release
