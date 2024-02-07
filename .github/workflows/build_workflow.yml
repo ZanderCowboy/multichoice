@@ -96,10 +96,10 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      web-build-flag: true
+      web-build-flag: false
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: true
+      android-build-flag: false
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
       windows-build-flag: true
