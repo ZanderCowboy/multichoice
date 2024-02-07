@@ -5,10 +5,14 @@ on:
       environment-flag:
         required: true
         type: string
+      build-flag:
+        required: true
+        type: boolean
 
 jobs:
   buildWindows:
     name: Build Windows
+    if: ${{ inputs.build-flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

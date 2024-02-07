@@ -41,10 +41,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+  pull-requests: read
 
 jobs:
-  setup:
+  sonarcloud:
+    name: Set up and Run SonarCloud
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,26 +53,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Cache dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.gradle/caches
-      #       ~/.pub-cache
-      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/pubspec.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-gradle-
-
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17"
-          cache: gradle
 
-  sonarcloud:
-    runs-on: ubuntu-latest
-    steps:
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -85,6 +72,9 @@ jobs:
             -Dsonar.organization=zandercowboy
             -Dsonar.projectName=multichoice
             -Dsonar.projectVersion=1.0.0
+            -Dsonar.c.file.suffixes=-
+            -Dsonar.cpp.file.suffixes=-
+            -Dsonar.objc.file.suffixes=-
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched

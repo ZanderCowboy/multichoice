@@ -1,0 +1,70 @@
+---
+name: Deploy Apps
+on:
+  pull_request:
+    branches:
+      - "develop" # change back to main
+    types:
+      - "opened"
+      - "synchronize"
+      - "reopened"
+      - "ready_for_review"
+
+  # workflow_run:
+  #   workflows:
+  #     - "Test, Analyze, Build"
+  #   types:
+  #     - "completed"
+  #   branches:
+  #     - "main"
+  #     - "develop"
+
+  workflow_dispatch:
+
+jobs:
+  tagAndRelease:
+    name: Git tagging and releases
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+
+      - name: Update version for release
+        id: id_update_pubspec_release
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "minor"
+          bump-build: "true"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: Commit new changes for release
+        uses: ./.github/actions/auto-commit-version
+        with:
+          version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
+          download_filename: "pubspec-file-release"
+
+      # step to check for previous tags
+
+      - name: Create tag
+        if: success()
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "v${{ steps.id_update_pubspec_release.outputs.version-number }}"
+          message: "Release ${{ steps.id_update_pubspec_release.outputs.version-number }}"
+
+      - name: Create GitHub release
+        if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ steps.id_update_pubspec_release.outputs.version-number }}
+          name: Release v${{ steps.id_update_pubspec_release.outputs.version-number }}
+          body: Release notes here
+          draft: true
+          prerelease: true
+          generateReleaseNotes: true
