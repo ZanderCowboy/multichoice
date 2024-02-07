@@ -95,21 +95,19 @@ jobs:
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: true
+      pubspec-filename: "pubspec-file"
+      web-build-flag: false
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: true
+      android-build-flag: false
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
       windows-build-flag: true
       windows-environment-flag: "release"
 
-  # look into using the above jobs conclusion?
-  # look into using a config file in main directory that determines conditionals
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    if: ${{ 'true' == 'true' }} || ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
