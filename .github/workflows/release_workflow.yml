@@ -77,7 +77,7 @@ jobs:
 
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build]
+    needs: [build, bumpVersion]
     if: success()
     runs-on: ubuntu-latest
     permissions:
