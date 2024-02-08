@@ -82,18 +82,25 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file"
 
+      # - name: read-config-file
+      #   uses: pietrobolcato/action-read-yaml@1.1.0
+      #   id: read_config_yaml
+      #   with:
+      #     config: ${{ github.workspace }}/config.yml
+
       - name: read-config-file
-        uses: pietrobolcato/action-read-yaml@1.1.0
+        uses: actions-tools/yaml-outputs@v2
         id: read_config_yaml
         with:
-          config: ${{ github.workspace }}/config.yml
+          file-path: "${{ github.workspace }}/config.yml"
+          separator: "."
 
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          echo "web_build_flag=${{ steps.read_config_yaml.outputs['build.web_build_flag'] }}" >> $GITHUB_OUTPUT
-          echo "android_build_flag=${{ steps.read_config_yaml.outputs['build.android_build_flag'] }}" >> $GITHUB_OUTPUT
-          echo "windows_build_flag=${{ steps.read_config_yaml.outputs['build.windows_build_flag'] }}" >> $GITHUB_OUTPUT
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build.web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build.android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build.windows_build_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
