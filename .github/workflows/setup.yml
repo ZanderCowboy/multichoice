@@ -28,7 +28,7 @@ jobs:
       #     echo "PRERELEASE=$(yaml get ${{ github.workspace }}/config.yml release.prerelease)" >> $GITHUB_ENV
       #   shell: bash
       - name: read-yaml-file
-        uses: pietrobolcato/action-read-yaml@v1
+        uses: pietrobolcato/action-read-yaml@1.1.0
         id: read_action_yaml
         with:
           config: ${{ github.workspace }}/config.yml
