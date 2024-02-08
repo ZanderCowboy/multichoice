@@ -18,33 +18,42 @@ jobs:
       # - name: Setup Flutter and Java
       #   uses: ./.github/actions/setup-java-flutter
 
-      - name: Install js-yaml
-        run: npm install js-yaml fs path
+      # - name: Install js-yaml
+      #   run: npm install js-yaml fs path
 
-      - id: read_config
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const yaml = require('js-yaml');
-            const fs = require('fs');
-            const path = require('path');
+      - name: Instal yaml
+        run: npm install -g yaml-cli
 
-            const configFile = path.join(process.env.GITHUB_WORKSPACE, 'config.yml');
-            const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
-
-            console.log(JSON.stringify(config));
-            const draft = process.env.CONFIG_RELEASE_DRAFT = config.release.draft ? 'true' : 'false';
-            const prerelease = process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease ? 'true' : 'false';
-
-            console.log("${CONFIG_RELEASE_DRAFT}, ${CONFIG_RELEASE_PRERELEASE}");
-
-            return draft.concat(':', prerelease)
-
-          result-encoding: string
+      - name: Read configuration
+        id: read_config
+        run: |
+          echo "DRAFT=$(yaml get release.draft < ${{ github.workspace }}/config.yml)" >> $GITHUB_ENV
+          echo "PRERELEASE=$(yaml get release.prerelease < ${{ github.workspace }}/config.yml)" >> $GITHUB_ENV
+        shell: bash
 
       - id: echo_config
         run: |
-          echo "draft: ${{ env.CONFIG_RELEASE_DRAFT }}"
-          echo "prerelease: ${{ env.CONFIG_RELEASE_PRERELEASE }}"
-          echo "Variable testo: ${{ steps.read_config.outputs.result }}"
+          echo "draft: ${{ env.DRAFT }}"
+          echo "prerelease: ${{ env.PRERELEASE }}"
+
+      # - id: read_config
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       const yaml = require('js-yaml');
+      #       const fs = require('fs');
+      #       const path = require('path');
+
+      #       const configFile = path.join(process.env.GITHUB_WORKSPACE, 'config.yml');
+      #       const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
+
+      #       console.log(JSON.stringify(config));
+      #       const draft = process.env.CONFIG_RELEASE_DRAFT = config.release.draft ? 'true' : 'false';
+      #       const prerelease = process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease ? 'true' : 'false';
+
+      #       console.log("${CONFIG_RELEASE_DRAFT}, ${CONFIG_RELEASE_PRERELEASE}");
+
+      #       return draft.concat(':', prerelease)
+
+      #     result-encoding: string
