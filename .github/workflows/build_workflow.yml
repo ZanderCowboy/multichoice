@@ -102,18 +102,26 @@ jobs:
           # echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           # echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
-          web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}
-          android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}
-          windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}
+          flags=(
+            web_build_flag
+            android_build_flag
+            windows_build_flag
+          )
+          for flag in "${flags[@]}";
+          do
+            value=steps.read_config_yaml.outputs.build__$flag
+            if [ $value == 'true' ]
+            then
+            echo "$flag=true" >> $GITHUB_OUTPUT
+            else
+            echo "$flag=false" >> $GITHUB_OUTPUT
+            fi
 
-          # Read the values from YAML and set corresponding flags
-          for flag in web_build_flag android_build_flag windows_build_flag; do
-            # FLAG=$(yaml get build.$flag < ${GITHUB_WORKSPACE}config.yml)
-            FLAG=${flag}
-            FLAG=$(echo "$FLAG" | tr '[:upper:]' '[:lower:]')
-            FLAG=$(echo $FLAG | grep -iq "true" && echo true || echo false)
-            echo "${flag}=${FLAG}" >> $GITHUB_OUTPUT
           done
+
+          # web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}
+          # android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}
+          # windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -128,7 +136,7 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      web-build-flag: false
+      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
       web-environment-flag: "release"
       # profile, release
       android-build-flag: ${{ needs.preBuild.outputs.android_build_flag }}
