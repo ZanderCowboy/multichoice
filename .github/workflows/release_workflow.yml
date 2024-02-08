@@ -1,5 +1,5 @@
 ---
-name: Deploy Apps
+name: Tag and Release
 on:
   pull_request:
     branches:
@@ -13,7 +13,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # bump
   bumpVersion:
     name: Bump build number and get prebuild ready
     runs-on: ubuntu-latest
@@ -40,14 +39,13 @@ jobs:
         id: read_config_yaml
         with:
           file-path: "${{ github.workspace }}/config.yml"
-          # separator: "."
 
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          version_number=${{ steps.id_updated_version.outputs.version-number }}
-          echo "version_number=${version_number}"
-          version=$(echo "${version_number}" | sed 's/+.*//')
+          version_num=${{ steps.id_updated_version.outputs.version-number }}
+          echo "version_number=${version_num}"
+          version=$(echo "${version_num}" | sed 's/+.*//')
           echo "version_rel=${version}" >> $GITHUB_OUTPUT
 
           echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
@@ -59,7 +57,6 @@ jobs:
         with:
           name: pubspec-file-release
 
-  # build
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
@@ -74,13 +71,13 @@ jobs:
       android-build-flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
+      android-build-artifact: "android-release"
       windows-build-flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
       windows-environment-flag: "release"
 
-  # commit
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build]
+    needs: [build, bumpVersion]
     if: success()
     runs-on: ubuntu-latest
     permissions:
@@ -91,10 +88,14 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - id: id_version
+        run: |
+          echo "version=${{ needs.bumpVersion.outputs.version_release }}" >> $GITHUB_ENV
+
       - name: Call Auto Commit Version action
         uses: ./.github/actions/auto-commit-version
         with:
-          version_number: ${{ needs.bumpVersion.outputs.version_release }}
+          version_number: "${{ env.version }}"
           download_filename: "pubspec-file-release"
 
   tagAndRelease:
