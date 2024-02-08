@@ -106,7 +106,7 @@ jobs:
         id: read_config_yaml
         with:
           file-path: "${{ github.workspace }}/config.yml"
-          separator: "."
+          # separator: "."
 
       - id: id_version
         run: |

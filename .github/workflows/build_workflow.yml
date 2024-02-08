@@ -98,9 +98,22 @@ jobs:
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
-          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
+          # echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          # echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          # echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
+
+          web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}
+          android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}
+          windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}
+
+          # Read the values from YAML and set corresponding flags
+          for flag in web_build_flag android_build_flag windows_build_flag; do
+            # FLAG=$(yaml get build.$flag < ${GITHUB_WORKSPACE}config.yml)
+            FLAG=${flag}
+            FLAG=$(echo "$FLAG" | tr '[:upper:]' '[:lower:]')
+            FLAG=$(echo "$FLAG" | grep -iq "true" && echo "true" || echo "false")
+            echo "${flag}=${FLAG}" >> $GITHUB_OUTPUT
+          done
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
