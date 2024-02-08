@@ -15,11 +15,14 @@ on:
 jobs:
   # bump
   bumpVersion:
-    name: Bump build number
+    name: Bump build number and get prebuild ready
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
       version_release: ${{ steps.id_out.outputs.version_rel }}
+      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
+      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
+      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,6 +35,13 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+          # separator: "."
+
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
@@ -39,6 +49,10 @@ jobs:
           echo "version_number=${version_number}"
           version=$(echo "${version_number}" | sed 's/+.*//')
           echo "version_rel=${version}" >> $GITHUB_OUTPUT
+
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -53,13 +67,14 @@ jobs:
     needs: [bumpVersion]
     secrets: inherit
     with:
-      web-build-flag: true
+      pubspec-filename: "pubspec-file-release"
+      web-build-flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: true
+      android-build-flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
-      windows-build-flag: true
+      windows-build-flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
       windows-environment-flag: "release"
 
   # commit
