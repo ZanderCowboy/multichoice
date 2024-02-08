@@ -34,10 +34,12 @@ jobs:
             const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
 
             console.log(JSON.stringify(config));
-            process.env.CONFIG_RELEASE_DRAFT = config.release.draft;
-            process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease;
+            # process.env.CONFIG_RELEASE_DRAFT = config.release.draft;
+            echo "CONFIG_RELEASE_DRAFT=${ config.release.draft }" >> $GITHUB_ENV
+            # process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease;
+            echo "CONFIG_RELEASE_PRERELEASE=${ config.release.prerelease }" >> $GITHUB_ENV
 
       - id: echo_config
         run: |
-          echo "draft: ${{ steps.read_config.CONFIG_RELEASE_DRAFT }}"
-          echo "prerelease: ${{ steps.read_config.env.CONFIG_RELEASE_PRERELEASE }}"
+          echo "draft: ${{ env.CONFIG_RELEASE_DRAFT }}"
+          echo "prerelease: ${{ env.CONFIG_RELEASE_PRERELEASE }}"
