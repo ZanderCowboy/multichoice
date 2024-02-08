@@ -21,22 +21,22 @@ jobs:
       # - name: Install js-yaml
       #   run: npm install js-yaml fs path
 
-      - name: Instal yaml
-        run: |
-          npm install -g minimatch
-          npm install -g yaml-cli
-
-      - name: Read configuration
-        id: read_config
-        run: |
-          echo "DRAFT=$(yaml get ${{ github.workspace }}/config.yml release.draft)" >> $GITHUB_ENV
-          echo "PRERELEASE=$(yaml get ${{ github.workspace }}/config.yml release.prerelease)" >> $GITHUB_ENV
-        shell: bash
+      # - name: Read configuration
+      #   id: read_config
+      #   run: |
+      #     echo "DRAFT=$(yaml get ${{ github.workspace }}/config.yml release.draft)" >> $GITHUB_ENV
+      #     echo "PRERELEASE=$(yaml get ${{ github.workspace }}/config.yml release.prerelease)" >> $GITHUB_ENV
+      #   shell: bash
+      - name: read-yaml-file
+        uses: pietrobolcato/action-read-yaml@v1
+        id: read_action_yaml
+        with:
+          config: ${{ github.workspace }}/config.yml
 
       - id: echo_config
         run: |
-          echo "draft: ${{ env.DRAFT }}"
-          echo "prerelease: ${{ env.PRERELEASE }}"
+          echo "draft: ${{ steps.read_action_yaml.outputs['release.draft'] }}"
+          echo "prerelease: ${{ steps.read_action_yaml.outputs['release.prerelease'] }}"
 
       # - id: read_config
       #   uses: actions/github-script@v7
