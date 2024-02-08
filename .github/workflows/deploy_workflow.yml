@@ -8,73 +8,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  # tagAndRelease:
-  #   name: Git tagging and releases
-  #   # if: ${{ github.head_ref == 'main' }}
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       # with:
-  #       #   fetch-depth: 0
-
-  #     - name: Update version for release
-  #       id: id_update_pubspec_release
-  #       uses: ./.github/actions/app-versioning
-  #       with:
-  #         bump-strategy: "minor"
-  #         bump-build: "true"
-  #         file-path: "./pubspec.yaml"
-  #         upload-filename: "pubspec-file-release"
-
-  #     - name: Commit new changes for release
-  #       uses: ./.github/actions/auto-commit-version
-  #       with:
-  #         version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
-  #         download_filename: "pubspec-file-release"
-
-  #     # step to check for previous tags
-
-  #     - name: Create tag
-  #       if: success()
-  #       uses: rickstaa/action-create-tag@v1
-  #       with:
-  #         tag: "v${{ steps.id_update_pubspec_release.outputs.new_version }}"
-  #         message: "Release ${{ steps.id_update_pubspec_release.outputs.new_version }}"
-
-  #     - name: Create GitHub release
-  #       if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
-  #       uses: ncipollo/release-action@v1
-  #       with:
-  #         tag: v${{ steps.id_update_pubspec_release.outputs.new_version }}
-  #         name: Release v${{ steps.id_update_pubspec_release.outputs.new_version }}
-  #         body: Release notes here
-  #         draft: true
-  #         prerelease: true
-  #         generateReleaseNotes: true
-
   preDeploy:
     name: Setting up for Deploy
-    # needs: tagAndRelease
-    # if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 0
-
-      # - run: |
-      #     echo "${{ github.head_ref }}"
-      #     echo "${{ github.ref == 'refs/heads/main' }}"
-      #     echo "${{ github.ref }}"
-
-      # - name: 👁️ Check branch validity
-      #   if: ${{ github.head_ref }} != 'refs/heads/main'
-      #   run: |
-      #     echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
 
       - name: Job Finished
         run: echo "preDeploy Job Finished"

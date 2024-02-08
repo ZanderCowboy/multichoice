@@ -20,6 +20,9 @@ on:
       android-versionNumber:
         required: true
         type: string
+      android-build-artifact:
+        required: true
+        type: string
       windows-build-flag:
         required: true
         type: boolean
@@ -44,6 +47,7 @@ jobs:
       environment-flag: ${{ inputs.android-environment-flag }}
       versionNumber: ${{ inputs.android-versionNumber }}
       build-flag: ${{ inputs.android-build-flag }}
+      build-artifact: ${{ inputs.android-build-artifact }}
   buildWindows:
     name: "Build Windows app"
     uses: ./.github/workflows/_build-windows-app.yml

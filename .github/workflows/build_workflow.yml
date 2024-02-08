@@ -7,7 +7,7 @@ on:
       - "tmp-develop"
   pull_request:
     branches:
-      # - "main"
+      # - "develop"
       - "tmp-develop"
     types:
       - "opened"
@@ -82,18 +82,11 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file"
 
-      # - name: read-config-file
-      #   uses: pietrobolcato/action-read-yaml@1.1.0
-      #   id: read_config_yaml
-      #   with:
-      #     config: ${{ github.workspace }}/config.yml
-
       - name: read-config-file
         uses: actions-tools/yaml-outputs@v2
         id: read_config_yaml
         with:
           file-path: "${{ github.workspace }}/config.yml"
-          # separator: "."
 
       - id: id_out
         run: |
@@ -121,6 +114,7 @@ jobs:
       android-build-flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
+      android-build-artifact: "android-release"
       windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
       windows-environment-flag: "release"
 
