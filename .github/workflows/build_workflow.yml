@@ -111,7 +111,7 @@ jobs:
             # FLAG=$(yaml get build.$flag < ${GITHUB_WORKSPACE}config.yml)
             FLAG=${flag}
             FLAG=$(echo "$FLAG" | tr '[:upper:]' '[:lower:]')
-            FLAG=$(echo "$FLAG" | grep -iq "true" && echo "true" || echo "false")
+            FLAG=$(echo "$FLAG" | grep -iq "true" && echo true || echo false)
             echo "${flag}=${FLAG}" >> $GITHUB_OUTPUT
           done
 
@@ -128,7 +128,7 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      web-build-flag: "${{ needs.preBuild.outputs.web_build_flag }}"
+      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
       web-environment-flag: "release"
       # profile, release
       android-build-flag: ${{ needs.preBuild.outputs.android_build_flag }}
