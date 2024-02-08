@@ -37,9 +37,3 @@ jobs:
 
       - name: Analyzing code with Dart analyzer
         run: dart analyze --fatal-infos
-
-      - id: id_version_release
-        run: |
-          echo "version_number=1.8.0+36"
-          version=$(echo "${version_number}" | sed 's/+.*//')
-          echo "version_rel=${version}" >> $GITHUB_ENV

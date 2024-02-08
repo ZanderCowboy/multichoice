@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
+      version_release: ${{ steps.id_out.outputs.version_rel }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,6 +35,10 @@ jobs:
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+          version_number=${{ steps.id_updated_version.outputs.version-number }}
+          echo "version_number=${version_number}"
+          version=$(echo "${version_number}" | sed 's/+.*//')
+          echo "version_rel=${version}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -74,36 +79,8 @@ jobs:
       - name: Call Auto Commit Version action
         uses: ./.github/actions/auto-commit-version
         with:
-          version_number: ${{ needs.bumpVersion.outputs.version_number }}
+          version_number: ${{ needs.bumpVersion.outputs.version_release }}
           download_filename: "pubspec-file-release"
-
-  # tag
-  # release
-  # tagAndRelease:
-  #   name: Git tagging and releases
-  #   if: github.event.pull_request.draft == false && success()
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     version_number: ${{ steps.id_out.outputs.version }}
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-
-  # - name: Update version for release
-  #   id: id_update_pubspec_release
-  #   uses: ./.github/actions/app-versioning
-  #   with:
-  #     bump-strategy: "minor"
-  #     bump-build: "true"
-  #     file-path: "./pubspec.yaml"
-  #     upload-filename: "pubspec-file-release"
-
-  # - name: Commit new changes for release
-  #   uses: ./.github/actions/auto-commit-version
-  #   with:
-  #     # version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
-  #     version_number: ${{ needs.bumpVersion.outputs.version_number }}
-  #     download_filename: "pubspec-file-release"
 
   tagAndRelease:
     name: Git tagging and releases
@@ -120,25 +97,19 @@ jobs:
 
       - id: id_version
         run: |
-          echo "version=${{ needs.bumpVersion.outputs.version_number }}" >> $GITHUB_ENV
-
-      - id: id_version_release
-        run: |
-          echo "version_number=${{ needs.bumpVersion.outputs.version_number }}"
-          version=$(echo "${version_number}" | sed 's/+.*//')
-          echo "version_rel=${version}" >> $GITHUB_ENV
+          echo "version=${{ needs.bumpVersion.outputs.version_release }}" >> $GITHUB_ENV
 
       - name: Create tag
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "v${{ env.version }}"
-          message: "Release ${{ env.version}}"
+          message: "Release ${{ env.version }}"
 
       - name: Create GitHub release
         if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
         uses: ncipollo/release-action@v1
         with:
-          tag: "v${{ env.version }}" # NOTE: change version to version_rel if draft=false
+          tag: "v${{ env.version }}"
           name: "v${{ env.version }}"
           body: Release notes here
           draft: true
