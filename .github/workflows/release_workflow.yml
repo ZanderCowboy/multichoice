@@ -13,12 +13,13 @@ on:
   workflow_dispatch:
 
 jobs:
+  # bump
   bumpVersion:
     name: Bump build number
-    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
+      version_release: ${{ steps.id_out.outputs.version_rel }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,12 +35,17 @@ jobs:
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+          version_number=${{ steps.id_updated_version.outputs.version-number }}
+          echo "version_number=${version_number}"
+          version=$(echo "${version_number}" | sed 's/+.*//')
+          echo "version_rel=${version}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
           name: pubspec-file-release
 
+  # build
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
@@ -47,19 +53,19 @@ jobs:
     needs: [bumpVersion]
     secrets: inherit
     with:
-      pubspec-filename: "pubspec-file-release"
-      web-build-flag: false
+      web-build-flag: true
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: false
+      android-build-flag: true
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
       windows-build-flag: true
       windows-environment-flag: "release"
 
+  # commit
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build, bumpVersion]
+    needs: [build]
     if: success()
     runs-on: ubuntu-latest
     permissions:
@@ -73,7 +79,7 @@ jobs:
       - name: Call Auto Commit Version action
         uses: ./.github/actions/auto-commit-version
         with:
-          version_number: ${{ needs.bumpVersion.outputs.version_number }}
+          version_number: ${{ needs.bumpVersion.outputs.version_release }}
           download_filename: "pubspec-file-release"
 
   tagAndRelease:
@@ -89,15 +95,21 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+
       - id: id_version
         run: |
-          echo "version=${{ needs.bumpVersion.outputs.version_number }}" >> $GITHUB_ENV
+          echo "version=${{ needs.bumpVersion.outputs.version_release }}" >> $GITHUB_ENV
 
       - name: Create tag
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "v${{ env.version }}"
-          message: "Release ${{ env.version}}"
+          message: "Release ${{ env.version }}"
 
       - name: Create GitHub release
         if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
@@ -105,7 +117,7 @@ jobs:
         with:
           tag: "v${{ env.version }}"
           name: "v${{ env.version }}"
-          body: Release notes here
-          draft: true
-          prerelease: true
-          generateReleaseNotes: true
+          body: ${{ steps.read_config_yaml.outputs.release__body }}
+          draft: ${{ steps.read_config_yaml.outputs.release__draft == 'true' }}
+          prerelease: ${{ steps.read_config_yaml.outputs.release__prerelease == 'true' }}
+          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release__generateReleaseNotes == 'true' }}
