@@ -102,22 +102,40 @@ jobs:
           # echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           # echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
-          flags=(
-            web_build_flag
-            android_build_flag
-            windows_build_flag
-          )
-          for flag in "${flags[@]}";
-          do
-            value=steps.read_config_yaml.outputs.build__$flag
-            if [ $value == 'true' ]
-            then
-            echo "$flag=true" >> $GITHUB_OUTPUT
-            else
-            echo "$flag=false" >> $GITHUB_OUTPUT
-            fi
+          if [ ${{ steps.read_config_yaml.outputs.build__web_build_flag }} = 'true' ]; then
+              echo "web_build_flag=true" >> $GITHUB_OUTPUT
+          else 
+              echo "web_build_flag=false" >> $GITHUB_OUTPUT
+          fi
 
-          done
+          if [ ${{ steps.read_config_yaml.outputs.build__android_build_flag }} = 'true' ]; then
+              echo "android_build_flag=true" >> $GITHUB_OUTPUT
+          else 
+              echo "android_build_flag=false" >> $GITHUB_OUTPUT
+          fi
+
+          if [ ${{ steps.read_config_yaml.outputs.build__windows_build_flag }} = 'true' ]; then
+              echo "windows_build_flag=true" >> $GITHUB_OUTPUT
+          else 
+              echo "windows_build_flag=false" >> $GITHUB_OUTPUT
+          fi
+
+          # flags=(
+          #   web_build_flag
+          #   android_build_flag
+          #   windows_build_flag
+          # )
+          # for flag in "${flags[@]}";
+          # do
+          #   value=steps.read_config_yaml.outputs.build__$flag
+          #   if [ $value == 'true' ]
+          #   then
+          #   echo "$flag=true" >> $GITHUB_OUTPUT
+          #   else
+          #   echo "$flag=false" >> $GITHUB_OUTPUT
+          #   fi
+
+          # done
 
           # web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}
           # android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}
