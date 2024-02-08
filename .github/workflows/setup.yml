@@ -18,6 +18,9 @@ jobs:
       # - name: Setup Flutter and Java
       #   uses: ./.github/actions/setup-java-flutter
 
+      - name: Install js-yaml
+        run: npm install js-yaml fs path
+
       - id: read_config
         uses: actions/github-script@v5
         with:
