@@ -5,15 +5,6 @@ on:
     branches:
       - "develop" # return to main
 
-  # workflow_run:
-  #   workflows:
-  #     - "Test, Analyze, Build"
-  #   types:
-  #     - "completed"
-  #   branches:
-  #     - "main"
-  #     - "develop"
-
   workflow_dispatch:
 
 jobs:
@@ -96,7 +87,6 @@ jobs:
 
   deploy:
     name: Deploy Apps
-    # if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }} && success()
     if: success()
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: preDeploy

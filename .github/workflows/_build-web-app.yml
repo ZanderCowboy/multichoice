@@ -2,6 +2,9 @@ name: Web Build workflow
 on:
   workflow_call:
     inputs:
+      pubspec-filename:
+        required: true
+        type: string
       environment-flag:
         required: true
         type: string
@@ -12,7 +15,7 @@ on:
 jobs:
   buildWeb:
     name: Build Web
-    if: ${{ inputs.build-flag == true }}
+    if: inputs.build-flag == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -1,0 +1,12 @@
+# This file contains the config that is used by the Github Workflows.
+
+build:
+  web_build_flag: false
+  android_build_flag: true
+  windows_build_flag: false
+
+release:
+  body: "Release notes here"
+  draft: true
+  prerelease: true
+  generateReleaseNotes: true
