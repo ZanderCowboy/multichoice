@@ -22,7 +22,9 @@ jobs:
       #   run: npm install js-yaml fs path
 
       - name: Instal yaml
-        run: npm install -g yaml-cli
+        run: |
+          npm install -g minimatch@^3.0.2
+          npm install -g yaml-cli
 
       - name: Read configuration
         id: read_config
