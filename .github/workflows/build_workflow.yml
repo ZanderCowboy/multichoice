@@ -102,23 +102,26 @@ jobs:
           # echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           # echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
-          if [ ${{ steps.read_config_yaml.outputs.build__web_build_flag }} = 'true' ]; then
-              echo "web_build_flag=true" >> $GITHUB_OUTPUT
-          else 
-              echo "web_build_flag=false" >> $GITHUB_OUTPUT
-          fi
+          # if [ ${{ steps.read_config_yaml.outputs.build__web_build_flag }} = 'true' ]; then
+          #     echo "web_build_flag=true" >> $GITHUB_OUTPUT
+          # else 
+          #     echo "web_build_flag=false" >> $GITHUB_OUTPUT
+          # fi
 
-          if [ ${{ steps.read_config_yaml.outputs.build__android_build_flag }} = 'true' ]; then
-              echo "android_build_flag=true" >> $GITHUB_OUTPUT
-          else 
-              echo "android_build_flag=false" >> $GITHUB_OUTPUT
-          fi
+          # if [ ${{ steps.read_config_yaml.outputs.build__android_build_flag }} = 'true' ]; then
+          #     echo "android_build_flag=true" >> $GITHUB_OUTPUT
+          # else 
+          #     echo "android_build_flag=false" >> $GITHUB_OUTPUT
+          # fi
 
-          if [ ${{ steps.read_config_yaml.outputs.build__windows_build_flag }} = 'true' ]; then
-              echo "windows_build_flag=true" >> $GITHUB_OUTPUT
-          else 
-              echo "windows_build_flag=false" >> $GITHUB_OUTPUT
-          fi
+          # if [ ${{ steps.read_config_yaml.outputs.build__windows_build_flag }} = 'true' ]; then
+          #     echo "windows_build_flag=true" >> $GITHUB_OUTPUT
+          # else 
+          #     echo "windows_build_flag=false" >> $GITHUB_OUTPUT
+          # fi
+
+          web_build=$((${{ steps.read_config_yaml.outputs.build__web_build_flag }} == "true" ? true : false))
+          echo "web_build_flag=$web_build" >> $GITHUB_OUTPUT
 
           # flags=(
           #   web_build_flag
@@ -154,6 +157,7 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
+      # web-build-flag: ${{ if (needs.preBuild.outputs.web_build_flag == 'true') then true else false fi}}
       web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
       web-environment-flag: "release"
       # profile, release
