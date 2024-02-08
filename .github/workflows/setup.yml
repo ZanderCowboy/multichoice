@@ -31,7 +31,7 @@ jobs:
             const path = require('path');
 
             const configFile = path.join(process.env.GITHUB_WORKSPACE, 'config.yml');
-            const config = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
+            const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
 
             console.log(JSON.stringify(config));
             process.env.CONFIG_RELEASE_DRAFT = config.release.draft;
