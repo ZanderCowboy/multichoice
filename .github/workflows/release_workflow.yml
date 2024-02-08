@@ -124,7 +124,7 @@ jobs:
         with:
           tag: "v${{ env.version }}"
           name: "v${{ env.version }}"
-          body: ${{ steps.read_config_yaml.outputs.release.body }}
-          draft: ${{ steps.read_config_yaml.outputs.release.draft }}
-          prerelease: ${{ steps.read_config_yaml.outputs.release.prerelease }}
-          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release.generateReleaseNotes }}
+          body: ${{ steps.read_config_yaml.outputs.release__body }}
+          draft: ${{ steps.read_config_yaml.outputs.release__draft }}
+          prerelease: ${{ steps.read_config_yaml.outputs.release__prerelease }}
+          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release__generateReleaseNotes }}

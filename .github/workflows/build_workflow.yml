@@ -93,14 +93,14 @@ jobs:
         id: read_config_yaml
         with:
           file-path: "${{ github.workspace }}/config.yml"
-          separator: "."
+          # separator: "."
 
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build.web_build_flag }}" >> $GITHUB_OUTPUT
-          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build.android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build.windows_build_flag }}" >> $GITHUB_OUTPUT
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
