@@ -1,3 +1,10 @@
+build:
+  web_build_flag: false
+  android_build_flag: false
+  windows_build_flag: true
+
 release:
+  body: "Release notes here"
   draft: true
   prerelease: true
+  generateReleaseNotes: true

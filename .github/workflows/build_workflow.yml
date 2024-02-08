@@ -67,6 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
+      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
+      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
+      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -79,9 +82,18 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file"
 
+      - name: read-config-file
+        uses: pietrobolcato/action-read-yaml@1.1.0
+        id: read_config_yaml
+        with:
+          config: ${{ github.workspace }}/config.yml
+
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs['build.web_build_flag'] }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs['build.android_build_flag'] }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs['build.windows_build_flag'] }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -96,13 +108,13 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      web-build-flag: false
+      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: false
+      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: true
+      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag }}
       windows-environment-flag: "release"
 
   post-build:
