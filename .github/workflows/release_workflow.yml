@@ -95,18 +95,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: read-config-file
-      #   uses: pietrobolcato/action-read-yaml@1.1.0
-      #   id: read_config_yaml
-      #   with:
-      #     config: ${{ github.workspace }}/config.yml
-
       - name: read-config-file
         uses: actions-tools/yaml-outputs@v2
         id: read_config_yaml
         with:
           file-path: "${{ github.workspace }}/config.yml"
-          # separator: "."
 
       - id: id_version
         run: |
@@ -125,6 +118,6 @@ jobs:
           tag: "v${{ env.version }}"
           name: "v${{ env.version }}"
           body: ${{ steps.read_config_yaml.outputs.release__body }}
-          draft: ${{ steps.read_config_yaml.outputs.release__draft }}
-          prerelease: ${{ steps.read_config_yaml.outputs.release__prerelease }}
-          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release__generateReleaseNotes }}
+          draft: ${{ steps.read_config_yaml.outputs.release__draft == 'true' }}
+          prerelease: ${{ steps.read_config_yaml.outputs.release__prerelease == 'true' }}
+          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release__generateReleaseNotes == 'true' }}
