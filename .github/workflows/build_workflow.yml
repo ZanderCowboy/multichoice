@@ -128,7 +128,7 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
+      web-build-flag: "${{ needs.preBuild.outputs.web_build_flag }}"
       web-environment-flag: "release"
       # profile, release
       android-build-flag: ${{ needs.preBuild.outputs.android_build_flag }}
