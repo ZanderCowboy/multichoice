@@ -22,7 +22,7 @@ jobs:
         run: npm install js-yaml fs path
 
       - id: read_config
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -34,10 +34,8 @@ jobs:
             const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
 
             console.log(JSON.stringify(config));
-            # process.env.CONFIG_RELEASE_DRAFT = config.release.draft;
-            echo "CONFIG_RELEASE_DRAFT=${ config.release.draft }" >> $GITHUB_ENV
-            # process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease;
-            echo "CONFIG_RELEASE_PRERELEASE=${ config.release.prerelease }" >> $GITHUB_ENV
+            process.env.CONFIG_RELEASE_DRAFT = config.release.draft ? 'true' : 'false';
+            process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease ? 'true' : 'false';
 
       - id: echo_config
         run: |
