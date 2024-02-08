@@ -23,14 +23,14 @@ jobs:
 
       - name: Instal yaml
         run: |
-          npm install -g minimatch@^3.0.2
+          npm install -g minimatch
           npm install -g yaml-cli
 
       - name: Read configuration
         id: read_config
         run: |
-          echo "DRAFT=$(yaml get release.draft < ${{ github.workspace }}/config.yml)" >> $GITHUB_ENV
-          echo "PRERELEASE=$(yaml get release.prerelease < ${{ github.workspace }}/config.yml)" >> $GITHUB_ENV
+          echo "DRAFT=$(yaml get ${{ github.workspace }}/config.yml release.draft)" >> $GITHUB_ENV
+          echo "PRERELEASE=$(yaml get ${{ github.workspace }}/config.yml release.prerelease)" >> $GITHUB_ENV
         shell: bash
 
       - id: echo_config
