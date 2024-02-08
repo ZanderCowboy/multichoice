@@ -34,10 +34,17 @@ jobs:
             const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
 
             console.log(JSON.stringify(config));
-            process.env.CONFIG_RELEASE_DRAFT = config.release.draft ? 'true' : 'false';
-            process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease ? 'true' : 'false';
+            const draft = process.env.CONFIG_RELEASE_DRAFT = config.release.draft ? 'true' : 'false';
+            const prerelease = process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease ? 'true' : 'false';
+
+            console.log("${CONFIG_RELEASE_DRAFT}, ${CONFIG_RELEASE_PRERELEASE}");
+
+            return draft.concat(':', prerelease)
+
+          result-encoding: string
 
       - id: echo_config
         run: |
           echo "draft: ${{ env.CONFIG_RELEASE_DRAFT }}"
           echo "prerelease: ${{ env.CONFIG_RELEASE_PRERELEASE }}"
+          echo "Variable testo: ${{ steps.read_config.outputs.result }}"
