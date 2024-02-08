@@ -1,7 +1,8 @@
 name: Common Setup
 
 on:
-  workflow_call:
+  # workflow_call:
+  workflow_dispatch:
 
 jobs:
   setup:
@@ -11,5 +12,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter and Java
-        uses: ./.github/actions/setup-java-flutter
+      # - name: Setup Flutter and Java
+      #   uses: ./.github/actions/setup-java-flutter
+
+      - id: read_config
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const yaml = require('js-yaml');
+            const fs = require('fs');
+            const path = require('path');
+
+            const configFile = path.join(process.env.GITHUB_WORKSPACE, 'config.yml');
+            const config = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
+
+            console.log(JSON.stringify(config));
+            process.env.CONFIG_RELEASE_DRAFT = config.release.draft;
+            process.env.CONFIG_RELEASE_PRERELEASE = config.release.prerelease;
+
+      - id: echo_config
+        run: |
+          echo "draft: ${{ env.CONFIG_RELEASE_DRAFT }}"
+          echo "prerelease: ${{ env.CONFIG_RELEASE_PRERELEASE }}"
