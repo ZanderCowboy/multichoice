@@ -98,51 +98,9 @@ jobs:
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          # echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
-          # echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          # echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
-
-          # if [ ${{ steps.read_config_yaml.outputs.build__web_build_flag }} = 'true' ]; then
-          #     echo "web_build_flag=true" >> $GITHUB_OUTPUT
-          # else 
-          #     echo "web_build_flag=false" >> $GITHUB_OUTPUT
-          # fi
-
-          # if [ ${{ steps.read_config_yaml.outputs.build__android_build_flag }} = 'true' ]; then
-          #     echo "android_build_flag=true" >> $GITHUB_OUTPUT
-          # else 
-          #     echo "android_build_flag=false" >> $GITHUB_OUTPUT
-          # fi
-
-          # if [ ${{ steps.read_config_yaml.outputs.build__windows_build_flag }} = 'true' ]; then
-          #     echo "windows_build_flag=true" >> $GITHUB_OUTPUT
-          # else 
-          #     echo "windows_build_flag=false" >> $GITHUB_OUTPUT
-          # fi
-
-          web_build=$((${{ steps.read_config_yaml.outputs.build__web_build_flag }} == "true" ? true : false))
-          echo "web_build_flag=$web_build" >> $GITHUB_OUTPUT
-
-          # flags=(
-          #   web_build_flag
-          #   android_build_flag
-          #   windows_build_flag
-          # )
-          # for flag in "${flags[@]}";
-          # do
-          #   value=steps.read_config_yaml.outputs.build__$flag
-          #   if [ $value == 'true' ]
-          #   then
-          #   echo "$flag=true" >> $GITHUB_OUTPUT
-          #   else
-          #   echo "$flag=false" >> $GITHUB_OUTPUT
-          #   fi
-
-          # done
-
-          # web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}
-          # android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}
-          # windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -157,14 +115,13 @@ jobs:
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
-      # web-build-flag: ${{ if (needs.preBuild.outputs.web_build_flag == 'true') then true else false fi}}
-      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag }}
+      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag }}
+      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag }}
+      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
       windows-environment-flag: "release"
 
   post-build:
