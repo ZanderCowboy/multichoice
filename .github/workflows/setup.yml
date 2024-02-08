@@ -39,5 +39,5 @@ jobs:
 
       - id: echo_config
         run: |
-          echo "draft: ${{ read_config.CONFIG_RELEASE_DRAFT }}"
-          echo "prerelease: ${{ read_config.env.CONFIG_RELEASE_PRERELEASE }}"
+          echo "draft: ${{ steps.read_config.CONFIG_RELEASE_DRAFT }}"
+          echo "prerelease: ${{ steps.read_config.env.CONFIG_RELEASE_PRERELEASE }}"
