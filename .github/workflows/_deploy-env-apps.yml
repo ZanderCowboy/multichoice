@@ -2,9 +2,16 @@ name: Deploy Android, Web, & Windows Apps
 on:
   workflow_call:
     inputs:
+      web_deploy_flag:
+        required: true
+        type: boolean
       web-environment-flag:
         required: true
         type: string
+
+      android_deploy_flag:
+        required: true
+        type: boolean
       android-environment-flag:
         required: true
         type: string
@@ -20,6 +27,10 @@ on:
       android-deploy-status:
         required: true
         type: string
+
+      windows_deploy_flag:
+        required: true
+        type: boolean
       windows-environment-flag:
         required: true
         type: string
@@ -34,12 +45,14 @@ jobs:
       contents: write
     secrets: inherit
     with:
+      deploy_flag: ${{ inputs.web_deploy_flag }}
       environment-flag: ${{ inputs.web-environment-flag }}
   deployAndroid:
     name: "Deploy Android app"
     uses: ./.github/workflows/_deploy-android-app.yml
     secrets: inherit
     with:
+      deploy_flag: ${{ inputs.android_deploy_flag }}
       environment-flag: ${{ inputs.android-environment-flag }}
       package-name: ${{ inputs.android-package-name }}
       track: ${{ inputs.android-track }}
@@ -49,4 +62,5 @@ jobs:
     name: "Deploy Windows app"
     uses: ./.github/workflows/_deploy-windows-app.yml
     with:
+      deploy_flag: ${{ inputs.windows_deploy_flag }}
       environment-flag: ${{ inputs.windows-environment-flag }}
