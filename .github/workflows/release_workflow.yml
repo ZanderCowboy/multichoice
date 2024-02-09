@@ -9,6 +9,7 @@ on:
       - "synchronize"
       - "reopened"
       - "ready_for_review"
+      - "labeled"
 
   workflow_dispatch:
 
@@ -35,9 +36,37 @@ jobs:
 
       - name: Update version number and download
         id: id_updated_version
+        if: ${{ github.event.action == 'unlabeled' }}
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "patch"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: Update version number and download
+        id: id_updated_version
+        if: ${{ github.event.label.name == 'patch' }}
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "patch"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: Update version number and download
+        id: id_updated_version
+        if: ${{ github.event.label.name == 'minor' }}
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: Update version number and download
+        id: id_updated_version
+        if: ${{ github.event.label.name == 'major' }}
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "major"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
