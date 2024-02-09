@@ -1,5 +1,5 @@
 ---
-name: Deploy Apps
+name: Tag and Release
 on:
   pull_request:
     branches:
@@ -10,61 +10,130 @@ on:
       - "reopened"
       - "ready_for_review"
 
-  # workflow_run:
-  #   workflows:
-  #     - "Test, Analyze, Build"
-  #   types:
-  #     - "completed"
-  #   branches:
-  #     - "main"
-  #     - "develop"
-
   workflow_dispatch:
 
 jobs:
-  tagAndRelease:
-    name: Git tagging and releases
+  bumpVersion:
+    name: Bump build number and get prebuild ready
+    runs-on: ubuntu-latest
+    outputs:
+      version_number: ${{ steps.id_out.outputs.version }}
+      version_release: ${{ steps.id_out.outputs.version_rel }}
+      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
+      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
+      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update version number and download
+        id: id_updated_version
+        uses: ./.github/actions/app-versioning
+        with:
+          bump-strategy: "minor"
+          file-path: "./pubspec.yaml"
+          upload-filename: "pubspec-file-release"
+
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+
+      - id: id_out
+        run: |
+          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+          version_num=${{ steps.id_updated_version.outputs.version-number }}
+          echo "version_number=${version_num}"
+          version=$(echo "${version_num}" | sed 's/+.*//')
+          echo "version_rel=${version}" >> $GITHUB_OUTPUT
+
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
+
+      - name: Get pubspec.yaml version
+        uses: actions/download-artifact@v4
+        with:
+          name: pubspec-file-release
+
+  build:
+    name: Build Apps
     if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/_build-env-apps.yml
+    needs: [bumpVersion]
+    secrets: inherit
+    with:
+      pubspec-filename: "pubspec-file-release"
+      web-build-flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
+      web-environment-flag: "release"
+      # profile, release
+      android-build-flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
+      android-environment-flag: "release"
+      android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
+      android-build-artifact: "android-release"
+      windows-build-flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
+      windows-environment-flag: "release"
+
+  commitBump:
+    name: Auto Commit Bumped Version
+    needs: [build, bumpVersion]
+    if: success()
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 0
-
-      - name: Update version for release
-        id: id_update_pubspec_release
-        uses: ./.github/actions/app-versioning
         with:
-          bump-strategy: "minor"
-          bump-build: "true"
-          file-path: "./pubspec.yaml"
-          upload-filename: "pubspec-file-release"
+          ref: ${{ github.head_ref }}
 
-      - name: Commit new changes for release
+      - id: id_version
+        run: |
+          echo "version=${{ needs.bumpVersion.outputs.version_release }}" >> $GITHUB_ENV
+
+      - name: Call Auto Commit Version action
         uses: ./.github/actions/auto-commit-version
         with:
-          version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
+          version_number: "${{ env.version }}"
           download_filename: "pubspec-file-release"
 
-      # step to check for previous tags
+  tagAndRelease:
+    name: Git tagging and releases
+    needs: [commitBump, bumpVersion]
+    if: github.event.pull_request.draft == false && success()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+
+      - id: id_version
+        run: |
+          echo "version=${{ needs.bumpVersion.outputs.version_release }}" >> $GITHUB_ENV
 
       - name: Create tag
-        if: success()
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: "v${{ steps.id_update_pubspec_release.outputs.version-number }}"
-          message: "Release ${{ steps.id_update_pubspec_release.outputs.version-number }}"
+          tag: "v${{ env.version }}"
+          message: "Release ${{ env.version }}"
 
       - name: Create GitHub release
         if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
         uses: ncipollo/release-action@v1
         with:
-          tag: v${{ steps.id_update_pubspec_release.outputs.version-number }}
-          name: Release v${{ steps.id_update_pubspec_release.outputs.version-number }}
-          body: Release notes here
-          draft: true
-          prerelease: true
-          generateReleaseNotes: true
+          tag: "v${{ env.version }}"
+          name: "v${{ env.version }}"
+          body: ${{ steps.read_config_yaml.outputs.release__body }}
+          draft: ${{ steps.read_config_yaml.outputs.release__draft == 'true' }}
+          prerelease: ${{ steps.read_config_yaml.outputs.release__prerelease == 'true' }}
+          generateReleaseNotes: ${{ steps.read_config_yaml.outputs.release__generateReleaseNotes == 'true' }}
