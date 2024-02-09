@@ -3,7 +3,7 @@ name: Tag and Release
 on:
   pull_request:
     branches:
-      - "develop" # change back to main
+      - "main"
     types:
       - "opened"
       - "synchronize"
@@ -12,10 +12,17 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   bumpVersion:
     name: Bump build number and get prebuild ready
     runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: false
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
       version_release: ${{ steps.id_out.outputs.version_rel }}
