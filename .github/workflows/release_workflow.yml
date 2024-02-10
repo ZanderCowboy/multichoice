@@ -78,7 +78,7 @@ jobs:
 
       - id: id_out
         run: |
-          if [ "${{ github.event.pull_request.labels.*.name }}" == "patch" ]; then
+          if [ "${{ join(github.event.pull_request.labels.*.name, '') }}" == "patch" ]; then
             echo "version=${{ steps.id_patch.outputs.version-number }}" >> $GITHUB_OUTPUT
             version_num=${{ steps.id_patch.outputs.version-number }}
           elif [ "${{ github.event.label.name }}" == "minor" ]; then
