@@ -131,6 +131,9 @@ jobs:
     needs: [build, bumpVersion]
     if: success()
     runs-on: ubuntu-latest
+    concurrency:
+      group: post-build-group
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:

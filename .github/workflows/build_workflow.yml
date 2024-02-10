@@ -127,6 +127,9 @@ jobs:
     name: Post Build
     needs: [build, preBuild]
     runs-on: ubuntu-latest
+    concurrency:
+      group: post-build-group
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
