@@ -34,36 +34,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - if: ${{ github.event.action == 'unlabeled' }}
-        name: Update version number and download
+      - name: Update version number and download
         id: id_unlabeled
+        if: join(github.event.pull_request.labels.*.name, '') == ''
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
-      - if: ${{ github.event.label.name == 'patch' }}
-        name: Update patch version number and download
+      - name: Update patch version number and download
         id: id_patch
+        if: ${{ github.event.label.name == 'patch' }}
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
-      - if: ${{ github.event.label.name == 'minor' }}
-        name: Update minor version number and download
+      - name: Update minor version number and download
         id: id_minor
+        if: ${{ github.event.label.name == 'minor' }}
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
-      - if: ${{ github.event.label.name == 'major' }}
-        name: Update major version number and download
+      - name: Update major version number and download
         id: id_major
+        if: ${{ github.event.label.name == 'major' }}
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "major"
