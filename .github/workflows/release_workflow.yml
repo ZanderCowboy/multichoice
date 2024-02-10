@@ -81,10 +81,10 @@ jobs:
           if [ "${{ join(github.event.pull_request.labels.*.name, '') }}" == "patch" ]; then
             echo "version=${{ steps.id_patch.outputs.version-number }}" >> $GITHUB_OUTPUT
             version_num=${{ steps.id_patch.outputs.version-number }}
-          elif [ "${{ github.event.label.name }}" == "minor" ]; then
+          elif [ "${{ join(github.event.pull_request.labels.*.name, '') }}" == "minor" ]; then
             echo "version=${{ steps.id_minor.outputs.version-number }}" >> $GITHUB_OUTPUT
             version_num=${{ steps.id_minor.outputs.version-number }}  
-          elif [ "${{ github.event.label.name }}" == "major" ]; then
+          elif [ "${{ join(github.event.pull_request.labels.*.name, '') }}" == "major" ]; then
             echo "version=${{ steps.id_major.outputs.version-number }}" >> $GITHUB_OUTPUT
             version_num=${{ steps.id_major.outputs.version-number }}
           else 
