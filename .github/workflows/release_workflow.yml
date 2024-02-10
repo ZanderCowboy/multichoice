@@ -36,8 +36,7 @@ jobs:
 
       - if: ${{ github.event.action == 'unlabeled' }}
         name: Update version number and download
-        # id: id_updated_version
-        id: ${{ github.event.action }}
+        id: id_unlabeled
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
@@ -46,8 +45,7 @@ jobs:
 
       - if: ${{ github.event.label.name == 'patch' }}
         name: Update patch version number and download
-        # id: id_updated_version
-        id: ${{ github.event.label.name }}
+        id: id_patch
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
@@ -56,8 +54,7 @@ jobs:
 
       - if: ${{ github.event.label.name == 'minor' }}
         name: Update minor version number and download
-        # id: id_updated_version
-        id: ${{ github.event.label.name }}
+        id: id_minor
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
@@ -66,8 +63,7 @@ jobs:
 
       - if: ${{ github.event.label.name == 'major' }}
         name: Update major version number and download
-        # id: id_updated_version
-        id: ${{ github.event.label.name }}
+        id: id_major
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "major"
@@ -82,8 +78,23 @@ jobs:
 
       - id: id_out
         run: |
-          echo "version=${{ steps.${{ github.event.action }}.outputs.version-number }}" >> $GITHUB_OUTPUT
-          version_num=${{ steps.${{ github.event.action }}.outputs.version-number }}
+          if [ "${{ github.event.label.name }}" == "patch" ]; then
+            echo "version=${{ steps.id_patch.outputs.version-number }}" >> $GITHUB_OUTPUT
+            version_num=${{ steps.id_patch.outputs.version-number }}
+          elif [ "${{ github.event.label.name }}" == "minor" ]; then
+            echo "version=${{ steps.id_minor.outputs.version-number }}" >> $GITHUB_OUTPUT
+            version_num=${{ steps.id_minor.outputs.version-number }}  
+          elif [ "${{ github.event.label.name }}" == "major" ]; then
+            echo "version=${{ steps.id_major.outputs.version-number }}" >> $GITHUB_OUTPUT
+            version_num=${{ steps.id_major.outputs.version-number }}
+          else 
+            echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
+            version_num=${{ steps.id_unlabeled.outputs.version-number }}
+          fi
+
+          # echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
+          # version_num=${{ steps.id_unlabeled.outputs.version-number }}
+
           echo "version_number=${version_num}"
           version=$(echo "${version_num}" | sed 's/+.*//')
           echo "version_rel=${version}" >> $GITHUB_OUTPUT
