@@ -2,6 +2,9 @@ name: Android Build workflow
 on:
   workflow_call:
     inputs:
+      pubspec-filename:
+        required: true
+        type: string
       environment-flag:
         required: true
         type: string
@@ -11,6 +14,9 @@ on:
       build-flag:
         required: true
         type: boolean
+      build-artifact:
+        required: true
+        type: string
 
 jobs:
   buildAndroid:
@@ -29,7 +35,7 @@ jobs:
       - name: Get pubspec.yaml
         uses: actions/download-artifact@v4
         with:
-          name: pubspec-file
+          name: ${{ inputs.pubspec-filename }}
 
       - name: Download Android keystore
         id: android_keystore
@@ -52,5 +58,5 @@ jobs:
       - name: Upload Android ${{ inputs.environment-flag }}
         uses: actions/upload-artifact@v4
         with:
-          name: android-release
+          name: ${{ inputs.build-artifact }}
           path: build/app/outputs/bundle/release/app-release.aab

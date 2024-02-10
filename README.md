@@ -22,3 +22,14 @@ OR
 ```sh
 sudo chown -R node:node /flutter
 ```
+
+### PRs and Workflows
+
+#### Versioning
+
+- Every `PR` from `develop` into `main` needs to have either one of the following labels:
+  - `patch`: Used for fixes, hot-fixes, and any form of patch
+  - `minor`: Used for the release of one or more individual features
+  - `major`: Used for major releases, or big UI and backend changes
+  
+  **Note: In case no label is provided for the PR (i.e. `unlabeled`), a `patch` will be used for release.**

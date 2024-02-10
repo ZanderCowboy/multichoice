@@ -6,18 +6,18 @@ on:
       - "develop"
   pull_request:
     branches:
-      - "main"
       - "develop"
-  workflow_run:
-    workflows:
-      - "Linting"
     types:
-      - completed
-    branches:
-      - "main"
-      - "develop"
+      - "opened"
+      - "synchronize"
+      - "reopened"
+      - "ready_for_review"
 
-  # workflow_dispatch:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -65,10 +65,16 @@ jobs:
       #     DISABLE_ERRORS: true
 
   preBuild:
-    name: Prebuild - Get versioning ready
+    name: Bump build number
     runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: false
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
+      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
+      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
+      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -81,9 +87,18 @@ jobs:
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file"
 
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
+          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -92,27 +107,29 @@ jobs:
 
   build:
     name: Build Apps
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [analyze, preBuild]
     secrets: inherit
     with:
-      web-build-flag: true
+      pubspec-filename: "pubspec-file"
+      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
       web-environment-flag: "release"
       # profile, release
-      android-build-flag: true
+      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
       android-environment-flag: "release"
       android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      windows-build-flag: true
+      android-build-artifact: "android-release"
+      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
       windows-environment-flag: "release"
 
-  # look into using the above jobs conclusion?
-  # look into using a config file in main directory that determines conditionals
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    if: ${{ 'true' == 'true' }} || ${{ 'false' == 'true' }} || ${{ 'false' == 'true' }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: post-build-group
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
