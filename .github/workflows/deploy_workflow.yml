@@ -35,14 +35,14 @@ jobs:
 
       - id: id_out
         run: |
-          echo "web_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__web_build_flag }}" >> $GITHUB_OUTPUT
-          echo "android_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__windows_build_flag }}" >> $GITHUB_OUTPUT
+          echo "web_deploy_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
-          echo "android_package_name=${{ steps.read_config_yaml.outputs.deploy__android_package_name }}" >> $GITHUB_OUTPUT
-          echo "android_track=${{ steps.read_config_yaml.outputs.deploy__android_track }}" >> $GITHUB_OUTPUT
-          echo "android_release_name=${{ steps.read_config_yaml.outputs.deploy__android_release_name }}" >> $GITHUB_OUTPUT
-          echo "android_deploy_status=${{ steps.read_config_yaml.outputs.deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
+          echo "android_package_name=${{ steps.read_config_yaml.outputs.android_deploy__android_package_name }}" >> $GITHUB_OUTPUT
+          echo "android_track=${{ steps.read_config_yaml.outputs.android_deploy__android_track }}" >> $GITHUB_OUTPUT
+          echo "android_release_name=${{ steps.read_config_yaml.outputs.android_deploy__android_release_name }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_status=${{ steps.read_config_yaml.outputs.android_deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy Apps
