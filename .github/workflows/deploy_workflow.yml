@@ -1,111 +1,68 @@
 ---
-name: Release and Deploy
+name: Deploy Apps
 on:
-  # pull_request:
-  #   branches:
-  #     - "main"
-  workflow_run:
-    workflows:
-      - "Test, Analyze, Build"
-    types:
-      - "completed"
+  push:
     branches:
       - "main"
-      - "develop"
-
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  tagAndRelease:
-    name: Git tagging and releases
-    # if: ${{ github.head_ref == 'main' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 0
-
-      - name: Update version for release
-        id: id_update_pubspec_release
-        uses: ./.github/actions/app-versioning
-        with:
-          bump-strategy: "minor"
-          bump-build: "true"
-          file-path: "./pubspec.yaml"
-          upload-filename: "pubspec-file-release"
-
-      - name: Commit new changes for release
-        uses: ./.github/actions/auto-commit-version
-        with:
-          version_number: ${{ steps.id_update_pubspec_release.outputs.version-number }}
-          download_filename: "pubspec-file-release"
-
-      # step to check for previous tags
-
-      - name: Create tag
-        if: success()
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: "v${{ steps.id_update_pubspec_release.outputs.new_version }}"
-          message: "Release ${{ steps.id_update_pubspec_release.outputs.new_version }}"
-
-      - name: Create GitHub release
-        if: success() && ${{ steps.tag_create.outputs.tag_exists == false}}
-        uses: ncipollo/release-action@v1
-        with:
-          tag: v${{ steps.id_update_pubspec_release.outputs.new_version }}
-          name: Release v${{ steps.id_update_pubspec_release.outputs.new_version }}
-          body: Release notes here
-          draft: true
-          prerelease: true
-          generateReleaseNotes: true
-
   preDeploy:
     name: Setting up for Deploy
-    needs: tagAndRelease
-    if: success()
     runs-on: ubuntu-latest
+    outputs:
+      web_deploy_flag: ${{ steps.id_out.outputs.web_deploy_flag }}
+      android_deploy_flag: ${{ steps.id_out.outputs.android_deploy_flag }}
+      windows_deploy_flag: ${{ steps.id_out.outputs.windows_deploy_flag }}
+
+      android_package_name: ${{ steps.id_out.outputs.android_package_name }}
+      android_track: ${{ steps.id_out.outputs.android_track }}
+      android_release_name: ${{ steps.id_out.outputs.android_release_name }}
+      android_deploy_status: ${{ steps.id_out.outputs.android_deploy_status }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 0
 
-      # - run: |
-      #     echo "${{ github.head_ref }}"
-      #     echo "${{ github.ref == 'refs/heads/main' }}"
-      #     echo "${{ github.ref }}"
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
 
-      # - name: 👁️ Check branch validity
-      #   if: ${{ github.head_ref }} != 'refs/heads/main'
-      #   run: |
-      #     echo "⚠️ Error: you tried to create a release from '${{ github.ref }}' branch but production releases can only be created from 'main' branch"
-
-      - name: Job Finished
-        run: echo "preDeploy Job Finished"
-
-      - name: "Echo commands"
+      - id: id_out
         run: |
-          echo "${{ github.head_ref }}"
-          echo "${{ github.ref == 'refs/heads/main' }}"
-          echo "${{ github.ref }}"
+          echo "web_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.deploy__windows_build_flag }}" >> $GITHUB_OUTPUT
+
+          echo "android_package_name=${{ steps.read_config_yaml.outputs.deploy__android_package_name }}" >> $GITHUB_OUTPUT
+          echo "android_track=${{ steps.read_config_yaml.outputs.deploy__android_track }}" >> $GITHUB_OUTPUT
+          echo "android_release_name=${{ steps.read_config_yaml.outputs.deploy__android_release_name }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_status=${{ steps.read_config_yaml.outputs.deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy Apps
-    if: github.event.pull_request.draft == false && ${{ github.ref == 'refs/heads/main' }} && success()
+    if: success()
     uses: ./.github/workflows/_deploy-env-apps.yml
     needs: preDeploy
     permissions:
       contents: write
     secrets: inherit
     with:
+      web_deploy_flag: ${{ needs.preDeploy.outputs.web_deploy_flag == 'true' }}
       web-environment-flag: "Web Prod"
+
+      android_deploy_flag: ${{ needs.preDeploy.outputs.android_deploy_flag == 'true' }}
       android-environment-flag: "Android Prod"
-      android-package-name: "co.za.zanderkotze.multichoice"
-      android-track: "alpha"
-      android-release-name: "v1.0.0"
-      android-deploy-status: "draft"
+      android-package-name: ${{ needs.preDeploy.outputs.android_package_name }}
+      # TODO(ZK): add android environment url
+      android-track: ${{ needs.preDeploy.outputs.android_track }}
+      android-release-name: ${{ needs.preDeploy.outputs.android_release_name }}
+      android-deploy-status: ${{ needs.preDeploy.outputs.android_deploy_status }}
+
+      windows_deploy_flag: ${{ needs.preDeploy.outputs.windows_deploy_flag == 'true' }}
       windows-environment-flag: "Windows Prod"

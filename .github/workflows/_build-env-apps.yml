@@ -2,6 +2,9 @@ name: Build Android, Web, & Windows Apps
 on:
   workflow_call:
     inputs:
+      pubspec-filename:
+        required: true
+        type: string
       web-build-flag:
         required: true
         type: boolean
@@ -17,33 +20,22 @@ on:
       android-versionNumber:
         required: true
         type: string
+      android-build-artifact:
+        required: true
+        type: string
       windows-build-flag:
         required: true
         type: boolean
       windows-environment-flag:
         required: true
         type: string
-    # outputs:
-    #   results:
-    #     description: "All build results, true or false"
-    #     value: ${{ results.outputs.result }}
-    #   web-success:
-    #     description: "Web build results, true or false"
-    #     value: ${{ results.outputs.web }}
-    #   android-success:
-    #     description: "Android build results, true or false"
-    #     value: ${{ results.outputs.android }}
-    #   windows-success:
-    #     description: "Windows build results, true or false"
-    #     value: ${{ results.outputs.windows }}
-
-  # workflow_dispatch:
 
 jobs:
   buildWeb:
     name: "Build Web app"
     uses: ./.github/workflows/_build-web-app.yml
     with:
+      pubspec-filename: ${{ inputs.pubspec-filename }}
       environment-flag: ${{ inputs.web-environment-flag }}
       build-flag: ${{ inputs.web-build-flag }}
   buildAndroid:
@@ -51,12 +43,15 @@ jobs:
     uses: ./.github/workflows/_build-android-app.yml
     secrets: inherit
     with:
+      pubspec-filename: ${{ inputs.pubspec-filename }}
       environment-flag: ${{ inputs.android-environment-flag }}
       versionNumber: ${{ inputs.android-versionNumber }}
       build-flag: ${{ inputs.android-build-flag }}
+      build-artifact: ${{ inputs.android-build-artifact }}
   buildWindows:
     name: "Build Windows app"
     uses: ./.github/workflows/_build-windows-app.yml
     with:
+      pubspec-filename: ${{ inputs.pubspec-filename }}
       environment-flag: ${{ inputs.windows-environment-flag }}
       build-flag: ${{ inputs.windows-build-flag }}

@@ -3,6 +3,9 @@ name: 📦🚀 Deploy Web app for an environment
 on:
   workflow_call:
     inputs:
+      deploy_flag:
+        required: true
+        type: boolean
       environment-flag:
         required: true
         type: string
@@ -11,6 +14,7 @@ on:
 jobs:
   deployWeb:
     name: Deploy Web Build
+    if: ${{ inputs.deploy_flag == true }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -20,7 +24,7 @@ jobs:
         id: download-artifact
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: build_workflow.yml
+          workflow: release_workflow.yml
           workflow_conclusion: success
           search_artifacts: true
           name: web-release
