@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/data/persistance/models/tabs_list.dart';
 import 'package:multichoice/domain/entry/i_entry_repository.dart';
 import 'package:multichoice/domain/entry/models/entry.dart';
@@ -6,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: IEntryRepository)
 class EntryRepository implements IEntryRepository {
-  EntryRepository();
+  EntryRepository(this.db);
 
   final tabsList = TabsList.instance;
 
@@ -26,6 +27,10 @@ class EntryRepository implements IEntryRepository {
       ),
     );
 
+    // await db.writeTxn(() {
+    //   await
+    // });
+
     return 0;
   }
 
@@ -41,4 +46,6 @@ class EntryRepository implements IEntryRepository {
 
     return 0;
   }
+
+  final isar.Isar db;
 }
