@@ -77,7 +77,7 @@ class Cards extends StatelessWidget {
                                     context.read<EntryBloc>().add(
                                           EntryEvent.onLongPressedDeleteEntry(
                                             tabId,
-                                            entry.id,
+                                            entry.id.toString(),
                                           ),
                                         );
                                     if (Navigator.canPop(context)) {
@@ -95,7 +95,8 @@ class Cards extends StatelessWidget {
                         title: entry.title,
                         subtitle: entry.subtitle,
                         tabId: tabId,
-                        entryId: entry.id,
+                        entryId: entry.id
+                            .toString(), // TODO(@ZanderCowboy): Change to int
                       ),
                     );
                   }

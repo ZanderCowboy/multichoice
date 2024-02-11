@@ -96,7 +96,7 @@ class _HomePage extends StatelessWidget {
                                           context.read<HomeBloc>().add(
                                                 HomeEvent
                                                     .onLongPressedDeleteTab(
-                                                  tab.id,
+                                                  tab.id.toString(),
                                                 ),
                                               );
                                           if (Navigator.canPop(context)) {
@@ -111,7 +111,7 @@ class _HomePage extends StatelessWidget {
                               );
                             },
                             child: VerticalTab(
-                              tabId: tab.id,
+                              tabId: tab.id.toString(),
                               tabTitle: tab.title,
                             ),
                           );

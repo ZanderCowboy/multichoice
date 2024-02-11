@@ -16,14 +16,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) : super(HomeState.initial()) {
     on<HomeEvent>((event, emit) {
       event.map(
-        onGetTabs: (_) {
+        onGetTabs: (_) async {
           emit(
             state.copyWith(
               isLoading: true,
             ),
           );
 
-          final tabs = _tabsRepository.readTabs();
+          final tabs = await _tabsRepository.readTabs();
 
           emit(
             state.copyWith(
@@ -63,7 +63,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 title: value.title,
                 subtitle: value.subtitle,
               ),
-              tabs: _tabsRepository.readTabs(),
+              tabs: await _tabsRepository.readTabs(),
               isLoading: false,
               isAdded: false,
             ),
@@ -91,7 +91,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
           emit(
             state.copyWith(
-              tabs: _tabsRepository.readTabs(),
+              tabs: await _tabsRepository.readTabs(),
               isLoading: false,
               isDeleted: false,
             ),
