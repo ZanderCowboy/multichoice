@@ -9,7 +9,7 @@ class IsarDB implements IIsarDB {
   static final IsarDB _instance = IsarDB._();
   static IsarDB get instance => _instance;
 
-  static final isar = coreSl<DatabaseService>().isarDB;
+  // static final isar = coreSl<DatabaseService>().isar;
 
   @override
   int addEntryToTab(String tabId, Entry entryCard) {
