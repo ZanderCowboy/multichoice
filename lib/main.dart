@@ -1,5 +1,7 @@
-import 'dart:io';
+import 'dart:developer';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app.dart';
@@ -12,11 +14,17 @@ void main() {
   configureCoreDependencies();
   Bloc.observer = const SimpleBlocObserver();
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    setWindowTitle('Multichoice');
-    setWindowMinSize(
-      const Size(600, 400),
-    );
+  try {
+    if (!kIsWeb) {
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+        setWindowTitle('Multichoice');
+        setWindowMinSize(
+          const Size(600, 400),
+        );
+      }
+    }
+  } catch (e) {
+    log(e.toString());
   }
 
   runApp(const App());

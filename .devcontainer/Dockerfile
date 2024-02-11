@@ -1,31 +1,32 @@
-FROM sapmachine:latest as android_stage
+# TODO(ZK): Add Java to Dockerfile
 
-ENV ANDROID_HOME=/opt/android-sdk
-ENV ANDROID_SDK_ROOT=/opt/android-sdk
-ENV JAVA_HOME=/opt/jdk-17.0.9+9
+# FROM sapmachine:latest as android_stage
 
-RUN apt-get update && \
-    apt-get install -y \
-    wget \
-    unzip \
-    android-sdk \
-    sdkmanager
+# ENV ANDROID_HOME=/opt/android-sdk
+# ENV ANDROID_SDK_ROOT=/opt/android-sdk
+# ENV JAVA_HOME=/opt/jdk-17.0.9+9
 
-RUN apt install -y openjdk-17-jdk
+# RUN apt-get update && \
+#     apt-get install -y \
+#     wget \
+#     unzip \
+#     android-sdk \
+#     sdkmanager
 
-# Add JAVA
-RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_arm_linux_hotspot_17.0.9_9.tar.gz -O /tmp/openjdk.tar.gz && \
-    tar xzfv /tmp/openjdk.tar.gz -C /opt/ && \
-    rm /tmp/openjdk.tar.gz
+# RUN apt install -y openjdk-17-jdk
 
-RUN wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/android-sdk.zip && \
-    unzip /tmp/android-sdk.zip -d $ANDROID_HOME && \
-    rm /tmp/android-sdk.zip
-ENV PATH=$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+# RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_arm_linux_hotspot_17.0.9_9.tar.gz -O /tmp/openjdk.tar.gz && \
+#     tar xzfv /tmp/openjdk.tar.gz -C /opt/ && \
+#     rm /tmp/openjdk.tar.gz
 
-RUN yes | sdkmanager --licenses
+# RUN wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/android-sdk.zip && \
+#     unzip /tmp/android-sdk.zip -d $ANDROID_HOME && \
+#     rm /tmp/android-sdk.zip
+# ENV PATH=$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
 
-RUN sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+# RUN yes | sdkmanager --licenses
+
+# RUN sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
 
 FROM --platform=linux ubuntu:latest
@@ -71,9 +72,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=android_stage $ANDROID_HOME $ANDROID_HOME
-COPY --from=android_stage $ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
-COPY --from=android_stage $JAVA_HOME $JAVA_HOME
+# COPY --from=android_stage $ANDROID_HOME $ANDROID_HOME
+# COPY --from=android_stage $ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
+# COPY --from=android_stage $JAVA_HOME $JAVA_HOME
 
 RUN git clone -b 3.16.9 https://github.com/flutter/flutter.git /usr/local/flutter && \
     flutter channel stable && \
