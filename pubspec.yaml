@@ -6,9 +6,12 @@ publish_to: "none"
 version: 0.0.2+68
 
 environment:
-  sdk: ">=3.1.2 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
+
+# isar_version: &isar_version 3.1.0
 
 dependencies:
+  analyzer: ">=5.13.0"
   bloc: ^8.1.2
   cupertino_icons: ^1.0.2
   flutter:
@@ -18,7 +21,10 @@ dependencies:
   gap: ^3.0.1
   get_it: ^7.6.4
   injectable: ^2.3.2
+  isar: ^3.1.0
+  isar_flutter_libs: ^3.1.0
   json_annotation: ^4.8.1
+  path_provider: ^2.1.2
   uuid: ^4.3.3
   window_size:
     git:
@@ -26,6 +32,7 @@ dependencies:
       path: plugins/window_size
 
 dev_dependencies:
+  # analyzer: ^6.0.0
   build_runner: ^2.4.6
   # build_web_compilers: ^4.0.9
   flutter_lints: ^3.0.1
@@ -33,8 +40,14 @@ dev_dependencies:
     sdk: flutter
   freezed: ^2.4.5
   injectable_generator: ^2.4.1
+  isar_generator: ^3.0.1
   json_serializable: ^6.7.1
   very_good_analysis: ^5.1.0
 
 flutter:
   uses-material-design: true
+
+global_options:
+  freezed:freezed:
+    runs_before:
+      - isar_generator:isar_generator
