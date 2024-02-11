@@ -1,8 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
+import 'package:multichoice/utils/extensions/string.dart';
 
 part 'entry.freezed.dart';
+part 'entry.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Entry with _$Entry {
   const factory Entry({
     required String uuid,
@@ -20,5 +24,7 @@ class Entry with _$Entry {
         subtitle: '',
       );
 
-  String get id => uuid;
+  factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);
+
+  Id get id => uuid.fastHash();
 }

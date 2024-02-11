@@ -14,12 +14,17 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Tabs _$TabsFromJson(Map<String, dynamic> json) {
+  return _Tabs.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Tabs {
   String get uuid => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TabsCopyWith<Tabs> get copyWith => throw _privateConstructorUsedError;
 }
@@ -108,11 +113,14 @@ class __$$TabsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$TabsImpl extends _Tabs {
   const _$TabsImpl(
       {required this.uuid, required this.title, required this.subtitle})
       : super._();
+
+  factory _$TabsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TabsImplFromJson(json);
 
   @override
   final String uuid;
@@ -137,6 +145,7 @@ class _$TabsImpl extends _Tabs {
                 other.subtitle == subtitle));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, uuid, title, subtitle);
 
@@ -145,6 +154,13 @@ class _$TabsImpl extends _Tabs {
   @pragma('vm:prefer-inline')
   _$$TabsImplCopyWith<_$TabsImpl> get copyWith =>
       __$$TabsImplCopyWithImpl<_$TabsImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$TabsImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Tabs extends Tabs {
@@ -153,6 +169,8 @@ abstract class _Tabs extends Tabs {
       required final String title,
       required final String subtitle}) = _$TabsImpl;
   const _Tabs._() : super._();
+
+  factory _Tabs.fromJson(Map<String, dynamic> json) = _$TabsImpl.fromJson;
 
   @override
   String get uuid;

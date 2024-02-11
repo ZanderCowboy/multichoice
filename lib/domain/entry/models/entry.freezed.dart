@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Entry _$EntryFromJson(Map<String, dynamic> json) {
+  return _Entry.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Entry {
   String get uuid => throw _privateConstructorUsedError;
@@ -21,6 +25,7 @@ mixin _$Entry {
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $EntryCopyWith<Entry> get copyWith => throw _privateConstructorUsedError;
 }
@@ -120,7 +125,7 @@ class __$$EntryImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$EntryImpl extends _Entry {
   const _$EntryImpl(
       {required this.uuid,
@@ -128,6 +133,9 @@ class _$EntryImpl extends _Entry {
       required this.title,
       required this.subtitle})
       : super._();
+
+  factory _$EntryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EntryImplFromJson(json);
 
   @override
   final String uuid;
@@ -155,6 +163,7 @@ class _$EntryImpl extends _Entry {
                 other.subtitle == subtitle));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, uuid, tabId, title, subtitle);
 
@@ -163,6 +172,13 @@ class _$EntryImpl extends _Entry {
   @pragma('vm:prefer-inline')
   _$$EntryImplCopyWith<_$EntryImpl> get copyWith =>
       __$$EntryImplCopyWithImpl<_$EntryImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$EntryImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Entry extends Entry {
@@ -172,6 +188,8 @@ abstract class _Entry extends Entry {
       required final String title,
       required final String subtitle}) = _$EntryImpl;
   const _Entry._() : super._();
+
+  factory _Entry.fromJson(Map<String, dynamic> json) = _$EntryImpl.fromJson;
 
   @override
   String get uuid;
