@@ -1,8 +1,4 @@
-import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:multichoice/domain/export_domain.dart';
 
 abstract class DatabaseService {
   DatabaseService._internal();
@@ -15,19 +11,18 @@ abstract class DatabaseService {
 
   Map<Tabs, List<Entry>> get database => _database;
 
-  Future<Isar> get isar async => _initializeDB();
+  // @preResolve
+  // Future<Isar> get isar async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final isar = await Isar.open(
+  //     [
+  //       TabsSchema,
+  //       EntrySchema,
+  //     ],
+  //     directory: directory.path,
+  //     name: 'MultichoiceDB',
+  //   );
 
-  Future<Isar> _initializeDB() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final isar = await Isar.open(
-      [
-        TabsSchema,
-        EntrySchema,
-      ],
-      directory: directory.path,
-      name: 'MultichoiceDB',
-    );
-
-    return isar;
-  }
+  //   return isar;
+  // }
 }
