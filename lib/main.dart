@@ -9,9 +9,9 @@ import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/simple_bloc_observer.dart';
 import 'package:window_size/window_size.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureCoreDependencies();
+  await configureCoreDependencies();
   Bloc.observer = const SimpleBlocObserver();
 
   try {
