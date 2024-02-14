@@ -8,18 +8,18 @@ part 'entry.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Entry with _$Entry {
-  const factory Entry({
+  factory Entry({
     required String uuid,
-    required String tabId,
+    required int tabId,
     required String title,
     required String subtitle,
   }) = _Entry;
 
-  const Entry._();
+  Entry._();
 
-  factory Entry.empty() => const Entry(
+  factory Entry.empty() => Entry(
         uuid: '',
-        tabId: '',
+        tabId: 0,
         title: '',
         subtitle: '',
       );

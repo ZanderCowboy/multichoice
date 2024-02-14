@@ -6,7 +6,7 @@ class EmptyEntry extends StatelessWidget {
     super.key,
   });
 
-  final String tabId;
+  final int tabId;
 
   @override
   Widget build(BuildContext context) {
