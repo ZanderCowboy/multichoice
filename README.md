@@ -33,3 +33,18 @@ sudo chown -R node:node /flutter
   - `major`: Used for major releases, or big UI and backend changes
   
   **Note: In case no label is provided for the PR (i.e. `unlabeled`), a `patch` will be used for release.**
+
+#### Flow
+
+Linting
+ON PUSH - ANY BRANCH
+ON PR - ANY BRANCH
+
+Building
+ON PR - FROM FEATURE TO DEVELOP
+
+Tag and Release
+ON PR - FROM DEVELOP TO MAIN
+
+Deploy
+ON PUSH - TO MAIN
