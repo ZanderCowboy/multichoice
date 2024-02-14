@@ -1,7 +1,9 @@
 import 'package:multichoice/database_service.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:multichoice/domain/export_domain.dart';
+
 import 'package:multichoice/get_it_injection.dart';
+
+// TODO(@ZanderCowboy): This can be removed, since it is no longer required
 
 class TabsList {
   TabsList._();

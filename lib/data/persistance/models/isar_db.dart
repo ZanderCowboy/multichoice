@@ -1,8 +1,7 @@
 import 'package:multichoice/data/persistance/models/i_isar_db.dart';
-import 'package:multichoice/database_service.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
-import 'package:multichoice/get_it_injection.dart';
+import 'package:multichoice/domain/export_domain.dart';
+
+// TODO(@ZanderCowboy): This can be removed, since it is no longer needed
 
 class IsarDB implements IIsarDB {
   IsarDB._();

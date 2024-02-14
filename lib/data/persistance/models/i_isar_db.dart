@@ -1,5 +1,6 @@
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:multichoice/domain/export_domain.dart';
+
+// TODO(@ZanderCowboy): This needs to be removed, since it is not needed
 
 abstract class IIsarDB {
   int addTab(Tabs tab);
