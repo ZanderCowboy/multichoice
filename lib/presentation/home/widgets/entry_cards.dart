@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/application/entry/entry_bloc.dart';
+import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
-import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
@@ -13,25 +12,26 @@ class Cards extends StatelessWidget {
     super.key,
   });
 
-  final String tabId;
+  final int tabId;
 
   @override
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    return BlocProvider(
-      create: (_) => coreSl<EntryBloc>()
-        ..add(
-          EntryEvent.onGetEntryCards(tabId),
-        ),
+    return BlocListener<HomeBloc, HomeState>(
+      listenWhen: (previous, current) {
+        // return previous.tabs != current.tabs;
+        return false;
+      },
+      listener: (context, state) {
+        BlocProvider.of<EntryBloc>(context)
+            .add(EntryEvent.onGetEntryCards(tabId));
+      },
       child: BlocBuilder<EntryBloc, EntryState>(
+        // buildWhen: (previous, current) {
+        //   return previous.entryCards != current.entryCards;
+        // },
         builder: (context, state) {
-          if (state.entry.tabId != tabId) {
-            context.read<EntryBloc>().add(
-                  EntryEvent.onGetEntryCards(tabId),
-                );
-          }
-
           final entriesInTab = state.entryCards ?? [];
 
           if (state.isLoading) {
@@ -41,15 +41,13 @@ class Cards extends StatelessWidget {
           }
 
           return Expanded(
-            child: ScrollConfiguration(
-              behavior: CustomScrollBehaviour(),
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: entriesInTab.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == entriesInTab.length) {
-                    return EmptyEntry(tabId: tabId);
-                  } else {
+            child: CustomScrollView(
+              controller: scrollController,
+              scrollBehavior: CustomScrollBehaviour(),
+              slivers: [
+                SliverList.builder(
+                  itemCount: entriesInTab.length,
+                  itemBuilder: (context, index) {
                     final entry = entriesInTab[index];
 
                     return GestureDetector(
@@ -77,7 +75,7 @@ class Cards extends StatelessWidget {
                                     context.read<EntryBloc>().add(
                                           EntryEvent.onLongPressedDeleteEntry(
                                             tabId,
-                                            entry.id.toString(),
+                                            entry.id,
                                           ),
                                         );
                                     if (Navigator.canPop(context)) {
@@ -95,13 +93,15 @@ class Cards extends StatelessWidget {
                         title: entry.title,
                         subtitle: entry.subtitle,
                         tabId: tabId,
-                        entryId: entry.id
-                            .toString(), // TODO(@ZanderCowboy): Change to int
+                        entryId: entry.id,
                       ),
                     );
-                  }
-                },
-              ),
+                  },
+                ),
+                SliverToBoxAdapter(
+                  child: EmptyEntry(tabId: tabId),
+                ),
+              ],
             ),
           );
         },
