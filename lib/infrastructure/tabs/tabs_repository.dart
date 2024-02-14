@@ -1,65 +1,72 @@
+import 'dart:developer';
+
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart' as isar_db;
-import 'package:multichoice/data/persistance/models/tabs_list.dart';
+import 'package:isar/isar.dart' as isar;
+import 'package:multichoice/domain/export_domain.dart';
 import 'package:multichoice/domain/tabs/i_tabs_repository.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
-import 'package:multichoice/utils/extensions/string.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)
 class TabsRepository implements ITabsRepository {
   TabsRepository(this.db);
 
-  final tabsList = TabsList.instance;
-  // final db = isar.Isar;
+  final isar.Isar db;
 
   @override
   Future<int> addTab(String title, String subtitle) async {
-    // tabsList.addTab(
-    //   Tabs(
-    //     uuid: const Uuid().v4(),
-    //     title: title,
-    //     subtitle: subtitle,
-    //   ),
-    // );
+    try {
+      await db.writeTxn(() async {
+        final result = db.tabs.put(
+          Tabs(
+            uuid: const Uuid().v4(),
+            title: title,
+            subtitle: subtitle,
+          ),
+        );
 
-    await db.writeTxn(() async {
-      return db.tabs.put(
-        Tabs(
-          uuid: const Uuid().v4(),
-          title: title,
-          subtitle: subtitle,
-        ),
-      );
-    });
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+      return 0;
+    }
 
     return 0;
   }
 
   @override
   Future<List<Tabs>> readTabs() async {
-    // return tabsList.readTabs();
+    try {
+      final result = db.tabs.where().findAll();
 
-    return db.tabs.where().findAll();
+      return result;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
   }
 
   @override
-  Future<int> deleteTab(String tabId) async {
-    tabsList.deleteTab(tabId);
+  Future<bool> deleteTab(int tabId) async {
+    try {
+      await db.writeTxn(() async {
+        final entries = await db.entrys.where().findAll();
 
-    await db.writeTxn(() async {
-      await db.tabs.delete(tabId.fastHash());
-    });
+        final tabEntries =
+            entries.where((element) => element.tabId == tabId).toList();
 
-    return 0;
+        for (final element in tabEntries) {
+          await db.entrys.delete(element.id);
+        }
+
+        final result = db.tabs.delete(tabId);
+
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return false;
   }
-
-  final isar_db.Isar db;
-  // final Isar db = await coreSl<DatabaseService>().isarDB;
-  // late final IsarDB db;
-
-  // @override
-  // void initState() {
-  //   this.db = coreSl<DatabaseService>().isarDB;
-  // }
 }

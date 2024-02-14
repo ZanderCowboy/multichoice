@@ -5,6 +5,5 @@ abstract class ITabsRepository {
 
   Future<List<Tabs>> readTabs();
 
-  Future<int> deleteTab(String tabId);
-  // Future<int> deleteTab(int tabId);
+  Future<bool> deleteTab(int tabId);
 }
