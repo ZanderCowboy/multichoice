@@ -11,10 +11,10 @@ class EntryState with _$EntryState {
     required String? errorMessage,
   }) = _EntryState;
 
-  factory EntryState.initial() => const EntryState(
+  factory EntryState.initial() => EntryState(
         entry: Entry(
           uuid: '',
-          tabId: '',
+          tabId: 0,
           title: '',
           subtitle: '',
         ),

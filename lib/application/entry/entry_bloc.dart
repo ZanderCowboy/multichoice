@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:multichoice/domain/entry/i_entry_repository.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
+import 'package:multichoice/domain/export_domain.dart';
 
 part 'entry_event.dart';
 part 'entry_state.dart';
@@ -13,20 +13,32 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   EntryBloc(
     this._entryRepository,
   ) : super(EntryState.initial()) {
-    on<EntryEvent>((event, emit) {
-      event.map(
-        onGetEntryCards: (value) {
-          emit(state.copyWith(isLoading: true));
+    on<EntryEvent>((event, emit) async {
+      await event.map(
+        onGetAllEntryCards: (_) async {
+          emit(
+            state.copyWith(
+              isLoading: true,
+            ),
+          );
 
-          final entryCards = _entryRepository.readEntries(value.tabId) ?? [];
-
-          final entry = entryCards.isNotEmpty
-              ? entryCards.first
-              : Entry.empty().copyWith(tabId: value.tabId);
+          final entries = await _entryRepository.readAllEntries();
 
           emit(
             state.copyWith(
-              entry: entry,
+              entryCards: entries,
+              isLoading: false,
+            ),
+          );
+        },
+        onGetEntryCards: (value) async {
+          emit(state.copyWith(isLoading: true));
+
+          final entryCards =
+              await _entryRepository.readEntries(value.tabId) ?? [];
+
+          emit(
+            state.copyWith(
               entryCards: entryCards,
               isLoading: false,
             ),
@@ -53,7 +65,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
 
           emit(
             state.copyWith(
-              entryCards: _entryRepository.readEntries(value.tabId) ?? [],
+              entryCards: await _entryRepository.readEntries(value.tabId) ?? [],
               isLoading: false,
               isAdded: false,
             ),
@@ -75,7 +87,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
 
           emit(
             state.copyWith(
-              entryCards: _entryRepository.readEntries(value.tabId) ?? [],
+              entryCards: await _entryRepository.readEntries(value.tabId) ?? [],
               isLoading: false,
               isDeleted: false,
             ),
