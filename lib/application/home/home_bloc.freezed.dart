@@ -12,39 +12,35 @@ part of 'home_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$HomeEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
-    required TResult Function(Tabs tab) onUpdateTab,
     required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(String tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
-    TResult? Function(Tabs tab)? onUpdateTab,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(String tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
-    TResult Function(Tabs tab)? onUpdateTab,
     TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(String tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
-    required TResult Function(OnUpdateTab value) onUpdateTab,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -53,7 +49,6 @@ mixin _$HomeEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
-    TResult? Function(OnUpdateTab value)? onUpdateTab,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) =>
@@ -61,7 +56,6 @@ mixin _$HomeEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
-    TResult Function(OnUpdateTab value)? onUpdateTab,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -125,9 +119,8 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
-    required TResult Function(Tabs tab) onUpdateTab,
     required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(String tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
   }) {
     return onGetTabs();
   }
@@ -136,9 +129,8 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
-    TResult? Function(Tabs tab)? onUpdateTab,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(String tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
   }) {
     return onGetTabs?.call();
   }
@@ -147,9 +139,8 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
-    TResult Function(Tabs tab)? onUpdateTab,
     TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(String tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onGetTabs != null) {
@@ -162,7 +153,6 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
-    required TResult Function(OnUpdateTab value) onUpdateTab,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -174,7 +164,6 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
-    TResult? Function(OnUpdateTab value)? onUpdateTab,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -185,7 +174,6 @@ class _$OnGetTabsImpl implements OnGetTabs {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
-    TResult Function(OnUpdateTab value)? onUpdateTab,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -199,162 +187,6 @@ class _$OnGetTabsImpl implements OnGetTabs {
 
 abstract class OnGetTabs implements HomeEvent {
   const factory OnGetTabs() = _$OnGetTabsImpl;
-}
-
-/// @nodoc
-abstract class _$$OnUpdateTabImplCopyWith<$Res> {
-  factory _$$OnUpdateTabImplCopyWith(
-          _$OnUpdateTabImpl value, $Res Function(_$OnUpdateTabImpl) then) =
-      __$$OnUpdateTabImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Tabs tab});
-
-  $TabsCopyWith<$Res> get tab;
-}
-
-/// @nodoc
-class __$$OnUpdateTabImplCopyWithImpl<$Res>
-    extends _$HomeEventCopyWithImpl<$Res, _$OnUpdateTabImpl>
-    implements _$$OnUpdateTabImplCopyWith<$Res> {
-  __$$OnUpdateTabImplCopyWithImpl(
-      _$OnUpdateTabImpl _value, $Res Function(_$OnUpdateTabImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? tab = null,
-  }) {
-    return _then(_$OnUpdateTabImpl(
-      null == tab
-          ? _value.tab
-          : tab // ignore: cast_nullable_to_non_nullable
-              as Tabs,
-    ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $TabsCopyWith<$Res> get tab {
-    return $TabsCopyWith<$Res>(_value.tab, (value) {
-      return _then(_value.copyWith(tab: value));
-    });
-  }
-}
-
-/// @nodoc
-
-class _$OnUpdateTabImpl implements OnUpdateTab {
-  const _$OnUpdateTabImpl(this.tab);
-
-  @override
-  final Tabs tab;
-
-  @override
-  String toString() {
-    return 'HomeEvent.onUpdateTab(tab: $tab)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OnUpdateTabImpl &&
-            (identical(other.tab, tab) || other.tab == tab));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, tab);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OnUpdateTabImplCopyWith<_$OnUpdateTabImpl> get copyWith =>
-      __$$OnUpdateTabImplCopyWithImpl<_$OnUpdateTabImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() onGetTabs,
-    required TResult Function(Tabs tab) onUpdateTab,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(String tabId) onLongPressedDeleteTab,
-  }) {
-    return onUpdateTab(tab);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? onGetTabs,
-    TResult? Function(Tabs tab)? onUpdateTab,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(String tabId)? onLongPressedDeleteTab,
-  }) {
-    return onUpdateTab?.call(tab);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? onGetTabs,
-    TResult Function(Tabs tab)? onUpdateTab,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(String tabId)? onLongPressedDeleteTab,
-    required TResult orElse(),
-  }) {
-    if (onUpdateTab != null) {
-      return onUpdateTab(tab);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OnGetTabs value) onGetTabs,
-    required TResult Function(OnUpdateTab value) onUpdateTab,
-    required TResult Function(OnPressedAddTab value) onPressedAddTab,
-    required TResult Function(OnLongPressedDeleteTab value)
-        onLongPressedDeleteTab,
-  }) {
-    return onUpdateTab(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OnGetTabs value)? onGetTabs,
-    TResult? Function(OnUpdateTab value)? onUpdateTab,
-    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
-    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
-  }) {
-    return onUpdateTab?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OnGetTabs value)? onGetTabs,
-    TResult Function(OnUpdateTab value)? onUpdateTab,
-    TResult Function(OnPressedAddTab value)? onPressedAddTab,
-    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
-    required TResult orElse(),
-  }) {
-    if (onUpdateTab != null) {
-      return onUpdateTab(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OnUpdateTab implements HomeEvent {
-  const factory OnUpdateTab(final Tabs tab) = _$OnUpdateTabImpl;
-
-  Tabs get tab;
-  @JsonKey(ignore: true)
-  _$$OnUpdateTabImplCopyWith<_$OnUpdateTabImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -432,9 +264,8 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
-    required TResult Function(Tabs tab) onUpdateTab,
     required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(String tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
   }) {
     return onPressedAddTab(title, subtitle);
   }
@@ -443,9 +274,8 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
-    TResult? Function(Tabs tab)? onUpdateTab,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(String tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
   }) {
     return onPressedAddTab?.call(title, subtitle);
   }
@@ -454,9 +284,8 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
-    TResult Function(Tabs tab)? onUpdateTab,
     TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(String tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
@@ -469,7 +298,6 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
-    required TResult Function(OnUpdateTab value) onUpdateTab,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -481,7 +309,6 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
-    TResult? Function(OnUpdateTab value)? onUpdateTab,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -492,7 +319,6 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
-    TResult Function(OnUpdateTab value)? onUpdateTab,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -522,7 +348,7 @@ abstract class _$$OnLongPressedDeleteTabImplCopyWith<$Res> {
           $Res Function(_$OnLongPressedDeleteTabImpl) then) =
       __$$OnLongPressedDeleteTabImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String tabId});
+  $Res call({int tabId});
 }
 
 /// @nodoc
@@ -543,7 +369,7 @@ class __$$OnLongPressedDeleteTabImplCopyWithImpl<$Res>
       null == tabId
           ? _value.tabId
           : tabId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
     ));
   }
 }
@@ -554,7 +380,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   const _$OnLongPressedDeleteTabImpl(this.tabId);
 
   @override
-  final String tabId;
+  final int tabId;
 
   @override
   String toString() {
@@ -583,9 +409,8 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() onGetTabs,
-    required TResult Function(Tabs tab) onUpdateTab,
     required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(String tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
   }) {
     return onLongPressedDeleteTab(tabId);
   }
@@ -594,9 +419,8 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? onGetTabs,
-    TResult? Function(Tabs tab)? onUpdateTab,
     TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(String tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
   }) {
     return onLongPressedDeleteTab?.call(tabId);
   }
@@ -605,9 +429,8 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? onGetTabs,
-    TResult Function(Tabs tab)? onUpdateTab,
     TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(String tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
@@ -620,7 +443,6 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OnGetTabs value) onGetTabs,
-    required TResult Function(OnUpdateTab value) onUpdateTab,
     required TResult Function(OnPressedAddTab value) onPressedAddTab,
     required TResult Function(OnLongPressedDeleteTab value)
         onLongPressedDeleteTab,
@@ -632,7 +454,6 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OnGetTabs value)? onGetTabs,
-    TResult? Function(OnUpdateTab value)? onUpdateTab,
     TResult? Function(OnPressedAddTab value)? onPressedAddTab,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
   }) {
@@ -643,7 +464,6 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OnGetTabs value)? onGetTabs,
-    TResult Function(OnUpdateTab value)? onUpdateTab,
     TResult Function(OnPressedAddTab value)? onPressedAddTab,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     required TResult orElse(),
@@ -656,10 +476,10 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
 }
 
 abstract class OnLongPressedDeleteTab implements HomeEvent {
-  const factory OnLongPressedDeleteTab(final String tabId) =
+  const factory OnLongPressedDeleteTab(final int tabId) =
       _$OnLongPressedDeleteTabImpl;
 
-  String get tabId;
+  int get tabId;
   @JsonKey(ignore: true)
   _$$OnLongPressedDeleteTabImplCopyWith<_$OnLongPressedDeleteTabImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -669,8 +489,6 @@ abstract class OnLongPressedDeleteTab implements HomeEvent {
 mixin _$HomeState {
   Tabs get tab => throw _privateConstructorUsedError;
   List<Tabs> get tabs => throw _privateConstructorUsedError;
-  Entry get entry => throw _privateConstructorUsedError;
-  List<Entry>? get entryCards => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isDeleted => throw _privateConstructorUsedError;
   bool get isAdded => throw _privateConstructorUsedError;
@@ -689,15 +507,12 @@ abstract class $HomeStateCopyWith<$Res> {
   $Res call(
       {Tabs tab,
       List<Tabs> tabs,
-      Entry entry,
-      List<Entry>? entryCards,
       bool isLoading,
       bool isDeleted,
       bool isAdded,
       String? errorMessage});
 
   $TabsCopyWith<$Res> get tab;
-  $EntryCopyWith<$Res> get entry;
 }
 
 /// @nodoc
@@ -715,8 +530,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   $Res call({
     Object? tab = null,
     Object? tabs = null,
-    Object? entry = null,
-    Object? entryCards = freezed,
     Object? isLoading = null,
     Object? isDeleted = null,
     Object? isAdded = null,
@@ -731,14 +544,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.tabs
           : tabs // ignore: cast_nullable_to_non_nullable
               as List<Tabs>,
-      entry: null == entry
-          ? _value.entry
-          : entry // ignore: cast_nullable_to_non_nullable
-              as Entry,
-      entryCards: freezed == entryCards
-          ? _value.entryCards
-          : entryCards // ignore: cast_nullable_to_non_nullable
-              as List<Entry>?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -765,14 +570,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
       return _then(_value.copyWith(tab: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EntryCopyWith<$Res> get entry {
-    return $EntryCopyWith<$Res>(_value.entry, (value) {
-      return _then(_value.copyWith(entry: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -786,8 +583,6 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   $Res call(
       {Tabs tab,
       List<Tabs> tabs,
-      Entry entry,
-      List<Entry>? entryCards,
       bool isLoading,
       bool isDeleted,
       bool isAdded,
@@ -795,8 +590,6 @@ abstract class _$$HomeStateImplCopyWith<$Res>
 
   @override
   $TabsCopyWith<$Res> get tab;
-  @override
-  $EntryCopyWith<$Res> get entry;
 }
 
 /// @nodoc
@@ -812,8 +605,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   $Res call({
     Object? tab = null,
     Object? tabs = null,
-    Object? entry = null,
-    Object? entryCards = freezed,
     Object? isLoading = null,
     Object? isDeleted = null,
     Object? isAdded = null,
@@ -828,14 +619,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value._tabs
           : tabs // ignore: cast_nullable_to_non_nullable
               as List<Tabs>,
-      entry: null == entry
-          ? _value.entry
-          : entry // ignore: cast_nullable_to_non_nullable
-              as Entry,
-      entryCards: freezed == entryCards
-          ? _value._entryCards
-          : entryCards // ignore: cast_nullable_to_non_nullable
-              as List<Entry>?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -862,14 +645,11 @@ class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl(
       {required this.tab,
       required final List<Tabs> tabs,
-      required this.entry,
-      required final List<Entry>? entryCards,
       required this.isLoading,
       required this.isDeleted,
       required this.isAdded,
       required this.errorMessage})
-      : _tabs = tabs,
-        _entryCards = entryCards;
+      : _tabs = tabs;
 
   @override
   final Tabs tab;
@@ -879,18 +659,6 @@ class _$HomeStateImpl implements _HomeState {
     if (_tabs is EqualUnmodifiableListView) return _tabs;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tabs);
-  }
-
-  @override
-  final Entry entry;
-  final List<Entry>? _entryCards;
-  @override
-  List<Entry>? get entryCards {
-    final value = _entryCards;
-    if (value == null) return null;
-    if (_entryCards is EqualUnmodifiableListView) return _entryCards;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -904,7 +672,7 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   String toString() {
-    return 'HomeState(tab: $tab, tabs: $tabs, entry: $entry, entryCards: $entryCards, isLoading: $isLoading, isDeleted: $isDeleted, isAdded: $isAdded, errorMessage: $errorMessage)';
+    return 'HomeState(tab: $tab, tabs: $tabs, isLoading: $isLoading, isDeleted: $isDeleted, isAdded: $isAdded, errorMessage: $errorMessage)';
   }
 
   @override
@@ -914,9 +682,6 @@ class _$HomeStateImpl implements _HomeState {
             other is _$HomeStateImpl &&
             (identical(other.tab, tab) || other.tab == tab) &&
             const DeepCollectionEquality().equals(other._tabs, _tabs) &&
-            (identical(other.entry, entry) || other.entry == entry) &&
-            const DeepCollectionEquality()
-                .equals(other._entryCards, _entryCards) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.isDeleted, isDeleted) ||
@@ -931,8 +696,6 @@ class _$HomeStateImpl implements _HomeState {
       runtimeType,
       tab,
       const DeepCollectionEquality().hash(_tabs),
-      entry,
-      const DeepCollectionEquality().hash(_entryCards),
       isLoading,
       isDeleted,
       isAdded,
@@ -949,8 +712,6 @@ abstract class _HomeState implements HomeState {
   const factory _HomeState(
       {required final Tabs tab,
       required final List<Tabs> tabs,
-      required final Entry entry,
-      required final List<Entry>? entryCards,
       required final bool isLoading,
       required final bool isDeleted,
       required final bool isAdded,
@@ -960,10 +721,6 @@ abstract class _HomeState implements HomeState {
   Tabs get tab;
   @override
   List<Tabs> get tabs;
-  @override
-  Entry get entry;
-  @override
-  List<Entry>? get entryCards;
   @override
   bool get isLoading;
   @override

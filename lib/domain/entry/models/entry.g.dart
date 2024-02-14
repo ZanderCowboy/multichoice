@@ -25,7 +25,7 @@ const EntrySchema = CollectionSchema(
     r'tabId': PropertySchema(
       id: 1,
       name: r'tabId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'title': PropertySchema(
       id: 2,
@@ -59,7 +59,6 @@ int _entryEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.subtitle.length * 3;
-  bytesCount += 3 + object.tabId.length * 3;
   bytesCount += 3 + object.title.length * 3;
   bytesCount += 3 + object.uuid.length * 3;
   return bytesCount;
@@ -72,7 +71,7 @@ void _entrySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.subtitle);
-  writer.writeString(offsets[1], object.tabId);
+  writer.writeLong(offsets[1], object.tabId);
   writer.writeString(offsets[2], object.title);
   writer.writeString(offsets[3], object.uuid);
 }
@@ -85,7 +84,7 @@ Entry _entryDeserialize(
 ) {
   final object = Entry(
     subtitle: reader.readString(offsets[0]),
-    tabId: reader.readString(offsets[1]),
+    tabId: reader.readLong(offsets[1]),
     title: reader.readString(offsets[2]),
     uuid: reader.readString(offsets[3]),
   );
@@ -102,7 +101,7 @@ P _entryDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
@@ -380,55 +379,46 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'tabId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdGreaterThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'tabId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdLessThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'tabId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdBetween(
-    String lower,
-    String upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -437,73 +427,6 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'tabId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'tabId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdContains(String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'tabId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdMatches(String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'tabId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'tabId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Entry, Entry, QAfterFilterCondition> tabIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'tabId',
-        value: '',
       ));
     });
   }
@@ -889,10 +812,9 @@ extension EntryQueryWhereDistinct on QueryBuilder<Entry, Entry, QDistinct> {
     });
   }
 
-  QueryBuilder<Entry, Entry, QDistinct> distinctByTabId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Entry, Entry, QDistinct> distinctByTabId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'tabId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'tabId');
     });
   }
 
@@ -924,7 +846,7 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Entry, String, QQueryOperations> tabIdProperty() {
+  QueryBuilder<Entry, int, QQueryOperations> tabIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'tabId');
     });
@@ -949,7 +871,7 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
 
 _$EntryImpl _$$EntryImplFromJson(Map<String, dynamic> json) => _$EntryImpl(
       uuid: json['uuid'] as String,
-      tabId: json['tabId'] as String,
+      tabId: json['tabId'] as int,
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
     );

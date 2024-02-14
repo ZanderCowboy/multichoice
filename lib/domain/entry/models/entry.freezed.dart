@@ -12,7 +12,7 @@ part of 'entry.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Entry _$EntryFromJson(Map<String, dynamic> json) {
   return _Entry.fromJson(json);
@@ -21,7 +21,7 @@ Entry _$EntryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Entry {
   String get uuid => throw _privateConstructorUsedError;
-  String get tabId => throw _privateConstructorUsedError;
+  int get tabId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
 
@@ -35,7 +35,7 @@ abstract class $EntryCopyWith<$Res> {
   factory $EntryCopyWith(Entry value, $Res Function(Entry) then) =
       _$EntryCopyWithImpl<$Res, Entry>;
   @useResult
-  $Res call({String uuid, String tabId, String title, String subtitle});
+  $Res call({String uuid, int tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -64,7 +64,7 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
       tabId: null == tabId
           ? _value.tabId
           : tabId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,7 @@ abstract class _$$EntryImplCopyWith<$Res> implements $EntryCopyWith<$Res> {
       __$$EntryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uuid, String tabId, String title, String subtitle});
+  $Res call({String uuid, int tabId, String title, String subtitle});
 }
 
 /// @nodoc
@@ -111,7 +111,7 @@ class __$$EntryImplCopyWithImpl<$Res>
       tabId: null == tabId
           ? _value.tabId
           : tabId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -127,7 +127,7 @@ class __$$EntryImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$EntryImpl extends _Entry {
-  const _$EntryImpl(
+  _$EntryImpl(
       {required this.uuid,
       required this.tabId,
       required this.title,
@@ -140,7 +140,7 @@ class _$EntryImpl extends _Entry {
   @override
   final String uuid;
   @override
-  final String tabId;
+  final int tabId;
   @override
   final String title;
   @override
@@ -182,19 +182,19 @@ class _$EntryImpl extends _Entry {
 }
 
 abstract class _Entry extends Entry {
-  const factory _Entry(
+  factory _Entry(
       {required final String uuid,
-      required final String tabId,
+      required final int tabId,
       required final String title,
       required final String subtitle}) = _$EntryImpl;
-  const _Entry._() : super._();
+  _Entry._() : super._();
 
   factory _Entry.fromJson(Map<String, dynamic> json) = _$EntryImpl.fromJson;
 
   @override
   String get uuid;
   @override
-  String get tabId;
+  int get tabId;
   @override
   String get title;
   @override
