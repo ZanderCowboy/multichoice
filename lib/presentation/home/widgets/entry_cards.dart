@@ -18,94 +18,86 @@ class Cards extends StatelessWidget {
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    return BlocListener<HomeBloc, HomeState>(
-      listenWhen: (previous, current) {
-        // return previous.tabs != current.tabs;
-        return false;
-      },
-      listener: (context, state) {
-        BlocProvider.of<EntryBloc>(context)
-            .add(EntryEvent.onGetEntryCards(tabId));
-      },
-      child: BlocBuilder<EntryBloc, EntryState>(
-        // buildWhen: (previous, current) {
-        //   return previous.entryCards != current.entryCards;
-        // },
-        builder: (context, state) {
-          final entriesInTab = state.entryCards ?? [];
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state.entry.tabId != tabId) {
+          context.read<HomeBloc>().add(HomeEvent.onGetEntryCards(tabId));
+        }
 
-          if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          }
+        final entriesInTab = state.entryCards ?? [];
 
-          return Expanded(
-            child: CustomScrollView(
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverList.builder(
-                  itemCount: entriesInTab.length,
-                  itemBuilder: (context, index) {
-                    final entry = entriesInTab[index];
-
-                    return GestureDetector(
-                      onLongPress: () {
-                        CustomDialog<Widget>.show(
-                          context: context,
-                          title: Text('Delete ${entry.title}'),
-                          content: SizedBox(
-                            height: 20,
-                            child: Text(
-                              "Are you sure you want to delete ${entry.title} and all it's data?",
-                            ),
-                          ),
-                          actions: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                OutlinedButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('Cancel'),
-                                ),
-                                gap10,
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context.read<EntryBloc>().add(
-                                          EntryEvent.onLongPressedDeleteEntry(
-                                            tabId,
-                                            entry.id,
-                                          ),
-                                        );
-                                    if (Navigator.canPop(context)) {
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: const Text('Delete'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                      child: EntryCard(
-                        title: entry.title,
-                        subtitle: entry.subtitle,
-                        tabId: tabId,
-                        entryId: entry.id,
-                      ),
-                    );
-                  },
-                ),
-                SliverToBoxAdapter(
-                  child: EmptyEntry(tabId: tabId),
-                ),
-              ],
-            ),
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
           );
-        },
-      ),
+        }
+
+        return Expanded(
+          child: CustomScrollView(
+            controller: scrollController,
+            scrollBehavior: CustomScrollBehaviour(),
+            slivers: [
+              SliverList.builder(
+                itemCount: entriesInTab.length,
+                itemBuilder: (context, index) {
+                  final entry = entriesInTab[index];
+
+                  return GestureDetector(
+                    onLongPress: () {
+                      CustomDialog<Widget>.show(
+                        context: context,
+                        title: Text('Delete ${entry.title}'),
+                        content: SizedBox(
+                          height: 20,
+                          child: Text(
+                            "Are you sure you want to delete ${entry.title} and all it's data?",
+                          ),
+                        ),
+                        actions: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('Cancel'),
+                              ),
+                              gap10,
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.read<HomeBloc>().add(
+                                        HomeEvent.onLongPressedDeleteEntry(
+                                          tabId,
+                                          entry.id,
+                                        ),
+                                      );
+                                  if (Navigator.canPop(context)) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                    child: EntryCard(
+                      title: entry.title,
+                      subtitle: entry.subtitle,
+                      tabId: tabId,
+                      entryId: entry.id,
+                    ),
+                  );
+                },
+              ),
+              SliverToBoxAdapter(
+                child: EmptyEntry(tabId: tabId),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

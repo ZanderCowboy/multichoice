@@ -20,13 +20,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Multichoice'),
-          centerTitle: true,
-          backgroundColor: Colors.lightBlue,
+      child: BlocProvider(
+        create: (_) =>
+            coreSl<HomeBloc>()..add(const HomeEvent.onGetAllEntryCards()),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Multichoice'),
+            centerTitle: true,
+            backgroundColor: Colors.lightBlue,
+          ),
+          body: _HomePage(),
         ),
-        body: _HomePage(),
       ),
     );
   }
@@ -59,13 +63,9 @@ class _HomePage extends StatelessWidget {
                     //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
                     final tab = tabs[index];
 
-                    return BlocProvider(
-                      create: (_) => coreSl<EntryBloc>()
-                        ..add(EntryEvent.onGetEntryCards(tab.id)),
-                      child: VerticalTab(
-                        tabId: tab.id,
-                        tabTitle: tab.title,
-                      ),
+                    return VerticalTab(
+                      tabId: tab.id,
+                      tabTitle: tab.title,
                     );
                   },
                 ),
