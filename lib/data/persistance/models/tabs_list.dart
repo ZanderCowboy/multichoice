@@ -3,7 +3,7 @@ import 'package:multichoice/domain/export_domain.dart';
 
 import 'package:multichoice/get_it_injection.dart';
 
-// TODO(@ZanderCowboy): This can be removed, since it is no longer required
+// TODO(ZanderCowboy): This can be removed, since it is no longer required
 
 class TabsList {
   TabsList._();
