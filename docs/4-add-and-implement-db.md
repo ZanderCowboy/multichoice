@@ -13,3 +13,8 @@
 ### What needs to be done
 
 - [ ] todo
+
+### Resources
+
+- [name](https://stackoverflow.com/questions/51534616/how-to-change-package-name-in-flutter)
+- [change_app_package_name](https://pub.dev/packages/change_app_package_name)
