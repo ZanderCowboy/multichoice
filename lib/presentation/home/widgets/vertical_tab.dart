@@ -67,10 +67,18 @@ class VerticalTab extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: Text(tabTitle)),
+                      Expanded(
+                        child: Text(
+                          tabTitle,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
                       const IconButton(
                         onPressed: null,
-                        icon: Icon(Icons.minor_crash_rounded),
+                        icon: Icon(
+                          Icons.minor_crash_rounded,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
