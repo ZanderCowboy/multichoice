@@ -26,3 +26,4 @@ This ticket served for us to implement an [Isar](https://isar.dev/) database for
 - [How can I change the RAM amount that the Android emulator is using](https://stackoverflow.com/questions/40068344/how-can-i-change-the-ram-amount-that-the-android-emulator-is-using/65685513#65685513)
 - [Flutter gradle plugin apply](https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply)
 - [Flutter Shader](https://docs.flutter.dev/perf/shader)
+- [Gradle build error with NDK version - ndk.dir version which disagrees with android.ndkVersion](https://stackoverflow.com/questions/67604073/gradle-build-error-with-ndk-version-ndk-dir-version-which-disagrees-with-andro)
