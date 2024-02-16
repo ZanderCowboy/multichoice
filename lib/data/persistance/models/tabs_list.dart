@@ -1,11 +1,13 @@
 import 'package:multichoice/database_service.dart';
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:multichoice/domain/export_domain.dart';
+
 import 'package:multichoice/get_it_injection.dart';
 
+// TODO(ZanderCowboy): This can be removed, since it is no longer required
+
 class TabsList {
-  TabsList._internal();
-  static final TabsList _instance = TabsList._internal();
+  TabsList._();
+  static final TabsList _instance = TabsList._();
   static TabsList get instance => _instance;
 
   static final tabsData =
@@ -21,10 +23,10 @@ class TabsList {
   int addEntryToTab(String tabId, Entry entryCard) {
     final tabs = tabsData.keys;
     final tab = tabs.firstWhere((element) {
-      return element.id == tabId;
+      return element.id.toString() == tabId;
     });
 
-    if (tab.id.isNotEmpty) {
+    if (tab.id.toString().isNotEmpty) {
       tabsData[tab]?.add(entryCard);
     }
 
@@ -37,7 +39,8 @@ class TabsList {
   }
 
   List<Entry>? readEntries(String tabId) {
-    final tab = tabsData.keys.firstWhere((element) => element.id == tabId);
+    final tab =
+        tabsData.keys.firstWhere((element) => element.id.toString() == tabId);
 
     final entries = tabsData[tab]?.toList();
     return entries;
@@ -48,19 +51,18 @@ class TabsList {
   // delete tab
   void deleteTab(String tabId) {
     final tab = tabsData.keys.firstWhere(
-      (element) => element.id == tabId,
+      (element) => element.id.toString() == tabId,
     );
 
     tabsData.remove(tab);
   }
 
   // delete entry in tab
-  void deleteEntryInTab(
-    String tabId,
-    String entryId,
-  ) {
-    final tab = tabsData.keys.firstWhere((element) => element.id == tabId);
-    final entry = tabsData[tab]?.firstWhere((element) => element.id == entryId);
+  void deleteEntryInTab(String tabId, String entryId) {
+    final tab =
+        tabsData.keys.firstWhere((element) => element.id.toString() == tabId);
+    final entry = tabsData[tab]
+        ?.firstWhere((element) => element.id.toString() == entryId);
 
     tabsData[tab]?.remove(entry);
   }

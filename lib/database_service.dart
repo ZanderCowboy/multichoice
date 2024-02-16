@@ -1,13 +1,13 @@
-import 'package:multichoice/domain/entry/models/entry.dart';
-import 'package:multichoice/domain/tabs/models/tabs.dart';
+import 'package:multichoice/domain/export_domain.dart';
 
-class DatabaseService {
+abstract class DatabaseService {
   DatabaseService._internal();
 
-  static final DatabaseService _instance = DatabaseService._internal();
+  static final DatabaseService _instance = _instance;
+
   static DatabaseService get instance => _instance;
 
-  final Map<Tabs, List<Entry>> _database = {}; // Private constructor
+  final Map<Tabs, List<Entry>> _database = {};
 
   Map<Tabs, List<Entry>> get database => _database;
 }
