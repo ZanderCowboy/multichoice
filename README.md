@@ -28,7 +28,7 @@ sudo chown -R node:node /flutter
 
 ## PRs and Workflows
 
-#### Versioning
+### Versioning
 
 - Every `PR` from `develop` into `main` needs to have either one of the following labels:
   - `patch`: Used for fixes, hot-fixes, and any form of patch
