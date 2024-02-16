@@ -9,7 +9,7 @@ class EmptyTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final tabCount = state.tabs.length;
+        final tabCount = state.tabs?.length ?? 0;
 
         return GestureDetector(
           onTap: () {

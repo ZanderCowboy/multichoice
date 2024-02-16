@@ -19,18 +19,32 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
-      child: BlocProvider(
-        create: (_) =>
-            coreSl<HomeBloc>()..add(const HomeEvent.onGetAllEntryCards()),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Multichoice'),
-            centerTitle: true,
-            backgroundColor: Colors.lightBlue,
-          ),
-          body: _HomePage(),
-        ),
+      create: (context) => coreSl<HomeBloc>()
+        ..add(const HomeEvent.onGetTabs())
+        ..add(const HomeEvent.onGetAllEntryCards()),
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Multichoice'),
+              centerTitle: true,
+              backgroundColor: Colors.lightBlue,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    context
+                        .read<HomeBloc>()
+                        .add(const HomeEvent.onPressedDeleteAll());
+                  },
+                  icon: const Icon(
+                    Icons.delete_sweep_rounded,
+                  ),
+                ),
+              ],
+            ),
+            body: _HomePage(),
+          );
+        },
       ),
     );
   }
@@ -46,7 +60,13 @@ class _HomePage extends StatelessWidget {
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {},
       builder: (context, state) {
-        final tabs = state.tabs;
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        }
+
+        final tabs = state.tabs ?? [];
 
         return Padding(
           padding: allPadding12,
