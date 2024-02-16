@@ -3,7 +3,7 @@
 # This can be used to control which platforms are build, release, and deployed.
 # It is preferable to set all values to 'true'.
 build:
-  web_build_flag: true
+  web_build_flag: false
   android_build_flag: true
   windows_build_flag: false
 
