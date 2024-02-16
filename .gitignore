@@ -14,6 +14,7 @@ doc/api/
 # Keys and Secrets
 password.txt
 upload-keystore.*
+**/key.properties
 
 # dotenv environment variables file
 .env*

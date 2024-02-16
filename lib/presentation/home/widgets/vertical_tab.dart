@@ -7,14 +7,53 @@ class VerticalTab extends StatelessWidget {
     super.key,
   });
 
-  final String tabId;
+  final int tabId;
   final String tabTitle;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Card(
+    return BlocProvider(
+      create: (context) =>
+          coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
+      child: GestureDetector(
+        onLongPress: () {
+          CustomDialog<Widget>.show(
+            context: context,
+            title: Text('Delete $tabTitle'),
+            content: SizedBox(
+              height: 20,
+              child: Text(
+                "Are you sure you want to delete $tabTitle and all it's data?",
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  gap10,
+                  ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<HomeBloc>()
+                          .add(HomeEvent.onLongPressedDeleteTab(tabId));
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+        child: Card(
+          color: Colors.grey[300],
           elevation: 5,
           shadowColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -28,10 +67,18 @@ class VerticalTab extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: Text(tabTitle)),
+                      Expanded(
+                        child: Text(
+                          tabTitle,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
                       const IconButton(
                         onPressed: null,
-                        icon: Icon(Icons.minor_crash_rounded),
+                        icon: Icon(
+                          Icons.minor_crash_rounded,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -41,8 +88,8 @@ class VerticalTab extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

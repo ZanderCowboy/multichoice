@@ -1,24 +1,32 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar/isar.dart';
+import 'package:multichoice/utils/extensions/string.dart';
 
 part 'entry.freezed.dart';
+part 'entry.g.dart';
 
 @freezed
+@Collection(ignore: {'copyWith'})
 class Entry with _$Entry {
-  const factory Entry({
+  factory Entry({
     required String uuid,
-    required String tabId,
+    required int tabId,
     required String title,
     required String subtitle,
+    required DateTime? timestamp,
   }) = _Entry;
 
-  const Entry._();
+  Entry._();
 
-  factory Entry.empty() => const Entry(
+  factory Entry.empty() => Entry(
         uuid: '',
-        tabId: '',
+        tabId: 0,
         title: '',
         subtitle: '',
+        timestamp: null,
       );
 
-  String get id => uuid;
+  factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);
+
+  Id get id => uuid.fastHash();
 }
