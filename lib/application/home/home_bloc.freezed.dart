@@ -26,6 +26,7 @@ mixin _$HomeEvent {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +39,7 @@ mixin _$HomeEvent {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +52,7 @@ mixin _$HomeEvent {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -64,6 +67,7 @@ mixin _$HomeEvent {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -75,6 +79,7 @@ mixin _$HomeEvent {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -86,6 +91,7 @@ mixin _$HomeEvent {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -154,6 +160,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onGetTabs();
   }
@@ -169,6 +176,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onGetTabs?.call();
   }
@@ -184,6 +192,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetTabs != null) {
@@ -204,6 +213,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onGetTabs(this);
   }
@@ -218,6 +228,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onGetTabs?.call(this);
   }
@@ -232,6 +243,7 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetTabs != null) {
@@ -291,6 +303,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onGetAllEntryCards();
   }
@@ -306,6 +319,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onGetAllEntryCards?.call();
   }
@@ -321,6 +335,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetAllEntryCards != null) {
@@ -341,6 +356,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onGetAllEntryCards(this);
   }
@@ -355,6 +371,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onGetAllEntryCards?.call(this);
   }
@@ -369,6 +386,7 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetAllEntryCards != null) {
@@ -455,6 +473,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onGetEntryCards(tabId);
   }
@@ -470,6 +489,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onGetEntryCards?.call(tabId);
   }
@@ -485,6 +505,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetEntryCards != null) {
@@ -505,6 +526,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onGetEntryCards(this);
   }
@@ -519,6 +541,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onGetEntryCards?.call(this);
   }
@@ -533,6 +556,7 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onGetEntryCards != null) {
@@ -633,6 +657,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onPressedAddTab(title, subtitle);
   }
@@ -648,6 +673,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onPressedAddTab?.call(title, subtitle);
   }
@@ -663,6 +689,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
@@ -683,6 +710,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onPressedAddTab(this);
   }
@@ -697,6 +725,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onPressedAddTab?.call(this);
   }
@@ -711,6 +740,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
@@ -821,6 +851,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onPressedAddEntry(tabId, title, subtitle);
   }
@@ -836,6 +867,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onPressedAddEntry?.call(tabId, title, subtitle);
   }
@@ -851,6 +883,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
@@ -871,6 +904,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onPressedAddEntry(this);
   }
@@ -885,6 +919,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onPressedAddEntry?.call(this);
   }
@@ -899,6 +934,7 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
@@ -996,6 +1032,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onLongPressedDeleteTab(tabId);
   }
@@ -1011,6 +1048,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onLongPressedDeleteTab?.call(tabId);
   }
@@ -1026,6 +1064,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
@@ -1046,6 +1085,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onLongPressedDeleteTab(this);
   }
@@ -1060,6 +1100,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onLongPressedDeleteTab?.call(this);
   }
@@ -1074,6 +1115,7 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
@@ -1176,6 +1218,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
         onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
   }) {
     return onLongPressedDeleteEntry(tabId, entryId);
   }
@@ -1191,6 +1234,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
         onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
   }) {
     return onLongPressedDeleteEntry?.call(tabId, entryId);
   }
@@ -1206,6 +1250,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
         onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteEntry != null) {
@@ -1226,6 +1271,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
         onLongPressedDeleteTab,
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
   }) {
     return onLongPressedDeleteEntry(this);
   }
@@ -1240,6 +1286,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
   }) {
     return onLongPressedDeleteEntry?.call(this);
   }
@@ -1254,6 +1301,7 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteEntry != null) {
@@ -1275,9 +1323,152 @@ abstract class OnLongPressedDeleteEntry implements HomeEvent {
 }
 
 /// @nodoc
+abstract class _$$OnPressedDeleteAllImplCopyWith<$Res> {
+  factory _$$OnPressedDeleteAllImplCopyWith(_$OnPressedDeleteAllImpl value,
+          $Res Function(_$OnPressedDeleteAllImpl) then) =
+      __$$OnPressedDeleteAllImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$OnPressedDeleteAllImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnPressedDeleteAllImpl>
+    implements _$$OnPressedDeleteAllImplCopyWith<$Res> {
+  __$$OnPressedDeleteAllImplCopyWithImpl(_$OnPressedDeleteAllImpl _value,
+      $Res Function(_$OnPressedDeleteAllImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
+  const _$OnPressedDeleteAllImpl();
+
+  @override
+  String toString() {
+    return 'HomeEvent.onPressedDeleteAll()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$OnPressedDeleteAllImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function(String title, String subtitle) onPressedAddTab,
+    required TResult Function(int tabId, String title, String subtitle)
+        onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+  }) {
+    return onPressedDeleteAll();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function(String title, String subtitle)? onPressedAddTab,
+    TResult? Function(int tabId, String title, String subtitle)?
+        onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+  }) {
+    return onPressedDeleteAll?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function(String title, String subtitle)? onPressedAddTab,
+    TResult Function(int tabId, String title, String subtitle)?
+        onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    required TResult orElse(),
+  }) {
+    if (onPressedDeleteAll != null) {
+      return onPressedDeleteAll();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+  }) {
+    return onPressedDeleteAll(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+  }) {
+    return onPressedDeleteAll?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    required TResult orElse(),
+  }) {
+    if (onPressedDeleteAll != null) {
+      return onPressedDeleteAll(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnPressedDeleteAll implements HomeEvent {
+  const factory OnPressedDeleteAll() = _$OnPressedDeleteAllImpl;
+}
+
+/// @nodoc
 mixin _$HomeState {
   Tabs get tab => throw _privateConstructorUsedError;
-  List<Tabs> get tabs => throw _privateConstructorUsedError;
+  List<Tabs>? get tabs => throw _privateConstructorUsedError;
   Entry get entry => throw _privateConstructorUsedError;
   List<Entry>? get entryCards => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
@@ -1297,7 +1488,7 @@ abstract class $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {Tabs tab,
-      List<Tabs> tabs,
+      List<Tabs>? tabs,
       Entry entry,
       List<Entry>? entryCards,
       bool isLoading,
@@ -1323,7 +1514,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   @override
   $Res call({
     Object? tab = null,
-    Object? tabs = null,
+    Object? tabs = freezed,
     Object? entry = null,
     Object? entryCards = freezed,
     Object? isLoading = null,
@@ -1336,10 +1527,10 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
               as Tabs,
-      tabs: null == tabs
+      tabs: freezed == tabs
           ? _value.tabs
           : tabs // ignore: cast_nullable_to_non_nullable
-              as List<Tabs>,
+              as List<Tabs>?,
       entry: null == entry
           ? _value.entry
           : entry // ignore: cast_nullable_to_non_nullable
@@ -1394,7 +1585,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {Tabs tab,
-      List<Tabs> tabs,
+      List<Tabs>? tabs,
       Entry entry,
       List<Entry>? entryCards,
       bool isLoading,
@@ -1420,7 +1611,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? tab = null,
-    Object? tabs = null,
+    Object? tabs = freezed,
     Object? entry = null,
     Object? entryCards = freezed,
     Object? isLoading = null,
@@ -1433,10 +1624,10 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
               as Tabs,
-      tabs: null == tabs
+      tabs: freezed == tabs
           ? _value._tabs
           : tabs // ignore: cast_nullable_to_non_nullable
-              as List<Tabs>,
+              as List<Tabs>?,
       entry: null == entry
           ? _value.entry
           : entry // ignore: cast_nullable_to_non_nullable
@@ -1470,7 +1661,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl(
       {required this.tab,
-      required final List<Tabs> tabs,
+      required final List<Tabs>? tabs,
       required this.entry,
       required final List<Entry>? entryCards,
       required this.isLoading,
@@ -1482,12 +1673,14 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   final Tabs tab;
-  final List<Tabs> _tabs;
+  final List<Tabs>? _tabs;
   @override
-  List<Tabs> get tabs {
+  List<Tabs>? get tabs {
+    final value = _tabs;
+    if (value == null) return null;
     if (_tabs is EqualUnmodifiableListView) return _tabs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tabs);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -1557,7 +1750,7 @@ class _$HomeStateImpl implements _HomeState {
 abstract class _HomeState implements HomeState {
   const factory _HomeState(
       {required final Tabs tab,
-      required final List<Tabs> tabs,
+      required final List<Tabs>? tabs,
       required final Entry entry,
       required final List<Entry>? entryCards,
       required final bool isLoading,
@@ -1568,7 +1761,7 @@ abstract class _HomeState implements HomeState {
   @override
   Tabs get tab;
   @override
-  List<Tabs> get tabs;
+  List<Tabs>? get tabs;
   @override
   Entry get entry;
   @override

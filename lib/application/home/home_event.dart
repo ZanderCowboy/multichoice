@@ -28,4 +28,6 @@ class HomeEvent with _$HomeEvent {
     int tabId,
     int entryId,
   ) = OnLongPressedDeleteEntry;
+
+  const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
 }

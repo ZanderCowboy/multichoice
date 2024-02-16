@@ -161,6 +161,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
+        onPressedDeleteAll: (_) async {
+          emit(state.copyWith(isLoading: true));
+
+          final tabs = await _tabsRepository.readTabs();
+
+          for (final element in tabs) {
+            await _tabsRepository.deleteTab(element.id);
+          }
+
+          emit(
+            state.copyWith(
+              tabs: null,
+              entryCards: null,
+              isLoading: false,
+            ),
+          );
+        },
       );
     });
   }
