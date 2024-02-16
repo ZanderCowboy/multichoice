@@ -1,7 +1,6 @@
 # multichoice
 
 [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
-![GitHub License](https://img.shields.io/github/license/ZanderCowboy/multichoice)
 ![GitHub Release](https://img.shields.io/github/v/release/ZanderCowboy/multichoice)
 ![GitHub Tag](https://img.shields.io/github/v/tag/ZanderCowboy/multichoice)
 
@@ -9,7 +8,10 @@
 ![Build](https://github.com/ZanderCowboy/multichoice/actions/workflows/build_workflow.yml/badge.svg)
 ![Deploy](https://github.com/ZanderCowboy/multichoice/actions/workflows/deploy_workflow.yml/badge.svg)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ZanderCowboy_multichoice&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ZanderCowboy_multichoice)
 [![codecov](https://codecov.io/gh/ZanderCowboy/multichoice/graph/badge.svg?token=1DW57BV8D5)](https://codecov.io/gh/ZanderCowboy/multichoice)
+![GitHub License](https://img.shields.io/github/license/ZanderCowboy/multichoice)
+
 ## Setup
 
 If permissions denied while running `flutter pub get` run the following
@@ -24,7 +26,7 @@ OR
 sudo chown -R node:node /flutter
 ```
 
-### PRs and Workflows
+## PRs and Workflows
 
 #### Versioning
 
@@ -34,3 +36,7 @@ sudo chown -R node:node /flutter
   - `major`: Used for major releases, or big UI and backend changes
   
   **Note: In case no label is provided for the PR (i.e. `unlabeled`), a `patch` will be used for release.**
+
+## Websites and Links
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ZanderCowboy_multichoice)
