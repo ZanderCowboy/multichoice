@@ -21,6 +21,7 @@ class TabsRepository implements ITabsRepository {
             uuid: const Uuid().v4(),
             title: title,
             subtitle: subtitle,
+            timestamp: DateTime.now(),
           ),
         );
 
@@ -37,7 +38,7 @@ class TabsRepository implements ITabsRepository {
   @override
   Future<List<Tabs>> readTabs() async {
     try {
-      final result = db.tabs.where().findAll();
+      final result = db.tabs.where().sortByTimestamp().findAll();
 
       return result;
     } catch (e) {

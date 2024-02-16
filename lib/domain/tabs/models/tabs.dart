@@ -12,6 +12,7 @@ class Tabs with _$Tabs {
     required String uuid,
     required String title,
     required String subtitle,
+    required DateTime? timestamp,
   }) = _Tabs;
 
   const Tabs._();
@@ -20,6 +21,7 @@ class Tabs with _$Tabs {
         uuid: '',
         title: '',
         subtitle: '',
+        timestamp: null,
       );
 
   factory Tabs.fromJson(Map<String, dynamic> json) => _$TabsFromJson(json);

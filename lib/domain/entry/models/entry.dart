@@ -13,6 +13,7 @@ class Entry with _$Entry {
     required int tabId,
     required String title,
     required String subtitle,
+    required DateTime? timestamp,
   }) = _Entry;
 
   Entry._();
@@ -22,6 +23,7 @@ class Entry with _$Entry {
         tabId: 0,
         title: '',
         subtitle: '',
+        timestamp: null,
       );
 
   factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);

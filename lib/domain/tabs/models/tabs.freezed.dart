@@ -23,6 +23,7 @@ mixin _$Tabs {
   String get uuid => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
+  DateTime? get timestamp => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +35,7 @@ abstract class $TabsCopyWith<$Res> {
   factory $TabsCopyWith(Tabs value, $Res Function(Tabs) then) =
       _$TabsCopyWithImpl<$Res, Tabs>;
   @useResult
-  $Res call({String uuid, String title, String subtitle});
+  $Res call({String uuid, String title, String subtitle, DateTime? timestamp});
 }
 
 /// @nodoc
@@ -53,6 +54,7 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
     Object? uuid = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? timestamp = freezed,
   }) {
     return _then(_value.copyWith(
       uuid: null == uuid
@@ -67,6 +69,10 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -78,7 +84,7 @@ abstract class _$$TabsImplCopyWith<$Res> implements $TabsCopyWith<$Res> {
       __$$TabsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uuid, String title, String subtitle});
+  $Res call({String uuid, String title, String subtitle, DateTime? timestamp});
 }
 
 /// @nodoc
@@ -94,6 +100,7 @@ class __$$TabsImplCopyWithImpl<$Res>
     Object? uuid = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? timestamp = freezed,
   }) {
     return _then(_$TabsImpl(
       uuid: null == uuid
@@ -108,6 +115,10 @@ class __$$TabsImplCopyWithImpl<$Res>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -116,7 +127,10 @@ class __$$TabsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TabsImpl extends _Tabs {
   const _$TabsImpl(
-      {required this.uuid, required this.title, required this.subtitle})
+      {required this.uuid,
+      required this.title,
+      required this.subtitle,
+      required this.timestamp})
       : super._();
 
   factory _$TabsImpl.fromJson(Map<String, dynamic> json) =>
@@ -128,10 +142,12 @@ class _$TabsImpl extends _Tabs {
   final String title;
   @override
   final String subtitle;
+  @override
+  final DateTime? timestamp;
 
   @override
   String toString() {
-    return 'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle)';
+    return 'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
   }
 
   @override
@@ -142,12 +158,15 @@ class _$TabsImpl extends _Tabs {
             (identical(other.uuid, uuid) || other.uuid == uuid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
-                other.subtitle == subtitle));
+                other.subtitle == subtitle) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, uuid, title, subtitle);
+  int get hashCode =>
+      Object.hash(runtimeType, uuid, title, subtitle, timestamp);
 
   @JsonKey(ignore: true)
   @override
@@ -167,7 +186,8 @@ abstract class _Tabs extends Tabs {
   const factory _Tabs(
       {required final String uuid,
       required final String title,
-      required final String subtitle}) = _$TabsImpl;
+      required final String subtitle,
+      required final DateTime? timestamp}) = _$TabsImpl;
   const _Tabs._() : super._();
 
   factory _Tabs.fromJson(Map<String, dynamic> json) = _$TabsImpl.fromJson;
@@ -178,6 +198,8 @@ abstract class _Tabs extends Tabs {
   String get title;
   @override
   String get subtitle;
+  @override
+  DateTime? get timestamp;
   @override
   @JsonKey(ignore: true)
   _$$TabsImplCopyWith<_$TabsImpl> get copyWith =>

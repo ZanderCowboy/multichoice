@@ -22,13 +22,18 @@ const TabsSchema = CollectionSchema(
       name: r'subtitle',
       type: IsarType.string,
     ),
-    r'title': PropertySchema(
+    r'timestamp': PropertySchema(
       id: 1,
+      name: r'timestamp',
+      type: IsarType.dateTime,
+    ),
+    r'title': PropertySchema(
+      id: 2,
       name: r'title',
       type: IsarType.string,
     ),
     r'uuid': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'uuid',
       type: IsarType.string,
     )
@@ -66,8 +71,9 @@ void _tabsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.subtitle);
-  writer.writeString(offsets[1], object.title);
-  writer.writeString(offsets[2], object.uuid);
+  writer.writeDateTime(offsets[1], object.timestamp);
+  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[3], object.uuid);
 }
 
 Tabs _tabsDeserialize(
@@ -78,8 +84,9 @@ Tabs _tabsDeserialize(
 ) {
   final object = Tabs(
     subtitle: reader.readString(offsets[0]),
-    title: reader.readString(offsets[1]),
-    uuid: reader.readString(offsets[2]),
+    timestamp: reader.readDateTimeOrNull(offsets[1]),
+    title: reader.readString(offsets[2]),
+    uuid: reader.readString(offsets[3]),
   );
   return object;
 }
@@ -94,8 +101,10 @@ P _tabsDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -365,6 +374,75 @@ extension TabsQueryFilter on QueryBuilder<Tabs, Tabs, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'subtitle',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'timestamp',
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'timestamp',
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampEqualTo(
+      DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'timestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'timestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterFilterCondition> timestampBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'timestamp',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -643,6 +721,18 @@ extension TabsQuerySortBy on QueryBuilder<Tabs, Tabs, QSortBy> {
     });
   }
 
+  QueryBuilder<Tabs, Tabs, QAfterSortBy> sortByTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timestamp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterSortBy> sortByTimestampDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timestamp', Sort.desc);
+    });
+  }
+
   QueryBuilder<Tabs, Tabs, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -693,6 +783,18 @@ extension TabsQuerySortThenBy on QueryBuilder<Tabs, Tabs, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Tabs, Tabs, QAfterSortBy> thenByTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timestamp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Tabs, Tabs, QAfterSortBy> thenByTimestampDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timestamp', Sort.desc);
+    });
+  }
+
   QueryBuilder<Tabs, Tabs, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -726,6 +828,12 @@ extension TabsQueryWhereDistinct on QueryBuilder<Tabs, Tabs, QDistinct> {
     });
   }
 
+  QueryBuilder<Tabs, Tabs, QDistinct> distinctByTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'timestamp');
+    });
+  }
+
   QueryBuilder<Tabs, Tabs, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -754,6 +862,12 @@ extension TabsQueryProperty on QueryBuilder<Tabs, Tabs, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Tabs, DateTime?, QQueryOperations> timestampProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'timestamp');
+    });
+  }
+
   QueryBuilder<Tabs, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'title');
@@ -775,6 +889,9 @@ _$TabsImpl _$$TabsImplFromJson(Map<String, dynamic> json) => _$TabsImpl(
       uuid: json['uuid'] as String,
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$$TabsImplToJson(_$TabsImpl instance) =>
@@ -782,4 +899,5 @@ Map<String, dynamic> _$$TabsImplToJson(_$TabsImpl instance) =>
       'uuid': instance.uuid,
       'title': instance.title,
       'subtitle': instance.subtitle,
+      'timestamp': instance.timestamp?.toIso8601String(),
     };

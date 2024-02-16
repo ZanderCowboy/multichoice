@@ -24,6 +24,7 @@ mixin _$Entry {
   int get tabId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
+  DateTime? get timestamp => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +36,12 @@ abstract class $EntryCopyWith<$Res> {
   factory $EntryCopyWith(Entry value, $Res Function(Entry) then) =
       _$EntryCopyWithImpl<$Res, Entry>;
   @useResult
-  $Res call({String uuid, int tabId, String title, String subtitle});
+  $Res call(
+      {String uuid,
+      int tabId,
+      String title,
+      String subtitle,
+      DateTime? timestamp});
 }
 
 /// @nodoc
@@ -55,6 +61,7 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? timestamp = freezed,
   }) {
     return _then(_value.copyWith(
       uuid: null == uuid
@@ -73,6 +80,10 @@ class _$EntryCopyWithImpl<$Res, $Val extends Entry>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -84,7 +95,12 @@ abstract class _$$EntryImplCopyWith<$Res> implements $EntryCopyWith<$Res> {
       __$$EntryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uuid, int tabId, String title, String subtitle});
+  $Res call(
+      {String uuid,
+      int tabId,
+      String title,
+      String subtitle,
+      DateTime? timestamp});
 }
 
 /// @nodoc
@@ -102,6 +118,7 @@ class __$$EntryImplCopyWithImpl<$Res>
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
+    Object? timestamp = freezed,
   }) {
     return _then(_$EntryImpl(
       uuid: null == uuid
@@ -120,6 +137,10 @@ class __$$EntryImplCopyWithImpl<$Res>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -131,7 +152,8 @@ class _$EntryImpl extends _Entry {
       {required this.uuid,
       required this.tabId,
       required this.title,
-      required this.subtitle})
+      required this.subtitle,
+      required this.timestamp})
       : super._();
 
   factory _$EntryImpl.fromJson(Map<String, dynamic> json) =>
@@ -145,10 +167,12 @@ class _$EntryImpl extends _Entry {
   final String title;
   @override
   final String subtitle;
+  @override
+  final DateTime? timestamp;
 
   @override
   String toString() {
-    return 'Entry(uuid: $uuid, tabId: $tabId, title: $title, subtitle: $subtitle)';
+    return 'Entry(uuid: $uuid, tabId: $tabId, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
   }
 
   @override
@@ -160,12 +184,15 @@ class _$EntryImpl extends _Entry {
             (identical(other.tabId, tabId) || other.tabId == tabId) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
-                other.subtitle == subtitle));
+                other.subtitle == subtitle) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, uuid, tabId, title, subtitle);
+  int get hashCode =>
+      Object.hash(runtimeType, uuid, tabId, title, subtitle, timestamp);
 
   @JsonKey(ignore: true)
   @override
@@ -186,7 +213,8 @@ abstract class _Entry extends Entry {
       {required final String uuid,
       required final int tabId,
       required final String title,
-      required final String subtitle}) = _$EntryImpl;
+      required final String subtitle,
+      required final DateTime? timestamp}) = _$EntryImpl;
   _Entry._() : super._();
 
   factory _Entry.fromJson(Map<String, dynamic> json) = _$EntryImpl.fromJson;
@@ -199,6 +227,8 @@ abstract class _Entry extends Entry {
   String get title;
   @override
   String get subtitle;
+  @override
+  DateTime? get timestamp;
   @override
   @JsonKey(ignore: true)
   _$$EntryImplCopyWith<_$EntryImpl> get copyWith =>

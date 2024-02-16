@@ -21,6 +21,7 @@ class EntryRepository implements IEntryRepository {
           tabId: tabId,
           title: title,
           subtitle: subtitle,
+          timestamp: DateTime.now(),
         );
 
         final result = db.entrys.put(entry);
@@ -37,7 +38,7 @@ class EntryRepository implements IEntryRepository {
   @override
   Future<List<Entry>> readEntries(int tabId) async {
     try {
-      final entries = await db.entrys.where().findAll();
+      final entries = await db.entrys.where().sortByTimestamp().findAll();
 
       final result =
           entries.where((element) => element.tabId == tabId).toList();
@@ -52,7 +53,7 @@ class EntryRepository implements IEntryRepository {
   @override
   Future<List<Entry>?> readAllEntries() async {
     try {
-      final entries = await db.entrys.where().findAll();
+      final entries = await db.entrys.where().sortByTimestamp().findAll();
 
       return entries;
     } catch (e) {
