@@ -7,6 +7,9 @@
 ### Overview
 
 This ticket is primarily responsible for setting up a fully functional `CI/CD` pipeline.
+The workflows to look into are:
+- Linting and Code Analysis
+- CI/CD:
 
 ### What was done
 
@@ -24,3 +27,10 @@ This ticket is primarily responsible for setting up a fully functional `CI/CD` p
 ### What needs to be done
 
 - [ ] Set up new `deploy` workflows, replicatas of the current `deploy_workflow.yml`, for (1) a `UAT` workflow, responsible for releases used in `internal testing` and (2) a workflow responsible for releases used in `production`
+
+### Resources
+
+- [flutter-ci-cd-using-github-actions](https://blog.logrocket.com/flutter-ci-cd-using-github-actions/)
+- [deployment](https://docs.flutter.dev/deployment/cd#cicd-options)
+- [.github/workflows](https://github.com/flutter/gallery/tree/main/.github/workflows)
+- [flutter-githubaction](https://github.com/nabilnalakath/flutter-githubaction)
