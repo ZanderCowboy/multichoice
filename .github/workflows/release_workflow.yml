@@ -39,7 +39,7 @@ jobs:
         if: join(github.event.pull_request.labels.*.name, '') == ''
         uses: ./.github/actions/app-versioning
         with:
-          bump-strategy: "none"
+          bump-strategy: "patch"
           file-path: "./pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
@@ -91,9 +91,6 @@ jobs:
             echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
             version_num=${{ steps.id_unlabeled.outputs.version-number }}
           fi
-
-          # TODO(@ZanderCowboy): Implement change to ensure that an unlabeled PR will rather just release a new build.
-          #! This will ensure that we have more control over which types of version releases we do. 
 
           # echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
           # version_num=${{ steps.id_unlabeled.outputs.version-number }}

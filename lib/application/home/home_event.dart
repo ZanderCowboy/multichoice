@@ -8,8 +8,6 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.onGetEntryCards(int tabId) = OnGetEntryCards;
 
-  // const factory HomeEvent.onUpdateTab(Tabs tab) = OnUpdateTab;
-
   const factory HomeEvent.onPressedAddTab(
     String title,
     String subtitle,

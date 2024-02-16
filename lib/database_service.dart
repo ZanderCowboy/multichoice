@@ -7,22 +7,7 @@ abstract class DatabaseService {
 
   static DatabaseService get instance => _instance;
 
-  final Map<Tabs, List<Entry>> _database = {}; // Private constructor
+  final Map<Tabs, List<Entry>> _database = {};
 
   Map<Tabs, List<Entry>> get database => _database;
-
-  // @preResolve
-  // Future<Isar> get isar async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final isar = await Isar.open(
-  //     [
-  //       TabsSchema,
-  //       EntrySchema,
-  //     ],
-  //     directory: directory.path,
-  //     name: 'MultichoiceDB',
-  //   );
-
-  //   return isar;
-  // }
 }

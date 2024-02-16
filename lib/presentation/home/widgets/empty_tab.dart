@@ -13,61 +13,31 @@ class EmptyTab extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            showDialog<AlertDialog>(
+            CustomDialog<Widget>.show(
               context: context,
-              builder: (_) {
-                return AlertDialog(
-                  title: const Text('Add New Tab'),
-                  content: const Text('TODO: Add FormFields to enter data.'),
-                  actions: <Widget>[
-                    OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              HomeEvent.onPressedAddTab(
-                                't-title $tabCount',
-                                't-s.title $tabCount',
-                              ),
-                            );
-                        if (Navigator.canPop(context)) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: const Text('Add'),
-                    ),
-                  ],
-                );
-              },
+              title: const Text('Add New Tab'),
+              content: const Text('TODO: Add FormFields to enter data.'),
+              actions: <Widget>[
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(
+                          HomeEvent.onPressedAddTab(
+                            't-title $tabCount',
+                            't-s.title $tabCount',
+                          ),
+                        );
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
             );
-
-            // CustomDialog<Widget>.show(
-            //   context: context,
-            //   title: const Text('Add New Tab'),
-            //   content: const Text('TODO: Add FormFields to enter data.'),
-            //   actions: <Widget>[
-            //     OutlinedButton(
-            //       onPressed: () => Navigator.of(context).pop(),
-            //       child: const Text('Cancel'),
-            //     ),
-            //     ElevatedButton(
-            //       onPressed: () {
-            //         context.read<HomeBloc>().add(
-            //               HomeEvent.onPressedAddTab(
-            //                 't-title $tabCount',
-            //                 't-s.title $tabCount',
-            //               ),
-            //             );
-            //         if (Navigator.canPop(context)) {
-            //           Navigator.of(context).pop();
-            //         }
-            //       },
-            //       child: const Text('Add'),
-            //     ),
-            //   ],
-            // );
           },
           child: AddTabCard(
             width: MediaQuery.sizeOf(context).width / 4,

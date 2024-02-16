@@ -62,13 +62,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        // onUpdateTab: (value) {
-        //   emit(
-        //     state.copyWith(
-        //       tab: value.tab,
-        //     ),
-        //   );
-        // },
         onPressedAddTab: (value) async {
           emit(
             state.copyWith(
