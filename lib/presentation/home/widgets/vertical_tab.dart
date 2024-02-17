@@ -7,7 +7,7 @@ class VerticalTab extends HookWidget {
     super.key,
   });
 
-  final String tabId;
+  final int tabId;
   final String tabTitle;
 
   @override
@@ -15,9 +15,48 @@ class VerticalTab extends HookWidget {
     final isHovered = useState<bool>(false);
     final isInMenu = useState<bool>(false);
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Card(
+    return BlocProvider(
+      create: (context) =>
+          coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
+      child: GestureDetector(
+        onLongPress: () {
+          CustomDialog<Widget>.show(
+            context: context,
+            title: Text('Delete $tabTitle'),
+            content: SizedBox(
+              height: 20,
+              child: Text(
+                "Are you sure you want to delete $tabTitle and all it's data?",
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  gap10,
+                  ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<HomeBloc>()
+                          .add(HomeEvent.onLongPressedDeleteTab(tabId));
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+        child: Card(
+          color: Colors.grey[300],
           elevation: 5,
           shadowColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -44,7 +83,12 @@ class VerticalTab extends HookWidget {
                         height: 40,
                         child: Row(
                           children: [
-                            Expanded(child: Text(tabTitle)),
+                            Expanded(
+                              child: Text(
+                                tabTitle,
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
                             isHovered.value
                                 ? MenuAnchor(
                                     anchorTapClosesMenu: true,
@@ -75,7 +119,7 @@ class VerticalTab extends HookWidget {
                                           .map((menuItem) {
                                         return MenuItemButton(
                                           onPressed: () =>
-                                              menuItem.onTap(tabId),
+                                              menuItem.onTap(tabId.toString()),
                                           child: Text(menuItem.title),
                                         );
                                       }),
@@ -93,8 +137,8 @@ class VerticalTab extends HookWidget {
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

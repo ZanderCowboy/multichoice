@@ -1,0 +1,62 @@
+name: Android Build workflow
+on:
+  workflow_call:
+    inputs:
+      pubspec-filename:
+        required: true
+        type: string
+      environment-flag:
+        required: true
+        type: string
+      versionNumber:
+        required: true
+        type: string
+      build-flag:
+        required: true
+        type: boolean
+      build-artifact:
+        required: true
+        type: string
+
+jobs:
+  buildAndroid:
+    name: Build Android
+    if: ${{ inputs.build-flag == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-java-flutter
+
+      - name: Get pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.pubspec-filename }}
+
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Create key.properties
+        if: ${{ inputs.environment-flag }} == 'release'
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+
+      - name: Start ${{ inputs.environment-flag }} build
+        run: flutter build appbundle --${{ inputs.environment-flag }}
+
+      - name: Upload Android ${{ inputs.environment-flag }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact }}
+          path: build/app/outputs/bundle/release/app-release.aab

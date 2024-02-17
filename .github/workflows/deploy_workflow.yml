@@ -1,0 +1,68 @@
+---
+name: Deploy Apps
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preDeploy:
+    name: Setting up for Deploy
+    runs-on: ubuntu-latest
+    outputs:
+      web_deploy_flag: ${{ steps.id_out.outputs.web_deploy_flag }}
+      android_deploy_flag: ${{ steps.id_out.outputs.android_deploy_flag }}
+      windows_deploy_flag: ${{ steps.id_out.outputs.windows_deploy_flag }}
+
+      android_package_name: ${{ steps.id_out.outputs.android_package_name }}
+      android_track: ${{ steps.id_out.outputs.android_track }}
+      android_release_name: ${{ steps.id_out.outputs.android_release_name }}
+      android_deploy_status: ${{ steps.id_out.outputs.android_deploy_status }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: read-config-file
+        uses: actions-tools/yaml-outputs@v2
+        id: read_config_yaml
+        with:
+          file-path: "${{ github.workspace }}/config.yml"
+
+      - id: id_out
+        run: |
+          echo "web_deploy_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
+
+          echo "android_package_name=${{ steps.read_config_yaml.outputs.android_deploy__android_package_name }}" >> $GITHUB_OUTPUT
+          echo "android_track=${{ steps.read_config_yaml.outputs.android_deploy__android_track }}" >> $GITHUB_OUTPUT
+          echo "android_release_name=${{ steps.read_config_yaml.outputs.android_deploy__android_release_name }}" >> $GITHUB_OUTPUT
+          echo "android_deploy_status=${{ steps.read_config_yaml.outputs.android_deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
+
+  deploy:
+    name: Deploy Apps
+    if: success()
+    uses: ./.github/workflows/_deploy-env-apps.yml
+    needs: preDeploy
+    permissions:
+      contents: write
+    secrets: inherit
+    with:
+      web_deploy_flag: ${{ needs.preDeploy.outputs.web_deploy_flag == 'true' }}
+      web-environment-flag: "Web Prod"
+
+      android_deploy_flag: ${{ needs.preDeploy.outputs.android_deploy_flag == 'true' }}
+      android-environment-flag: "Android Prod"
+      android-package-name: ${{ needs.preDeploy.outputs.android_package_name }}
+      # TODO(ZK): add android environment url
+      android-track: ${{ needs.preDeploy.outputs.android_track }}
+      android-release-name: ${{ needs.preDeploy.outputs.android_release_name }}
+      android-deploy-status: ${{ needs.preDeploy.outputs.android_deploy_status }}
+
+      windows_deploy_flag: ${{ needs.preDeploy.outputs.windows_deploy_flag == 'true' }}
+      windows-environment-flag: "Windows Prod"

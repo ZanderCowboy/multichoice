@@ -1,0 +1,41 @@
+{
+  "name": "Multichoice",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [
+    8080,
+    5000
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shellIntegration.enabled": false,
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        "terminal.integrated.shellIntegration.history": 100,
+        "terminal.integrated.defaultProfile.windows": "PowerShell",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.cursorBlinking": true,
+        "remote.SSH.defaultKey": "~/.ssh/personal_github"
+      },
+      "extensions": [
+        "dart-code.flutter",
+        "dart-code.dart",
+        "eamodio.gitlens",
+        "nash.awesome-flutter-snippets",
+        "aaron-bond.better-comments",
+        "felixangelov.bloc",
+        "circlecodesolution.ccs-flutter-color",
+        "alexisvt.flutter-snippets",
+        "vscode-icons-team.vscode-icons",
+        "redhat.vscode-yaml",
+        "bierner.markdown-checkbox"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
+    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+  },
+  "postCreateCommand": "/usr/local/bin/post_create_command.sh"
+}

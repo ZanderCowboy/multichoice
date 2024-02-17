@@ -11,8 +11,8 @@ class EntryCard extends HookWidget {
 
   final String title;
   final String subtitle;
-  final String? tabId;
-  final String? entryId;
+  final int? tabId;
+  final int? entryId;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +66,9 @@ class EntryCard extends HookWidget {
                         menuChildren: [
                           ..._getEntryMenuItems(context).map((menuItem) {
                             return MenuItemButton(
-                              onPressed: () =>
-                                  menuItem.onTap(tabId ?? '', entryId ?? ''),
+                              onPressed: () => menuItem.onTap(
+                                  tabId.toString() ?? '',
+                                  entryId.toString() ?? ''),
                               child: Text(menuItem.title),
                             );
                           }),
@@ -81,9 +82,9 @@ class EntryCard extends HookWidget {
                         children: [
                           Text(title),
                           Text(subtitle),
-                          Text(tabId ?? ''),
+                          Text('t-id: $tabId'),
                           gap4,
-                          Text(entryId ?? ''),
+                          Text('e-id: $entryId'),
                         ],
                       ),
                     ),

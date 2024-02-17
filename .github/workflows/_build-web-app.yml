@@ -1,0 +1,34 @@
+name: Web Build workflow
+on:
+  workflow_call:
+    inputs:
+      pubspec-filename:
+        required: true
+        type: string
+      environment-flag:
+        required: true
+        type: string
+      build-flag:
+        required: true
+        type: boolean
+
+jobs:
+  buildWeb:
+    name: Build Web
+    if: inputs.build-flag == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: Start Web Release Build
+        run: flutter build web --base-href='/multichoice/' --${{ inputs.environment-flag }}
+
+      - name: Upload Web Build Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: ./build/web

@@ -1,0 +1,39 @@
+name: Auto Commit Version
+description: "Download version file and commit changes"
+inputs:
+  version_number:
+    required: true
+    description: "Specifies the version to add to commit message"
+  download_filename:
+    required: true
+    description: "Specifies the id/name for the artifact to download"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Get pubspec.yaml version
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.download_filename }}
+        path: ${{ github.workspace }}/
+
+    - name: Auto commit new pubspec version
+      id: auto-commit-action
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Bump pubspec version to '${{ inputs.version_number }}'"
+        file_pattern: "pubspec.*"
+
+    - name: "Run if changes have been detected"
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      shell: bash
+      run: echo "Changes!"
+
+    - name: "Run if no changes have been detected"
+      if: steps.auto-commit-action.outputs.changes_detected == 'false'
+      shell: bash
+      run: echo "No Changes!"
