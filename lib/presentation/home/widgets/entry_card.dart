@@ -40,41 +40,43 @@ class EntryCard extends HookWidget {
             child: Stack(
               alignment: AlignmentDirectional.topEnd,
               children: [
-                isHovered.value
-                    ? MenuAnchor(
-                        anchorTapClosesMenu: true,
-                        builder: (
-                          context,
-                          MenuController controller,
-                          Widget? child,
-                        ) {
-                          return IconButton(
-                            onPressed: () {
-                              if (controller.isOpen) {
-                                controller.close();
-                              } else {
-                                controller.open();
-                              }
-                            },
-                            icon: const Icon(Icons.more_vert_outlined),
-                            hoverColor: Colors.pink,
-                            padding: EdgeInsets.zero,
-                          );
+                if (isHovered.value)
+                  MenuAnchor(
+                    consumeOutsideTap: true,
+                    builder: (
+                      context,
+                      MenuController controller,
+                      Widget? child,
+                    ) {
+                      return IconButton(
+                        onPressed: () {
+                          if (controller.isOpen) {
+                            controller.close();
+                          } else {
+                            controller.open();
+                          }
                         },
-                        onOpen: () => isInMenu.value = true,
-                        onClose: () => isInMenu.value = false,
-                        menuChildren: [
-                          ..._getEntryMenuItems(context).map((menuItem) {
-                            return MenuItemButton(
-                              onPressed: () => menuItem.onTap(
-                                  tabId.toString() ?? '',
-                                  entryId.toString() ?? ''),
-                              child: Text(menuItem.title),
-                            );
-                          }),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
+                        icon: const Icon(Icons.more_vert_outlined),
+                        hoverColor: Colors.pink,
+                        padding: EdgeInsets.zero,
+                      );
+                    },
+                    onOpen: () => isInMenu.value = true,
+                    onClose: () => isInMenu.value = false,
+                    menuChildren: [
+                      ..._getEntryMenuItems(context).map((menuItem) {
+                        return MenuItemButton(
+                          onPressed: () => menuItem.onTap(
+                            tabId ?? 0,
+                            entryId ?? 0,
+                          ),
+                          child: Text(menuItem.title),
+                        );
+                      }),
+                    ],
+                  )
+                else
+                  const SizedBox.shrink(),
                 Row(
                   children: [
                     Expanded(

@@ -14,10 +14,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3
+  flutter_hooks: ^0.20.4
   freezed_annotation: ^2.4.1
   gap: ^3.0.1
   get_it: ^7.6.4
-  flutter_hooks: ^0.20.4
   injectable: ^2.3.2
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1

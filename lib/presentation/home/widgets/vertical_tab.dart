@@ -89,43 +89,40 @@ class VerticalTab extends HookWidget {
                                 style: const TextStyle(color: Colors.black),
                               ),
                             ),
-                            isHovered.value
-                                ? MenuAnchor(
-                                    anchorTapClosesMenu: true,
-                                    builder: (
-                                      context,
-                                      MenuController controller,
-                                      Widget? child,
-                                    ) {
-                                      return IconButton(
-                                        onPressed: () {
-                                          if (controller.isOpen) {
-                                            controller.close();
-                                          } else {
-                                            controller.open();
-                                          }
-                                        },
-                                        icon: const Icon(
-                                            Icons.more_vert_outlined),
-                                        hoverColor: Colors.pink,
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 0),
-                                      );
+                            if (isHovered.value)
+                              MenuAnchor(
+                                consumeOutsideTap: true,
+                                builder: (
+                                  context,
+                                  MenuController controller,
+                                  Widget? child,
+                                ) {
+                                  return IconButton(
+                                    onPressed: () {
+                                      if (controller.isOpen) {
+                                        controller.close();
+                                      } else {
+                                        controller.open();
+                                      }
                                     },
-                                    onOpen: () => isInMenu.value = true,
-                                    onClose: () => isInMenu.value = false,
-                                    menuChildren: [
-                                      ..._getTabsMenuItems(context)
-                                          .map((menuItem) {
-                                        return MenuItemButton(
-                                          onPressed: () =>
-                                              menuItem.onTap(tabId.toString()),
-                                          child: Text(menuItem.title),
-                                        );
-                                      }),
-                                    ],
-                                  )
-                                : const SizedBox.shrink(),
+                                    icon: const Icon(Icons.more_vert_outlined),
+                                    hoverColor: Colors.pink,
+                                    padding: EdgeInsets.zero,
+                                  );
+                                },
+                                onOpen: () => isInMenu.value = true,
+                                onClose: () => isInMenu.value = false,
+                                menuChildren: [
+                                  ..._getTabsMenuItems(context).map((menuItem) {
+                                    return MenuItemButton(
+                                      onPressed: () => menuItem.onTap(tabId),
+                                      child: Text(menuItem.title),
+                                    );
+                                  }),
+                                ],
+                              )
+                            else
+                              const SizedBox.shrink(),
                           ],
                         ),
                       ),
