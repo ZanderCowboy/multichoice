@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/domain/entry/i_entry_repository.dart';
 import 'package:multichoice/domain/entry/models/entry.dart';
+import 'package:multichoice/repositories/interfaces/i_entry_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: IEntryRepository)

@@ -2,14 +2,12 @@
 
 ## Ticket: [20](https://github.com/ZanderCowboy/multichoice/issues/20)
 
-### branch: `branch-name`
+### branch: `20-restructure-files-and-folders`
 
 ### Overview
 
+This was a simple ticket to update the file and folder structure.
+
 ### What was done
 
-- [X] added x.dart which does y
-
-### What needs to be done
-
-- [ ] todo
+- [X] Create `repositories` folder and made changes
