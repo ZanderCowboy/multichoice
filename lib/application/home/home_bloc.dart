@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:multichoice/domain/entry/i_entry_repository.dart';
 import 'package:multichoice/domain/export_domain.dart';
-import 'package:multichoice/domain/tabs/i_tabs_repository.dart';
+import 'package:multichoice/repositories/interfaces/i_entry_repository.dart';
+import 'package:multichoice/repositories/interfaces/i_tabs_repository.dart';
 
+part 'home_bloc.freezed.dart';
 part 'home_event.dart';
 part 'home_state.dart';
-part 'home_bloc.freezed.dart';
 
 @Injectable()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {

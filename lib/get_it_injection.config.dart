@@ -13,11 +13,11 @@ import 'package:injectable/injectable.dart' as _i2;
 import 'package:isar/isar.dart' as _i3;
 
 import 'application/home/home_bloc.dart' as _i8;
-import 'domain/entry/i_entry_repository.dart' as _i4;
-import 'domain/tabs/i_tabs_repository.dart' as _i6;
-import 'infrastructure/entries/entry_repository.dart' as _i5;
-import 'infrastructure/tabs/tabs_repository.dart' as _i7;
 import 'injectable_module.dart' as _i9;
+import 'repositories/implementation/entry_repository.dart' as _i5;
+import 'repositories/implementation/tabs_repository.dart' as _i7;
+import 'repositories/interfaces/i_entry_repository.dart' as _i4;
+import 'repositories/interfaces/i_tabs_repository.dart' as _i6;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt

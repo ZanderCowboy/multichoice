@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/domain/export_domain.dart';
-import 'package:multichoice/domain/tabs/i_tabs_repository.dart';
+import 'package:multichoice/repositories/interfaces/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)

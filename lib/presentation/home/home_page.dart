@@ -4,7 +4,7 @@ import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
-import 'package:multichoice/presentation/shared/widgets/add_cards/_base.dart';
+import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
