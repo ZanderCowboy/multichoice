@@ -31,8 +31,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "co.za.zanderkotze.multichoice"
     compileSdk flutter.compileSdkVersion
-    // ndkVersion flutter.ndkVersion
-    ndkVersion "26.1.10909125"
+    ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
