@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,6 +17,7 @@ part 'widgets/entry_card.dart';
 part 'widgets/empty_tab.dart';
 part 'widgets/empty_entry.dart';
 part 'widgets/menu_items.dart';
+part 'widgets/menu_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

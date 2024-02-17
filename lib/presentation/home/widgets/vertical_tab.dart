@@ -89,38 +89,17 @@ class VerticalTab extends HookWidget {
                                 style: const TextStyle(color: Colors.black),
                               ),
                             ),
+                            if (Platform.isAndroid || Platform.isIOS)
+                              MenuWidget(
+                                tabId: tabId,
+                              )
+                            else
+                              const SizedBox.shrink(),
                             if (isHovered.value)
-                              MenuAnchor(
-                                consumeOutsideTap: true,
-                                builder: (
-                                  context,
-                                  MenuController controller,
-                                  Widget? child,
-                                ) {
-                                  return IconButton(
-                                    onPressed: () {
-                                      if (controller.isOpen) {
-                                        controller.close();
-                                      } else {
-                                        controller.open();
-                                      }
-                                    },
-                                    icon: const Icon(Icons.more_vert_outlined),
-                                    hoverColor: Colors.pink,
-                                    padding: EdgeInsets.zero,
-                                  );
-                                },
+                              MenuWidget(
+                                tabId: tabId,
                                 onOpen: () => isInMenu.value = true,
                                 onClose: () => isInMenu.value = false,
-                                //! TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
-                                menuChildren: [
-                                  ..._getTabsMenuItems(context).map((menuItem) {
-                                    return MenuItemButton(
-                                      onPressed: () => menuItem.onTap(tabId),
-                                      child: Text(menuItem.title),
-                                    );
-                                  }),
-                                ],
                               )
                             else
                               const SizedBox.shrink(),
