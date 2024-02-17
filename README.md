@@ -26,6 +26,14 @@ OR
 sudo chown -R node:node /flutter
 ```
 
+### Platforms
+
+This project is specifically meant for `Android`, `Web`, and `Windows`. Run this command
+```sh
+flutter config --list
+```
+to enable/disable any needed platforms.
+
 ## PRs and Workflows
 
 ### Versioning
