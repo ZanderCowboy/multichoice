@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
@@ -8,10 +9,10 @@ import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
-part 'widgets/vertical_tab.dart';
-part 'widgets/entry_card.dart';
-part 'widgets/empty_tab.dart';
 part 'widgets/empty_entry.dart';
+part 'widgets/empty_tab.dart';
+part 'widgets/entry_card.dart';
+part 'widgets/vertical_tab.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -67,32 +68,34 @@ class _HomePage extends StatelessWidget {
         }
 
         final tabs = state.tabs ?? [];
+        final screenHeight = MediaQuery.sizeOf(context).height;
 
-        return Padding(
-          padding: allPadding12,
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.375,
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (context, index) {
-                    //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
-                    final tab = tabs[index];
+        return Center(
+          child: Padding(
+            padding: allPadding24,
+            child: SizedBox(
+              height: screenHeight,
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: scrollController,
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (context, index) {
+                      final tab = tabs[index];
 
-                    return VerticalTab(
-                      tabId: tab.id,
-                      tabTitle: tab.title,
-                    );
-                  },
-                ),
-                const SliverToBoxAdapter(
-                  child: EmptyTab(),
-                ),
-              ],
+                      return VerticalTab(tabId: tab.id);
+                    },
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      width: MediaQuery.sizeOf(context).width / 6,
+                      child: const EmptyTab(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

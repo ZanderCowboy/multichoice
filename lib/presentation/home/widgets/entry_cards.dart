@@ -83,10 +83,10 @@ class Cards extends StatelessWidget {
                       );
                     },
                     child: EntryCard(
-                      title: entry.title,
-                      subtitle: entry.subtitle,
                       tabId: tabId,
                       entryId: entry.id,
+                      title: entry.title,
+                      subtitle: entry.subtitle,
                     ),
                   );
                 },

@@ -19,7 +19,7 @@ class AddEntryCard extends StatelessWidget {
       ),
       padding: allPadding6,
       icon: const Icon(Icons.add_outlined),
-      iconSize: 36,
+      iconSize: 28,
     );
   }
 }

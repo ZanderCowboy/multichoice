@@ -9,22 +9,22 @@ class EntryCard extends StatelessWidget {
     super.key,
   });
 
-  final String title;
-  final String subtitle;
   final int? tabId;
   final int? entryId;
+  final String? title;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
+      elevation: 7,
       shadowColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: circularBorder5,
       ),
-      color: Colors.blueGrey,
+      color: const Color.fromARGB(255, 81, 153, 187),
       child: SizedBox(
-        width: 200,
+        width: double.infinity,
         child: Padding(
           padding: allPadding4,
           child: Row(
@@ -32,18 +32,26 @@ class EntryCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    Text(title),
-                    Text(subtitle),
-                    Text('t-id: $tabId'),
-                    gap4,
-                    Text('e-id: $entryId'),
+                    Text(
+                      title ?? '',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      subtitle ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              // const Placeholder(
-              //   fallbackHeight: 40,
-              //   fallbackWidth: 40,
-              // ),
+              const Placeholder(
+                fallbackHeight: 40,
+                fallbackWidth: 40,
+              ),
             ],
           ),
         ),
