@@ -21,12 +21,18 @@ mixin _$HomeEvent {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -34,12 +40,18 @@ mixin _$HomeEvent {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -47,12 +59,18 @@ mixin _$HomeEvent {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -68,6 +86,14 @@ mixin _$HomeEvent {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -80,6 +106,13 @@ mixin _$HomeEvent {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -92,6 +125,13 @@ mixin _$HomeEvent {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -155,12 +195,18 @@ class _$OnGetTabsImpl implements OnGetTabs {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onGetTabs();
   }
@@ -171,12 +217,18 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onGetTabs?.call();
   }
@@ -187,12 +239,18 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetTabs != null) {
@@ -214,6 +272,14 @@ class _$OnGetTabsImpl implements OnGetTabs {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onGetTabs(this);
   }
@@ -229,6 +295,13 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onGetTabs?.call(this);
   }
@@ -244,6 +317,13 @@ class _$OnGetTabsImpl implements OnGetTabs {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetTabs != null) {
@@ -298,12 +378,18 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onGetAllEntryCards();
   }
@@ -314,12 +400,18 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onGetAllEntryCards?.call();
   }
@@ -330,12 +422,18 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetAllEntryCards != null) {
@@ -357,6 +455,14 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onGetAllEntryCards(this);
   }
@@ -372,6 +478,13 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onGetAllEntryCards?.call(this);
   }
@@ -387,6 +500,13 @@ class _$OnGetAllEntryCardsImpl implements OnGetAllEntryCards {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetAllEntryCards != null) {
@@ -468,12 +588,18 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onGetEntryCards(tabId);
   }
@@ -484,12 +610,18 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onGetEntryCards?.call(tabId);
   }
@@ -500,12 +632,18 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetEntryCards != null) {
@@ -527,6 +665,14 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onGetEntryCards(this);
   }
@@ -542,6 +688,13 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onGetEntryCards?.call(this);
   }
@@ -557,6 +710,13 @@ class _$OnGetEntryCardsImpl implements OnGetEntryCards {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onGetEntryCards != null) {
@@ -580,8 +740,6 @@ abstract class _$$OnPressedAddTabImplCopyWith<$Res> {
   factory _$$OnPressedAddTabImplCopyWith(_$OnPressedAddTabImpl value,
           $Res Function(_$OnPressedAddTabImpl) then) =
       __$$OnPressedAddTabImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String title, String subtitle});
 }
 
 /// @nodoc
@@ -591,60 +749,26 @@ class __$$OnPressedAddTabImplCopyWithImpl<$Res>
   __$$OnPressedAddTabImplCopyWithImpl(
       _$OnPressedAddTabImpl _value, $Res Function(_$OnPressedAddTabImpl) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? title = null,
-    Object? subtitle = null,
-  }) {
-    return _then(_$OnPressedAddTabImpl(
-      null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == subtitle
-          ? _value.subtitle
-          : subtitle // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$OnPressedAddTabImpl implements OnPressedAddTab {
-  const _$OnPressedAddTabImpl(this.title, this.subtitle);
-
-  @override
-  final String title;
-  @override
-  final String subtitle;
+  const _$OnPressedAddTabImpl();
 
   @override
   String toString() {
-    return 'HomeEvent.onPressedAddTab(title: $title, subtitle: $subtitle)';
+    return 'HomeEvent.onPressedAddTab()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OnPressedAddTabImpl &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.subtitle, subtitle) ||
-                other.subtitle == subtitle));
+        (other.runtimeType == runtimeType && other is _$OnPressedAddTabImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, subtitle);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OnPressedAddTabImplCopyWith<_$OnPressedAddTabImpl> get copyWith =>
-      __$$OnPressedAddTabImplCopyWithImpl<_$OnPressedAddTabImpl>(
-          this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
@@ -652,14 +776,20 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
-    return onPressedAddTab(title, subtitle);
+    return onPressedAddTab();
   }
 
   @override
@@ -668,14 +798,20 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
-    return onPressedAddTab?.call(title, subtitle);
+    return onPressedAddTab?.call();
   }
 
   @override
@@ -684,16 +820,22 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
-      return onPressedAddTab(title, subtitle);
+      return onPressedAddTab();
     }
     return orElse();
   }
@@ -711,6 +853,14 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onPressedAddTab(this);
   }
@@ -726,6 +876,13 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onPressedAddTab?.call(this);
   }
@@ -741,6 +898,13 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddTab != null) {
@@ -751,14 +915,7 @@ class _$OnPressedAddTabImpl implements OnPressedAddTab {
 }
 
 abstract class OnPressedAddTab implements HomeEvent {
-  const factory OnPressedAddTab(final String title, final String subtitle) =
-      _$OnPressedAddTabImpl;
-
-  String get title;
-  String get subtitle;
-  @JsonKey(ignore: true)
-  _$$OnPressedAddTabImplCopyWith<_$OnPressedAddTabImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  const factory OnPressedAddTab() = _$OnPressedAddTabImpl;
 }
 
 /// @nodoc
@@ -767,7 +924,7 @@ abstract class _$$OnPressedAddEntryImplCopyWith<$Res> {
           $Res Function(_$OnPressedAddEntryImpl) then) =
       __$$OnPressedAddEntryImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int tabId, String title, String subtitle});
+  $Res call({int tabId});
 }
 
 /// @nodoc
@@ -782,22 +939,12 @@ class __$$OnPressedAddEntryImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? tabId = null,
-    Object? title = null,
-    Object? subtitle = null,
   }) {
     return _then(_$OnPressedAddEntryImpl(
       null == tabId
           ? _value.tabId
           : tabId // ignore: cast_nullable_to_non_nullable
               as int,
-      null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      null == subtitle
-          ? _value.subtitle
-          : subtitle // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -805,18 +952,14 @@ class __$$OnPressedAddEntryImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
-  const _$OnPressedAddEntryImpl(this.tabId, this.title, this.subtitle);
+  const _$OnPressedAddEntryImpl(this.tabId);
 
   @override
   final int tabId;
-  @override
-  final String title;
-  @override
-  final String subtitle;
 
   @override
   String toString() {
-    return 'HomeEvent.onPressedAddEntry(tabId: $tabId, title: $title, subtitle: $subtitle)';
+    return 'HomeEvent.onPressedAddEntry(tabId: $tabId)';
   }
 
   @override
@@ -824,14 +967,11 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnPressedAddEntryImpl &&
-            (identical(other.tabId, tabId) || other.tabId == tabId) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.subtitle, subtitle) ||
-                other.subtitle == subtitle));
+            (identical(other.tabId, tabId) || other.tabId == tabId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tabId, title, subtitle);
+  int get hashCode => Object.hash(runtimeType, tabId);
 
   @JsonKey(ignore: true)
   @override
@@ -846,14 +986,20 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
-    return onPressedAddEntry(tabId, title, subtitle);
+    return onPressedAddEntry(tabId);
   }
 
   @override
@@ -862,14 +1008,20 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
-    return onPressedAddEntry?.call(tabId, title, subtitle);
+    return onPressedAddEntry?.call(tabId);
   }
 
   @override
@@ -878,16 +1030,22 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
-      return onPressedAddEntry(tabId, title, subtitle);
+      return onPressedAddEntry(tabId);
     }
     return orElse();
   }
@@ -905,6 +1063,14 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onPressedAddEntry(this);
   }
@@ -920,6 +1086,13 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onPressedAddEntry?.call(this);
   }
@@ -935,6 +1108,13 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedAddEntry != null) {
@@ -945,13 +1125,9 @@ class _$OnPressedAddEntryImpl implements OnPressedAddEntry {
 }
 
 abstract class OnPressedAddEntry implements HomeEvent {
-  const factory OnPressedAddEntry(
-          final int tabId, final String title, final String subtitle) =
-      _$OnPressedAddEntryImpl;
+  const factory OnPressedAddEntry(final int tabId) = _$OnPressedAddEntryImpl;
 
   int get tabId;
-  String get title;
-  String get subtitle;
   @JsonKey(ignore: true)
   _$$OnPressedAddEntryImplCopyWith<_$OnPressedAddEntryImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1027,12 +1203,18 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onLongPressedDeleteTab(tabId);
   }
@@ -1043,12 +1225,18 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onLongPressedDeleteTab?.call(tabId);
   }
@@ -1059,12 +1247,18 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
@@ -1086,6 +1280,14 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onLongPressedDeleteTab(this);
   }
@@ -1101,6 +1303,13 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onLongPressedDeleteTab?.call(this);
   }
@@ -1116,6 +1325,13 @@ class _$OnLongPressedDeleteTabImpl implements OnLongPressedDeleteTab {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteTab != null) {
@@ -1213,12 +1429,18 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onLongPressedDeleteEntry(tabId, entryId);
   }
@@ -1229,12 +1451,18 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onLongPressedDeleteEntry?.call(tabId, entryId);
   }
@@ -1245,12 +1473,18 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteEntry != null) {
@@ -1272,6 +1506,14 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onLongPressedDeleteEntry(this);
   }
@@ -1287,6 +1529,13 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onLongPressedDeleteEntry?.call(this);
   }
@@ -1302,6 +1551,13 @@ class _$OnLongPressedDeleteEntryImpl implements OnLongPressedDeleteEntry {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onLongPressedDeleteEntry != null) {
@@ -1363,12 +1619,18 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     required TResult Function() onGetTabs,
     required TResult Function() onGetAllEntryCards,
     required TResult Function(int tabId) onGetEntryCards,
-    required TResult Function(String title, String subtitle) onPressedAddTab,
-    required TResult Function(int tabId, String title, String subtitle)
-        onPressedAddEntry,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
     required TResult Function(int tabId) onLongPressedDeleteTab,
     required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
     required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
   }) {
     return onPressedDeleteAll();
   }
@@ -1379,12 +1641,18 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     TResult? Function()? onGetTabs,
     TResult? Function()? onGetAllEntryCards,
     TResult? Function(int tabId)? onGetEntryCards,
-    TResult? Function(String title, String subtitle)? onPressedAddTab,
-    TResult? Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
     TResult? Function(int tabId)? onLongPressedDeleteTab,
     TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
   }) {
     return onPressedDeleteAll?.call();
   }
@@ -1395,12 +1663,18 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     TResult Function()? onGetTabs,
     TResult Function()? onGetAllEntryCards,
     TResult Function(int tabId)? onGetEntryCards,
-    TResult Function(String title, String subtitle)? onPressedAddTab,
-    TResult Function(int tabId, String title, String subtitle)?
-        onPressedAddEntry,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
     TResult Function(int tabId)? onLongPressedDeleteTab,
     TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
     TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedDeleteAll != null) {
@@ -1422,6 +1696,14 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     required TResult Function(OnLongPressedDeleteEntry value)
         onLongPressedDeleteEntry,
     required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
   }) {
     return onPressedDeleteAll(this);
   }
@@ -1437,6 +1719,13 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
   }) {
     return onPressedDeleteAll?.call(this);
   }
@@ -1452,6 +1741,13 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
     TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
     TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
     TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
     required TResult orElse(),
   }) {
     if (onPressedDeleteAll != null) {
@@ -1463,6 +1759,1493 @@ class _$OnPressedDeleteAllImpl implements OnPressedDeleteAll {
 
 abstract class OnPressedDeleteAll implements HomeEvent {
   const factory OnPressedDeleteAll() = _$OnPressedDeleteAllImpl;
+}
+
+/// @nodoc
+abstract class _$$OnChangedTabTitleImplCopyWith<$Res> {
+  factory _$$OnChangedTabTitleImplCopyWith(_$OnChangedTabTitleImpl value,
+          $Res Function(_$OnChangedTabTitleImpl) then) =
+      __$$OnChangedTabTitleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String text});
+}
+
+/// @nodoc
+class __$$OnChangedTabTitleImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnChangedTabTitleImpl>
+    implements _$$OnChangedTabTitleImplCopyWith<$Res> {
+  __$$OnChangedTabTitleImplCopyWithImpl(_$OnChangedTabTitleImpl _value,
+      $Res Function(_$OnChangedTabTitleImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+  }) {
+    return _then(_$OnChangedTabTitleImpl(
+      null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnChangedTabTitleImpl implements OnChangedTabTitle {
+  const _$OnChangedTabTitleImpl(this.text);
+
+  @override
+  final String text;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onChangedTabTitle(text: $text)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnChangedTabTitleImpl &&
+            (identical(other.text, text) || other.text == text));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, text);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnChangedTabTitleImplCopyWith<_$OnChangedTabTitleImpl> get copyWith =>
+      __$$OnChangedTabTitleImplCopyWithImpl<_$OnChangedTabTitleImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onChangedTabTitle(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onChangedTabTitle?.call(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedTabTitle != null) {
+      return onChangedTabTitle(text);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onChangedTabTitle(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onChangedTabTitle?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedTabTitle != null) {
+      return onChangedTabTitle(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnChangedTabTitle implements HomeEvent {
+  const factory OnChangedTabTitle(final String text) = _$OnChangedTabTitleImpl;
+
+  String get text;
+  @JsonKey(ignore: true)
+  _$$OnChangedTabTitleImplCopyWith<_$OnChangedTabTitleImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnChangedTabSubtitleImplCopyWith<$Res> {
+  factory _$$OnChangedTabSubtitleImplCopyWith(_$OnChangedTabSubtitleImpl value,
+          $Res Function(_$OnChangedTabSubtitleImpl) then) =
+      __$$OnChangedTabSubtitleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String text});
+}
+
+/// @nodoc
+class __$$OnChangedTabSubtitleImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnChangedTabSubtitleImpl>
+    implements _$$OnChangedTabSubtitleImplCopyWith<$Res> {
+  __$$OnChangedTabSubtitleImplCopyWithImpl(_$OnChangedTabSubtitleImpl _value,
+      $Res Function(_$OnChangedTabSubtitleImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+  }) {
+    return _then(_$OnChangedTabSubtitleImpl(
+      null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnChangedTabSubtitleImpl implements OnChangedTabSubtitle {
+  const _$OnChangedTabSubtitleImpl(this.text);
+
+  @override
+  final String text;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onChangedTabSubtitle(text: $text)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnChangedTabSubtitleImpl &&
+            (identical(other.text, text) || other.text == text));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, text);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnChangedTabSubtitleImplCopyWith<_$OnChangedTabSubtitleImpl>
+      get copyWith =>
+          __$$OnChangedTabSubtitleImplCopyWithImpl<_$OnChangedTabSubtitleImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onChangedTabSubtitle(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onChangedTabSubtitle?.call(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedTabSubtitle != null) {
+      return onChangedTabSubtitle(text);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onChangedTabSubtitle(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onChangedTabSubtitle?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedTabSubtitle != null) {
+      return onChangedTabSubtitle(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnChangedTabSubtitle implements HomeEvent {
+  const factory OnChangedTabSubtitle(final String text) =
+      _$OnChangedTabSubtitleImpl;
+
+  String get text;
+  @JsonKey(ignore: true)
+  _$$OnChangedTabSubtitleImplCopyWith<_$OnChangedTabSubtitleImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnChangedEntryTitleImplCopyWith<$Res> {
+  factory _$$OnChangedEntryTitleImplCopyWith(_$OnChangedEntryTitleImpl value,
+          $Res Function(_$OnChangedEntryTitleImpl) then) =
+      __$$OnChangedEntryTitleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String text});
+}
+
+/// @nodoc
+class __$$OnChangedEntryTitleImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnChangedEntryTitleImpl>
+    implements _$$OnChangedEntryTitleImplCopyWith<$Res> {
+  __$$OnChangedEntryTitleImplCopyWithImpl(_$OnChangedEntryTitleImpl _value,
+      $Res Function(_$OnChangedEntryTitleImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+  }) {
+    return _then(_$OnChangedEntryTitleImpl(
+      null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnChangedEntryTitleImpl implements OnChangedEntryTitle {
+  const _$OnChangedEntryTitleImpl(this.text);
+
+  @override
+  final String text;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onChangedEntryTitle(text: $text)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnChangedEntryTitleImpl &&
+            (identical(other.text, text) || other.text == text));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, text);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnChangedEntryTitleImplCopyWith<_$OnChangedEntryTitleImpl> get copyWith =>
+      __$$OnChangedEntryTitleImplCopyWithImpl<_$OnChangedEntryTitleImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onChangedEntryTitle(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onChangedEntryTitle?.call(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedEntryTitle != null) {
+      return onChangedEntryTitle(text);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onChangedEntryTitle(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onChangedEntryTitle?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedEntryTitle != null) {
+      return onChangedEntryTitle(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnChangedEntryTitle implements HomeEvent {
+  const factory OnChangedEntryTitle(final String text) =
+      _$OnChangedEntryTitleImpl;
+
+  String get text;
+  @JsonKey(ignore: true)
+  _$$OnChangedEntryTitleImplCopyWith<_$OnChangedEntryTitleImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnChangedEntrySubtitleImplCopyWith<$Res> {
+  factory _$$OnChangedEntrySubtitleImplCopyWith(
+          _$OnChangedEntrySubtitleImpl value,
+          $Res Function(_$OnChangedEntrySubtitleImpl) then) =
+      __$$OnChangedEntrySubtitleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String text});
+}
+
+/// @nodoc
+class __$$OnChangedEntrySubtitleImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnChangedEntrySubtitleImpl>
+    implements _$$OnChangedEntrySubtitleImplCopyWith<$Res> {
+  __$$OnChangedEntrySubtitleImplCopyWithImpl(
+      _$OnChangedEntrySubtitleImpl _value,
+      $Res Function(_$OnChangedEntrySubtitleImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? text = null,
+  }) {
+    return _then(_$OnChangedEntrySubtitleImpl(
+      null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnChangedEntrySubtitleImpl implements OnChangedEntrySubtitle {
+  const _$OnChangedEntrySubtitleImpl(this.text);
+
+  @override
+  final String text;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onChangedEntrySubtitle(text: $text)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnChangedEntrySubtitleImpl &&
+            (identical(other.text, text) || other.text == text));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, text);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnChangedEntrySubtitleImplCopyWith<_$OnChangedEntrySubtitleImpl>
+      get copyWith => __$$OnChangedEntrySubtitleImplCopyWithImpl<
+          _$OnChangedEntrySubtitleImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onChangedEntrySubtitle(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onChangedEntrySubtitle?.call(text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedEntrySubtitle != null) {
+      return onChangedEntrySubtitle(text);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onChangedEntrySubtitle(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onChangedEntrySubtitle?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onChangedEntrySubtitle != null) {
+      return onChangedEntrySubtitle(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnChangedEntrySubtitle implements HomeEvent {
+  const factory OnChangedEntrySubtitle(final String text) =
+      _$OnChangedEntrySubtitleImpl;
+
+  String get text;
+  @JsonKey(ignore: true)
+  _$$OnChangedEntrySubtitleImplCopyWith<_$OnChangedEntrySubtitleImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnPressedCancelImplCopyWith<$Res> {
+  factory _$$OnPressedCancelImplCopyWith(_$OnPressedCancelImpl value,
+          $Res Function(_$OnPressedCancelImpl) then) =
+      __$$OnPressedCancelImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$OnPressedCancelImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnPressedCancelImpl>
+    implements _$$OnPressedCancelImplCopyWith<$Res> {
+  __$$OnPressedCancelImplCopyWithImpl(
+      _$OnPressedCancelImpl _value, $Res Function(_$OnPressedCancelImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$OnPressedCancelImpl implements OnPressedCancel {
+  const _$OnPressedCancelImpl();
+
+  @override
+  String toString() {
+    return 'HomeEvent.onPressedCancel()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$OnPressedCancelImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onPressedCancel();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onPressedCancel?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onPressedCancel != null) {
+      return onPressedCancel();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onPressedCancel(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onPressedCancel?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onPressedCancel != null) {
+      return onPressedCancel(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnPressedCancel implements HomeEvent {
+  const factory OnPressedCancel() = _$OnPressedCancelImpl;
+}
+
+/// @nodoc
+abstract class _$$OnUpdateTabImplCopyWith<$Res> {
+  factory _$$OnUpdateTabImplCopyWith(
+          _$OnUpdateTabImpl value, $Res Function(_$OnUpdateTabImpl) then) =
+      __$$OnUpdateTabImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int tabId});
+}
+
+/// @nodoc
+class __$$OnUpdateTabImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnUpdateTabImpl>
+    implements _$$OnUpdateTabImplCopyWith<$Res> {
+  __$$OnUpdateTabImplCopyWithImpl(
+      _$OnUpdateTabImpl _value, $Res Function(_$OnUpdateTabImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tabId = null,
+  }) {
+    return _then(_$OnUpdateTabImpl(
+      null == tabId
+          ? _value.tabId
+          : tabId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnUpdateTabImpl implements OnUpdateTab {
+  const _$OnUpdateTabImpl(this.tabId);
+
+  @override
+  final int tabId;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onUpdateTab(tabId: $tabId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnUpdateTabImpl &&
+            (identical(other.tabId, tabId) || other.tabId == tabId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tabId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnUpdateTabImplCopyWith<_$OnUpdateTabImpl> get copyWith =>
+      __$$OnUpdateTabImplCopyWithImpl<_$OnUpdateTabImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onUpdateTab(tabId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onUpdateTab?.call(tabId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onUpdateTab != null) {
+      return onUpdateTab(tabId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onUpdateTab(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onUpdateTab?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onUpdateTab != null) {
+      return onUpdateTab(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnUpdateTab implements HomeEvent {
+  const factory OnUpdateTab(final int tabId) = _$OnUpdateTabImpl;
+
+  int get tabId;
+  @JsonKey(ignore: true)
+  _$$OnUpdateTabImplCopyWith<_$OnUpdateTabImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$OnUpdateEntryImplCopyWith<$Res> {
+  factory _$$OnUpdateEntryImplCopyWith(
+          _$OnUpdateEntryImpl value, $Res Function(_$OnUpdateEntryImpl) then) =
+      __$$OnUpdateEntryImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int tabId, int entryId});
+}
+
+/// @nodoc
+class __$$OnUpdateEntryImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$OnUpdateEntryImpl>
+    implements _$$OnUpdateEntryImplCopyWith<$Res> {
+  __$$OnUpdateEntryImplCopyWithImpl(
+      _$OnUpdateEntryImpl _value, $Res Function(_$OnUpdateEntryImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tabId = null,
+    Object? entryId = null,
+  }) {
+    return _then(_$OnUpdateEntryImpl(
+      null == tabId
+          ? _value.tabId
+          : tabId // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == entryId
+          ? _value.entryId
+          : entryId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$OnUpdateEntryImpl implements OnUpdateEntry {
+  const _$OnUpdateEntryImpl(this.tabId, this.entryId);
+
+  @override
+  final int tabId;
+  @override
+  final int entryId;
+
+  @override
+  String toString() {
+    return 'HomeEvent.onUpdateEntry(tabId: $tabId, entryId: $entryId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OnUpdateEntryImpl &&
+            (identical(other.tabId, tabId) || other.tabId == tabId) &&
+            (identical(other.entryId, entryId) || other.entryId == entryId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tabId, entryId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OnUpdateEntryImplCopyWith<_$OnUpdateEntryImpl> get copyWith =>
+      __$$OnUpdateEntryImplCopyWithImpl<_$OnUpdateEntryImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() onGetTabs,
+    required TResult Function() onGetAllEntryCards,
+    required TResult Function(int tabId) onGetEntryCards,
+    required TResult Function() onPressedAddTab,
+    required TResult Function(int tabId) onPressedAddEntry,
+    required TResult Function(int tabId) onLongPressedDeleteTab,
+    required TResult Function(int tabId, int entryId) onLongPressedDeleteEntry,
+    required TResult Function() onPressedDeleteAll,
+    required TResult Function(String text) onChangedTabTitle,
+    required TResult Function(String text) onChangedTabSubtitle,
+    required TResult Function(String text) onChangedEntryTitle,
+    required TResult Function(String text) onChangedEntrySubtitle,
+    required TResult Function() onPressedCancel,
+    required TResult Function(int tabId) onUpdateTab,
+    required TResult Function(int tabId, int entryId) onUpdateEntry,
+  }) {
+    return onUpdateEntry(tabId, entryId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? onGetTabs,
+    TResult? Function()? onGetAllEntryCards,
+    TResult? Function(int tabId)? onGetEntryCards,
+    TResult? Function()? onPressedAddTab,
+    TResult? Function(int tabId)? onPressedAddEntry,
+    TResult? Function(int tabId)? onLongPressedDeleteTab,
+    TResult? Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult? Function()? onPressedDeleteAll,
+    TResult? Function(String text)? onChangedTabTitle,
+    TResult? Function(String text)? onChangedTabSubtitle,
+    TResult? Function(String text)? onChangedEntryTitle,
+    TResult? Function(String text)? onChangedEntrySubtitle,
+    TResult? Function()? onPressedCancel,
+    TResult? Function(int tabId)? onUpdateTab,
+    TResult? Function(int tabId, int entryId)? onUpdateEntry,
+  }) {
+    return onUpdateEntry?.call(tabId, entryId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? onGetTabs,
+    TResult Function()? onGetAllEntryCards,
+    TResult Function(int tabId)? onGetEntryCards,
+    TResult Function()? onPressedAddTab,
+    TResult Function(int tabId)? onPressedAddEntry,
+    TResult Function(int tabId)? onLongPressedDeleteTab,
+    TResult Function(int tabId, int entryId)? onLongPressedDeleteEntry,
+    TResult Function()? onPressedDeleteAll,
+    TResult Function(String text)? onChangedTabTitle,
+    TResult Function(String text)? onChangedTabSubtitle,
+    TResult Function(String text)? onChangedEntryTitle,
+    TResult Function(String text)? onChangedEntrySubtitle,
+    TResult Function()? onPressedCancel,
+    TResult Function(int tabId)? onUpdateTab,
+    TResult Function(int tabId, int entryId)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onUpdateEntry != null) {
+      return onUpdateEntry(tabId, entryId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(OnGetTabs value) onGetTabs,
+    required TResult Function(OnGetAllEntryCards value) onGetAllEntryCards,
+    required TResult Function(OnGetEntryCards value) onGetEntryCards,
+    required TResult Function(OnPressedAddTab value) onPressedAddTab,
+    required TResult Function(OnPressedAddEntry value) onPressedAddEntry,
+    required TResult Function(OnLongPressedDeleteTab value)
+        onLongPressedDeleteTab,
+    required TResult Function(OnLongPressedDeleteEntry value)
+        onLongPressedDeleteEntry,
+    required TResult Function(OnPressedDeleteAll value) onPressedDeleteAll,
+    required TResult Function(OnChangedTabTitle value) onChangedTabTitle,
+    required TResult Function(OnChangedTabSubtitle value) onChangedTabSubtitle,
+    required TResult Function(OnChangedEntryTitle value) onChangedEntryTitle,
+    required TResult Function(OnChangedEntrySubtitle value)
+        onChangedEntrySubtitle,
+    required TResult Function(OnPressedCancel value) onPressedCancel,
+    required TResult Function(OnUpdateTab value) onUpdateTab,
+    required TResult Function(OnUpdateEntry value) onUpdateEntry,
+  }) {
+    return onUpdateEntry(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(OnGetTabs value)? onGetTabs,
+    TResult? Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult? Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult? Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult? Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult? Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult? Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult? Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult? Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult? Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult? Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult? Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult? Function(OnPressedCancel value)? onPressedCancel,
+    TResult? Function(OnUpdateTab value)? onUpdateTab,
+    TResult? Function(OnUpdateEntry value)? onUpdateEntry,
+  }) {
+    return onUpdateEntry?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(OnGetTabs value)? onGetTabs,
+    TResult Function(OnGetAllEntryCards value)? onGetAllEntryCards,
+    TResult Function(OnGetEntryCards value)? onGetEntryCards,
+    TResult Function(OnPressedAddTab value)? onPressedAddTab,
+    TResult Function(OnPressedAddEntry value)? onPressedAddEntry,
+    TResult Function(OnLongPressedDeleteTab value)? onLongPressedDeleteTab,
+    TResult Function(OnLongPressedDeleteEntry value)? onLongPressedDeleteEntry,
+    TResult Function(OnPressedDeleteAll value)? onPressedDeleteAll,
+    TResult Function(OnChangedTabTitle value)? onChangedTabTitle,
+    TResult Function(OnChangedTabSubtitle value)? onChangedTabSubtitle,
+    TResult Function(OnChangedEntryTitle value)? onChangedEntryTitle,
+    TResult Function(OnChangedEntrySubtitle value)? onChangedEntrySubtitle,
+    TResult Function(OnPressedCancel value)? onPressedCancel,
+    TResult Function(OnUpdateTab value)? onUpdateTab,
+    TResult Function(OnUpdateEntry value)? onUpdateEntry,
+    required TResult orElse(),
+  }) {
+    if (onUpdateEntry != null) {
+      return onUpdateEntry(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class OnUpdateEntry implements HomeEvent {
+  const factory OnUpdateEntry(final int tabId, final int entryId) =
+      _$OnUpdateEntryImpl;
+
+  int get tabId;
+  int get entryId;
+  @JsonKey(ignore: true)
+  _$$OnUpdateEntryImplCopyWith<_$OnUpdateEntryImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
