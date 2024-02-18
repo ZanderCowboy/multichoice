@@ -51,7 +51,7 @@ class Cards extends StatelessWidget {
                         content: SizedBox(
                           height: 20,
                           child: Text(
-                            "Are you sure you want to delete ${entry.title} and all it's data?",
+                            "Are you sure you want to delete entry ${entry.title} and all it's content?",
                           ),
                         ),
                         actions: <Widget>[

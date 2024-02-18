@@ -113,7 +113,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(
             state.copyWith(
               tabs: await _tabsRepository.readTabs(),
-              entryCards: [],
               isLoading: false,
               isDeleted: false,
             ),
