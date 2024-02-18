@@ -76,4 +76,19 @@ class EntryRepository implements IEntryRepository {
 
     return false;
   }
+
+  @override
+  Future<Entry> getEntry(int tabId, int entryId) async {
+    try {
+      final entriesInTab = await readEntries(tabId);
+
+      final result =
+          entriesInTab.firstWhere((element) => element.id == entryId);
+
+      return result;
+    } catch (e) {
+      log(e.toString());
+      return Entry.empty();
+    }
+  }
 }

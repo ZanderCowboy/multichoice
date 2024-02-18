@@ -11,6 +11,8 @@ abstract class IEntryRepository {
     int tabId,
   );
 
+  Future<Entry> getEntry(int tabId, int entryId);
+
   Future<List<Entry>?> readAllEntries();
 
   Future<bool> deleteEntry(

@@ -70,4 +70,18 @@ class TabsRepository implements ITabsRepository {
 
     return false;
   }
+
+  @override
+  Future<Tabs> getTab(int tabId) async {
+    try {
+      final tabs = await db.tabs.where().findAll();
+
+      final result = tabs.firstWhere((element) => element.id == tabId);
+
+      return result;
+    } catch (e) {
+      log(e.toString());
+      return Tabs.empty();
+    }
+  }
 }
