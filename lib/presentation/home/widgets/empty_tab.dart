@@ -1,49 +1,95 @@
 part of '../home_page.dart';
 
-class EmptyTab extends StatelessWidget {
+class EmptyTab extends HookWidget {
   const EmptyTab({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        final tabCount = state.tabs?.length ?? 0;
+    final titleTextController = TextEditingController();
+    final subtitleTextController = TextEditingController();
 
-        return GestureDetector(
-          onTap: () {
-            CustomDialog<Widget>.show(
-              context: context,
-              title: const Text('Add New Tab'),
-              content: const Text('TODO: Add FormFields to enter data.'),
-              actions: <Widget>[
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+    return GestureDetector(
+      onTap: () {
+        CustomDialog<Widget>.show(
+          context: context,
+          title: const Text('Add new tab'),
+          content: Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text('Title'),
+                    ),
+                    gap4,
+                    SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: titleTextController,
+                        onChanged: (value) {
+                          context
+                              .read<HomeBloc>()
+                              .add(HomeEvent.onChangedTabTitle(value));
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<HomeBloc>().add(
-                          HomeEvent.onPressedAddTab(
-                            't-title $tabCount',
-                            't-s.title $tabCount',
-                          ),
-                        );
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text('Add'),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      width: 80,
+                      child: Text('Subtitle'),
+                    ),
+                    gap4,
+                    SizedBox(
+                      width: 200,
+                      child: TextFormField(
+                        controller: subtitleTextController,
+                        onChanged: (value) {
+                          context
+                              .read<HomeBloc>()
+                              .add(HomeEvent.onChangedTabSubtitle(value));
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            );
-          },
-          child: AddTabCard(
-            width: MediaQuery.sizeOf(context).width / 4,
+            ),
           ),
+          actions: <Widget>[
+            OutlinedButton(
+              onPressed: () {
+                context.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+                titleTextController.clear();
+                subtitleTextController.clear();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<HomeBloc>().add(const HomeEvent.onPressedAddTab());
+
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
         );
       },
+      child: AddTabCard(
+        width: MediaQuery.sizeOf(context).width / 4,
+      ),
     );
   }
 }
