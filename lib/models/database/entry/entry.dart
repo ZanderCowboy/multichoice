@@ -12,7 +12,7 @@ class Entry with _$Entry {
     required String uuid,
     required int tabId,
     required String title,
-    required String subtitle,
+    required String? subtitle,
     required DateTime? timestamp,
   }) = _Entry;
 
@@ -22,7 +22,7 @@ class Entry with _$Entry {
         uuid: '',
         tabId: 0,
         title: '',
-        subtitle: '',
+        subtitle: null,
         timestamp: null,
       );
 

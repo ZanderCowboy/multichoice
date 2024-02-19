@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/domain/export_domain.dart';
-import 'package:multichoice/repositories/interfaces/i_tabs_repository.dart';
+import 'package:multichoice/models/database/export_database.dart';
+import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
+import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.dart';
+import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)
@@ -36,11 +38,15 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
-  Future<List<Tabs>> readTabs() async {
+  Future<List<TabsDTO>> readTabs() async {
     try {
-      final result = db.tabs.where().sortByTimestamp().findAll();
+      final result = await db.tabs.where().sortByTimestamp().findAll();
 
-      return result;
+      final converter = TabsMapper();
+      final tabsDTO =
+          result.map((tab) => converter.convert<Tabs, TabsDTO>(tab)).toList();
+
+      return tabsDTO;
     } catch (e) {
       log(e.toString());
       return [];

@@ -11,7 +11,7 @@ class Tabs with _$Tabs {
   const factory Tabs({
     required String uuid,
     required String title,
-    required String subtitle,
+    required String? subtitle,
     required DateTime? timestamp,
   }) = _Tabs;
 
@@ -20,7 +20,7 @@ class Tabs with _$Tabs {
   factory Tabs.empty() => const Tabs(
         uuid: '',
         title: '',
-        subtitle: '',
+        subtitle: null,
         timestamp: null,
       );
 

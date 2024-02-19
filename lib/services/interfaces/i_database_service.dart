@@ -1,4 +1,4 @@
-import 'package:multichoice/domain/export_domain.dart';
+import 'package:multichoice/models/database/export_database.dart';
 
 abstract class DatabaseService {
   DatabaseService._internal();
