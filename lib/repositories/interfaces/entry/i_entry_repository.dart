@@ -1,4 +1,4 @@
-import 'package:multichoice/domain/entry/models/entry.dart';
+import 'package:multichoice/models/dto/entry/entry_dto.dart';
 
 abstract class IEntryRepository {
   Future<int> addEntry(
@@ -7,11 +7,11 @@ abstract class IEntryRepository {
     String subtitle,
   );
 
-  Future<List<Entry>?> readEntries(
+  Future<List<EntryDTO>?> readEntries(
     int tabId,
   );
 
-  Future<List<Entry>?> readAllEntries();
+  Future<List<EntryDTO>?> readAllEntries();
 
   Future<bool> deleteEntry(
     int tabId,
