@@ -78,7 +78,6 @@ devtools_options.yaml
 .pub/
 /build/
 
-
 # Symbolication related
 app.*.symbols
 
