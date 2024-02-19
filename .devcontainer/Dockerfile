@@ -76,7 +76,7 @@ RUN apt-get update && \
 # COPY --from=android_stage $ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
 # COPY --from=android_stage $JAVA_HOME $JAVA_HOME
 
-RUN git clone -b 3.16.9 https://github.com/flutter/flutter.git /usr/local/flutter && \
+RUN git clone -b 3.19.0 https://github.com/flutter/flutter.git /usr/local/flutter && \
     flutter channel stable && \
     chown -R developer:developer /usr/local/flutter && \
     apt-get update && \
