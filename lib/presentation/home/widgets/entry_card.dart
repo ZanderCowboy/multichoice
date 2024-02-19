@@ -11,8 +11,8 @@ class EntryCard extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final String? tabId;
-  final String? entryId;
+  final int? tabId;
+  final int? entryId;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,6 @@ class EntryCard extends StatelessWidget {
       ),
       color: Colors.blueGrey,
       child: SizedBox(
-        // height: 60,
         width: 200,
         child: Padding(
           padding: allPadding4,
@@ -35,16 +34,16 @@ class EntryCard extends StatelessWidget {
                   children: [
                     Text(title),
                     Text(subtitle),
-                    Text(tabId ?? ''),
+                    Text('t-id: $tabId'),
                     gap4,
-                    Text(entryId ?? ''),
+                    Text('e-id: $entryId'),
                   ],
                 ),
               ),
-              const Placeholder(
-                fallbackHeight: 40,
-                fallbackWidth: 40,
-              ),
+              // const Placeholder(
+              //   fallbackHeight: 40,
+              //   fallbackWidth: 40,
+              // ),
             ],
           ),
         ),

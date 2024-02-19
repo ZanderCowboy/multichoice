@@ -9,11 +9,11 @@ class EmptyTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final tabCount = state.tabs.length;
+        final tabCount = state.tabs?.length ?? 0;
 
         return GestureDetector(
           onTap: () {
-            CustomDialog.show(
+            CustomDialog<Widget>.show(
               context: context,
               title: const Text('Add New Tab'),
               content: const Text('TODO: Add FormFields to enter data.'),

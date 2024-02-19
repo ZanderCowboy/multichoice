@@ -1,0 +1,4 @@
+*.vcproj    eol=crlf
+*.sh		eol=lf
+*.dart      eol=crlf
+**.*.dart   eol=crlf

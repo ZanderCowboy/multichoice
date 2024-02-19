@@ -6,23 +6,23 @@ class EmptyEntry extends StatelessWidget {
     super.key,
   });
 
-  final String tabId;
+  final int tabId;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EntryBloc, EntryState>(
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final entryCount = state.entryCards?.length;
 
         return GestureDetector(
           onTap: () {
-            CustomDialog.show(
+            CustomDialog<Widget>.show(
               context: context,
               title: const Text('Add New Entry'),
               content: const SizedBox(
                 height: 20,
                 child: Text(
-                  "TODO: Add FormFields to add data",
+                  'TODO: Add FormFields to add data',
                 ),
               ),
               actions: <Widget>[
@@ -32,8 +32,8 @@ class EmptyEntry extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<EntryBloc>().add(
-                          EntryEvent.onPressedAddEntry(
+                    context.read<HomeBloc>().add(
+                          HomeEvent.onPressedAddEntry(
                             tabId,
                             'e-title $entryCount',
                             'e-s.title $entryCount',

@@ -1,0 +1,24 @@
+name: 📦🚀 Deploy Windows app for an environment
+
+on:
+  workflow_call:
+    inputs:
+      deploy_flag:
+        required: true
+        type: boolean
+      environment-flag:
+        required: true
+        type: string
+  workflow_dispatch:
+
+jobs:
+  deployWindows:
+    name: Deploy Windows Build
+    if: ${{ inputs.deploy_flag == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
