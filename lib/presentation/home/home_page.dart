@@ -7,6 +7,9 @@ import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:multichoice/utils/extensions/theme_getter.dart';
+import 'package:multichoice/utils/theme_extension/app_theme.dart';
+// import 'package:shared_preferences/shared_preferences.dart' as prefs;
 
 part 'widgets/vertical_tab.dart';
 part 'widgets/entry_card.dart';
@@ -14,7 +17,12 @@ part 'widgets/empty_tab.dart';
 part 'widgets/empty_entry.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({
+    // this.preferences,
+    super.key,
+  });
+
+  // final prefs.SharedPreferences? preferences;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +32,32 @@ class HomePage extends StatelessWidget {
         ..add(const HomeEvent.onGetAllEntryCards()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
+          // final themeMode = context.read<AppTheme>().themeMode;
+          // final Object? theme = preferences?.getString('theme');
+
           return Scaffold(
             appBar: AppBar(
               title: const Text('Multichoice'),
               centerTitle: true,
-              backgroundColor: Colors.lightBlue,
+              // backgroundColor: Colors.lightBlue,
               actions: [
+                // prefs.getBool('')
+                // if (theme == ThemeMode.light.toString())
+                //   IconButton(
+                //     onPressed: () async {
+                //       _darkMode(context);
+                //       await preferences?.setString('theme', 'dart');
+                //     },
+                //     icon: const Icon(Icons.dark_mode_outlined),
+                //   )
+                // else
+                //   IconButton(
+                //     onPressed: () {
+                //       _lightMode(context);
+                //       preferences?.setString('theme', 'light');
+                //     },
+                //     icon: const Icon(Icons.light_mode_outlined),
+                //   ),
                 IconButton(
                   onPressed: () {
                     context
@@ -48,6 +76,14 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  // void _lightMode(BuildContext context) {
+  //   context.read<AppTheme>().themeMode = ThemeMode.light;
+  // }
+
+  // void _darkMode(BuildContext context) {
+  //   context.read<AppTheme>().themeMode = ThemeMode.dark;
+  // }
 }
 
 class _HomePage extends StatelessWidget {
