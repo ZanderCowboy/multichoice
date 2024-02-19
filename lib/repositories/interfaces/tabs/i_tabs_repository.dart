@@ -5,5 +5,7 @@ abstract class ITabsRepository {
 
   Future<List<TabsDTO>> readTabs();
 
+  List<TabsDTO> updateTabs(int oldIndex, int newIndex);
+
   Future<bool> deleteTab(int tabId);
 }
