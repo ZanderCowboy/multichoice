@@ -63,7 +63,12 @@ int _entryEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.subtitle.length * 3;
+  {
+    final value = object.subtitle;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.title.length * 3;
   bytesCount += 3 + object.uuid.length * 3;
   return bytesCount;
@@ -89,7 +94,7 @@ Entry _entryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Entry(
-    subtitle: reader.readString(offsets[0]),
+    subtitle: reader.readStringOrNull(offsets[0]),
     tabId: reader.readLong(offsets[1]),
     timestamp: reader.readDateTimeOrNull(offsets[2]),
     title: reader.readString(offsets[3]),
@@ -106,7 +111,7 @@ P _entryDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
@@ -258,8 +263,24 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'subtitle',
+      ));
+    });
+  }
+
+  QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'subtitle',
+      ));
+    });
+  }
+
   QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -272,7 +293,7 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -287,7 +308,7 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -302,8 +323,8 @@ extension EntryQueryFilter on QueryBuilder<Entry, Entry, QFilterCondition> {
   }
 
   QueryBuilder<Entry, Entry, QAfterFilterCondition> subtitleBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -948,7 +969,7 @@ extension EntryQueryProperty on QueryBuilder<Entry, Entry, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Entry, String, QQueryOperations> subtitleProperty() {
+  QueryBuilder<Entry, String?, QQueryOperations> subtitleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'subtitle');
     });
@@ -987,7 +1008,7 @@ _$EntryImpl _$$EntryImplFromJson(Map<String, dynamic> json) => _$EntryImpl(
       uuid: json['uuid'] as String,
       tabId: json['tabId'] as int,
       title: json['title'] as String,
-      subtitle: json['subtitle'] as String,
+      subtitle: json['subtitle'] as String?,
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
