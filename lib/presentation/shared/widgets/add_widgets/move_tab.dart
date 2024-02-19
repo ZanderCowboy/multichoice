@@ -2,9 +2,9 @@ part of '_base.dart';
 
 class MoveTab extends StatelessWidget {
   const MoveTab({
+    required this.child,
     this.semanticLabel,
     this.width,
-    required this.child,
     super.key,
   });
 

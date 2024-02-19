@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/application/export_application.dart';
@@ -107,7 +106,7 @@ class _HomePage extends HookWidget {
                               child: Center(child: Text(tab.title)),
                             ),
                           ),
-                          //! TODO(@ZanderCowboy): Look into why the size gets smaller
+                          // TODO(ZanderCowboy): Look into why the size gets smaller
                           childWhenDragging: SizedBox(
                             height: screenHeight / 1.375,
                             width: screenWidth / 4,
