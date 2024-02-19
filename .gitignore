@@ -18,6 +18,8 @@ upload-keystore.*
 
 # dotenv environment variables file
 .env*
+**/tmp.*
+
 
 # Keys and Secrets
 password.txt
