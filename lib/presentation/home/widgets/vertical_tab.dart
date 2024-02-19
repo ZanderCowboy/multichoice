@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class VerticalTab extends StatelessWidget {
+class VerticalTab extends HookWidget {
   const VerticalTab({
     required this.tabId,
     required this.tabTitle,
@@ -12,6 +12,9 @@ class VerticalTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isHovered = useState<bool>(false);
+    final isInMenu = useState<bool>(false);
+
     return BlocProvider(
       create: (context) =>
           coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
@@ -59,32 +62,55 @@ class VerticalTab extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: circularBorder12,
           ),
-          child: Padding(
-            padding: allPadding6,
-            child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          tabTitle,
-                          style: const TextStyle(color: Colors.black),
+          child: MouseRegion(
+            onEnter: (_) => isHovered.value = true,
+            onExit: (_) {
+              if (!isInMenu.value) {
+                isHovered.value = false;
+              }
+            },
+            child: Padding(
+              padding: allPadding6,
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width / 4,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 6,
+                      ),
+                      child: SizedBox(
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                tabTitle,
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            if (Platform.isAndroid || Platform.isIOS)
+                              MenuWidget(
+                                tabId: tabId,
+                              )
+                            else
+                              const SizedBox.shrink(),
+                            if (isHovered.value)
+                              MenuWidget(
+                                tabId: tabId,
+                                onOpen: () => isInMenu.value = true,
+                                onClose: () => isInMenu.value = false,
+                              )
+                            else
+                              const SizedBox.shrink(),
+                          ],
                         ),
                       ),
-                      const IconButton(
-                        onPressed: null,
-                        icon: Icon(
-                          Icons.minor_crash_rounded,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  gap10,
-                  Cards(tabId: tabId),
-                ],
+                    ),
+                    gap10,
+                    Cards(tabId: tabId),
+                  ],
+                ),
               ),
             ),
           ),
