@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:multichoice/domain/export_domain.dart';
-import 'package:multichoice/repositories/interfaces/i_entry_repository.dart';
-import 'package:multichoice/repositories/interfaces/i_tabs_repository.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:multichoice/repositories/interfaces/entry/i_entry_repository.dart';
+import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
 
 part 'home_bloc.freezed.dart';
 part 'home_event.dart';
@@ -49,7 +49,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(
             state.copyWith(
               tab: await _tabsRepository.getTab(value.tabId),
-              entry: Entry.empty().copyWith(tabId: value.tabId),
+              entry: EntryDTO.empty().copyWith(tabId: value.tabId),
               entryCards: entryCards,
               isLoading: false,
             ),
@@ -199,8 +199,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         onPressedCancel: (_) {
           emit(
             state.copyWith(
-              tab: Tabs.empty(),
-              entry: Entry.empty(),
+              tab: TabsDTO.empty(),
+              entry: EntryDTO.empty(),
               errorMessage: null,
             ),
           );
