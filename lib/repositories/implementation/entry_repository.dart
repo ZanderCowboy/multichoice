@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/models/database/entry/entry.dart';
-import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:multichoice/models/dto/entry/entry_dto.dart';
 import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
 import 'package:multichoice/repositories/interfaces/i_entry_repository.dart';
 import 'package:uuid/uuid.dart';
