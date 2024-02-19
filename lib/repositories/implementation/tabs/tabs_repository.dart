@@ -5,7 +5,7 @@ import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/models/database/export_database.dart';
 import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
 import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.dart';
-import 'package:multichoice/repositories/interfaces/i_tabs_repository.dart';
+import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)
