@@ -70,7 +70,7 @@ class VerticalTab extends StatelessWidget {
                       Expanded(
                         child: Text(
                           tabTitle,
-                          style: const TextStyle(color: Colors.black),
+                          style: context.theme.appTextTheme.body1,
                         ),
                       ),
                       const IconButton(
