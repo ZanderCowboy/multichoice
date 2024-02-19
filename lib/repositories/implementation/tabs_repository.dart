@@ -42,13 +42,9 @@ class TabsRepository implements ITabsRepository {
     try {
       final result = await db.tabs.where().sortByTimestamp().findAll();
 
-      final tabsDTO = <TabsDTO>[];
       final converter = TabsMapper();
-
-      for (final tab in result) {
-        final dto = converter.convert<Tabs, TabsDTO>(tab);
-        tabsDTO.add(dto);
-      }
+      final tabsDTO =
+          result.map((tab) => converter.convert<Tabs, TabsDTO>(tab)).toList();
 
       return tabsDTO;
     } catch (e) {

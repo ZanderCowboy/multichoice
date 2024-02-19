@@ -22,8 +22,8 @@ TabsDTO _$TabsDTOFromJson(Map<String, dynamic> json) {
 mixin _$TabsDTO {
   int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  String? get subtitle => throw _privateConstructorUsedError;
-  DateTime? get timestamp => throw _privateConstructorUsedError;
+  String get subtitle => throw _privateConstructorUsedError;
+  DateTime get timestamp => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +35,7 @@ abstract class $TabsDTOCopyWith<$Res> {
   factory $TabsDTOCopyWith(TabsDTO value, $Res Function(TabsDTO) then) =
       _$TabsDTOCopyWithImpl<$Res, TabsDTO>;
   @useResult
-  $Res call({int id, String title, String? subtitle, DateTime? timestamp});
+  $Res call({int id, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
@@ -53,8 +53,8 @@ class _$TabsDTOCopyWithImpl<$Res, $Val extends TabsDTO>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? subtitle = freezed,
-    Object? timestamp = freezed,
+    Object? subtitle = null,
+    Object? timestamp = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -65,14 +65,14 @@ class _$TabsDTOCopyWithImpl<$Res, $Val extends TabsDTO>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      subtitle: freezed == subtitle
+      subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
-              as String?,
-      timestamp: freezed == timestamp
+              as String,
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ) as $Val);
   }
 }
@@ -84,7 +84,7 @@ abstract class _$$TabsDTOImplCopyWith<$Res> implements $TabsDTOCopyWith<$Res> {
       __$$TabsDTOImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String title, String? subtitle, DateTime? timestamp});
+  $Res call({int id, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
@@ -100,8 +100,8 @@ class __$$TabsDTOImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? subtitle = freezed,
-    Object? timestamp = freezed,
+    Object? subtitle = null,
+    Object? timestamp = null,
   }) {
     return _then(_$TabsDTOImpl(
       id: null == id
@@ -112,14 +112,14 @@ class __$$TabsDTOImplCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      subtitle: freezed == subtitle
+      subtitle: null == subtitle
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
-              as String?,
-      timestamp: freezed == timestamp
+              as String,
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ));
   }
 }
@@ -141,9 +141,9 @@ class _$TabsDTOImpl implements _TabsDTO {
   @override
   final String title;
   @override
-  final String? subtitle;
+  final String subtitle;
   @override
-  final DateTime? timestamp;
+  final DateTime timestamp;
 
   @override
   String toString() {
@@ -185,8 +185,8 @@ abstract class _TabsDTO implements TabsDTO {
   factory _TabsDTO(
       {required final int id,
       required final String title,
-      required final String? subtitle,
-      required final DateTime? timestamp}) = _$TabsDTOImpl;
+      required final String subtitle,
+      required final DateTime timestamp}) = _$TabsDTOImpl;
 
   factory _TabsDTO.fromJson(Map<String, dynamic> json) = _$TabsDTOImpl.fromJson;
 
@@ -195,9 +195,9 @@ abstract class _TabsDTO implements TabsDTO {
   @override
   String get title;
   @override
-  String? get subtitle;
+  String get subtitle;
   @override
-  DateTime? get timestamp;
+  DateTime get timestamp;
   @override
   @JsonKey(ignore: true)
   _$$TabsDTOImplCopyWith<_$TabsDTOImpl> get copyWith =>

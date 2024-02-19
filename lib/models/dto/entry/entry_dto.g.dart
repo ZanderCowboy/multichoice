@@ -12,9 +12,7 @@ _$EntryDTOImpl _$$EntryDTOImplFromJson(Map<String, dynamic> json) =>
       tabId: json['tabId'] as int,
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$$EntryDTOImplToJson(_$EntryDTOImpl instance) =>
@@ -23,5 +21,5 @@ Map<String, dynamic> _$$EntryDTOImplToJson(_$EntryDTOImpl instance) =>
       'tabId': instance.tabId,
       'title': instance.title,
       'subtitle': instance.subtitle,
-      'timestamp': instance.timestamp?.toIso8601String(),
+      'timestamp': instance.timestamp.toIso8601String(),
     };

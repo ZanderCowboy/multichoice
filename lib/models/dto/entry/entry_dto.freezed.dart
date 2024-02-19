@@ -24,7 +24,7 @@ mixin _$EntryDTO {
   int get tabId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
-  DateTime? get timestamp => throw _privateConstructorUsedError;
+  DateTime get timestamp => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +38,7 @@ abstract class $EntryDTOCopyWith<$Res> {
       _$EntryDTOCopyWithImpl<$Res, EntryDTO>;
   @useResult
   $Res call(
-      {int id, int tabId, String title, String subtitle, DateTime? timestamp});
+      {int id, int tabId, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
@@ -58,7 +58,7 @@ class _$EntryDTOCopyWithImpl<$Res, $Val extends EntryDTO>
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
-    Object? timestamp = freezed,
+    Object? timestamp = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -77,10 +77,10 @@ class _$EntryDTOCopyWithImpl<$Res, $Val extends EntryDTO>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
-      timestamp: freezed == timestamp
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ) as $Val);
   }
 }
@@ -94,7 +94,7 @@ abstract class _$$EntryDTOImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id, int tabId, String title, String subtitle, DateTime? timestamp});
+      {int id, int tabId, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
@@ -112,7 +112,7 @@ class __$$EntryDTOImplCopyWithImpl<$Res>
     Object? tabId = null,
     Object? title = null,
     Object? subtitle = null,
-    Object? timestamp = freezed,
+    Object? timestamp = null,
   }) {
     return _then(_$EntryDTOImpl(
       id: null == id
@@ -131,10 +131,10 @@ class __$$EntryDTOImplCopyWithImpl<$Res>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
-      timestamp: freezed == timestamp
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ));
   }
 }
@@ -161,7 +161,7 @@ class _$EntryDTOImpl implements _EntryDTO {
   @override
   final String subtitle;
   @override
-  final DateTime? timestamp;
+  final DateTime timestamp;
 
   @override
   String toString() {
@@ -207,7 +207,7 @@ abstract class _EntryDTO implements EntryDTO {
       required final int tabId,
       required final String title,
       required final String subtitle,
-      required final DateTime? timestamp}) = _$EntryDTOImpl;
+      required final DateTime timestamp}) = _$EntryDTOImpl;
 
   factory _EntryDTO.fromJson(Map<String, dynamic> json) =
       _$EntryDTOImpl.fromJson;
@@ -221,7 +221,7 @@ abstract class _EntryDTO implements EntryDTO {
   @override
   String get subtitle;
   @override
-  DateTime? get timestamp;
+  DateTime get timestamp;
   @override
   @JsonKey(ignore: true)
   _$$EntryDTOImplCopyWith<_$EntryDTOImpl> get copyWith =>

@@ -45,13 +45,10 @@ class EntryRepository implements IEntryRepository {
       final result =
           entries.where((element) => element.tabId == tabId).toList();
 
-      final entriesDTO = <EntryDTO>[];
       final converter = EntryMapper();
-
-      for (final entry in result) {
-        final dto = converter.convert<Entry, EntryDTO>(entry);
-        entriesDTO.add(dto);
-      }
+      final entriesDTO = result
+          .map((entry) => converter.convert<Entry, EntryDTO>(entry))
+          .toList();
 
       return entriesDTO;
     } catch (e) {
@@ -65,12 +62,10 @@ class EntryRepository implements IEntryRepository {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
 
-      final entriesDTO = <EntryDTO>[];
       final converter = EntryMapper();
-      for (final entry in entries) {
-        final dto = converter.convert<Entry, EntryDTO>(entry);
-        entriesDTO.add(dto);
-      }
+      final entriesDTO = entries
+          .map((entry) => converter.convert<Entry, EntryDTO>(entry))
+          .toList();
 
       return entriesDTO;
     } catch (e) {
