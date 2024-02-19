@@ -12,9 +12,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>
     required this.secondary,
   });
   @override
-  final Color background;
+  final Color? background;
   @override
-  final Color primary;
+  final Color? primary;
   @override
-  final Color secondary;
+  final Color? secondary;
 }
