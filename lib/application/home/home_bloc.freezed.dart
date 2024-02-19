@@ -1467,10 +1467,10 @@ abstract class OnPressedDeleteAll implements HomeEvent {
 
 /// @nodoc
 mixin _$HomeState {
-  Tabs get tab => throw _privateConstructorUsedError;
-  List<Tabs>? get tabs => throw _privateConstructorUsedError;
-  Entry get entry => throw _privateConstructorUsedError;
-  List<Entry>? get entryCards => throw _privateConstructorUsedError;
+  TabsDTO get tab => throw _privateConstructorUsedError;
+  List<TabsDTO>? get tabs => throw _privateConstructorUsedError;
+  EntryDTO get entry => throw _privateConstructorUsedError;
+  List<EntryDTO>? get entryCards => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isDeleted => throw _privateConstructorUsedError;
   bool get isAdded => throw _privateConstructorUsedError;
@@ -1487,17 +1487,17 @@ abstract class $HomeStateCopyWith<$Res> {
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
   $Res call(
-      {Tabs tab,
-      List<Tabs>? tabs,
-      Entry entry,
-      List<Entry>? entryCards,
+      {TabsDTO tab,
+      List<TabsDTO>? tabs,
+      EntryDTO entry,
+      List<EntryDTO>? entryCards,
       bool isLoading,
       bool isDeleted,
       bool isAdded,
       String? errorMessage});
 
-  $TabsCopyWith<$Res> get tab;
-  $EntryCopyWith<$Res> get entry;
+  $TabsDTOCopyWith<$Res> get tab;
+  $EntryDTOCopyWith<$Res> get entry;
 }
 
 /// @nodoc
@@ -1526,19 +1526,19 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
       tab: null == tab
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
-              as Tabs,
+              as TabsDTO,
       tabs: freezed == tabs
           ? _value.tabs
           : tabs // ignore: cast_nullable_to_non_nullable
-              as List<Tabs>?,
+              as List<TabsDTO>?,
       entry: null == entry
           ? _value.entry
           : entry // ignore: cast_nullable_to_non_nullable
-              as Entry,
+              as EntryDTO,
       entryCards: freezed == entryCards
           ? _value.entryCards
           : entryCards // ignore: cast_nullable_to_non_nullable
-              as List<Entry>?,
+              as List<EntryDTO>?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -1560,16 +1560,16 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
 
   @override
   @pragma('vm:prefer-inline')
-  $TabsCopyWith<$Res> get tab {
-    return $TabsCopyWith<$Res>(_value.tab, (value) {
+  $TabsDTOCopyWith<$Res> get tab {
+    return $TabsDTOCopyWith<$Res>(_value.tab, (value) {
       return _then(_value.copyWith(tab: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $EntryCopyWith<$Res> get entry {
-    return $EntryCopyWith<$Res>(_value.entry, (value) {
+  $EntryDTOCopyWith<$Res> get entry {
+    return $EntryDTOCopyWith<$Res>(_value.entry, (value) {
       return _then(_value.copyWith(entry: value) as $Val);
     });
   }
@@ -1584,19 +1584,19 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {Tabs tab,
-      List<Tabs>? tabs,
-      Entry entry,
-      List<Entry>? entryCards,
+      {TabsDTO tab,
+      List<TabsDTO>? tabs,
+      EntryDTO entry,
+      List<EntryDTO>? entryCards,
       bool isLoading,
       bool isDeleted,
       bool isAdded,
       String? errorMessage});
 
   @override
-  $TabsCopyWith<$Res> get tab;
+  $TabsDTOCopyWith<$Res> get tab;
   @override
-  $EntryCopyWith<$Res> get entry;
+  $EntryDTOCopyWith<$Res> get entry;
 }
 
 /// @nodoc
@@ -1623,19 +1623,19 @@ class __$$HomeStateImplCopyWithImpl<$Res>
       tab: null == tab
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
-              as Tabs,
+              as TabsDTO,
       tabs: freezed == tabs
           ? _value._tabs
           : tabs // ignore: cast_nullable_to_non_nullable
-              as List<Tabs>?,
+              as List<TabsDTO>?,
       entry: null == entry
           ? _value.entry
           : entry // ignore: cast_nullable_to_non_nullable
-              as Entry,
+              as EntryDTO,
       entryCards: freezed == entryCards
           ? _value._entryCards
           : entryCards // ignore: cast_nullable_to_non_nullable
-              as List<Entry>?,
+              as List<EntryDTO>?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -1661,9 +1661,9 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl(
       {required this.tab,
-      required final List<Tabs>? tabs,
+      required final List<TabsDTO>? tabs,
       required this.entry,
-      required final List<Entry>? entryCards,
+      required final List<EntryDTO>? entryCards,
       required this.isLoading,
       required this.isDeleted,
       required this.isAdded,
@@ -1672,10 +1672,10 @@ class _$HomeStateImpl implements _HomeState {
         _entryCards = entryCards;
 
   @override
-  final Tabs tab;
-  final List<Tabs>? _tabs;
+  final TabsDTO tab;
+  final List<TabsDTO>? _tabs;
   @override
-  List<Tabs>? get tabs {
+  List<TabsDTO>? get tabs {
     final value = _tabs;
     if (value == null) return null;
     if (_tabs is EqualUnmodifiableListView) return _tabs;
@@ -1684,10 +1684,10 @@ class _$HomeStateImpl implements _HomeState {
   }
 
   @override
-  final Entry entry;
-  final List<Entry>? _entryCards;
+  final EntryDTO entry;
+  final List<EntryDTO>? _entryCards;
   @override
-  List<Entry>? get entryCards {
+  List<EntryDTO>? get entryCards {
     final value = _entryCards;
     if (value == null) return null;
     if (_entryCards is EqualUnmodifiableListView) return _entryCards;
@@ -1749,23 +1749,23 @@ class _$HomeStateImpl implements _HomeState {
 
 abstract class _HomeState implements HomeState {
   const factory _HomeState(
-      {required final Tabs tab,
-      required final List<Tabs>? tabs,
-      required final Entry entry,
-      required final List<Entry>? entryCards,
+      {required final TabsDTO tab,
+      required final List<TabsDTO>? tabs,
+      required final EntryDTO entry,
+      required final List<EntryDTO>? entryCards,
       required final bool isLoading,
       required final bool isDeleted,
       required final bool isAdded,
       required final String? errorMessage}) = _$HomeStateImpl;
 
   @override
-  Tabs get tab;
+  TabsDTO get tab;
   @override
-  List<Tabs>? get tabs;
+  List<TabsDTO>? get tabs;
   @override
-  Entry get entry;
+  EntryDTO get entry;
   @override
-  List<Entry>? get entryCards;
+  List<EntryDTO>? get entryCards;
   @override
   bool get isLoading;
   @override
