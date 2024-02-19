@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/domain/entry/models/entry.dart';
+import 'package:multichoice/models/database/entry/entry.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
 import 'package:multichoice/repositories/interfaces/i_entry_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,29 +38,39 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
-  Future<List<Entry>> readEntries(int tabId) async {
+  Future<List<EntryDTO>> readEntries(int tabId) async {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
 
       final result =
           entries.where((element) => element.tabId == tabId).toList();
 
-      return result;
+      final converter = EntryMapper();
+      final entriesDTO = result
+          .map((entry) => converter.convert<Entry, EntryDTO>(entry))
+          .toList();
+
+      return entriesDTO;
     } catch (e) {
       log(e.toString());
-      return <Entry>[];
+      return <EntryDTO>[];
     }
   }
 
   @override
-  Future<List<Entry>?> readAllEntries() async {
+  Future<List<EntryDTO>> readAllEntries() async {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
 
-      return entries;
+      final converter = EntryMapper();
+      final entriesDTO = entries
+          .map((entry) => converter.convert<Entry, EntryDTO>(entry))
+          .toList();
+
+      return entriesDTO;
     } catch (e) {
       log(e.toString());
-      return <Entry>[];
+      return <EntryDTO>[];
     }
   }
 

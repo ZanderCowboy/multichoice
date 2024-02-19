@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'tabs.dart';
+part of 'tabs_dto.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,34 +14,34 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Tabs _$TabsFromJson(Map<String, dynamic> json) {
-  return _Tabs.fromJson(json);
+TabsDTO _$TabsDTOFromJson(Map<String, dynamic> json) {
+  return _TabsDTO.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Tabs {
-  String get uuid => throw _privateConstructorUsedError;
+mixin _$TabsDTO {
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get subtitle => throw _privateConstructorUsedError;
-  DateTime? get timestamp => throw _privateConstructorUsedError;
+  DateTime get timestamp => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $TabsCopyWith<Tabs> get copyWith => throw _privateConstructorUsedError;
+  $TabsDTOCopyWith<TabsDTO> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $TabsCopyWith<$Res> {
-  factory $TabsCopyWith(Tabs value, $Res Function(Tabs) then) =
-      _$TabsCopyWithImpl<$Res, Tabs>;
+abstract class $TabsDTOCopyWith<$Res> {
+  factory $TabsDTOCopyWith(TabsDTO value, $Res Function(TabsDTO) then) =
+      _$TabsDTOCopyWithImpl<$Res, TabsDTO>;
   @useResult
-  $Res call({String uuid, String title, String subtitle, DateTime? timestamp});
+  $Res call({int id, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
-class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
-    implements $TabsCopyWith<$Res> {
-  _$TabsCopyWithImpl(this._value, this._then);
+class _$TabsDTOCopyWithImpl<$Res, $Val extends TabsDTO>
+    implements $TabsDTOCopyWith<$Res> {
+  _$TabsDTOCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -51,16 +51,16 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? uuid = null,
+    Object? id = null,
     Object? title = null,
     Object? subtitle = null,
-    Object? timestamp = freezed,
+    Object? timestamp = null,
   }) {
     return _then(_value.copyWith(
-      uuid: null == uuid
-          ? _value.uuid
-          : uuid // ignore: cast_nullable_to_non_nullable
-              as String,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -69,44 +69,45 @@ class _$TabsCopyWithImpl<$Res, $Val extends Tabs>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
-      timestamp: freezed == timestamp
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$TabsImplCopyWith<$Res> implements $TabsCopyWith<$Res> {
-  factory _$$TabsImplCopyWith(
-          _$TabsImpl value, $Res Function(_$TabsImpl) then) =
-      __$$TabsImplCopyWithImpl<$Res>;
+abstract class _$$TabsDTOImplCopyWith<$Res> implements $TabsDTOCopyWith<$Res> {
+  factory _$$TabsDTOImplCopyWith(
+          _$TabsDTOImpl value, $Res Function(_$TabsDTOImpl) then) =
+      __$$TabsDTOImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uuid, String title, String subtitle, DateTime? timestamp});
+  $Res call({int id, String title, String subtitle, DateTime timestamp});
 }
 
 /// @nodoc
-class __$$TabsImplCopyWithImpl<$Res>
-    extends _$TabsCopyWithImpl<$Res, _$TabsImpl>
-    implements _$$TabsImplCopyWith<$Res> {
-  __$$TabsImplCopyWithImpl(_$TabsImpl _value, $Res Function(_$TabsImpl) _then)
+class __$$TabsDTOImplCopyWithImpl<$Res>
+    extends _$TabsDTOCopyWithImpl<$Res, _$TabsDTOImpl>
+    implements _$$TabsDTOImplCopyWith<$Res> {
+  __$$TabsDTOImplCopyWithImpl(
+      _$TabsDTOImpl _value, $Res Function(_$TabsDTOImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? uuid = null,
+    Object? id = null,
     Object? title = null,
     Object? subtitle = null,
-    Object? timestamp = freezed,
+    Object? timestamp = null,
   }) {
-    return _then(_$TabsImpl(
-      uuid: null == uuid
-          ? _value.uuid
-          : uuid // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_$TabsDTOImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -115,47 +116,46 @@ class __$$TabsImplCopyWithImpl<$Res>
           ? _value.subtitle
           : subtitle // ignore: cast_nullable_to_non_nullable
               as String,
-      timestamp: freezed == timestamp
+      timestamp: null == timestamp
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$TabsImpl extends _Tabs {
-  const _$TabsImpl(
-      {required this.uuid,
+class _$TabsDTOImpl implements _TabsDTO {
+  _$TabsDTOImpl(
+      {required this.id,
       required this.title,
       required this.subtitle,
-      required this.timestamp})
-      : super._();
+      required this.timestamp});
 
-  factory _$TabsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TabsImplFromJson(json);
+  factory _$TabsDTOImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TabsDTOImplFromJson(json);
 
   @override
-  final String uuid;
+  final int id;
   @override
   final String title;
   @override
   final String subtitle;
   @override
-  final DateTime? timestamp;
+  final DateTime timestamp;
 
   @override
   String toString() {
-    return 'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
+    return 'TabsDTO(id: $id, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TabsImpl &&
-            (identical(other.uuid, uuid) || other.uuid == uuid) &&
+            other is _$TabsDTOImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle) &&
@@ -165,43 +165,41 @@ class _$TabsImpl extends _Tabs {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, uuid, title, subtitle, timestamp);
+  int get hashCode => Object.hash(runtimeType, id, title, subtitle, timestamp);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TabsImplCopyWith<_$TabsImpl> get copyWith =>
-      __$$TabsImplCopyWithImpl<_$TabsImpl>(this, _$identity);
+  _$$TabsDTOImplCopyWith<_$TabsDTOImpl> get copyWith =>
+      __$$TabsDTOImplCopyWithImpl<_$TabsDTOImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TabsImplToJson(
+    return _$$TabsDTOImplToJson(
       this,
     );
   }
 }
 
-abstract class _Tabs extends Tabs {
-  const factory _Tabs(
-      {required final String uuid,
+abstract class _TabsDTO implements TabsDTO {
+  factory _TabsDTO(
+      {required final int id,
       required final String title,
       required final String subtitle,
-      required final DateTime? timestamp}) = _$TabsImpl;
-  const _Tabs._() : super._();
+      required final DateTime timestamp}) = _$TabsDTOImpl;
 
-  factory _Tabs.fromJson(Map<String, dynamic> json) = _$TabsImpl.fromJson;
+  factory _TabsDTO.fromJson(Map<String, dynamic> json) = _$TabsDTOImpl.fromJson;
 
   @override
-  String get uuid;
+  int get id;
   @override
   String get title;
   @override
   String get subtitle;
   @override
-  DateTime? get timestamp;
+  DateTime get timestamp;
   @override
   @JsonKey(ignore: true)
-  _$$TabsImplCopyWith<_$TabsImpl> get copyWith =>
+  _$$TabsDTOImplCopyWith<_$TabsDTOImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
