@@ -3,6 +3,7 @@ import 'package:multichoice/constants/export_constants.dart';
 
 part 'entry.dart';
 part 'tab.dart';
+part 'move_tab.dart';
 
 class _BaseCard extends StatelessWidget {
   const _BaseCard({

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
@@ -50,7 +51,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomePage extends StatelessWidget {
+class _HomePage extends HookWidget {
   _HomePage();
 
   final ScrollController scrollController = ScrollController();
@@ -67,27 +68,64 @@ class _HomePage extends StatelessWidget {
         }
 
         final tabs = state.tabs ?? [];
+        final screenHeight = MediaQuery.sizeOf(context).height;
+        final screenWidth = MediaQuery.sizeOf(context).width;
 
         return Padding(
           padding: allPadding12,
           child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.375,
+            height: screenHeight / 1.375,
             child: CustomScrollView(
               scrollDirection: Axis.horizontal,
               controller: scrollController,
               scrollBehavior: CustomScrollBehaviour(),
               slivers: [
-                SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (context, index) {
-                    //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
-                    final tab = tabs[index];
+                SliverToBoxAdapter(
+                  child: ReorderableListView.builder(
+                    scrollController: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: tabs.length,
+                    onReorder: (oldIndex, newIndex) {
+                      context.read<HomeBloc>().add(
+                            HomeEvent.onReorderTabs(oldIndex, newIndex),
+                          );
+                    },
+                    itemBuilder: (context, index) {
+                      //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
+                      final tab = tabs[index];
 
-                    return VerticalTab(
-                      tabId: tab.id,
-                      tabTitle: tab.title,
-                    );
-                  },
+                      return ReorderableDragStartListener(
+                        index: index,
+                        key: ValueKey(tab.id),
+                        child: Draggable<Widget>(
+                          feedback: SizedBox(
+                            height: screenHeight / 1.625,
+                            width: screenWidth / 5,
+                            child: MoveTab(
+                              width: double.infinity,
+                              child: Center(child: Text(tab.title)),
+                            ),
+                          ),
+                          // TODO(ZanderCowboy): Look into why the size gets smaller
+                          childWhenDragging: SizedBox(
+                            height: screenHeight / 1.375,
+                            width: screenWidth / 4,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: MoveTab(
+                                width: double.infinity,
+                                child: Center(child: Text(tab.title)),
+                              ),
+                            ),
+                          ),
+                          child: VerticalTab(
+                            tabId: tab.id,
+                            tabTitle: tab.title,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 const SliverToBoxAdapter(
                   child: EmptyTab(),

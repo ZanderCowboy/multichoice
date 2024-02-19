@@ -62,7 +62,8 @@ class VerticalTab extends StatelessWidget {
           child: Padding(
             padding: allPadding6,
             child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
+              // TODO(ZanderCowboy): Create a constants file for App Constants
+              width: MediaQuery.sizeOf(context).width / 6,
               child: Column(
                 children: [
                   Row(

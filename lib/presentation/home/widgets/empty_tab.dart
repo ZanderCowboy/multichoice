@@ -39,8 +39,11 @@ class EmptyTab extends StatelessWidget {
               ],
             );
           },
-          child: AddTabCard(
-            width: MediaQuery.sizeOf(context).width / 4,
+          child: SizedBox(
+            height: MediaQuery.sizeOf(context).height / 1.375,
+            child: AddTabCard(
+              width: MediaQuery.sizeOf(context).width / 4,
+            ),
           ),
         );
       },
