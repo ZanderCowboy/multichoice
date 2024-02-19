@@ -1,4 +1,4 @@
-# [Feature Name](https://github.com/ZanderCowboy/multichoice/issues/26)
+# [Implement DTO and AutoMappr](https://github.com/ZanderCowboy/multichoice/issues/26)
 
 ## Ticket: [26](https://github.com/ZanderCowboy/multichoice/issues/26)
 
@@ -15,11 +15,6 @@ This ticket is primarily to set up `DTO's` and `AutoMapper's` for our codebase. 
 - [X] Added `TabsDTO` and `TabsMapper` for tabs
 - [X] Refactored codebase to rely on the DTOs and AutoMappers
 - [X] Moved database models to new `models` folder
-
-
-### What needs to be done
-
-- [ ] todo
 
 ### Resources
 
