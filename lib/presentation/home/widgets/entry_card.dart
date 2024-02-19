@@ -63,7 +63,7 @@ class EntryCard extends HookWidget {
                     },
                     onOpen: () => isInMenu.value = true,
                     onClose: () => isInMenu.value = false,
-                    //! TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
+                    // TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
                     menuChildren: [
                       ..._getEntryMenuItems(context).map((menuItem) {
                         return MenuItemButton(

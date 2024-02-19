@@ -36,7 +36,7 @@ class MenuWidget extends StatelessWidget {
       },
       onOpen: onOpen,
       onClose: onClose,
-      //! TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
+      // TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
       menuChildren: [
         ..._getTabsMenuItems(context).map((menuItem) {
           return MenuItemButton(
