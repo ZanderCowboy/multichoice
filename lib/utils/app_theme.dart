@@ -19,40 +19,56 @@ class AppTheme with ChangeNotifier {
     final defaultTheme = ThemeData.light();
 
     return defaultTheme.copyWith(
-      scaffoldBackgroundColor: AppPalette.grey.slateGray,
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: _lightAppColors.primary,
+          side: BorderSide(color: _lightAppColors.primary ?? Colors.white),
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: _lightAppColors.secondary,
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        ),
+      ),
+      dialogBackgroundColor: _lightAppColors.background,
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: borderCircular16),
+        alignment: Alignment.center,
+        titleTextStyle: AppTypography.titleMedium,
+        contentTextStyle: AppTypography.bodyMedium,
+        actionsPadding: allPadding12,
+      ),
+      scaffoldBackgroundColor: _lightAppColors.background,
       appBarTheme: AppBarTheme(
-        titleTextStyle: const TextStyle(
-          color: AppPalette.imperialRed,
+        titleTextStyle: AppTypography.titleMedium.copyWith(
+          color: AppPalette.grey.geyser,
         ),
         centerTitle: true,
-        color: AppPalette.grey.bigStone,
+        color: _lightAppColors.foreground,
       ),
       cardTheme: CardTheme(
-        elevation: 5,
+        margin: vertical12horizontal4,
+        elevation: 7,
         shadowColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: circularBorder12),
-        color: const Color.fromARGB(255, 101, 160, 189),
+        shape: RoundedRectangleBorder(borderRadius: borderCircular12),
       ),
       textTheme: defaultTheme.textTheme.copyWith(
-        titleMedium: AppTypography.titleMedium.copyWith(
-          color: AppPalette.grey.bigStone,
-        ),
-        bodyMedium: AppTypography.bodyMedium.copyWith(
-          color: AppPalette.bodyText.medium,
-        ),
+        titleMedium: _lightTextTheme.titleMedium,
+        bodyMedium: _lightTextTheme.bodyMedium,
       ),
-      iconButtonTheme: const IconButtonThemeData(
-        style: ButtonStyle(
-          padding: MaterialStatePropertyAll(
-            EdgeInsets.zero,
-          ),
-          side: MaterialStatePropertyAll(BorderSide.none),
-        ),
-      ),
-      iconTheme: IconThemeData(
-        size: 16,
-        color: AppPalette.grey.bigStone,
-      ),
+      // iconButtonTheme: IconButtonThemeData(
+      //   style: ButtonStyle(
+      //     // foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
+      //     padding: const MaterialStatePropertyAll(EdgeInsets.zero),
+      //     side: const MaterialStatePropertyAll(BorderSide.none),
+      //   ),
+      // ),
+      // iconTheme: IconThemeData(
+      //   size: 16,
+      //   // color: _lightAppColors.primary,
+      // ),
       extensions: [
         _lightAppColors,
         _lightTextTheme,
@@ -60,21 +76,21 @@ class AppTheme with ChangeNotifier {
     );
   }();
 
-  static AppColorsExtension get lightAppColors => _lightAppColors;
-
   static final _lightAppColors = AppColorsExtension(
-    primary: const Color(0xff6200ee),
-    secondary: const Color(0xff03dac6),
-    background: Colors.white,
+    primary: AppPalette.grey.geyser, //
+    primaryLight: AppPalette.grey.geyserLight, //
+    secondary: AppPalette.grey.sanJuan, //
+    secondaryLight: AppPalette.grey.sanJuanLight, //
+    ternary: null,
+    foreground: AppPalette.grey.bigStone, //
+    background: AppPalette.grey.slateGray, //
+    white: null,
+    black: null,
   );
-
-  static AppTextExtension get lightTextTheme => _lightTextTheme;
 
   static final _lightTextTheme = AppTextExtension(
     body1: AppTypography.body1.copyWith(color: _lightAppColors.background),
     body2: AppTypography.body2,
-    // body1: null,
-    // h1: AppTypography.h1.copyWith(color: Colors.black),
     h1: null,
     titleLarge: null,
     titleMedium: AppTypography.titleMedium.copyWith(
@@ -84,19 +100,109 @@ class AppTheme with ChangeNotifier {
     subtitleLarge: null,
     subtitleMedium: null,
     subtitleSmall: null,
+    bodyLarge: null,
+    bodyMedium: AppTypography.bodyMedium.copyWith(
+      color: AppPalette.grey.geyser,
+    ),
+    bodySmall: null,
   );
 
-  static final dark = ThemeData.dark().copyWith(
-    extensions: [
-      _darkAppColors,
-    ],
+  static final dark = () {
+    final defaultTheme = ThemeData.dark();
+
+    return defaultTheme.copyWith(
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: _darkAppColors.primary,
+          side: BorderSide(color: _darkAppColors.primary ?? Colors.white),
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: _darkAppColors.secondary,
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        ),
+      ),
+      dialogBackgroundColor: _darkAppColors.background,
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: borderCircular16),
+        alignment: Alignment.center,
+        titleTextStyle: AppTypography.titleMedium,
+        contentTextStyle: AppTypography.bodyMedium,
+        actionsPadding: allPadding12,
+      ),
+      scaffoldBackgroundColor: _darkAppColors.background,
+      appBarTheme: AppBarTheme(
+        titleTextStyle: AppTypography.titleMedium.copyWith(
+          color: AppPalette.paletteTwo.sanJuan,
+        ),
+        centerTitle: true,
+        color: _darkAppColors.foreground,
+      ),
+      cardTheme: CardTheme(
+        margin: vertical12horizontal4,
+        elevation: 7,
+        shadowColor: _darkAppColors.black,
+        shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+      ),
+      textTheme: defaultTheme.textTheme.copyWith(
+        titleMedium: _darkTextTheme.titleMedium,
+        bodyMedium: _darkTextTheme.bodyMedium,
+      ),
+      // iconButtonTheme: const IconButtonThemeData(
+      //   style: ButtonStyle(
+      //     // foregroundColor: MaterialStatePropertyAll(_darkAppColors.primary),
+      //     padding: MaterialStatePropertyAll(EdgeInsets.zero),
+      //     side: MaterialStatePropertyAll(BorderSide.none),
+      //   ),
+      // ),
+      // iconTheme: const IconThemeData(
+      //   size: 16,
+      // ),
+      extensions: [
+        _darkAppColors,
+        _darkTextTheme,
+      ],
+    );
+  }();
+
+  static final _darkAppColors = AppColorsExtension(
+    primary: AppPalette.paletteTwo.geyser,
+    primaryLight: AppPalette.paletteTwo.geyserLight,
+    secondary: AppPalette.paletteTwo.slateGray,
+    secondaryLight: AppPalette.paletteTwo.slateGrayLight,
+    ternary: null,
+    foreground: AppPalette.paletteTwo.bigStone,
+    background: AppPalette.paletteTwo.slateGray,
+    white: null,
+    black: AppPalette.black,
   );
+
+  static final _darkTextTheme = AppTextExtension(
+    body1: AppTypography.body1.copyWith(color: _darkAppColors.background),
+    body2: AppTypography.body2,
+    h1: null,
+    titleLarge: null,
+    titleMedium: AppTypography.titleMedium.copyWith(
+      color: AppPalette.paletteTwo.sanJuan,
+    ),
+    titleSmall: null,
+    subtitleLarge: null,
+    subtitleMedium: null,
+    subtitleSmall: null,
+    bodyLarge: null,
+    bodyMedium: AppTypography.bodyMedium.copyWith(
+      color: AppPalette.paletteTwo.sanJuan,
+    ),
+    bodySmall: null,
+  );
+
+  static AppColorsExtension get lightAppColors => _lightAppColors;
+
+  static AppTextExtension get lightTextTheme => _lightTextTheme;
 
   static AppColorsExtension get darkAppColors => _darkAppColors;
 
-  static final _darkAppColors = AppColorsExtension(
-    primary: const Color(0xffbb86fc),
-    secondary: const Color(0xff03dac6),
-    background: const Color(0xff121212),
-  );
+  static AppTextExtension get darkTextTheme => _darkTextTheme;
 }
