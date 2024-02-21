@@ -1,5 +1,8 @@
-flutter_build:
-	flutter pub get && dart run build_runner build
+fb:
+	flutter pub get && dart run build_runner build --delete-conflicting-outputs
 	
-dart_build:
-	dart run build_runner build 
+db:
+	dart run build_runner build --delete-conflicting-outputs
+
+frb:
+	flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
