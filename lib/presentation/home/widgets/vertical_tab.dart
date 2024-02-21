@@ -67,7 +67,7 @@ class VerticalTab extends StatelessWidget {
                           padding: onlyLeft4,
                           child: Text(
                             tabTitle,
-                            style: context.theme.appTextTheme.titleMedium,
+                            style: context.theme.appTextTheme.titleSmall,
                           ),
                         ),
                       ),
@@ -75,8 +75,9 @@ class VerticalTab extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         visualDensity: VisualDensity.adaptivePlatformDensity,
                         onPressed: null,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.minor_crash_rounded,
+                          color: context.theme.appColors.background,
                         ),
                       ),
                     ],

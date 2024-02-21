@@ -15,6 +15,7 @@ class App extends StatelessWidget {
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: context.watch<AppTheme>().themeMode,
+        debugShowCheckedModeBanner: false,
         home: const HomePage(),
       ),
     );
