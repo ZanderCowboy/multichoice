@@ -18,33 +18,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeEvent>((event, emit) async {
       await event.map(
         onGetTabs: (_) async {
-          emit(
-            state.copyWith(
-              isLoading: true,
-            ),
-          );
-
-          final tabs = await _tabsRepository.readTabs();
+          emit(state.copyWith(isLoading: true));
 
           emit(
             state.copyWith(
-              tabs: tabs,
+              tabs: await _tabsRepository.readTabs(),
               isLoading: false,
             ),
           );
         },
         onGetAllEntryCards: (_) async {
-          emit(
-            state.copyWith(
-              isLoading: true,
-            ),
-          );
-
-          final entries = await _entryRepository.readAllEntries();
+          emit(state.copyWith(isLoading: true));
 
           emit(
             state.copyWith(
-              entryCards: entries,
+              entryCards: await _entryRepository.readAllEntries(),
               isLoading: false,
             ),
           );
@@ -63,18 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onPressedAddTab: (value) async {
-          emit(
-            state.copyWith(
-              isLoading: true,
-            ),
-          );
-
-          emit(
-            state.copyWith(
-              isLoading: false,
-              isAdded: true,
-            ),
-          );
+          emit(state.copyWith(isLoading: true, isAdded: true));
 
           await _tabsRepository.addTab(value.title, value.subtitle);
 
@@ -87,18 +64,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onPressedAddEntry: (value) async {
-          emit(
-            state.copyWith(
-              isLoading: true,
-            ),
-          );
-
-          emit(
-            state.copyWith(
-              isLoading: false,
-              isAdded: true,
-            ),
-          );
+          emit(state.copyWith(isLoading: true, isAdded: true));
           await _entryRepository.addEntry(
             value.tabId,
             value.title,
@@ -114,12 +80,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onLongPressedDeleteTab: (value) async {
-          emit(
-            state.copyWith(
-              isLoading: true,
-              isDeleted: true,
-            ),
-          );
+          emit(state.copyWith(isLoading: true, isDeleted: true));
 
           await _tabsRepository.deleteTab(value.tabId);
 
@@ -133,14 +94,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onLongPressedDeleteEntry: (value) async {
-          emit(state.copyWith(isLoading: true));
+          emit(state.copyWith(isLoading: true, isDeleted: true));
 
-          emit(
-            state.copyWith(
-              isLoading: false,
-              isDeleted: true,
-            ),
-          );
           await _entryRepository.deleteEntry(
             value.tabId,
             value.entryId,
@@ -170,6 +125,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isLoading: false,
             ),
           );
+        },
+        onPressedTheme: (_) {
+          emit(state.copyWith(isLoading: true));
+
+          if (state.theme == 'light') {
+            emit(state.copyWith(theme: 'dark', isLoading: false));
+          } else {
+            emit(state.copyWith(theme: 'light', isLoading: false));
+          }
         },
       );
     });

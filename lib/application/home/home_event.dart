@@ -28,4 +28,6 @@ class HomeEvent with _$HomeEvent {
   ) = OnLongPressedDeleteEntry;
 
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
+
+  const factory HomeEvent.onPressedTheme() = OnPressedTheme;
 }
