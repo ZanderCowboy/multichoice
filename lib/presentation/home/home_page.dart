@@ -5,11 +5,13 @@ import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
+import 'package:multichoice/services/interfaces/i_database_service.dart';
+import 'package:multichoice/utils/app_theme.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:multichoice/utils/extensions/theme_getter.dart';
 import 'package:multichoice/utils/theme_extension/app_theme.dart';
-// import 'package:shared_preferences/shared_preferences.dart' as prefs;
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/vertical_tab.dart';
 part 'widgets/entry_card.dart';
@@ -18,35 +20,65 @@ part 'widgets/empty_entry.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
-    // this.preferences,
     super.key,
   });
 
-  // final prefs.SharedPreferences? preferences;
+  // final prefs.SharedPreferences preferences;
 
   @override
   Widget build(BuildContext context) {
+    final sharedPref = coreSl<SharedPreferences>();
+    final Map<String, String> db = {'theme': 'light'};
+    // final db = coreSl<DatabaseService>().database;
+
     return BlocProvider(
       create: (context) => coreSl<HomeBloc>()
         ..add(const HomeEvent.onGetTabs())
         ..add(const HomeEvent.onGetAllEntryCards()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          // final themeMode = context.read<AppTheme>().themeMode;
-          // final Object? theme = preferences?.getString('theme');
+          // final currentTheme = sharedPref.getString('theme') ?? 'light';
+          // final currentTheme = db;
+          // final lightMode = ThemeMode.light.name;
 
           return Scaffold(
             appBar: AppBar(
               title: const Text('Multichoice'),
-              centerTitle: true,
-              // backgroundColor: Colors.lightBlue,
               actions: [
-                // prefs.getBool('')
-                // if (theme == ThemeMode.light.toString())
+                if (context.read<AppTheme>().themeMode.name != 'light')
+                  IconButton(
+                    onPressed: () {
+                      _darkMode(context);
+                      sharedPref.setString('theme', 'dark');
+                    },
+                    icon: const Icon(Icons.dark_mode_outlined),
+                    // icon: context.read<AppTheme>().themeMode.name == 'light'
+                    //     ? const Icon(Icons.light_mode_outlined)
+                    //     : const Icon(Icons.dark_mode_outlined),
+                  )
+                else
+                  IconButton(
+                    onPressed: () async {
+                      _lightMode(context);
+                      await sharedPref.setString('theme', 'light');
+                    },
+                    icon: const Icon(Icons.light_mode_outlined),
+                  ),
+
+                // IconButton(
+                //   onPressed: () {
+                //     context.read<AppTheme>().themeMode.name == 'dark'
+                //         ? _darkMode(context)
+                //         : _lightMode(context);
+                //   },
+                //   icon: const Icon(Icons.abc),
+                // ),
+
+                // if (db['theme'] == 'light')
                 //   IconButton(
-                //     onPressed: () async {
+                //     onPressed: () {
                 //       _darkMode(context);
-                //       await preferences?.setString('theme', 'dart');
+                //       db['theme'] = 'dark';
                 //     },
                 //     icon: const Icon(Icons.dark_mode_outlined),
                 //   )
@@ -54,10 +86,25 @@ class HomePage extends StatelessWidget {
                 //   IconButton(
                 //     onPressed: () {
                 //       _lightMode(context);
-                //       preferences?.setString('theme', 'light');
+                //       db['theme'] = 'light';
                 //     },
                 //     icon: const Icon(Icons.light_mode_outlined),
                 //   ),
+
+                // IconButton(
+                //   onPressed: currentTheme != ThemeMode.light.name
+                //       ? () {
+                //           _lightMode(context);
+                //         }
+                //       : () {
+                //           _darkMode(context);
+                //         },
+                //   icon: const Icon(Icons.abc),
+                //   // icon: sharedPref.getString('theme') == 'light'
+                //   //     ? const Icon(Icons.light_mode_outlined)
+                //   //     : const Icon(Icons.dark_mode_outlined),
+                // ),
+
                 IconButton(
                   onPressed: () {
                     context
@@ -66,6 +113,7 @@ class HomePage extends StatelessWidget {
                   },
                   icon: const Icon(
                     Icons.delete_sweep_rounded,
+                    // color: context.theme.appColors.primary,
                   ),
                 ),
               ],
@@ -77,13 +125,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // void _lightMode(BuildContext context) {
-  //   context.read<AppTheme>().themeMode = ThemeMode.light;
-  // }
+  void _lightMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.light;
+  }
 
-  // void _darkMode(BuildContext context) {
-  //   context.read<AppTheme>().themeMode = ThemeMode.dark;
-  // }
+  void _darkMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.dark;
+  }
 }
 
 class _HomePage extends StatelessWidget {
@@ -104,31 +152,32 @@ class _HomePage extends StatelessWidget {
 
         final tabs = state.tabs ?? [];
 
-        return Padding(
-          padding: allPadding12,
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.375,
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (context, index) {
-                    //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
-                    final tab = tabs[index];
+        return Center(
+          child: Padding(
+            padding: allPadding12,
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height / 1.15,
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: scrollController,
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (context, index) {
+                      final tab = tabs[index];
 
-                    return VerticalTab(
-                      tabId: tab.id,
-                      tabTitle: tab.title,
-                    );
-                  },
-                ),
-                const SliverToBoxAdapter(
-                  child: EmptyTab(),
-                ),
-              ],
+                      return VerticalTab(
+                        tabId: tab.id,
+                        tabTitle: tab.title,
+                      );
+                    },
+                  ),
+                  const SliverToBoxAdapter(
+                    child: EmptyTab(),
+                  ),
+                ],
+              ),
             ),
           ),
         );

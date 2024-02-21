@@ -16,35 +16,33 @@ class EntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shadowColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: circularBorder5,
-      ),
-      color: Colors.blueGrey,
-      child: SizedBox(
-        width: 200,
-        child: Padding(
-          padding: allPadding4,
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(title),
-                    Text(subtitle),
-                    Text('t-id: $tabId'),
-                    gap4,
-                    Text('e-id: $entryId'),
-                  ],
+    return Padding(
+      padding: allPadding2,
+      child: Card(
+        margin: EdgeInsets.zero,
+        color: context.theme.appColors.secondary,
+        shape: RoundedRectangleBorder(
+          borderRadius: borderCircular5,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: allPadding4,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(title),
+                      Text(subtitle),
+                      Text('t-id: $tabId'),
+                      gap4,
+                      Text('e-id: $entryId'),
+                    ],
+                  ),
                 ),
-              ),
-              // const Placeholder(
-              //   fallbackHeight: 40,
-              //   fallbackWidth: 40,
-              // ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

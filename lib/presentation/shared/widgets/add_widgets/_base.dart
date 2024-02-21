@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/utils/extensions/theme_getter.dart';
+import 'package:multichoice/utils/theme_extension/app_theme.dart';
 
 part 'entry.dart';
 part 'tab.dart';

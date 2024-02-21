@@ -53,31 +53,30 @@ class VerticalTab extends StatelessWidget {
           );
         },
         child: Card(
-          color: Colors.grey[300],
-          elevation: 5,
-          shadowColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: circularBorder12,
-          ),
+          color: context.theme.appColors.primary,
           child: Padding(
-            padding: allPadding6,
+            padding: vertical8horizontal4,
             child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
+              width: MediaQuery.sizeOf(context).width / 3,
               child: Column(
                 children: [
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          tabTitle,
-                          style: context.theme.appTextTheme.body1,
+                        child: Padding(
+                          padding: onlyLeft4,
+                          child: Text(
+                            tabTitle,
+                            style: context.theme.appTextTheme.titleMedium,
+                          ),
                         ),
                       ),
-                      const IconButton(
+                      IconButton(
+                        alignment: Alignment.centerRight,
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
                         onPressed: null,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.minor_crash_rounded,
-                          color: Colors.black,
                         ),
                       ),
                     ],

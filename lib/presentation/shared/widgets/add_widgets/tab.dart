@@ -15,9 +15,9 @@ class AddTabCard extends StatelessWidget {
     return _BaseCard(
       semanticLabel: semanticLabel ?? '',
       elevation: 5,
-      color: Colors.grey[600],
+      color: context.theme.appColors.primaryLight,
       shape: RoundedRectangleBorder(
-        borderRadius: circularBorder12,
+        borderRadius: borderCircular12,
       ),
       child: Padding(
         padding: allPadding6,
@@ -26,7 +26,9 @@ class AddTabCard extends StatelessWidget {
           child: const IconButton(
             iconSize: 36,
             onPressed: null,
-            icon: Icon(Icons.add_outlined),
+            icon: Icon(
+              Icons.add_outlined,
+            ),
           ),
         ),
       ),

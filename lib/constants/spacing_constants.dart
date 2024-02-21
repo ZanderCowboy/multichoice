@@ -13,6 +13,8 @@ const gap16 = Gap(16);
 const gap24 = Gap(24);
 
 // Padding
+const allPadding2 = EdgeInsets.all(2);
+
 const allPadding4 = EdgeInsets.all(4);
 
 const allPadding6 = EdgeInsets.all(6);
@@ -20,3 +22,9 @@ const allPadding6 = EdgeInsets.all(6);
 const allPadding12 = EdgeInsets.all(12);
 
 const allPadding24 = EdgeInsets.all(24);
+
+const vertical8horizontal4 = EdgeInsets.symmetric(vertical: 8, horizontal: 4);
+
+const vertical12horizontal4 = EdgeInsets.symmetric(horizontal: 4, vertical: 12);
+
+const onlyLeft4 = EdgeInsets.only(left: 4);

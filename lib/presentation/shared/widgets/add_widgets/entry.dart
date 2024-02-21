@@ -13,12 +13,15 @@ class AddEntryCard extends StatelessWidget {
     return _BaseCard(
       semanticLabel: semanticLabel ?? '',
       elevation: 5,
-      color: Colors.grey[600],
+      color: context.theme.appColors.secondaryLight,
       shape: RoundedRectangleBorder(
-        borderRadius: circularBorder5,
+        borderRadius: borderCircular5,
       ),
       padding: allPadding6,
-      icon: const Icon(Icons.add_outlined),
+      icon: const Icon(
+        Icons.add_outlined,
+        // color: context.theme.appColors.ternary,
+      ),
       iconSize: 36,
     );
   }
