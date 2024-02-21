@@ -19,6 +19,9 @@ class AppTheme with ChangeNotifier {
     final defaultTheme = ThemeData.light();
 
     return defaultTheme.copyWith(
+      // drawerTheme: DrawerThemeData(
+
+      // ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: _lightAppColors.primary,
@@ -58,17 +61,17 @@ class AppTheme with ChangeNotifier {
         titleMedium: _lightTextTheme.titleMedium,
         bodyMedium: _lightTextTheme.bodyMedium,
       ),
-      // iconButtonTheme: IconButtonThemeData(
-      //   style: ButtonStyle(
-      //     // foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
-      //     padding: const MaterialStatePropertyAll(EdgeInsets.zero),
-      //     side: const MaterialStatePropertyAll(BorderSide.none),
-      //   ),
-      // ),
-      // iconTheme: IconThemeData(
-      //   size: 16,
-      //   // color: _lightAppColors.primary,
-      // ),
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
+          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
+          side: const MaterialStatePropertyAll(BorderSide.none),
+        ),
+      ),
+      iconTheme: IconThemeData(
+        size: 18,
+        color: _lightAppColors.primary,
+      ),
       extensions: [
         _lightAppColors,
         _lightTextTheme,
@@ -77,13 +80,13 @@ class AppTheme with ChangeNotifier {
   }();
 
   static final _lightAppColors = AppColorsExtension(
-    primary: AppPalette.grey.geyser, //
-    primaryLight: AppPalette.grey.geyserLight, //
-    secondary: AppPalette.grey.sanJuan, //
-    secondaryLight: AppPalette.grey.sanJuanLight, //
+    primary: AppPalette.grey.geyser,
+    primaryLight: AppPalette.grey.geyserLight,
+    secondary: AppPalette.grey.sanJuan,
+    secondaryLight: AppPalette.grey.sanJuanLight,
     ternary: null,
-    foreground: AppPalette.grey.bigStone, //
-    background: AppPalette.grey.slateGray, //
+    foreground: AppPalette.grey.bigStone,
+    background: AppPalette.grey.slateGray,
     white: null,
     black: null,
   );
@@ -96,7 +99,9 @@ class AppTheme with ChangeNotifier {
     titleMedium: AppTypography.titleMedium.copyWith(
       color: AppPalette.grey.bigStone,
     ),
-    titleSmall: null,
+    titleSmall: AppTypography.titleSmall.copyWith(
+      color: AppPalette.grey.bigStone,
+    ),
     subtitleLarge: null,
     subtitleMedium: null,
     subtitleSmall: null,
@@ -113,19 +118,24 @@ class AppTheme with ChangeNotifier {
     return defaultTheme.copyWith(
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: _darkAppColors.primary,
+          foregroundColor: _darkAppColors.foreground,
+          // backgroundColor: AppPalette.paletteTwo.slateGray,
+          textStyle: AppTypography.bodyLarge,
           side: BorderSide(color: _darkAppColors.primary ?? Colors.white),
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: _darkAppColors.secondary,
+          foregroundColor: AppPalette.paletteTwo.slateGray,
+          backgroundColor: AppPalette.paletteTwo.geyser,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+          textStyle: AppTypography.bodyLarge,
         ),
       ),
       dialogBackgroundColor: _darkAppColors.background,
       dialogTheme: DialogTheme(
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
         titleTextStyle: AppTypography.titleMedium,
@@ -150,16 +160,18 @@ class AppTheme with ChangeNotifier {
         titleMedium: _darkTextTheme.titleMedium,
         bodyMedium: _darkTextTheme.bodyMedium,
       ),
-      // iconButtonTheme: const IconButtonThemeData(
-      //   style: ButtonStyle(
-      //     // foregroundColor: MaterialStatePropertyAll(_darkAppColors.primary),
-      //     padding: MaterialStatePropertyAll(EdgeInsets.zero),
-      //     side: MaterialStatePropertyAll(BorderSide.none),
-      //   ),
-      // ),
-      // iconTheme: const IconThemeData(
-      //   size: 16,
-      // ),
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStatePropertyAll(AppPalette.paletteTwo.sanJuan),
+          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
+          side: const MaterialStatePropertyAll(BorderSide.none),
+        ),
+      ),
+      iconTheme: IconThemeData(
+        size: 18,
+        color: AppPalette.paletteTwo.sanJuan,
+      ),
       extensions: [
         _darkAppColors,
         _darkTextTheme,
@@ -187,11 +199,15 @@ class AppTheme with ChangeNotifier {
     titleMedium: AppTypography.titleMedium.copyWith(
       color: AppPalette.paletteTwo.sanJuan,
     ),
-    titleSmall: null,
+    titleSmall: AppTypography.titleSmall.copyWith(
+      color: AppPalette.paletteTwo.sanJuan,
+    ),
     subtitleLarge: null,
     subtitleMedium: null,
     subtitleSmall: null,
-    bodyLarge: null,
+    bodyLarge: AppTypography.bodyLarge.copyWith(
+      color: AppPalette.paletteTwo.sanJuan,
+    ),
     bodyMedium: AppTypography.bodyMedium.copyWith(
       color: AppPalette.paletteTwo.sanJuan,
     ),
