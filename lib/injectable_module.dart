@@ -23,11 +23,11 @@ abstract class InjectableModule {
   }
 
   @preResolve
-  Future<SharedPreferences> get prefs async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPref async {
+    final sharedPref = await SharedPreferences.getInstance();
 
-    // await prefs.setString('theme', 'light');
+    await sharedPref.setString('theme', 'light');
 
-    return prefs;
+    return sharedPref;
   }
 }

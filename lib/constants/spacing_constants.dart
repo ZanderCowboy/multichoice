@@ -12,6 +12,8 @@ const gap16 = Gap(16);
 
 const gap24 = Gap(24);
 
+const gap56 = Gap(56);
+
 // Padding
 const allPadding2 = EdgeInsets.all(2);
 

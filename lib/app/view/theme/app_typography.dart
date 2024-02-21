@@ -30,7 +30,7 @@ abstract class AppTypography {
     fontWeight: FontWeight.w500,
   );
   static const titleSmall = TextStyle(
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
   );
   static const subtitleLarge = TextStyle(
@@ -46,7 +46,10 @@ abstract class AppTypography {
     fontWeight: FontWeight.w200,
   );
   static const bodyVeryLarge = TextStyle();
-  static const bodyLarge = TextStyle();
+  static const bodyLarge = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
   static const bodyMedium = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.normal,
