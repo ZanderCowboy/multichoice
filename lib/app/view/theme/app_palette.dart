@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 abstract class AppPalette {
+  static const white = Color(0xffffffff);
+  static const black = Color(0xff000000);
+
   static const red = Colors.red;
   static const imperialRed = Color(0xFFE54B4B);
 
@@ -9,9 +12,7 @@ abstract class AppPalette {
   static final green = _GreenColors();
   static final grey = _GreyColors();
   static final paletteOne = _PaletteOne();
-
-  static final titleText = _TitleText();
-  static final bodyText = _BodyText();
+  static final paletteTwo = _PaletteTwo();
 }
 
 class _GreenColors {
@@ -27,15 +28,26 @@ class _GreenColors {
 class _GreyColors {
   _GreyColors();
 
-  // final grey50 = const Color(0xFFFAFAFA);
-  // final grey100 = const Color(0xFFFAFAFA);
-
-  final bigStone = const Color(0xff15203c);
-  final sanJuan = const Color(0xff385170);
-  final slateGray = const Color(0xff697a91);
+  final bigStone = const Color(0xff15203c); //
+  final sanJuan = const Color(0xff385170); //
+  final sanJuanLight = const Color(0x7f385170); //
+  final slateGray = const Color(0xff697a91); //
   final towerGray = const Color(0xffa1baba);
-  final geyser = const Color(0xffd7e0e5);
-  final geyserLight = const Color(0x7fd7e0e5);
+  final geyser = const Color(0xffd7e0e5); //
+  final geyserLight = const Color(0x7fd7e0e5); //
+}
+
+class _PaletteTwo {
+  _PaletteTwo();
+
+  final bigStone = const Color(0xff171d2c);
+  final sanJuan = const Color(0xffe7ecef);
+  final sanJuanLight = const Color(0x7f172435);
+  final slateGray = const Color(0xff555d68); //
+  final slateGrayLight = const Color(0x7f555d68);
+  final towerGray = const Color(0xff4e5c5c);
+  final geyser = const Color(0xff172435); //
+  final geyserLight = const Color(0x7f172435); //
 }
 
 class _PaletteOne {
@@ -44,16 +56,4 @@ class _PaletteOne {
   final lemonChiffon = const Color(0xfff4f0bb);
   final black = const Color(0xff000000);
   final quinacridoneMagenta = const Color(0xff8f2d56);
-}
-
-class _TitleText {
-  _TitleText();
-
-  final medium = const Color.fromARGB(123, 28, 185, 11);
-}
-
-class _BodyText {
-  _BodyText();
-
-  final medium = const Color(0xaaffffff);
 }
