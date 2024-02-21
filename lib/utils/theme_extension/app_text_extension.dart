@@ -8,11 +8,32 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
     with _$AppTextExtensionTailorMixin {
   AppTextExtension({
     required this.body1,
+    required this.body2,
     required this.h1,
+    required this.titleLarge,
+    required this.titleMedium,
+    required this.titleSmall,
+    required this.subtitleLarge,
+    required this.subtitleMedium,
+    required this.subtitleSmall,
   });
 
   @override
-  final TextStyle h1;
+  final TextStyle? h1;
   @override
-  final TextStyle body1;
+  final TextStyle? body1;
+  @override
+  final TextStyle? body2;
+  @override
+  final TextStyle? titleLarge;
+  @override
+  final TextStyle? titleMedium;
+  @override
+  final TextStyle? titleSmall;
+  @override
+  final TextStyle? subtitleLarge;
+  @override
+  final TextStyle? subtitleMedium;
+  @override
+  final TextStyle? subtitleSmall;
 }
