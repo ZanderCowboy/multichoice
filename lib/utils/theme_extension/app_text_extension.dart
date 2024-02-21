@@ -16,6 +16,9 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
     required this.subtitleLarge,
     required this.subtitleMedium,
     required this.subtitleSmall,
+    required this.bodyLarge,
+    required this.bodyMedium,
+    required this.bodySmall,
   });
 
   @override
@@ -36,4 +39,10 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
   final TextStyle? subtitleMedium;
   @override
   final TextStyle? subtitleSmall;
+  @override
+  final TextStyle? bodyLarge;
+  @override
+  final TextStyle? bodyMedium;
+  @override
+  final TextStyle? bodySmall;
 }
