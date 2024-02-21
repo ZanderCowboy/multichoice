@@ -22,88 +22,23 @@ class HomePage extends StatelessWidget {
     super.key,
   });
 
-  // final prefs.SharedPreferences preferences;
-
   @override
   Widget build(BuildContext context) {
-    final sharedPref = coreSl<SharedPreferences>();
-    // final db = <String, String>{'theme': 'light'};
-    // final db = coreSl<DatabaseService>().database;
-
     return BlocProvider(
       create: (context) => coreSl<HomeBloc>()
         ..add(const HomeEvent.onGetTabs())
         ..add(const HomeEvent.onGetAllEntryCards()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          // final currentTheme = sharedPref.getString('theme') ?? 'light';
-          // final currentTheme = db;
-          // final lightMode = ThemeMode.light.name;
-
           return Scaffold(
             appBar: AppBar(
               title: const Text('Multichoice'),
               actions: [
-                if (context.read<AppTheme>().themeMode.name != 'light')
-                  IconButton(
-                    onPressed: () {
-                      _darkMode(context);
-                      sharedPref.setString('theme', 'dark');
-                    },
-                    icon: const Icon(Icons.dark_mode_outlined),
-                    // icon: context.read<AppTheme>().themeMode.name == 'light'
-                    //     ? const Icon(Icons.light_mode_outlined)
-                    //     : const Icon(Icons.dark_mode_outlined),
-                  )
-                else
-                  IconButton(
-                    onPressed: () async {
-                      _lightMode(context);
-                      await sharedPref.setString('theme', 'light');
-                    },
-                    icon: const Icon(Icons.light_mode_outlined),
-                  ),
-
-                // IconButton(
-                //   onPressed: () {
-                //     context.read<AppTheme>().themeMode.name == 'dark'
-                //         ? _darkMode(context)
-                //         : _lightMode(context);
-                //   },
-                //   icon: const Icon(Icons.abc),
-                // ),
-
-                // if (db['theme'] == 'light')
-                //   IconButton(
-                //     onPressed: () {
-                //       _darkMode(context);
-                //       db['theme'] = 'dark';
-                //     },
-                //     icon: const Icon(Icons.dark_mode_outlined),
-                //   )
-                // else
-                //   IconButton(
-                //     onPressed: () {
-                //       _lightMode(context);
-                //       db['theme'] = 'light';
-                //     },
-                //     icon: const Icon(Icons.light_mode_outlined),
-                //   ),
-
-                // IconButton(
-                //   onPressed: currentTheme != ThemeMode.light.name
-                //       ? () {
-                //           _lightMode(context);
-                //         }
-                //       : () {
-                //           _darkMode(context);
-                //         },
-                //   icon: const Icon(Icons.abc),
-                //   // icon: sharedPref.getString('theme') == 'light'
-                //   //     ? const Icon(Icons.light_mode_outlined)
-                //   //     : const Icon(Icons.dark_mode_outlined),
-                // ),
-
+                _ThemeButton(
+                  // sharedPref: snapshot.requireData,
+                  sharedPref: coreSl<SharedPreferences>(),
+                  state: state,
+                ),
                 IconButton(
                   onPressed: () {
                     context
@@ -117,11 +52,87 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+            drawer: Drawer(
+              width: MediaQuery.sizeOf(context).width,
+              backgroundColor: context.theme.appColors.background,
+              child: Padding(
+                padding: allPadding12,
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    gap56,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Settings',
+                            style: context.theme.appTextTheme.titleMedium
+                                ?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (Navigator.canPop(context)) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.close_outlined,
+                            size: 28,
+                          ),
+                        ),
+                      ],
+                    ),
+                    gap24,
+                    _ThemeButton(
+                      sharedPref: coreSl<SharedPreferences>(),
+                      state: state,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             body: _HomePage(),
           );
         },
       ),
     );
+  }
+}
+
+class _ThemeButton extends StatelessWidget {
+  const _ThemeButton({
+    required this.sharedPref,
+    required this.state,
+  });
+
+  final SharedPreferences sharedPref;
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.theme == 'light') {
+      return IconButton(
+        onPressed: () {
+          _darkMode(context);
+          sharedPref.setString('theme', 'dark');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.dark_mode_outlined),
+      );
+    } else if (state.theme == 'dark') {
+      return IconButton(
+        onPressed: () {
+          _lightMode(context);
+          sharedPref.setString('theme', 'light');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.light_mode_outlined),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   void _lightMode(BuildContext context) {
