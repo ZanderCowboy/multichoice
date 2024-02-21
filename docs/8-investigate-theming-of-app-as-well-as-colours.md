@@ -21,3 +21,5 @@
 - [`theme_tailor`](https://pub.dev/packages/theme_tailor)
 - [`provider`](https://pub.dev/packages/provider)
 - [`shared_preferences`](https://pub.dev/packages/shared_preferences)
+- [Mobile Palette Generator](https://mobilepalette.colorion.co/)
+- [colormagic](https://colormagic.app/)
