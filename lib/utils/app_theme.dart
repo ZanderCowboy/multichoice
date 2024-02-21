@@ -19,9 +19,6 @@ class AppTheme with ChangeNotifier {
     final defaultTheme = ThemeData.light();
 
     return defaultTheme.copyWith(
-      // drawerTheme: DrawerThemeData(
-
-      // ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: _lightAppColors.primary,
@@ -119,7 +116,6 @@ class AppTheme with ChangeNotifier {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: _darkAppColors.foreground,
-          // backgroundColor: AppPalette.paletteTwo.slateGray,
           textStyle: AppTypography.bodyLarge,
           side: BorderSide(color: _darkAppColors.primary ?? Colors.white),
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),

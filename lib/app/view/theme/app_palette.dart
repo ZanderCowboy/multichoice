@@ -28,13 +28,13 @@ class _GreenColors {
 class _GreyColors {
   _GreyColors();
 
-  final bigStone = const Color(0xff15203c); //
-  final sanJuan = const Color(0xff385170); //
-  final sanJuanLight = const Color(0x7f385170); //
-  final slateGray = const Color(0xff697a91); //
+  final bigStone = const Color(0xff15203c);
+  final sanJuan = const Color(0xff385170);
+  final sanJuanLight = const Color(0x7f385170);
+  final slateGray = const Color(0xff697a91);
   final towerGray = const Color(0xffa1baba);
-  final geyser = const Color(0xffd7e0e5); //
-  final geyserLight = const Color(0x7fd7e0e5); //
+  final geyser = const Color(0xffd7e0e5);
+  final geyserLight = const Color(0x7fd7e0e5);
 }
 
 class _PaletteTwo {
@@ -43,11 +43,11 @@ class _PaletteTwo {
   final bigStone = const Color(0xff171d2c);
   final sanJuan = const Color(0xffe7ecef);
   final sanJuanLight = const Color(0x7f172435);
-  final slateGray = const Color(0xff555d68); //
+  final slateGray = const Color(0xff555d68);
   final slateGrayLight = const Color(0x7f555d68);
   final towerGray = const Color(0xff4e5c5c);
-  final geyser = const Color(0xff172435); //
-  final geyserLight = const Color(0x7f172435); //
+  final geyser = const Color(0xff172435);
+  final geyserLight = const Color(0x7f172435);
 }
 
 class _PaletteOne {
