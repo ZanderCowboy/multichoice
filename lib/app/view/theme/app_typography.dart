@@ -6,6 +6,11 @@ abstract class AppTypography {
     fontWeight: FontWeight.normal,
   );
 
+  static const body2 = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+  );
+
   static const h1 = TextStyle(
     fontSize: 96,
     fontWeight: FontWeight.w300,
@@ -15,4 +20,37 @@ abstract class AppTypography {
     fontSize: 72,
     fontWeight: FontWeight.w500,
   );
+
+  static const titleLarge = TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.w400,
+  );
+  static const titleMedium = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w500,
+  );
+  static const titleSmall = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+  );
+  static const subtitleLarge = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+  );
+  static const subtitleMedium = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w300,
+  );
+  static const subtitleSmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w200,
+  );
+  static const bodyVeryLarge = TextStyle();
+  static const bodyLarge = TextStyle();
+  static const bodyMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+  );
+  static const bodySmall = TextStyle();
+  static const bodyVerySmall = TextStyle();
 }
