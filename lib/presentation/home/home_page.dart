@@ -5,7 +5,6 @@ import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
-import 'package:multichoice/services/interfaces/i_database_service.dart';
 import 'package:multichoice/utils/app_theme.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
@@ -28,7 +27,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sharedPref = coreSl<SharedPreferences>();
-    final Map<String, String> db = {'theme': 'light'};
+    // final db = <String, String>{'theme': 'light'};
     // final db = coreSl<DatabaseService>().database;
 
     return BlocProvider(
