@@ -6,13 +6,35 @@
 
 ### Overview
 
+This ticket is primarily responsible for setting up theming in our app. I also implemented Light mode and Dark mode.
+
 ### What was done
 
-- [X] added x.dart which does y
+- [X] Created a `Makefile` to avoid typing the commands in the terminal manually
+```make
+fb:
+ flutter pub get && dart run build_runner build --delete-conflicting-outputs
+ 
+db:
+ dart run build_runner build --delete-conflicting-outputs
+
+frb:
+ flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+```
+- [X] Restructured new code
+- [X] Created an app palette in `app_palette.dart`
+- [X] Created typography for the app in `app_typography.dart`
+- [X] Updated the UI with the new colors and text styles
+- [X] Created a simple `Drawer` on the HomePage
+- [X] Implemented `Light` mode and `Dark` mode
+- [X] Created `app_colors_extension` and `app_text_extension`, along with `AppThemeExtension`
+- [X] Created and updated main `AppTheme` in `app_theme.dart`
+- [X] Created a `ThemeGetter` to enable us to use `context.theme` with `ThemeData get theme => Theme.of(this);`
 
 ### What needs to be done
 
-- [ ] todo
+- [ ] Verify that our method of refreshing the theme button in the HomeBloc
+- [ ] Remove `theme_service` and interface `i_theme_service`
 
 ### Resources
 
