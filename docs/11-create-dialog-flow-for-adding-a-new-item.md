@@ -15,6 +15,7 @@ This ticket was to add the necessary and required widgets to the dialog for addi
 - [X] Added `onChanged` events for add dialog, as well as `onPressedCancel`
 - [X] Added `getTab` and `getEntry` to tabs_repository and entry_repository respectively
 - [X] UI Changes
+- [X] Fixed UI bug: The dialog to add new tabs and entries had a render overflow error
 
 ### What needs to be done
 

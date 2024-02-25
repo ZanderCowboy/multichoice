@@ -32,8 +32,7 @@ class EmptyEntry extends HookWidget {
                           child: Text('Title'),
                         ),
                         gap4,
-                        SizedBox(
-                          width: 200,
+                        Expanded(
                           child: TextFormField(
                             controller: titleTextController,
                             onChanged: (value) {
@@ -53,8 +52,7 @@ class EmptyEntry extends HookWidget {
                           child: Text('Subtitle'),
                         ),
                         gap4,
-                        SizedBox(
-                          width: 200,
+                        Expanded(
                           child: TextFormField(
                             controller: subtitleTextController,
                             onChanged: (value) {
