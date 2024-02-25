@@ -4,7 +4,7 @@ part of 'home_bloc.dart';
 class HomeState with _$HomeState {
   const factory HomeState({
     required TabsDTO tab,
-    required List<TabsDTO>? tabs,
+    required List<TabsDTO> tabs,
     required EntryDTO entry,
     required List<EntryDTO>? entryCards,
     required bool isLoading,
@@ -15,9 +15,9 @@ class HomeState with _$HomeState {
 
   factory HomeState.initial() => HomeState(
         tab: TabsDTO.empty(),
-        tabs: null,
+        tabs: [],
         entry: EntryDTO.empty(),
-        entryCards: null,
+        entryCards: [],
         isLoading: false,
         isDeleted: false,
         isAdded: false,

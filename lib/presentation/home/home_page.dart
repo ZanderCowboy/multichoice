@@ -69,7 +69,7 @@ class _HomePage extends StatelessWidget {
           );
         }
 
-        final tabs = state.tabs ?? [];
+        final tabs = state.tabs;
         final screenHeight = MediaQuery.sizeOf(context).height;
 
         return Center(
