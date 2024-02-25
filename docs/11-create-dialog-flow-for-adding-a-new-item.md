@@ -16,9 +16,10 @@ This ticket was to add the necessary and required widgets to the dialog for addi
 - [X] Added `getTab` and `getEntry` to tabs_repository and entry_repository respectively
 - [X] UI Changes
 - [X] Fixed UI bug: The dialog to add new tabs and entries had a render overflow error
+- [X] Add `MenuAnchor` with options to `Tabs` in upper right corner
 
 ### What needs to be done
 
-- [ ] Add `MenuAnchor` with options to `Tabs` in upper right corner
 - [ ] Fix bug where adding a new entry with no subtitle, it uses the previously added entry's values
 - [ ] Add validation to ensure that 'blank' items can't be added by fading out `Add` button
+- [ ] Fix bug where menu delete option does not do a state change. Possibly the `tabs` state being empty
