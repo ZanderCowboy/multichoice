@@ -82,12 +82,42 @@ class VerticalTab extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const IconButton(
-                              onPressed: null,
-                              icon: Icon(
-                                Icons.minor_crash_rounded,
-                                color: Colors.black,
-                              ),
+                            // const IconButton(
+                            //   onPressed: null,
+                            //   icon: Icon(
+                            //     Icons.minor_crash_rounded,
+                            //     color: Colors.black,
+                            //   ),
+                            // ),
+                            MenuAnchor(
+                              consumeOutsideTap: true,
+                              builder: (
+                                context,
+                                MenuController controller,
+                                Widget? child,
+                              ) {
+                                return IconButton(
+                                  onPressed: () {
+                                    if (controller.isOpen) {
+                                      controller.close();
+                                    } else {
+                                      controller.open();
+                                    }
+                                  },
+                                  icon: const Icon(Icons.more_vert_outlined),
+                                  hoverColor: Colors.pink,
+                                  padding: EdgeInsets.zero,
+                                );
+                              },
+                              // TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
+                              menuChildren: [
+                                ...getTabsMenuItems(context).map((menuItem) {
+                                  return MenuItemButton(
+                                    onPressed: () => menuItem.onTap(tabId),
+                                    child: Text(menuItem.title),
+                                  );
+                                }),
+                              ],
                             ),
                           ],
                         ),

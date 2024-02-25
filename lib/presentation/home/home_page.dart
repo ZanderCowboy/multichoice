@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
+import 'package:multichoice/models/enums/menu_items.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
@@ -12,6 +13,7 @@ import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 part 'widgets/empty_entry.dart';
 part 'widgets/empty_tab.dart';
 part 'widgets/entry_card.dart';
+part 'widgets/menu_items.dart';
 part 'widgets/vertical_tab.dart';
 
 class HomePage extends StatelessWidget {
