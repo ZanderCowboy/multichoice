@@ -5,7 +5,7 @@ import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
 import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
 
 @AutoMappr([
-  MapType<Tabs, TabsDTO>(
+  MapType<Tabs, TabDTO>(
     fields: [
       Field('uuid', custom: TabsMapper.mapUuid),
       Field('title', custom: TabsMapper.mapTitle),
