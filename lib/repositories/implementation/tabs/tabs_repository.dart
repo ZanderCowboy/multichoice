@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/models/database/export_database.dart';
 import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
+import 'package:multichoice/models/mappers/tabs/tabs_content_dto_mapper.dart';
 import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.dart';
 import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -38,19 +39,42 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
-  Future<List<TabsDTO>> readTabs() async {
+  Future<TabsDTO> readTabs() async {
     try {
       final result = await db.tabs.where().sortByTimestamp().findAll();
 
       final converter = TabsMapper();
-      final tabsDTO =
-          result.map((tab) => converter.convert<Tabs, TabsDTO>(tab)).toList();
+      final dtos =
+          result.map((tab) => converter.convert<Tabs, TabDTO>(tab)).toList();
 
-      return tabsDTO;
+      final tabsConverter = TabsContentMapper();
+      final tabs = tabsConverter.convert<List<TabDTO>, TabsDTO>(dtos);
+
+      return tabs;
     } catch (e) {
       log(e.toString());
-      return [];
+      return const TabsDTO(tabs: []);
     }
+  }
+
+  @override
+  Future<int> updateTab(int id, String title, String subtitle) async {
+    try {
+      await db.writeTxn(() async {
+        final tab = await db.tabs.get(id);
+
+        final newTab = tab?.copyWith(title: title, subtitle: subtitle);
+
+        final result = await db.tabs.put(newTab!);
+
+        // await db.tabs.delete(id);
+
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+    return -1;
   }
 
   @override
@@ -78,17 +102,17 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
-  Future<TabsDTO> getTab(int tabId) async {
+  Future<TabDTO> getTab(int tabId) async {
     try {
       final tabs = await db.tabs.where().findAll();
       final result = tabs.firstWhere((element) => element.id == tabId);
 
-      final dto = TabsMapper().convert<Tabs, TabsDTO>(result);
+      final dto = TabsMapper().convert<Tabs, TabDTO>(result);
 
       return dto;
     } catch (e) {
       log(e.toString());
-      return TabsDTO.empty();
+      return TabDTO.empty();
     }
   }
 }
