@@ -2,6 +2,8 @@ part of 'home_bloc.dart';
 
 @freezed
 class HomeEvent with _$HomeEvent {
+  const factory HomeEvent.onFetchAll() = OnFetchAll;
+
   const factory HomeEvent.onGetTabs() = OnGetTabs;
 
   const factory HomeEvent.onGetAllEntryCards() = OnGetAllEntryCards;
@@ -29,7 +31,12 @@ class HomeEvent with _$HomeEvent {
       OnChangedEntryTitle;
   const factory HomeEvent.onChangedEntrySubtitle(String text) =
       OnChangedEntrySubtitle;
-  const factory HomeEvent.onPressedCancel() = OnPressedCancel;
+
+  const factory HomeEvent.onEditTab() = OnEditTab;
+  const factory HomeEvent.onEditEntry() = OnEditEntry;
+
+  const factory HomeEvent.onPressedCancelTab() = OnPressedCancelTab;
+  const factory HomeEvent.onPressedCancelEntry() = OnPressedCancelEntry;
 
   const factory HomeEvent.onUpdateTab(int tabId) = OnUpdateTab;
   const factory HomeEvent.onUpdateEntry(int tabId, int entryId) = OnUpdateEntry;
