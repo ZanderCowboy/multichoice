@@ -5,7 +5,7 @@ part 'entry_dto.g.dart';
 
 @freezed
 class EntryDTO with _$EntryDTO {
-  factory EntryDTO({
+  const factory EntryDTO({
     required int id,
     required int tabId,
     required String title,
