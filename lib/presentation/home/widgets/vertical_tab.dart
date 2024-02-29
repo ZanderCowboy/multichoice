@@ -2,55 +2,69 @@ part of '../home_page.dart';
 
 class VerticalTab extends StatelessWidget {
   const VerticalTab({
-    required this.tabId,
+    required this.id,
     super.key,
   });
 
-  final int tabId;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
+    final homeBloc = context.read<HomeBloc>();
     return BlocProvider(
-      create: (context) =>
-          coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
+      create: (_) => coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(id)),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return GestureDetector(
             onLongPress: () {
-              CustomDialog<Widget>.show(
-                context: context,
-                title: Text('Delete ${state.tab.title}?'),
-                content: SizedBox(
-                  height: 20,
-                  child: Text(
-                    "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
-                  ),
-                ),
-                actions: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Cancel'),
-                      ),
-                      gap10,
-                      ElevatedButton(
-                        onPressed: () {
-                          context
-                              .read<HomeBloc>()
-                              .add(HomeEvent.onLongPressedDeleteTab(tabId));
+              show<AlertDialog>(context, homeBloc, id);
+              // showDialog<AlertDialog>(
+              //   context: context,
+              //   builder: (BuildContext context) {
+              //     return BlocProvider<HomeBloc>.value(
+              //       value: homeBloc..add(HomeEvent.onUpdateTab(id)),
+              //       child: BlocBuilder<HomeBloc, HomeState>(
+              //         builder: (context, state) {
+              //           return AlertDialog(
+              //             title: Text('Delete ${state.tab.title}?'),
+              //             content: SizedBox(
+              //               height: 20,
+              //               child: Text(
+              //                 "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
+              //               ),
+              //             ),
+              //             actions: <Widget>[
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: [
+              //                   OutlinedButton(
+              //                     onPressed: () => Navigator.of(context).pop(),
+              //                     child: const Text('Cancel'),
+              //                   ),
+              //                   gap10,
+              //                   ElevatedButton(
+              //                     onPressed: () {
+              //                       context.read<HomeBloc>()
+              //                         ..add(
+              //                           HomeEvent.onLongPressedDeleteTab(id),
+              //                         )
+              //                         ..add(const HomeEvent.onGetTabs());
 
-                          if (Navigator.canPop(context)) {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  ),
-                ],
-              );
+              //                       if (Navigator.canPop(context)) {
+              //                         Navigator.of(context).pop();
+              //                       }
+              //                     },
+              //                     child: const Text('Delete'),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ],
+              //           );
+              //         },
+              //       ),
+              //     );
+              //   },
+              // );
             },
             child: Padding(
               padding: right4,
@@ -82,17 +96,10 @@ class VerticalTab extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // const IconButton(
-                            //   onPressed: null,
-                            //   icon: Icon(
-                            //     Icons.minor_crash_rounded,
-                            //     color: Colors.black,
-                            //   ),
-                            // ),
                             MenuAnchor(
                               consumeOutsideTap: true,
                               builder: (
-                                context,
+                                BuildContext context,
                                 MenuController controller,
                                 Widget? child,
                               ) {
@@ -104,19 +111,34 @@ class VerticalTab extends StatelessWidget {
                                       controller.open();
                                     }
                                   },
-                                  icon: const Icon(Icons.more_vert_outlined),
+                                  icon: const Icon(
+                                    Icons.more_vert_outlined,
+                                  ),
                                   hoverColor: Colors.pink,
                                   padding: EdgeInsets.zero,
                                 );
                               },
-                              // TODO(ZK): Add confirmation dialog to pop up when delete option is selected in menu
                               menuChildren: [
-                                ...getTabsMenuItems(context).map((menuItem) {
-                                  return MenuItemButton(
-                                    onPressed: () => menuItem.onTap(tabId),
-                                    child: Text(menuItem.title),
-                                  );
-                                }),
+                                MenuItemButton(
+                                  onPressed: () => {
+                                    context.router
+                                        .push(EditPageRoute(ctx: context)),
+                                  },
+                                  child: Text(MenuItems.edit.name),
+                                ),
+                                MenuItemButton(
+                                  onPressed: () {
+                                    // homeBloc.add(
+                                    //   HomeEvent.onLongPressedDeleteTab(id),
+                                    // );
+                                    show<AlertDialog>(
+                                      context,
+                                      homeBloc,
+                                      id,
+                                    );
+                                  },
+                                  child: Text(MenuItems.delete.name),
+                                ),
                               ],
                             ),
                           ],
@@ -141,7 +163,7 @@ class VerticalTab extends StatelessWidget {
                           ],
                         ),
                         gap10,
-                        Cards(tabId: tabId),
+                        Cards(tabId: id),
                       ],
                     ),
                   ),

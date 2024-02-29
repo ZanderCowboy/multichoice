@@ -21,10 +21,6 @@ class Cards extends StatelessWidget {
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (state.entry.tabId != tabId) {
-          context.read<HomeBloc>().add(HomeEvent.onGetEntryCards(tabId));
-        }
-
         final entriesInTab = state.entryCards ?? [];
 
         if (state.isLoading) {

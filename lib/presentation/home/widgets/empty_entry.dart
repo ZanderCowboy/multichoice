@@ -12,90 +12,113 @@ class EmptyEntry extends HookWidget {
   Widget build(BuildContext context) {
     final titleTextController = TextEditingController();
     final subtitleTextController = TextEditingController();
+    final homeBloc = context.read<HomeBloc>();
 
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            CustomDialog<Widget>.show(
-              context: context,
-              title: Text('Add new entry to ${state.tab.title}'),
-              content: Form(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const SizedBox(
-                          width: 80,
-                          child: Text('Title'),
-                        ),
-                        gap4,
-                        Expanded(
-                          child: TextFormField(
-                            controller: titleTextController,
-                            onChanged: (value) {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(HomeEvent.onChangedEntryTitle(value));
-                            },
+    return GestureDetector(
+      onTap: () {
+        showDialog<AlertDialog>(
+          context: context,
+          builder: (BuildContext context) {
+            return BlocProvider.value(
+              value: homeBloc,
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return AlertDialog(
+                    title: Text('Add new entry to ${state.tab.title}'),
+                    content: Form(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const SizedBox(
+                                width: 80,
+                                child: Text('Title'),
+                              ),
+                              gap4,
+                              Expanded(
+                                child: TextFormField(
+                                  controller: titleTextController,
+                                  onChanged: (value) {
+                                    context.read<HomeBloc>().add(
+                                          HomeEvent.onChangedEntryTitle(value),
+                                        );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const SizedBox(
-                          width: 80,
-                          child: Text('Subtitle'),
-                        ),
-                        gap4,
-                        Expanded(
-                          child: TextFormField(
-                            controller: subtitleTextController,
-                            onChanged: (value) {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(HomeEvent.onChangedEntrySubtitle(value));
-                            },
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 80,
+                                child: Text('Subtitle'),
+                              ),
+                              gap4,
+                              Expanded(
+                                child: TextFormField(
+                                  controller: subtitleTextController,
+                                  onChanged: (value) {
+                                    context.read<HomeBloc>().add(
+                                          HomeEvent.onChangedEntrySubtitle(
+                                            value,
+                                          ),
+                                        );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: top12,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () {
+                                    context.read<HomeBloc>().add(
+                                          const HomeEvent
+                                              .onPressedCancelEntry(),
+                                        );
+                                    titleTextController.clear();
+                                    subtitleTextController.clear();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                gap4,
+                                ElevatedButton(
+                                  onPressed: state.isValid
+                                      ? () {
+                                          context.read<HomeBloc>().add(
+                                                HomeEvent.onPressedAddEntry(
+                                                  tabId,
+                                                ),
+                                              );
+                                          titleTextController.clear();
+                                          subtitleTextController.clear();
+                                          if (Navigator.canPop(context)) {
+                                            Navigator.of(context).pop();
+                                          }
+                                        }
+                                      : null,
+                                  child: const Text('Add'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-              actions: <Widget>[
-                OutlinedButton(
-                  onPressed: () {
-                    context
-                        .read<HomeBloc>()
-                        .add(const HomeEvent.onPressedCancel());
-                    titleTextController.clear();
-                    subtitleTextController.clear();
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<HomeBloc>().add(
-                          HomeEvent.onPressedAddEntry(tabId),
-                        );
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text('Ok'),
-                ),
-              ],
             );
           },
-          child: const AddEntryCard(),
         );
       },
+      child: const AddEntryCard(),
     );
   }
 }

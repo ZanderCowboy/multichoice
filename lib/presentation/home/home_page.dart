@@ -1,13 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:multichoice/app_router.gr.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
 import 'package:multichoice/models/enums/menu_items.dart';
+import 'package:multichoice/presentation/home/widgets/alert_dialog.dart';
 import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
-import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
 part 'widgets/empty_entry.dart';
@@ -16,15 +19,14 @@ part 'widgets/entry_card.dart';
 part 'widgets/menu_items.dart';
 part 'widgets/vertical_tab.dart';
 
+@RoutePage()
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => coreSl<HomeBloc>()
-        ..add(const HomeEvent.onGetTabs())
-        ..add(const HomeEvent.onGetAllEntryCards()),
+      create: (_) => coreSl<HomeBloc>()..add(const HomeEvent.onFetchAll()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
@@ -60,8 +62,7 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {},
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(
@@ -69,7 +70,7 @@ class _HomePage extends StatelessWidget {
           );
         }
 
-        final tabs = state.tabs;
+        final tabsDTO = state.tabs;
         final screenHeight = MediaQuery.sizeOf(context).height;
 
         return Center(
@@ -83,17 +84,23 @@ class _HomePage extends StatelessWidget {
                 scrollBehavior: CustomScrollBehaviour(),
                 slivers: [
                   SliverList.builder(
-                    itemCount: tabs.length,
-                    itemBuilder: (context, index) {
-                      final tab = tabs[index];
+                    itemCount: tabsDTO.tabs?.length ?? 0,
+                    itemBuilder: (_, index) {
+                      final tab = tabsDTO.tabs?[index] ?? TabDTO.empty();
 
-                      return VerticalTab(tabId: tab.id);
+                      if (!state.isLoading) {
+                        return VerticalTab(
+                          id: tab.id,
+                        );
+                      }
+
+                      return const SizedBox.shrink();
                     },
                   ),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       width: MediaQuery.sizeOf(context).width / 6,
-                      child: const EmptyTab(),
+                      child: const _EmptyTab(),
                     ),
                   ),
                 ],
