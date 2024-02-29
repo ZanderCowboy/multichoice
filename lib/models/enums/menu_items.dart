@@ -1,5 +1,5 @@
 enum MenuItems {
-  rename('Rename'),
+  edit('Edit'),
   delete('Delete');
 
   const MenuItems(this.name);

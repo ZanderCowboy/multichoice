@@ -1,4 +1,4 @@
-import 'package:multichoice/models/database/export_database.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
 
 abstract class DatabaseService {
   DatabaseService._internal();
@@ -7,7 +7,7 @@ abstract class DatabaseService {
 
   static DatabaseService get instance => _instance;
 
-  final Map<Tabs, List<Entry>> _database = {};
+  final Map<TabsDTO, List<EntryDTO>> _database = {};
 
-  Map<Tabs, List<Entry>> get database => _database;
+  Map<TabsDTO, List<EntryDTO>> get database => _database;
 }

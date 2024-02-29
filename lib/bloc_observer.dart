@@ -13,7 +13,7 @@ class SimpleBlocObserver extends BlocObserver {
     Object? event,
   ) {
     super.onEvent(bloc, event);
-    log('${bloc.runtimeType} $event');
+    log('${bloc.runtimeType} $event \n');
   }
 
   @override
@@ -22,7 +22,7 @@ class SimpleBlocObserver extends BlocObserver {
     Object error,
     StackTrace stackTrace,
   ) {
-    log('${bloc.runtimeType} $error');
+    log('${bloc.runtimeType} $error \n');
     super.onError(bloc, error, stackTrace);
   }
 
@@ -32,6 +32,6 @@ class SimpleBlocObserver extends BlocObserver {
     Transition<dynamic, dynamic> transition,
   ) {
     super.onTransition(bloc, transition);
-    log('$transition');
+    log('$transition \n');
   }
 }

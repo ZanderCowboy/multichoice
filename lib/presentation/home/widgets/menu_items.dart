@@ -2,7 +2,7 @@ part of '../home_page.dart';
 
 typedef TabsMenuItems = ({
   String title,
-  void Function(int tabId) onTap,
+  VoidCallback onTap,
 });
 
 typedef EntryMenuItems = ({
@@ -10,16 +10,16 @@ typedef EntryMenuItems = ({
   void Function(int tabId, int entryId) onTap,
 });
 
-List<TabsMenuItems> getTabsMenuItems(BuildContext context) {
+List<TabsMenuItems> getTabsMenuItems(BuildContext context, int id) {
   return <TabsMenuItems>[
     (
-      title: MenuItems.rename.name,
-      onTap: (_) {},
+      title: MenuItems.edit.name,
+      onTap: () => {},
     ),
     (
       title: MenuItems.delete.name,
-      onTap: (tabId) {
-        context.read<HomeBloc>().add(HomeEvent.onLongPressedDeleteTab(tabId));
+      onTap: () {
+        coreSl<HomeBloc>().add(HomeEvent.onLongPressedDeleteTab(id));
       },
     ),
   ];
@@ -28,7 +28,7 @@ List<TabsMenuItems> getTabsMenuItems(BuildContext context) {
 List<EntryMenuItems> getEntryMenuItems(BuildContext context) {
   return <EntryMenuItems>[
     (
-      title: MenuItems.rename.name,
+      title: MenuItems.edit.name,
       onTap: (_, __) {},
     ),
     (
