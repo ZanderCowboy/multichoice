@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/app_router.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
+
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Multichoice',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -16,7 +18,7 @@ class App extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      routerConfig: _appRouter.config(),
     );
   }
 }

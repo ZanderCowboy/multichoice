@@ -27,5 +27,5 @@ void main() async {
     log(e.toString());
   }
 
-  runApp(const App());
+  runApp(App());
 }
