@@ -44,7 +44,7 @@ class MenuWidget extends StatelessWidget {
       menuChildren: [
         MenuItemButton(
           onPressed: () => {
-            context.router.push(EditPageRoute(ctx: context)),
+            context.router.push(EditTabPageRoute(ctx: context)),
           },
           child: Text(MenuItems.edit.name),
         ),

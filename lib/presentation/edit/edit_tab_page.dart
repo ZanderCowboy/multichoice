@@ -5,8 +5,8 @@ import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 
 @RoutePage()
-class EditPage extends StatelessWidget {
-  const EditPage({
+class EditTabPage extends StatelessWidget {
+  const EditTabPage({
     required this.ctx,
     super.key,
   });
