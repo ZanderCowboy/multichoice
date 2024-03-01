@@ -1,10 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:multichoice/app_router.gr.dart';
 import 'package:multichoice/application/export_application.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/models/enums/menu_items.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+
+part 'entry_card.dart';
 
 class Cards extends StatelessWidget {
   const Cards({
@@ -39,51 +45,11 @@ class Cards extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final entry = entriesInTab[index];
 
-                  return GestureDetector(
-                    onLongPress: () {
-                      CustomDialog<Widget>.show(
-                        context: context,
-                        title: Text('Delete ${entry.title}'),
-                        content: SizedBox(
-                          height: 20,
-                          child: Text(
-                            "Are you sure you want to delete entry ${entry.title} and all it's content?",
-                          ),
-                        ),
-                        actions: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('Cancel'),
-                              ),
-                              gap10,
-                              ElevatedButton(
-                                onPressed: () {
-                                  context.read<HomeBloc>().add(
-                                        HomeEvent.onLongPressedDeleteEntry(
-                                          tabId,
-                                          entry.id,
-                                        ),
-                                      );
-                                  if (Navigator.canPop(context)) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                child: const Text('Delete'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                    child: EntryCard(
-                      tabId: tabId,
-                      entryId: entry.id,
-                      title: entry.title,
-                      subtitle: entry.subtitle,
-                    ),
+                  return EntryCard(
+                    tabId: tabId,
+                    entryId: entry.id,
+                    title: entry.title,
+                    subtitle: entry.subtitle,
                   );
                 },
               ),

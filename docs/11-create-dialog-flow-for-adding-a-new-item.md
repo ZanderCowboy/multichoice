@@ -28,3 +28,7 @@ This ticket was to add the necessary and required widgets to the dialog for addi
 
 - [ ] Create Edit Page for Entries
 - [ ] Add menu options to entries
+- [ ] Add `menu item` for tabs to `clear entries`
+- [ ] Deleting tabs from the `menu` does not render correctly everytime
+- [ ] Adding new entries use data from previous entry added
+- [ ] Add validation to make sure that entry and tab `title`s are not empty

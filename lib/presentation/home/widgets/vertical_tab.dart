@@ -18,53 +18,6 @@ class VerticalTab extends StatelessWidget {
           return GestureDetector(
             onLongPress: () {
               show<AlertDialog>(context, homeBloc, id);
-              // showDialog<AlertDialog>(
-              //   context: context,
-              //   builder: (BuildContext context) {
-              //     return BlocProvider<HomeBloc>.value(
-              //       value: homeBloc..add(HomeEvent.onUpdateTab(id)),
-              //       child: BlocBuilder<HomeBloc, HomeState>(
-              //         builder: (context, state) {
-              //           return AlertDialog(
-              //             title: Text('Delete ${state.tab.title}?'),
-              //             content: SizedBox(
-              //               height: 20,
-              //               child: Text(
-              //                 "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
-              //               ),
-              //             ),
-              //             actions: <Widget>[
-              //               Row(
-              //                 mainAxisAlignment: MainAxisAlignment.end,
-              //                 children: [
-              //                   OutlinedButton(
-              //                     onPressed: () => Navigator.of(context).pop(),
-              //                     child: const Text('Cancel'),
-              //                   ),
-              //                   gap10,
-              //                   ElevatedButton(
-              //                     onPressed: () {
-              //                       context.read<HomeBloc>()
-              //                         ..add(
-              //                           HomeEvent.onLongPressedDeleteTab(id),
-              //                         )
-              //                         ..add(const HomeEvent.onGetTabs());
-
-              //                       if (Navigator.canPop(context)) {
-              //                         Navigator.of(context).pop();
-              //                       }
-              //                     },
-              //                     child: const Text('Delete'),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ],
-              //           );
-              //         },
-              //       ),
-              //     );
-              //   },
-              // );
             },
             child: Padding(
               padding: right4,
@@ -96,51 +49,7 @@ class VerticalTab extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            MenuAnchor(
-                              consumeOutsideTap: true,
-                              builder: (
-                                BuildContext context,
-                                MenuController controller,
-                                Widget? child,
-                              ) {
-                                return IconButton(
-                                  onPressed: () {
-                                    if (controller.isOpen) {
-                                      controller.close();
-                                    } else {
-                                      controller.open();
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.more_vert_outlined,
-                                  ),
-                                  hoverColor: Colors.pink,
-                                  padding: EdgeInsets.zero,
-                                );
-                              },
-                              menuChildren: [
-                                MenuItemButton(
-                                  onPressed: () => {
-                                    context.router
-                                        .push(EditPageRoute(ctx: context)),
-                                  },
-                                  child: Text(MenuItems.edit.name),
-                                ),
-                                MenuItemButton(
-                                  onPressed: () {
-                                    // homeBloc.add(
-                                    //   HomeEvent.onLongPressedDeleteTab(id),
-                                    // );
-                                    show<AlertDialog>(
-                                      context,
-                                      homeBloc,
-                                      id,
-                                    );
-                                  },
-                                  child: Text(MenuItems.delete.name),
-                                ),
-                              ],
-                            ),
+                            MenuWidget(homeBloc: homeBloc, id: id),
                           ],
                         ),
                         const Divider(

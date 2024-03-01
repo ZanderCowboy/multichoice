@@ -65,7 +65,7 @@ class _EditPage extends StatelessWidget {
                     labelText: 'Title',
                   ),
                 ),
-                const SizedBox(height: 20),
+                gap20,
                 TextFormField(
                   initialValue: state.tab.subtitle,
                   onChanged: (value) {
@@ -77,7 +77,7 @@ class _EditPage extends StatelessWidget {
                     labelText: 'Subtitle',
                   ),
                 ),
-                const SizedBox(height: 20),
+                gap20,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

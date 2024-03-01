@@ -10,6 +10,8 @@ const gap12 = Gap(12);
 
 const gap16 = Gap(16);
 
+const gap20 = Gap(20);
+
 const gap24 = Gap(24);
 
 // Padding
