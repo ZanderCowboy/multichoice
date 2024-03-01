@@ -128,10 +128,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
 
           await _tabsRepository.deleteTab(value.tabId);
-          add(const HomeEvent.onFetchAll());
+          final tabs = await _tabsRepository.readTabs();
 
           emit(
             state.copyWith(
+              tabs: tabs,
               isLoading: false,
               isDeleted: false,
             ),
