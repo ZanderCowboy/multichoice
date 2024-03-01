@@ -23,12 +23,12 @@ This ticket was to add the necessary and required widgets to the dialog for addi
 - [X] Implement the `rename` functionality for [#76](https://github.com/ZanderCowboy/multichoice/issues/76)
 - [X] Add confirmation dialog to pop up when delete option is selected in menu
 - [X] Added `Auto Router` and implemented it in the code base
+- [X] Add validation to make sure that entry and tab `title`s are not empty
+- [X] Add `menu item` for tabs to `clear entries`
+- [X] Create Edit Page for Entries
+- [X] Add menu options to entries
 
 ### What needs to be done
 
-- [ ] Create Edit Page for Entries
-- [ ] Add menu options to entries
-- [ ] Add `menu item` for tabs to `clear entries`
 - [ ] Deleting tabs from the `menu` does not render correctly everytime
 - [ ] Adding new entries use data from previous entry added
-- [ ] Add validation to make sure that entry and tab `title`s are not empty
