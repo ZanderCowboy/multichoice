@@ -11,9 +11,11 @@ abstract class IEntryRepository {
     int tabId,
   );
 
+  Future<List<EntryDTO>?> readAllEntries();
+
   Future<EntryDTO> getEntry(int tabId, int entryId);
 
-  Future<List<EntryDTO>?> readAllEntries();
+  Future<int> updateEntry(int id, int tabId, String title, String subtitle);
 
   Future<bool> deleteEntry(
     int tabId,

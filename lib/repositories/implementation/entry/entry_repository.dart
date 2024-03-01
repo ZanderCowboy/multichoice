@@ -75,6 +75,30 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
+  Future<int> updateEntry(
+    int id,
+    int tabId,
+    String title,
+    String subtitle,
+  ) async {
+    try {
+      await db.writeTxn(() async {
+        final entry = await db.entrys.get(id);
+
+        final newEntry = entry?.copyWith(title: title, subtitle: subtitle);
+
+        final result = await db.entrys.put(newEntry!);
+
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return -1;
+  }
+
+  @override
   Future<bool> deleteEntry(int tabId, int entryId) async {
     try {
       await db.writeTxn(() async {
