@@ -47,6 +47,10 @@ class _EditEntryPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state.isLoading) {
+          return const CircularProgressIndicator.adaptive();
+        }
+
         return Padding(
           padding: allPadding12,
           child: Form(
