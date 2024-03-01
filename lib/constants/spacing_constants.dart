@@ -21,6 +21,8 @@ const allPadding6 = EdgeInsets.all(6);
 
 const allPadding12 = EdgeInsets.all(12);
 
+const allPadding18 = EdgeInsets.all(18);
+
 const allPadding24 = EdgeInsets.all(24);
 
 const left4 = EdgeInsets.only(left: 4);

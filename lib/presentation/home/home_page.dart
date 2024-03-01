@@ -74,7 +74,7 @@ class _HomePage extends StatelessWidget {
 
         return Center(
           child: Padding(
-            padding: allPadding24,
+            padding: allPadding12,
             child: SizedBox(
               height: screenHeight,
               child: CustomScrollView(

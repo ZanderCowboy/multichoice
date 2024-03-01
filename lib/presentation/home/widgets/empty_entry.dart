@@ -24,6 +24,7 @@ class EmptyEntry extends HookWidget {
               child: BlocBuilder<HomeBloc, HomeState>(
                 builder: (context, state) {
                   return AlertDialog(
+                    contentPadding: allPadding12,
                     title: Text('Add new entry to ${state.tab.title}'),
                     content: Form(
                       child: Column(
@@ -33,7 +34,7 @@ class EmptyEntry extends HookWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               const SizedBox(
-                                width: 80,
+                                width: 60,
                                 child: Text('Title'),
                               ),
                               gap4,
@@ -52,7 +53,7 @@ class EmptyEntry extends HookWidget {
                           Row(
                             children: [
                               const SizedBox(
-                                width: 80,
+                                width: 60,
                                 child: Text('Subtitle'),
                               ),
                               gap4,
