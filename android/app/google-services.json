@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "82796040762",
+    "project_id": "multichoice-412309",
+    "storage_bucket": "multichoice-412309.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82796040762:android:7d86369ea3e82786e4db03",
+        "android_client_info": {
+          "package_name": "co.za.zanderkotze.multichoice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9oQ4EKnvNdGnh_cVRoTcQ62tNij9YNSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
