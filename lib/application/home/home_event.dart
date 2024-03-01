@@ -22,6 +22,8 @@ class HomeEvent with _$HomeEvent {
     int entryId,
   ) = OnLongPressedDeleteEntry;
 
+  const factory HomeEvent.onPressedDeleteEntries(int id) =
+      OnPressedDeleteEntries;
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
 
   const factory HomeEvent.onChangedTabTitle(String text) = OnChangedTabTitle;

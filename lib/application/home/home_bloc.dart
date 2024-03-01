@@ -158,6 +158,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
+        onPressedDeleteEntries: (value) async {
+          emit(state.copyWith(isLoading: true));
+
+          final tabId = value.id;
+          final entries = await _entryRepository.readEntries(tabId) ?? [];
+
+          for (final entry in entries) {
+            await _entryRepository.deleteEntry(tabId, entry.id);
+          }
+
+          emit(
+            state.copyWith(
+              // entryCards: [],
+              isLoading: false,
+            ),
+          );
+        },
         onPressedDeleteAll: (_) async {
           emit(state.copyWith(isLoading: true));
 
@@ -265,8 +282,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onEditEntry: (_) {
+        onEditEntry: (_) async {
           emit(state.copyWith(isLoading: true));
+
+          final entry = state.entry;
+
+          await _entryRepository.updateEntry(
+            entry.id,
+            entry.tabId,
+            entry.title,
+            entry.subtitle,
+          );
+
+          final entryCards = await _entryRepository.readEntries(entry.tabId);
+
+          emit(
+            state.copyWith(
+              entryCards: entryCards,
+              isLoading: false,
+              isValid: false,
+              errorMessage: null,
+            ),
+          );
         },
         onPressedCancelTab: (_) async {
           emit(state.copyWith(isLoading: true));
@@ -318,7 +355,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 }
 
 bool _validate(String value) {
-  final regex = RegExp(r'^[a-zA-Z\s-?!]+$');
+  final regex = RegExp(r'^[a-zA-Z\s-?!,]+$');
 
   final result = value.isNotEmpty && regex.hasMatch(value);
 
