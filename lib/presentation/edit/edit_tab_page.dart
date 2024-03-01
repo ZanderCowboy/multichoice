@@ -86,7 +86,7 @@ class _EditPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     TextButton(
-                      onPressed: state.isValid
+                      onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
                               context.read<HomeBloc>()
                                 ..add(const HomeEvent.onEditTab())

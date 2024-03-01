@@ -90,7 +90,8 @@ class EmptyEntry extends HookWidget {
                                 ),
                                 gap4,
                                 ElevatedButton(
-                                  onPressed: state.isValid
+                                  onPressed: state.isValid &&
+                                          state.entry.title.isNotEmpty
                                       ? () {
                                           context.read<HomeBloc>().add(
                                                 HomeEvent.onPressedAddEntry(

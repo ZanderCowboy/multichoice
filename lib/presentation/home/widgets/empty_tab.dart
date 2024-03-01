@@ -82,7 +82,8 @@ class _EmptyTab extends HookWidget {
                                 ),
                                 gap4,
                                 ElevatedButton(
-                                  onPressed: state.isValid
+                                  onPressed: state.isValid &&
+                                          state.tab.title.isNotEmpty
                                       ? () {
                                           context.read<HomeBloc>().add(
                                                 const HomeEvent
