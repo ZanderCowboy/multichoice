@@ -20,8 +20,7 @@ class EditTabPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.blue[100],
         appBar: AppBar(
-          title: const Text('Edit'),
-          centerTitle: true,
+          title: const Text('Edit Tab'),
           leading: IconButton(
             onPressed: () {
               ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancelTab());
@@ -47,8 +46,10 @@ class _EditPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return const CircularProgressIndicator.adaptive();
+        if (state.isLoading || state.tab.id == 0) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
         }
 
         return Padding(
@@ -89,13 +90,13 @@ class _EditPage extends StatelessWidget {
                       onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
                               context.read<HomeBloc>()
-                                ..add(const HomeEvent.onEditTab())
+                                ..add(const HomeEvent.onPressedEditTab())
                                 ..add(const HomeEvent.onGetTabs());
 
                               context.router.popUntilRoot();
                             }
                           : null,
-                      child: const Text('Add'),
+                      child: const Text('Ok'),
                     ),
                     TextButton(
                       onPressed: () {

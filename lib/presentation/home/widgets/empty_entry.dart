@@ -24,53 +24,38 @@ class EmptyEntry extends HookWidget {
               child: BlocBuilder<HomeBloc, HomeState>(
                 builder: (context, state) {
                   return AlertDialog(
-                    contentPadding: allPadding12,
                     title: Text('Add new entry to ${state.tab.title}'),
                     content: Form(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                width: 60,
-                                child: Text('Title'),
-                              ),
-                              gap4,
-                              Expanded(
-                                child: TextFormField(
-                                  controller: titleTextController,
-                                  onChanged: (value) {
-                                    context.read<HomeBloc>().add(
-                                          HomeEvent.onChangedEntryTitle(value),
-                                        );
-                                  },
-                                ),
-                              ),
-                            ],
+                          TextFormField(
+                            controller: titleTextController,
+                            onChanged: (value) {
+                              context.read<HomeBloc>().add(
+                                    HomeEvent.onChangedEntryTitle(value),
+                                  );
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Enter a Title',
+                              hintText: 'Title',
+                            ),
                           ),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 60,
-                                child: Text('Subtitle'),
-                              ),
-                              gap4,
-                              Expanded(
-                                child: TextFormField(
-                                  controller: subtitleTextController,
-                                  onChanged: (value) {
-                                    context.read<HomeBloc>().add(
-                                          HomeEvent.onChangedEntrySubtitle(
-                                            value,
-                                          ),
-                                        );
-                                  },
-                                ),
-                              ),
-                            ],
+                          TextFormField(
+                            controller: subtitleTextController,
+                            onChanged: (value) {
+                              context.read<HomeBloc>().add(
+                                    HomeEvent.onChangedEntrySubtitle(
+                                      value,
+                                    ),
+                                  );
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Enter a Subtitle',
+                              hintText: 'Subtitle',
+                            ),
                           ),
+                          gap10,
                           Padding(
                             padding: top12,
                             child: Row(
@@ -95,8 +80,8 @@ class EmptyEntry extends HookWidget {
                                       ? () {
                                           context.read<HomeBloc>().add(
                                                 HomeEvent.onPressedAddEntry(
-                                                  tabId,
-                                                ),
+                                                    // tabId,
+                                                    ),
                                               );
                                           titleTextController.clear();
                                           subtitleTextController.clear();

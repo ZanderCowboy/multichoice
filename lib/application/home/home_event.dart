@@ -6,13 +6,11 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.onGetTabs() = OnGetTabs;
 
-  const factory HomeEvent.onGetAllEntryCards() = OnGetAllEntryCards;
-
   const factory HomeEvent.onGetEntryCards(int tabId) = OnGetEntryCards;
 
   const factory HomeEvent.onPressedAddTab() = OnPressedAddTab;
 
-  const factory HomeEvent.onPressedAddEntry(int tabId) = OnPressedAddEntry;
+  const factory HomeEvent.onPressedAddEntry() = OnPressedAddEntry;
 
   const factory HomeEvent.onLongPressedDeleteTab(int tabId) =
       OnLongPressedDeleteTab;
@@ -34,12 +32,13 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onChangedEntrySubtitle(String text) =
       OnChangedEntrySubtitle;
 
-  const factory HomeEvent.onEditTab() = OnEditTab;
-  const factory HomeEvent.onEditEntry() = OnEditEntry;
+  const factory HomeEvent.onPressedEditTab() = OnPressedEditTab;
+  const factory HomeEvent.onPressedEditEntry() = OnPressedEditEntry;
 
   const factory HomeEvent.onPressedCancelTab() = OnPressedCancelTab;
   const factory HomeEvent.onPressedCancelEntry() = OnPressedCancelEntry;
 
   const factory HomeEvent.onUpdateTab(int tabId) = OnUpdateTab;
+  const factory HomeEvent.onUpdateTabId(int id) = OnUpdateTabId;
   const factory HomeEvent.onUpdateEntry(int tabId, int entryId) = OnUpdateEntry;
 }

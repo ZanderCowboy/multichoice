@@ -21,7 +21,6 @@ class EditEntryPage extends StatelessWidget {
         backgroundColor: Colors.blue[100],
         appBar: AppBar(
           title: const Text('Edit entry'),
-          centerTitle: true,
           leading: IconButton(
             onPressed: () {
               ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancelEntry());
@@ -47,8 +46,10 @@ class _EditEntryPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return const CircularProgressIndicator.adaptive();
+        if (state.isLoading || state.entry.id == 0) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
         }
 
         return Padding(
@@ -89,7 +90,7 @@ class _EditEntryPage extends StatelessWidget {
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
                               context.read<HomeBloc>()
-                                ..add(const HomeEvent.onEditEntry())
+                                ..add(const HomeEvent.onPressedEditEntry())
                                 ..add(
                                   HomeEvent.onGetEntryCards(
                                     state.entry.tabId,
@@ -99,7 +100,7 @@ class _EditEntryPage extends StatelessWidget {
                               context.router.popUntilRoot();
                             }
                           : null,
-                      child: const Text('Add'),
+                      child: const Text('Ok'),
                     ),
                     TextButton(
                       onPressed: () {

@@ -24,46 +24,31 @@ class _EmptyTab extends HookWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                width: 80,
-                                child: Text('Title'),
-                              ),
-                              gap4,
-                              Expanded(
-                                child: TextFormField(
-                                  controller: titleTextController,
-                                  onChanged: (value) {
-                                    context.read<HomeBloc>().add(
-                                          HomeEvent.onChangedTabTitle(value),
-                                        );
-                                  },
-                                ),
-                              ),
-                            ],
+                          TextFormField(
+                            controller: titleTextController,
+                            onChanged: (value) {
+                              context.read<HomeBloc>().add(
+                                    HomeEvent.onChangedTabTitle(value),
+                                  );
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Enter a Title',
+                              hintText: 'Title',
+                            ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                width: 80,
-                                child: Text('Subtitle'),
-                              ),
-                              gap4,
-                              Expanded(
-                                child: TextFormField(
-                                  controller: subtitleTextController,
-                                  onChanged: (value) {
-                                    context.read<HomeBloc>().add(
-                                          HomeEvent.onChangedTabSubtitle(value),
-                                        );
-                                  },
-                                ),
-                              ),
-                            ],
+                          TextFormField(
+                            controller: subtitleTextController,
+                            onChanged: (value) {
+                              context.read<HomeBloc>().add(
+                                    HomeEvent.onChangedTabSubtitle(value),
+                                  );
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Enter a Subtitle',
+                              hintText: 'Subtitle',
+                            ),
                           ),
+                          gap10,
                           Padding(
                             padding: top12,
                             child: Row(
