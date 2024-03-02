@@ -38,12 +38,9 @@ class EntryCard extends HookWidget {
           onPressed: () {
             CustomDialog<Widget>.show(
               context: context,
-              title: Text('Delete $title'),
-              content: SizedBox(
-                height: 20,
-                child: Text(
-                  "Are you sure you want to delete entry $title and all it's content?",
-                ),
+              title: Text('Delete $title?'),
+              content: Text(
+                "Are you sure you want to delete entry $title and all it's content?",
               ),
               actions: <Widget>[
                 Row(

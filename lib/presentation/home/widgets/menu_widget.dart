@@ -9,11 +9,13 @@ import 'package:multichoice/presentation/home/widgets/alert_dialog.dart';
 
 class MenuWidget extends StatelessWidget {
   const MenuWidget({
+    required this.ctx,
     required this.homeBloc,
     required this.id,
     super.key,
   });
 
+  final BuildContext ctx;
   final HomeBloc homeBloc;
   final int id;
 
@@ -51,12 +53,12 @@ class MenuWidget extends StatelessWidget {
         MenuItemButton(
           onPressed: () {
             showDialog<AlertDialog>(
-              context: context,
-              builder: (BuildContext context) {
+              context: ctx,
+              builder: (BuildContext dialogContext) {
                 return BlocProvider<HomeBloc>.value(
-                  value: homeBloc,
+                  value: homeBloc..add(HomeEvent.onUpdateTab(id)),
                   child: BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, state) {
+                    builder: (builderCtx, state) {
                       return AlertDialog(
                         title: Text(
                           'Delete All Entries of ${state.tab.title}?',
@@ -73,7 +75,7 @@ class MenuWidget extends StatelessWidget {
                             children: [
                               OutlinedButton(
                                 onPressed: () => Navigator.of(
-                                  context,
+                                  builderCtx,
                                 ).pop(),
                                 child: const Text(
                                   'Cancel',
@@ -82,17 +84,19 @@ class MenuWidget extends StatelessWidget {
                               gap10,
                               ElevatedButton(
                                 onPressed: () {
-                                  context.read<HomeBloc>().add(
-                                        HomeEvent.onPressedDeleteEntries(
-                                          id,
-                                        ),
-                                      );
+                                  context.read<HomeBloc>()
+                                    ..add(
+                                      HomeEvent.onPressedDeleteEntries(
+                                        id,
+                                      ),
+                                    )
+                                    ..add(const HomeEvent.onGetTabs());
 
                                   if (Navigator.canPop(
-                                    context,
+                                    builderCtx,
                                   )) {
                                     Navigator.of(
-                                      context,
+                                      builderCtx,
                                     ).pop();
                                   }
                                 },

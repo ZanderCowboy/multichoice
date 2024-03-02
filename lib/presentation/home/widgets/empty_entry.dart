@@ -79,7 +79,8 @@ class EmptyEntry extends HookWidget {
                                           state.entry.title.isNotEmpty
                                       ? () {
                                           context.read<HomeBloc>().add(
-                                                HomeEvent.onPressedAddEntry(
+                                                const HomeEvent
+                                                    .onPressedAddEntry(
                                                     // tabId,
                                                     ),
                                               );

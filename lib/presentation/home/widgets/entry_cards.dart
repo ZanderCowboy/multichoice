@@ -13,12 +13,7 @@ import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 part 'entry_card.dart';
 
 class Cards extends StatelessWidget {
-  const Cards({
-    required this.tabId,
-    super.key,
-  });
-
-  final int tabId;
+  const Cards({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +41,7 @@ class Cards extends StatelessWidget {
                   final entry = entriesInTab[index];
 
                   return EntryCard(
-                    tabId: tabId,
+                    tabId: state.tab.id,
                     entryId: entry.id,
                     title: entry.title,
                     subtitle: entry.subtitle,
@@ -54,7 +49,7 @@ class Cards extends StatelessWidget {
                 },
               ),
               SliverToBoxAdapter(
-                child: EmptyEntry(tabId: tabId),
+                child: EmptyEntry(tabId: state.tab.id),
               ),
             ],
           ),

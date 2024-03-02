@@ -14,7 +14,7 @@ class VerticalTab extends StatelessWidget {
     return BlocProvider(
       create: (_) => coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(id)),
       child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
+        builder: (ctx, state) {
           return GestureDetector(
             onLongPress: () {
               show<AlertDialog>(context, homeBloc, id);
@@ -31,7 +31,7 @@ class VerticalTab extends StatelessWidget {
                 child: Padding(
                   padding: allPadding4,
                   child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width / 4,
+                    width: MediaQuery.sizeOf(ctx).width / 4,
                     child: Column(
                       children: [
                         Row(
@@ -49,7 +49,11 @@ class VerticalTab extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            MenuWidget(homeBloc: homeBloc, id: id),
+                            MenuWidget(
+                              ctx: context,
+                              homeBloc: homeBloc,
+                              id: id,
+                            ),
                           ],
                         ),
                         const Divider(
@@ -72,7 +76,7 @@ class VerticalTab extends StatelessWidget {
                           ],
                         ),
                         gap10,
-                        Cards(tabId: id),
+                        const Cards(),
                       ],
                     ),
                   ),

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/application/export_application.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 
-Future<T?> show<T>(BuildContext context, HomeBloc bloc, int id) {
+Future<T?> show<T>(BuildContext ctx, HomeBloc bloc, int id) {
   return showDialog<T>(
-    context: context,
+    context: ctx,
     builder: (BuildContext context) {
       return BlocProvider<HomeBloc>.value(
         value: bloc..add(HomeEvent.onUpdateTab(id)),
@@ -13,11 +13,8 @@ Future<T?> show<T>(BuildContext context, HomeBloc bloc, int id) {
           builder: (context, state) {
             return AlertDialog(
               title: Text('Delete ${state.tab.title}?'),
-              content: SizedBox(
-                height: 50,
-                child: Text(
-                  "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
-                ),
+              content: Text(
+                "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
               ),
               actions: <Widget>[
                 Row(
@@ -30,11 +27,13 @@ Future<T?> show<T>(BuildContext context, HomeBloc bloc, int id) {
                     gap10,
                     ElevatedButton(
                       onPressed: () {
-                        context.read<HomeBloc>()
-                          ..add(
-                            HomeEvent.onLongPressedDeleteTab(id),
-                          )
-                          ..add(const HomeEvent.onGetTabs());
+                        context
+                            .read<HomeBloc>()
+                            // bloc
+                            .add(
+                              HomeEvent.onLongPressedDeleteTab(id),
+                            );
+                        bloc.add(const HomeEvent.onGetTabs());
 
                         if (Navigator.canPop(context)) {
                           Navigator.of(context).pop();

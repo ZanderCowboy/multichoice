@@ -43,16 +43,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onGetAllEntryCards: (_) async {
-          emit(state.copyWith(isLoading: true));
-
-          emit(
-            state.copyWith(
-              entryCards: await _entryRepository.readAllEntries(),
-              isLoading: false,
-            ),
-          );
-        },
         onGetEntryCards: (value) async {
           emit(state.copyWith(isLoading: true));
 
@@ -100,13 +90,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
 
           final entry = state.entry;
+          final tab = state.tab;
 
           await _entryRepository.addEntry(
-            value.tabId,
+            tab.id,
             entry.title,
             entry.subtitle,
           );
-          final entryCards = await _entryRepository.readEntries(value.tabId);
+          final entryCards = await _entryRepository.readEntries(
+            tab.id,
+          );
 
           emit(
             state.copyWith(
@@ -169,9 +162,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             await _entryRepository.deleteEntry(tabId, entry.id);
           }
 
+          final result = await _entryRepository.readEntries(tabId) ?? [];
+
           emit(
             state.copyWith(
-              // entryCards: [],
+              entryCards: result,
               isLoading: false,
             ),
           );
@@ -214,7 +209,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onChangedTabSubtitle: (value) {
-          final isValid = _validate(value.text);
+          var isValid = _validate(value.text);
+
+          if (value.text.isEmpty) {
+            isValid = true;
+          }
 
           emit(
             state.copyWith(
@@ -249,7 +248,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         },
         onChangedEntrySubtitle: (value) {
-          final isValid = _validate(value.text);
+          var isValid = _validate(value.text);
+
+          if (value.text.isEmpty) {
+            isValid = true;
+          }
+
           emit(
             state.copyWith(
               isLoading: true,
@@ -265,7 +269,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onEditTab: (_) async {
+        onPressedEditTab: (_) async {
           emit(state.copyWith(isLoading: true));
 
           final tab = state.tab;
@@ -283,7 +287,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
-        onEditEntry: (_) async {
+        onPressedEditEntry: (_) async {
           emit(state.copyWith(isLoading: true));
 
           final entry = state.entry;
@@ -342,6 +346,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
+        onUpdateTabId: (value) async {
+          emit(state.copyWith(tab: state.tab.copyWith(id: value.id)));
+        },
         onUpdateEntry: (value) async {
           final entry =
               await _entryRepository.getEntry(value.tabId, value.entryId);
@@ -356,7 +363,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 }
 
 bool _validate(String value) {
-  final regex = RegExp(r'^[a-zA-Z\s-?!,]+$');
+  final regex = RegExp(r'^[a-zA-Z0-9\s-?!,]+$');
 
   final result = value.isNotEmpty && regex.hasMatch(value);
 
