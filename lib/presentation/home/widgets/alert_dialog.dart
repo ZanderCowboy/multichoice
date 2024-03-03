@@ -6,7 +6,7 @@ import 'package:multichoice/constants/spacing_constants.dart';
 Future<T?> show<T>(BuildContext ctx, HomeBloc bloc, int id) {
   return showDialog<T>(
     context: ctx,
-    builder: (BuildContext context) {
+    builder: (_) {
       return BlocProvider<HomeBloc>.value(
         value: bloc..add(HomeEvent.onUpdateTab(id)),
         child: BlocBuilder<HomeBloc, HomeState>(
@@ -27,13 +27,11 @@ Future<T?> show<T>(BuildContext ctx, HomeBloc bloc, int id) {
                     gap10,
                     ElevatedButton(
                       onPressed: () {
-                        context
-                            .read<HomeBloc>()
-                            // bloc
-                            .add(
-                              HomeEvent.onLongPressedDeleteTab(id),
-                            );
-                        bloc.add(const HomeEvent.onGetTabs());
+                        ctx.read<HomeBloc>()
+                          ..add(
+                            HomeEvent.onLongPressedDeleteTab(id),
+                          )
+                          ..add(const HomeEvent.onGetTabs());
 
                         if (Navigator.canPop(context)) {
                           Navigator.of(context).pop();

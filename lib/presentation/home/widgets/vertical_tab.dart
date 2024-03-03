@@ -11,13 +11,61 @@ class VerticalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = context.read<HomeBloc>();
+
     return BlocProvider(
       create: (_) => coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(id)),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (ctx, state) {
+          if (state.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          }
+
           return GestureDetector(
             onLongPress: () {
-              show<AlertDialog>(context, homeBloc, id);
+              showDialog<AlertDialog>(
+                context: ctx,
+                builder: (_) {
+                  return BlocProvider<HomeBloc>.value(
+                    value: homeBloc..add(HomeEvent.onUpdateTab(id)),
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (ctx, state) {
+                        return AlertDialog(
+                          title: Text('Delete ${state.tab.title}?'),
+                          content: Text(
+                            "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
+                          ),
+                          actions: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: const Text('Cancel'),
+                                ),
+                                gap10,
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<HomeBloc>().add(
+                                          HomeEvent.onLongPressedDeleteTab(id),
+                                        );
+
+                                    if (Navigator.canPop(ctx)) {
+                                      Navigator.of(ctx).pop();
+                                    }
+                                  },
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
             },
             child: Padding(
               padding: right4,

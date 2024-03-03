@@ -5,7 +5,6 @@ import 'package:multichoice/app_router.gr.dart';
 import 'package:multichoice/application/home/home_bloc.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 import 'package:multichoice/models/enums/menu_items.dart';
-import 'package:multichoice/presentation/home/widgets/alert_dialog.dart';
 
 class MenuWidget extends StatelessWidget {
   const MenuWidget({
@@ -23,11 +22,7 @@ class MenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MenuAnchor(
       consumeOutsideTap: true,
-      builder: (
-        BuildContext context,
-        MenuController controller,
-        Widget? child,
-      ) {
+      builder: (_, controller, __) {
         return IconButton(
           onPressed: () {
             if (controller.isOpen) {
@@ -54,7 +49,7 @@ class MenuWidget extends StatelessWidget {
           onPressed: () {
             showDialog<AlertDialog>(
               context: ctx,
-              builder: (BuildContext dialogContext) {
+              builder: (_) {
                 return BlocProvider<HomeBloc>.value(
                   value: homeBloc..add(HomeEvent.onUpdateTab(id)),
                   child: BlocBuilder<HomeBloc, HomeState>(
@@ -118,10 +113,49 @@ class MenuWidget extends StatelessWidget {
         ),
         MenuItemButton(
           onPressed: () {
-            show<AlertDialog>(
-              context,
-              homeBloc,
-              id,
+            showDialog<AlertDialog>(
+              context: ctx,
+              builder: (_) {
+                return BlocProvider<HomeBloc>.value(
+                  value: homeBloc..add(HomeEvent.onUpdateTab(id)),
+                  child: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return AlertDialog(
+                        title: Text('Delete ${state.tab.title}?'),
+                        content: Text(
+                          "Are you sure you want to delete tab ${state.tab.title} and all it's entries?",
+                        ),
+                        actions: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('Cancel'),
+                              ),
+                              gap10,
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.read<HomeBloc>()
+                                    ..add(
+                                      HomeEvent.onLongPressedDeleteTab(id),
+                                    )
+                                    ..add(const HomeEvent.onGetTabs());
+
+                                  if (Navigator.canPop(context)) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              },
             );
           },
           child: Text(MenuItems.delete.name),
