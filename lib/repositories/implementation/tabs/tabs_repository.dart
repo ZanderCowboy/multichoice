@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:multichoice/models/database/export_database.dart';
-import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
 import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.dart';
 import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -24,6 +25,7 @@ class TabsRepository implements ITabsRepository {
             title: title,
             subtitle: subtitle,
             timestamp: DateTime.now(),
+            entryIds: [],
           ),
         );
 
@@ -40,16 +42,46 @@ class TabsRepository implements ITabsRepository {
   @override
   Future<List<TabsDTO>> readTabs() async {
     try {
-      final result = await db.tabs.where().sortByTimestamp().findAll();
+      final tabs = await db.tabs.where().sortByTimestamp().findAll();
 
-      final converter = TabsMapper();
-      final tabsDTO =
-          result.map((tab) => converter.convert<Tabs, TabsDTO>(tab)).toList();
+      final tabsConverter = TabsMapper();
+      final entryConverter = EntryMapper();
 
-      return tabsDTO;
+      final result = <TabsDTO>[];
+      for (final tab in tabs) {
+        final tabDTO = tabsConverter.convert<Tabs, TabsDTO>(tab);
+        final entryIds = tab.entryIds ?? [];
+
+        final entriesDTO = <EntryDTO>[];
+        for (final id in entryIds) {
+          final entry = await db.entrys.get(id) ?? Entry.empty();
+          final entryDTO = entryConverter.convert<Entry, EntryDTO>(entry);
+          entriesDTO.add(entryDTO);
+        }
+
+        final newTabDTO = tabDTO.copyWith(entries: entriesDTO);
+        result.add(newTabDTO);
+      }
+
+      return result;
     } catch (e) {
       log(e.toString());
       return [];
+    }
+  }
+
+  @override
+  Future<TabsDTO> getTab(int tabId) async {
+    try {
+      final tabs = await db.tabs.where().findAll();
+      final result = tabs.firstWhere((element) => element.id == tabId);
+
+      final dto = TabsMapper().convert<Tabs, TabsDTO>(result);
+
+      return dto;
+    } catch (e) {
+      log(e.toString());
+      return TabsDTO.empty();
     }
   }
 

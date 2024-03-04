@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/models/database/entry/entry.dart';
+import 'package:multichoice/models/database/export_database.dart';
 import 'package:multichoice/models/dto/entry/entry_dto.dart';
 import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
 import 'package:multichoice/repositories/interfaces/entry/i_entry_repository.dart';
@@ -26,6 +26,14 @@ class EntryRepository implements IEntryRepository {
           timestamp: DateTime.now(),
         );
 
+        // update tab entry ids as well
+        final tab = await db.tabs.get(tabId);
+        final entryIds = tab?.entryIds ?? [];
+
+        entryIds.add(entry.id);
+        final newTab = tab?.copyWith(entryIds: entryIds) ?? Tabs.empty();
+
+        await db.tabs.put(newTab);
         final result = db.entrys.put(entry);
 
         return result;
@@ -79,6 +87,15 @@ class EntryRepository implements IEntryRepository {
     try {
       await db.writeTxn(() async {
         final result = await db.entrys.delete(entryId);
+
+        final tab = await db.tabs.get(tabId) ?? Tabs.empty();
+        final entryIds = tab.entryIds ?? [];
+        final removed = entryIds.remove(entryId);
+        final newTab = tab.copyWith(entryIds: entryIds);
+
+        if (removed) {
+          await db.tabs.put(newTab);
+        }
 
         return result;
       });
