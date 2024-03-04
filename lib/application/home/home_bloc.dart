@@ -90,15 +90,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(
             state.copyWith(
               isLoading: true,
-            ),
-          );
-
-          emit(
-            state.copyWith(
-              isLoading: false,
               isAdded: true,
             ),
           );
+
           await _entryRepository.addEntry(
             value.tabId,
             value.title,
@@ -165,9 +160,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
           emit(
             state.copyWith(
-              tabs: null,
+              tab: TabsDTO.empty(),
+              tabs: [],
+              entry: EntryDTO.empty(),
               entryCards: null,
               isLoading: false,
+            ),
+          );
+        },
+        onUpdateTab: (value) async {
+          // final tab = await _tabsRepository.getTab(value.tabId);
+          final tab = await _tabsRepository.getTab(value.tabId);
+          // final entries = await _entryRepository.readEntries(value.tabId);
+          emit(
+            state.copyWith(
+              tab: tab,
+              // entryCards: entries,
             ),
           );
         },
