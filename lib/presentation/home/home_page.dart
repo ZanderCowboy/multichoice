@@ -19,9 +19,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => coreSl<HomeBloc>()
-        ..add(const HomeEvent.onGetTabs())
-        ..add(const HomeEvent.onGetAllEntryCards()),
+      create: (context) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
+      // ..add(const HomeEvent.onGetAllEntryCards()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
@@ -80,7 +79,6 @@ class _HomePage extends StatelessWidget {
                 SliverList.builder(
                   itemCount: tabs.length,
                   itemBuilder: (context, index) {
-                    //! Idea: Isn't it possible to pass a tab instance back to the bloc and access it that way, instead of passing it in the UI
                     final tab = tabs[index];
 
                     return VerticalTab(

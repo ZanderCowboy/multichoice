@@ -12,9 +12,12 @@ class VerticalTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+
     return BlocProvider(
-      create: (context) =>
-          coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
+      // create: (context) =>
+      //     coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
+      create: (context) => bloc..add(HomeEvent.onUpdateTab(tabId)),
       child: GestureDetector(
         onLongPress: () {
           CustomDialog<Widget>.show(
