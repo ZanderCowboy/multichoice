@@ -11,6 +11,7 @@ import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.auto_mappr.dart'
       Field('title', custom: TabsMapper.mapTitle),
       Field('subtitle', custom: TabsMapper.mapSubtitle),
       Field('timestamp', custom: TabsMapper.mapTimestamp),
+      Field('entryIds', custom: TabsMapper.mapEntryIds),
     ],
   ),
 ])
@@ -20,4 +21,5 @@ class TabsMapper extends $TabsMapper {
   static String mapSubtitle(Tabs content) => content.subtitle ?? '';
   static DateTime mapTimestamp(Tabs content) =>
       content.timestamp ?? DateTime.now();
+  static List<int> mapEntryIds(Tabs content) => content.entryIds ?? [];
 }

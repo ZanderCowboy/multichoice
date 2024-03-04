@@ -13,6 +13,7 @@ class Tabs with _$Tabs {
     required String title,
     required String? subtitle,
     required DateTime? timestamp,
+    required List<int>? entryIds,
   }) = _Tabs;
 
   const Tabs._();
@@ -22,6 +23,7 @@ class Tabs with _$Tabs {
         title: '',
         subtitle: null,
         timestamp: null,
+        entryIds: null,
       );
 
   factory Tabs.fromJson(Map<String, dynamic> json) => _$TabsFromJson(json);

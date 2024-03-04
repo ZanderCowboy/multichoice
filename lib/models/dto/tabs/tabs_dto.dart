@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
 
 part 'tabs_dto.freezed.dart';
 part 'tabs_dto.g.dart';
@@ -10,6 +11,7 @@ class TabsDTO with _$TabsDTO {
     required String title,
     required String subtitle,
     required DateTime timestamp,
+    required List<EntryDTO> entries,
   }) = _TabsDTO;
 
   factory TabsDTO.empty() => TabsDTO(
@@ -17,6 +19,7 @@ class TabsDTO with _$TabsDTO {
         title: '',
         subtitle: '',
         timestamp: DateTime.now(),
+        entries: [],
       );
 
   factory TabsDTO.fromJson(Map<String, dynamic> json) =>
