@@ -1,29 +1,25 @@
 part of '../home_page.dart';
 
-class EmptyEntry extends StatelessWidget {
-  const EmptyEntry({
-    required this.tabId,
-    super.key,
+class _NewEntry extends StatelessWidget {
+  const _NewEntry({
+    required this.id,
+    required this.entryCount,
   });
 
-  final int tabId;
+  final int id;
+  final int entryCount;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final entryCount = state.entryCards?.length;
-
-        return GestureDetector(
-          onTap: () {
-            CustomDialog<Widget>.show(
+        return AddEntryCard(
+          onPressed: () {
+            CustomDialog<AlertDialog>.show(
               context: context,
               title: const Text('Add New Entry'),
-              content: const SizedBox(
-                height: 20,
-                child: Text(
-                  'TODO: Add FormFields to add data',
-                ),
+              content: const Text(
+                'TODO: Add FormFields to add data',
               ),
               actions: <Widget>[
                 OutlinedButton(
@@ -34,21 +30,18 @@ class EmptyEntry extends StatelessWidget {
                   onPressed: () {
                     context.read<HomeBloc>().add(
                           HomeEvent.onPressedAddEntry(
-                            tabId,
-                            'e-title $entryCount',
-                            'e-s.title $entryCount',
+                            id,
+                            'entry title ${entryCount + 1}',
+                            'subtitle',
                           ),
                         );
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.of(context).pop();
                   },
-                  child: const Text('Ok'),
+                  child: const Text('Add'),
                 ),
               ],
             );
           },
-          child: const AddEntryCard(),
         );
       },
     );
