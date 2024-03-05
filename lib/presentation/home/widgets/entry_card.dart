@@ -1,53 +1,64 @@
 part of '../home_page.dart';
 
-class EntryCard extends StatelessWidget {
-  const EntryCard({
-    required this.title,
-    required this.subtitle,
-    this.tabId,
-    this.entryId,
-    super.key,
-  });
+class _EntryCard extends StatelessWidget {
+  const _EntryCard({required this.entry});
 
-  final String title;
-  final String subtitle;
-  final int? tabId;
-  final int? entryId;
+  final EntryDTO entry;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shadowColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: circularBorder5,
-      ),
-      color: Colors.blueGrey,
-      child: SizedBox(
-        width: 200,
-        child: Padding(
-          padding: allPadding4,
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(title),
-                    Text(subtitle),
-                    Text('t-id: $tabId'),
-                    gap4,
-                    Text('e-id: $entryId'),
-                  ],
-                ),
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onLongPress: () {
+            CustomDialog<AlertDialog>.show(
+              context: context,
+              title: Text('delete ${entry.title}'),
+              content: Text(
+                "Are you sure you want to delete ${entry.title} and all it's data?",
               ),
-              // const Placeholder(
-              //   fallbackHeight: 40,
-              //   fallbackWidth: 40,
-              // ),
-            ],
+              actions: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(
+                          HomeEvent.onLongPressedDeleteEntry(
+                            entry.tabId,
+                            entry.id,
+                          ),
+                        );
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+          child: Card(
+            elevation: 5,
+            shadowColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: circularBorder5,
+            ),
+            color: Colors.blueGrey,
+            child: Padding(
+              padding: allPadding4,
+              child: Column(
+                children: [
+                  Text(entry.title),
+                  Text(entry.subtitle),
+                  Text('t-id: ${entry.tabId}'),
+                  gap4,
+                  Text('e-id: ${entry.id}'),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
