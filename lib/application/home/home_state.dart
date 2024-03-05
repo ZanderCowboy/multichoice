@@ -5,7 +5,6 @@ class HomeState with _$HomeState {
   const factory HomeState({
     required TabsDTO tab,
     required List<TabsDTO>? tabs,
-    required EntryDTO entry,
     required List<EntryDTO>? entryCards,
     required bool isLoading,
     required bool isDeleted,
@@ -16,7 +15,6 @@ class HomeState with _$HomeState {
   factory HomeState.initial() => HomeState(
         tab: TabsDTO.empty(),
         tabs: null,
-        entry: EntryDTO.empty(),
         entryCards: null,
         isLoading: false,
         isDeleted: false,

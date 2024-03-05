@@ -4,9 +4,7 @@ part of 'home_bloc.dart';
 class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onGetTabs() = OnGetTabs;
 
-  const factory HomeEvent.onGetAllEntryCards() = OnGetAllEntryCards;
-
-  const factory HomeEvent.onGetEntryCards(int tabId) = OnGetEntryCards;
+  const factory HomeEvent.onGetTab(int tabId) = OnGetTab;
 
   const factory HomeEvent.onPressedAddTab(
     String title,
@@ -28,6 +26,4 @@ class HomeEvent with _$HomeEvent {
   ) = OnLongPressedDeleteEntry;
 
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
-
-  const factory HomeEvent.onUpdateTab(int tabId) = OnUpdateTab;
 }
