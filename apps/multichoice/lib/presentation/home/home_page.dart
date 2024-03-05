@@ -1,15 +1,15 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/application/home/home_bloc.dart';
-import 'package:multichoice/constants/export_constants.dart';
-import 'package:multichoice/get_it_injection.dart';
-import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/constants/border_constants.dart';
+import 'package:multichoice/constants/spacing_constants.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
-part 'widgets/entry_card.dart';
 part 'widgets/cards.dart';
+part 'widgets/entry_card.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 part 'widgets/vertical_tab.dart';

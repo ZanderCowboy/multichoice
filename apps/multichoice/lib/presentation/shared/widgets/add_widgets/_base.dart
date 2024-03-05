@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/border_constants.dart';
+import 'package:multichoice/constants/spacing_constants.dart';
 
 part 'entry.dart';
 part 'tab.dart';
@@ -11,9 +12,9 @@ class _BaseCard extends StatelessWidget {
     this.color,
     this.shape,
     this.child,
+    this.icon,
     this.padding,
     this.iconSize,
-    this.icon,
   }) : assert(
           (child != null) || (icon != null),
           'Either child or icon must be non-null',
