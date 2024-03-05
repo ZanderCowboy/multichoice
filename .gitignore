@@ -12,6 +12,10 @@ pubspec.lock
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart
+**/*.isar
+**/*.isar.lock
+**/libisar.dylib
+
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.

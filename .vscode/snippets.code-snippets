@@ -1,0 +1,42 @@
+{
+    "Test Arrange Act Assert": {
+        "scope": "dart",
+        "prefix": "taaa",
+        "body": [
+            "test('should ', () async {",
+            "  // Arrange",
+            "  // Act",
+            "  // Assert",
+            "});"
+        ],
+        "description": "Boilerplate test"
+    },
+    "Test Arrange Act Assert Group": {
+        "scope": "dart",
+        "prefix": "gtaaa",
+        "body": [
+            "group('', () {",
+            "  test('should ', () async {",
+            "    // Arrange",
+            "    // Act",
+            "    // Assert",
+            "  });",
+            "});"
+        ],
+        "description": "Boilerplate test"
+    },
+    "Bloc Test": {
+        "scope": "dart",
+        "prefix": "bt",
+        "body": [
+            "blocTest<Bloc, State>(",
+            "   'should ',",
+            "   seed: () => State,",
+            "   build: () => bloc,",
+            "   act: (bloc) => bloc.add(Event),",
+            "   expect: () => [],",
+            "   verify: (_) {},",
+            ");",
+        ]
+    }
+}
