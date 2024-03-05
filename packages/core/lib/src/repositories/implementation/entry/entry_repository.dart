@@ -2,10 +2,8 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/models/database/export_database.dart';
-import 'package:multichoice/models/dto/entry/entry_dto.dart';
-import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
-import 'package:multichoice/repositories/interfaces/entry/i_entry_repository.dart';
+import 'package:models/models.dart';
+import 'package:core/src/repositories/interfaces/entry/i_entry_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: IEntryRepository)

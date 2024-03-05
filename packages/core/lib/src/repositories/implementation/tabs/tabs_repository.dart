@@ -2,11 +2,8 @@ import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
-import 'package:multichoice/models/database/export_database.dart';
-import 'package:multichoice/models/dto/export_dto.dart';
-import 'package:multichoice/models/mappers/entry/entry_dto_mapper.dart';
-import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.dart';
-import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
+import 'package:models/models.dart';
+import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)

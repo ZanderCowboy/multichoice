@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:multichoice/models/dto/export_dto.dart';
-import 'package:multichoice/repositories/interfaces/entry/i_entry_repository.dart';
-import 'package:multichoice/repositories/interfaces/tabs/i_tabs_repository.dart';
+import 'package:models/models.dart';
+import 'package:core/src/repositories/interfaces/entry/i_entry_repository.dart';
+import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
 
 part 'home_bloc.freezed.dart';
 part 'home_event.dart';

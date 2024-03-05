@@ -1,4 +1,4 @@
-import 'package:multichoice/models/dto/entry/entry_dto.dart';
+import 'package:models/models.dart';
 
 abstract class IEntryRepository {
   Future<int> addEntry(

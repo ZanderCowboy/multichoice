@@ -1,5 +1,5 @@
+import 'package:core/src/repositories/export_repositories.dart';
 import 'package:mockito/annotations.dart';
-import 'package:multichoice/repositories/export_repositories.dart';
 
 @GenerateNiceMocks([
   MockSpec<TabsRepository>(as: #MockTabsRepository),

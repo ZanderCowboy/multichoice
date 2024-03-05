@@ -1,4 +1,4 @@
-import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
+import 'package:models/models.dart';
 
 abstract class ITabsRepository {
   Future<int> addTab(String title, String subtitle);

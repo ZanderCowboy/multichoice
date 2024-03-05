@@ -1,4 +1,4 @@
-import 'package:multichoice/models/database/export_database.dart';
+import 'package:models/models.dart';
 
 abstract class DatabaseService {
   DatabaseService._internal();

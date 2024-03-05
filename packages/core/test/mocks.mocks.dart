@@ -7,10 +7,10 @@ import 'dart:async' as _i5;
 
 import 'package:isar/isar.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:multichoice/models/dto/export_dto.dart' as _i3;
-import 'package:multichoice/repositories/implementation/entry/entry_repository.dart'
+import 'package:models/models.dart' as _i3;
+import 'package:core/src/repositories/implementation/entry/entry_repository.dart'
     as _i6;
-import 'package:multichoice/repositories/implementation/tabs/tabs_repository.dart'
+import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart'
     as _i4;
 
 // ignore_for_file: type=lint
