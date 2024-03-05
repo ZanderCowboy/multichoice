@@ -1,8 +1,7 @@
 import 'package:auto_mappr_annotation/auto_mappr_annotation.dart';
-import 'package:multichoice/models/database/entry/entry.dart';
-import 'package:multichoice/models/dto/entry/entry_dto.dart';
+import 'package:models/models.dart';
 
-import 'package:multichoice/models/mappers/entry/entry_dto_mapper.auto_mappr.dart';
+import 'package:models/src/mappers/entry/entry_dto_mapper.auto_mappr.dart';
 
 @AutoMappr([
   MapType<Entry, EntryDTO>(

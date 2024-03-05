@@ -1,8 +1,7 @@
 import 'package:auto_mappr_annotation/auto_mappr_annotation.dart';
-import 'package:multichoice/models/database/tabs/tabs.dart';
-import 'package:multichoice/models/dto/tabs/tabs_dto.dart';
+import 'package:models/models.dart';
 
-import 'package:multichoice/models/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
+import 'package:models/src/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
 
 @AutoMappr([
   MapType<Tabs, TabsDTO>(

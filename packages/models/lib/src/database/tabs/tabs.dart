@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar/isar.dart';
-import 'package:multichoice/utils/extensions/string.dart';
+import 'package:models/src/dto/extensions/string.dart';
 
 part 'tabs.freezed.dart';
 part 'tabs.g.dart';

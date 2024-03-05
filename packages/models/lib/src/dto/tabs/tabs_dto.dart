@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:multichoice/models/dto/export_dto.dart';
+import 'package:models/src/dto/export_dto.dart';
 
 part 'tabs_dto.freezed.dart';
 part 'tabs_dto.g.dart';
