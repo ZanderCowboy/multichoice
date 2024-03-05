@@ -84,7 +84,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "none"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file"
 
       - name: read-config-file
