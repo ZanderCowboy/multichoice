@@ -1,23 +1,20 @@
 part of '../home_page.dart';
 
-class EmptyTab extends StatelessWidget {
-  const EmptyTab({
-    super.key,
-  });
+class _NewTab extends StatelessWidget {
+  const _NewTab();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final tabCount = state.tabs?.length ?? 0;
-
-        return GestureDetector(
-          onTap: () {
-            CustomDialog<Widget>.show(
+        return AddTabCard(
+          width: MediaQuery.sizeOf(context).width / 4,
+          onPressed: () {
+            CustomDialog<AlertDialog>.show(
               context: context,
               title: const Text('Add New Tab'),
               content: const Text('TODO: Add FormFields to enter data.'),
-              actions: <Widget>[
+              actions: [
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Cancel'),
@@ -26,22 +23,17 @@ class EmptyTab extends StatelessWidget {
                   onPressed: () {
                     context.read<HomeBloc>().add(
                           HomeEvent.onPressedAddTab(
-                            't-title $tabCount',
-                            't-s.title $tabCount',
+                            't-title ${state.tabs!.length + 1}',
+                            't-s.title',
                           ),
                         );
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Add'),
                 ),
               ],
             );
           },
-          child: AddTabCard(
-            width: MediaQuery.sizeOf(context).width / 4,
-          ),
         );
       },
     );
