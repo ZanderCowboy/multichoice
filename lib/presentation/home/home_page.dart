@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/application/export_application.dart';
+import 'package:multichoice/application/home/home_bloc.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/get_it_injection.dart';
-import 'package:multichoice/presentation/home/widgets/entry_cards.dart';
+import 'package:multichoice/models/dto/export_dto.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 
-part 'widgets/vertical_tab.dart';
 part 'widgets/entry_card.dart';
-part 'widgets/empty_tab.dart';
-part 'widgets/empty_entry.dart';
+part 'widgets/cards.dart';
+part 'widgets/new_entry.dart';
+part 'widgets/new_tab.dart';
+part 'widgets/vertical_tab.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,7 +21,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
-      // ..add(const HomeEvent.onGetAllEntryCards()),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            body: _HomePage(),
+            body: const _HomePage(),
           );
         },
       ),
@@ -50,45 +50,33 @@ class HomePage extends StatelessWidget {
 }
 
 class _HomePage extends StatelessWidget {
-  _HomePage();
-
-  final ScrollController scrollController = ScrollController();
+  const _HomePage();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {},
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
-
         final tabs = state.tabs ?? [];
 
         return Padding(
           padding: allPadding12,
           child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.375,
+            height: MediaQuery.sizeOf(context).height / 1.25,
             child: CustomScrollView(
               scrollDirection: Axis.horizontal,
-              controller: scrollController,
+              controller: ScrollController(),
               scrollBehavior: CustomScrollBehaviour(),
               slivers: [
                 SliverList.builder(
                   itemCount: tabs.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (_, index) {
                     final tab = tabs[index];
 
-                    return VerticalTab(
-                      tabId: tab.id,
-                      tabTitle: tab.title,
-                    );
+                    return _VerticalTab(tab: tab);
                   },
                 ),
                 const SliverToBoxAdapter(
-                  child: EmptyTab(),
+                  child: _NewTab(),
                 ),
               ],
             ),
