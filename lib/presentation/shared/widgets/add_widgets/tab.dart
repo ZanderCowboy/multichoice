@@ -2,6 +2,7 @@ part of '_base.dart';
 
 class AddTabCard extends StatelessWidget {
   const AddTabCard({
+    required this.onPressed,
     this.semanticLabel,
     this.width,
     super.key,
@@ -9,6 +10,7 @@ class AddTabCard extends StatelessWidget {
 
   final String? semanticLabel;
   final double? width;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,10 @@ class AddTabCard extends StatelessWidget {
         padding: allPadding6,
         child: SizedBox(
           width: width,
-          child: const IconButton(
+          child: IconButton(
             iconSize: 36,
-            onPressed: null,
-            icon: Icon(Icons.add_outlined),
+            onPressed: onPressed,
+            icon: const Icon(Icons.add_outlined),
           ),
         ),
       ),
