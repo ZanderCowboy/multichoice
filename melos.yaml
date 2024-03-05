@@ -1,0 +1,30 @@
+name: multichoice
+
+packages:
+  - apps/*
+  - packages/*
+
+scripts:
+  analyze:
+    exec: dart analyze .
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  build:
+    exec: dart run build_runner build --delete-conflicting-outputs
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  get:
+    exec: flutter pub get
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  clean-build:
+    exec: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    failFast: true
+    concurrency: 1
+    orderDependents: true
