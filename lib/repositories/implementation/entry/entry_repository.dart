@@ -17,7 +17,7 @@ class EntryRepository implements IEntryRepository {
   @override
   Future<int> addEntry(int tabId, String title, String subtitle) async {
     try {
-      await db.writeTxn(() async {
+      return await db.writeTxn(() async {
         final entry = Entry(
           uuid: const Uuid().v4(),
           tabId: tabId,
@@ -26,23 +26,19 @@ class EntryRepository implements IEntryRepository {
           timestamp: DateTime.now(),
         );
 
-        // update tab entry ids as well
         final tab = await db.tabs.get(tabId);
-        final entryIds = tab?.entryIds ?? [];
-
-        entryIds.add(entry.id);
+        final entryIds = [...tab?.entryIds ?? <int>[], entry.id];
         final newTab = tab?.copyWith(entryIds: entryIds) ?? Tabs.empty();
 
         await db.tabs.put(newTab);
-        final result = db.entrys.put(entry);
+        final result = await db.entrys.put(entry);
 
         return result;
       });
     } catch (e) {
       log(e.toString());
+      return 0;
     }
-
-    return 0;
   }
 
   @override
@@ -85,11 +81,11 @@ class EntryRepository implements IEntryRepository {
   @override
   Future<bool> deleteEntry(int tabId, int entryId) async {
     try {
-      await db.writeTxn(() async {
+      return await db.writeTxn(() async {
         final result = await db.entrys.delete(entryId);
 
         final tab = await db.tabs.get(tabId) ?? Tabs.empty();
-        final entryIds = tab.entryIds ?? [];
+        final entryIds = [...tab.entryIds ?? <int>[]];
         final removed = entryIds.remove(entryId);
         final newTab = tab.copyWith(entryIds: entryIds);
 
@@ -101,8 +97,7 @@ class EntryRepository implements IEntryRepository {
       });
     } catch (e) {
       log(e.toString());
+      return false;
     }
-
-    return false;
   }
 }

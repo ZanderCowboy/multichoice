@@ -7,5 +7,5 @@ abstract class ITabsRepository {
 
   Future<TabsDTO> getTab(int tabId);
 
-  Future<bool> deleteTab(int tabId);
+  Future<bool> deleteTab(int? tabId);
 }
