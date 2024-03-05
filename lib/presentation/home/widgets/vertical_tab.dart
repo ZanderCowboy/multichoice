@@ -1,94 +1,68 @@
 part of '../home_page.dart';
 
-class VerticalTab extends StatelessWidget {
-  const VerticalTab({
-    required this.tabId,
-    required this.tabTitle,
-    super.key,
+class _VerticalTab extends StatelessWidget {
+  const _VerticalTab({
+    required this.tab,
   });
 
-  final int tabId;
-  final String tabTitle;
+  final TabsDTO tab;
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<HomeBloc>();
+    final entries = tab.entries;
 
-    return BlocProvider(
-      // create: (context) =>
-      //     coreSl<HomeBloc>()..add(HomeEvent.onGetEntryCards(tabId)),
-      create: (context) => bloc..add(HomeEvent.onUpdateTab(tabId)),
-      child: GestureDetector(
-        onLongPress: () {
-          CustomDialog<Widget>.show(
-            context: context,
-            title: Text('Delete $tabTitle'),
-            content: SizedBox(
-              height: 20,
-              child: Text(
-                "Are you sure you want to delete $tabTitle and all it's data?",
-              ),
-            ),
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  gap10,
-                  ElevatedButton(
-                    onPressed: () {
-                      context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onLongPressedDeleteTab(tabId));
-
-                      if (Navigator.canPop(context)) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text('Delete'),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-        child: Card(
-          color: Colors.grey[300],
-          elevation: 5,
-          shadowColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: circularBorder12,
+    return GestureDetector(
+      onLongPress: () {
+        CustomDialog<AlertDialog>.show(
+          context: context,
+          title: Text('Delete ${tab.title}?'),
+          content: Text(
+            "Are you sure you want to delete ${tab.title} and all it's data?",
           ),
-          child: Padding(
-            padding: allPadding6,
-            child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          tabTitle,
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      const IconButton(
-                        onPressed: null,
-                        icon: Icon(
-                          Icons.minor_crash_rounded,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  gap10,
-                  Cards(tabId: tabId),
-                ],
-              ),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context
+                    .read<HomeBloc>()
+                    .add(HomeEvent.onLongPressedDeleteTab(tab.id));
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+      child: Card(
+        color: Colors.grey[300],
+        elevation: 5,
+        shadowColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: circularBorder12,
+        ),
+        child: Padding(
+          padding: allPadding6,
+          child: SizedBox(
+            width: MediaQuery.sizeOf(context).width / 4,
+            child: Column(
+              children: [
+                gap10,
+                Text(
+                  tab.title,
+                  style: const TextStyle(color: Colors.black),
+                ),
+                Text(tab.subtitle),
+                const Divider(
+                  height: 20,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                gap10,
+                _Cards(id: tab.id, entries: entries),
+              ],
             ),
           ),
         ),
