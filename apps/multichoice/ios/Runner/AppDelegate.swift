@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import UIKit
 import Flutter
 

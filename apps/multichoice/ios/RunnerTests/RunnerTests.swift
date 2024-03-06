@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import Flutter
 import UIKit
 import XCTest
