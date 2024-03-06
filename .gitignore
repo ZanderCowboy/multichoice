@@ -16,6 +16,7 @@ pubspec.lock
 **/*.isar
 **/*.isar.lock
 **/libisar.dylib
+**/coverage
 
 
 # Directory created by dartdoc

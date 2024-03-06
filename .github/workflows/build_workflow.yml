@@ -24,8 +24,16 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - run: echo "The triggering workflow 'Linting' passed and running tests"
-      - run: echo "Tests completed."
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: melos test
+        run: melos test
 
   analyze:
     name: Analyze

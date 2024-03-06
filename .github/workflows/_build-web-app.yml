@@ -26,9 +26,10 @@ jobs:
 
       - name: Start Web Release Build
         run: flutter build web --base-href='/multichoice/' --${{ inputs.environment-flag }}
+        working-directory: ./apps/multichoice
 
       - name: Upload Web Build Files
         uses: actions/upload-artifact@v4
         with:
           name: web-release
-          path: ./build/web
+          path: .apps/multichoice/build/web

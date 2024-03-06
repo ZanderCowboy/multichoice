@@ -29,6 +29,15 @@ scripts:
     concurrency: 1
     orderDependents: true
 
+  test:
+    exec: flutter test --coverage
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+    packageFilters:
+      dart: true
+      scope: "core"
+
 command:
   bootstrap:
     runPubGetInParallel: false
