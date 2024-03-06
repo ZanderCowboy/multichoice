@@ -26,7 +26,7 @@ runs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Bump pubspec version to '${{ inputs.version_number }}'"
-        file_pattern: "pubspec.*"
+        file_pattern: "apps/multichoice/pubspec.*"
         disable_globbing: true
 
     - name: "Run if changes have been detected"
