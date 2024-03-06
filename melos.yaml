@@ -1,8 +1,8 @@
 name: multichoice
 
 packages:
-  - apps/*
-  - packages/*
+  - packages/**
+  - apps/**
 
 scripts:
   analyze:
@@ -28,3 +28,8 @@ scripts:
     failFast: true
     concurrency: 1
     orderDependents: true
+
+command:
+  bootstrap:
+    runPubGetInParallel: false
+    usePubspecOverrides: true

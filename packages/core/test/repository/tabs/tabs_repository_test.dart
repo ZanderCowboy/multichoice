@@ -1,8 +1,8 @@
+import 'package:core/src/repositories/export_repositories.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
-import 'package:core/src/repositories/export_repositories.dart';
 
 import '../../mocks.mocks.dart';
 

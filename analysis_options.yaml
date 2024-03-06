@@ -10,5 +10,3 @@ analyzer:
     - lib/generated/**
     - lib/**.g.dart
     - lib/**.freezed.dart
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options

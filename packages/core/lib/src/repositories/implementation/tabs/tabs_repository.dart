@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:models/models.dart';
-import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
 import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: ITabsRepository)

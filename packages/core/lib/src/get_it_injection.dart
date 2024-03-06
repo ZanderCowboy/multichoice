@@ -1,7 +1,7 @@
-import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
 import 'package:core/src/get_it_injection.config.dart';
 import 'package:core/src/services/interfaces/i_database_service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
 
 final coreSl = GetIt.instance;
 
