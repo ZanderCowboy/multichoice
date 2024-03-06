@@ -57,6 +57,9 @@ jobs:
         run: flutter build appbundle --${{ inputs.environment-flag }}
         working-directory: ./apps/multichoice
 
+      - run: ls build/app/outputs/flutter-apk
+        working-directory: ./apps/multichoice
+
       - name: Upload Android ${{ inputs.environment-flag }}
         uses: actions/upload-artifact@v4
         with:
