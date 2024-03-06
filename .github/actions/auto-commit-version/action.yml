@@ -19,7 +19,7 @@ runs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.download_filename }}
-        path: ${{ github.workspace }}/
+        path: ${{ github.workspace }}/apps/multichoice/
 
     - name: Auto commit new pubspec version
       id: auto-commit-action
