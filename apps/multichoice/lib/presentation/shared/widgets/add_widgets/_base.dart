@@ -15,6 +15,7 @@ class _BaseCard extends StatelessWidget {
     this.icon,
     this.padding,
     this.iconSize,
+    this.onPressed,
   }) : assert(
           (child != null) || (icon != null),
           'Either child or icon must be non-null',
@@ -27,6 +28,7 @@ class _BaseCard extends StatelessWidget {
   final Widget? child;
   final EdgeInsetsGeometry? padding;
   final double? iconSize;
+  final VoidCallback? onPressed;
   final Widget? icon;
 
   @override
@@ -41,9 +43,9 @@ class _BaseCard extends StatelessWidget {
             Padding(
               padding: padding ?? allPadding6,
               child: IconButton(
-                iconSize: iconSize ?? 10,
-                onPressed: null,
                 icon: icon ?? const Icon(Icons.not_interested_rounded),
+                iconSize: iconSize ?? 10,
+                onPressed: onPressed,
               ),
             ),
       ),

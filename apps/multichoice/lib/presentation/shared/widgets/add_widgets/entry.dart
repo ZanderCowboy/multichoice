@@ -3,12 +3,14 @@ part of '_base.dart';
 class AddEntryCard extends StatelessWidget {
   const AddEntryCard({
     required this.onPressed,
+    required this.padding,
     this.semanticLabel,
     super.key,
   });
 
   final String? semanticLabel;
   final VoidCallback? onPressed;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +21,10 @@ class AddEntryCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: circularBorder5,
       ),
-      child: Padding(
-        padding: allPadding6,
-        child: IconButton(
-          onPressed: onPressed,
-          icon: const Icon(Icons.add_outlined),
-          iconSize: 36,
-        ),
-      ),
+      padding: padding,
+      icon: const Icon(Icons.add_outlined),
+      iconSize: 36,
+      onPressed: onPressed,
     );
   }
 }

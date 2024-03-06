@@ -14,6 +14,7 @@ class _NewEntry extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return AddEntryCard(
+          padding: allPadding6,
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
