@@ -1,7 +1,6 @@
 name: core
-description: "A new Flutter package project."
+description: "The core package used in the Multichoice repo"
 version: 0.0.1
-# homepage:
 publish_to: "none"
 
 environment:

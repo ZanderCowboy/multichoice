@@ -1,7 +1,6 @@
 name: models
-description: "A new Flutter package project."
+description: "The models package used in the Multichoice repo"
 version: 0.0.1
-# homepage:
 publish_to: "none"
 
 environment:
