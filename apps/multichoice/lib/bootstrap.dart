@@ -3,10 +3,9 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:core/core.dart';
+import 'package:flutter/material.dart';
 
-/// A simple bloc observer
 class SimpleBlocObserver extends BlocObserver {
-  /// Empty constructor
   const SimpleBlocObserver();
 
   @override
@@ -39,12 +38,7 @@ class SimpleBlocObserver extends BlocObserver {
 }
 
 Future<void> bootstrap() async {
-  Bloc.observer = const SimpleBlocObserver();
-
+  WidgetsFlutterBinding.ensureInitialized();
   await configureCoreDependencies();
-
-  // await runZonedGuarded(
-  //   () async {},
-  //   (error, stackTrace) {},
-  // );
+  Bloc.observer = const SimpleBlocObserver();
 }

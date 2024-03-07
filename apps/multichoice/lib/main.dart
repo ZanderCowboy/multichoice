@@ -1,18 +1,14 @@
 import 'dart:developer';
 import 'dart:io' show Platform;
 
-import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app.dart';
 import 'package:multichoice/bootstrap.dart';
 import 'package:window_size/window_size.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await configureCoreDependencies();
-  Bloc.observer = const SimpleBlocObserver();
+  await bootstrap();
 
   try {
     if (!kIsWeb) {
