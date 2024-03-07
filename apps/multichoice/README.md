@@ -1,6 +1,6 @@
 # multichoice
 
-A new Flutter project.
+The `Multichoice` application can be used to manage a list of entriese, by sorting it into customizable columns using `tabs` and adding individual items to those using `cards`. It can range from TODOs, books to read, ticket management, or even sorting what movies or series you will either watch, busy watching, or have finised watching.
 
 ## Getting Started
 
