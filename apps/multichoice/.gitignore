@@ -72,7 +72,7 @@ app.*.map.json
 /android/app/release
 
 # Generated code from flutter create .
-**/windows/**/generated_plugin_registrant.h
-**/windows/**/generated_plugin_registrant.cc
-**/windows/**/generated_plugins.cmake
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
 
