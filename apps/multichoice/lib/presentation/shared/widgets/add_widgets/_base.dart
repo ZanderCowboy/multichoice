@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/constants/border_constants.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:multichoice/constants/export_constants.dart';
 
 part 'entry.dart';
 part 'tab.dart';

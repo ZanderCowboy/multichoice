@@ -10,7 +10,7 @@ class AddTabCard extends StatelessWidget {
 
   final String? semanticLabel;
   final double? width;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {

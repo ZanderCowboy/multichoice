@@ -49,7 +49,6 @@ class _VerticalTab extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width / 4,
             child: Column(
               children: [
-                gap10,
                 Text(
                   tab.title,
                   style: const TextStyle(color: Colors.black),

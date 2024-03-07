@@ -9,8 +9,8 @@ class AddEntryCard extends StatelessWidget {
   });
 
   final String? semanticLabel;
-  final VoidCallback? onPressed;
-  final EdgeInsetsGeometry? padding;
+  final VoidCallback onPressed;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
