@@ -31,7 +31,20 @@ updates:
   # Core
   #---------------------------
   - package-ecosystem: "pub"
-    directory: "/packages/riga_core"
+    directory: "/packages/core"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Africa/Johannesburg"
+    target-branch: "develop"
+    labels:
+      - "pub dependencies"
+  #---------------------------
+  # Models
+  #---------------------------
+  - package-ecosystem: "pub"
+    directory: "/packages/models"
     schedule:
       interval: "weekly"
       day: "monday"
