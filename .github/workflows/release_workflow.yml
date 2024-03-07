@@ -40,7 +40,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update patch version number and download
@@ -49,7 +49,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update minor version number and download
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update major version number and download
@@ -67,7 +67,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "major"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: read-config-file
