@@ -1,3 +1,7 @@
+# CHANGELOG
+
+This is the changelog for the `models` package used in the Multichoice repo
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial set up `models`
