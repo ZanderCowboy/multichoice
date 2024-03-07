@@ -4,9 +4,3 @@ linter:
   rules:
     public_member_api_docs: false
     lines_longer_than_80_chars: false
-
-analyzer:
-  exclude:
-    - lib/generated/**
-    - lib/**.g.dart
-    - lib/**.freezed.dart
