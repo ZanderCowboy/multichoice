@@ -7,9 +7,10 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-      # day: "sunday"
+      interval: "weekly"
+      day: "monday"
       time: "06:00"
+      timezone: "Africa/Johannesburg"
     target-branch: "develop"
     labels:
       - "github actions dependencies"
@@ -19,9 +20,36 @@ updates:
   - package-ecosystem: "pub"
     directory: "/pub/helpers"
     schedule:
-      interval: "daily"
-      # day: "sunday"
+      interval: "weekly"
+      day: "monday"
       time: "06:00"
+      timezone: "Africa/Johannesburg"
+    target-branch: "develop"
+    labels:
+      - "pub dependencies"
+  #---------------------------
+  # Core
+  #---------------------------
+  - package-ecosystem: "pub"
+    directory: "/packages/core"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Africa/Johannesburg"
+    target-branch: "develop"
+    labels:
+      - "pub dependencies"
+  #---------------------------
+  # Models
+  #---------------------------
+  - package-ecosystem: "pub"
+    directory: "/packages/models"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Africa/Johannesburg"
     target-branch: "develop"
     labels:
       - "pub dependencies"
