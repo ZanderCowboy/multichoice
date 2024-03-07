@@ -8,9 +8,13 @@
 .dart_tool/
 .packages
 build/
-# If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
-# **/pubspec_overrides.yaml
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
 
 # Generated Code
 **/*.freezed.dart
@@ -23,23 +27,17 @@ pubspec.lock
 **/coverage
 **/*.mocks.dart
 
-# Directory created by dartdoc
-# If you don't generate documentation locally you can remove this line.
-doc/api/
-
 # Keys and Secrets
 password.txt
 upload-keystore.*
 **/key.properties
+**/multichoice-*.json
+**/**/.ssh
 
 # dotenv environment variables file
 .env*
 **/tmp.*
-
-# Keys and Secrets
-password.txt
-**/multichoice-*.json
-**/**/.ssh
+**/tmp/
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -49,9 +47,6 @@ password.txt
 *.js_
 *.js.deps
 *.js.map
-
-.flutter-plugins
-.flutter-plugins-dependencies
 
 # Miscellaneous
 *.class
@@ -71,14 +66,3 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/

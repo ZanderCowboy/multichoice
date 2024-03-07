@@ -1,12 +1,14 @@
-# See https://www.dartlang.org/guides/libraries/private-files
-
 # Files and directories created by pub
 .dart_tool/
 .packages
 build/
-# If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
-# **/pubspec_overrides.yaml
+.flutter-plugins
+.flutter-plugins-dependencies
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.pub-cache/
+.pub/
 
 # Generated Code
 **/*.freezed.dart
@@ -18,25 +20,17 @@ pubspec.lock
 **/libisar.dylib
 **/coverage
 
-
-# Directory created by dartdoc
-# If you don't generate documentation locally you can remove this line.
-doc/api/
-
 # Keys and Secrets
 password.txt
 upload-keystore.*
 **/key.properties
+**/multichoice-*.json
+**/**/.ssh
 
 # dotenv environment variables file
 .env*
 **/tmp.*
 **/tmp/
-
-# Keys and Secrets
-password.txt
-**/multichoice-*.json
-**/**/.ssh
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -46,9 +40,6 @@ password.txt
 *.js_
 *.js.deps
 *.js.map
-
-.flutter-plugins
-.flutter-plugins-dependencies
 
 # Miscellaneous
 *.class
@@ -68,22 +59,6 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
 
 # Symbolication related
 app.*.symbols
