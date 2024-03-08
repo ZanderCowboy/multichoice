@@ -91,6 +91,24 @@ class TabsRepository implements ITabsRepository {
   }
 
   @override
+  Future<int> updateTab(int id, String title, String subtitle) async {
+    try {
+      return await db.writeTxn(() async {
+        final tab = await db.tabs.get(id);
+
+        final newTab = tab?.copyWith(title: title, subtitle: subtitle);
+
+        final result = await db.tabs.put(newTab!);
+
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+      return -1;
+    }
+  }
+
+  @override
   Future<bool> deleteTab(int? tabId) async {
     try {
       return await db.writeTxn(() async {

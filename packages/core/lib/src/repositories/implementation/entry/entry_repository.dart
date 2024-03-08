@@ -40,6 +40,21 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
+  Future<EntryDTO> getEntry(int tabId, int entryId) async {
+    try {
+      final entriesInTab = await readEntries(tabId);
+
+      final result =
+          entriesInTab.firstWhere((element) => element.id == entryId);
+
+      return result;
+    } catch (e) {
+      log(e.toString());
+      return EntryDTO.empty();
+    }
+  }
+
+  @override
   Future<List<EntryDTO>> readEntries(int tabId) async {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
@@ -84,7 +99,7 @@ class EntryRepository implements IEntryRepository {
     String subtitle,
   ) async {
     try {
-      await db.writeTxn(() async {
+      return await db.writeTxn(() async {
         final entry = await db.entrys.get(id);
 
         final newEntry = entry?.copyWith(title: title, subtitle: subtitle);
@@ -95,9 +110,8 @@ class EntryRepository implements IEntryRepository {
       });
     } catch (e) {
       log(e.toString());
+      return -1;
     }
-
-    return -1;
   }
 
   @override
@@ -120,21 +134,6 @@ class EntryRepository implements IEntryRepository {
     } catch (e) {
       log(e.toString());
       return false;
-    }
-  }
-
-  @override
-  Future<EntryDTO> getEntry(int tabId, int entryId) async {
-    try {
-      final entriesInTab = await readEntries(tabId);
-
-      final result =
-          entriesInTab.firstWhere((element) => element.id == entryId);
-
-      return result;
-    } catch (e) {
-      log(e.toString());
-      return EntryDTO.empty();
     }
   }
 }
