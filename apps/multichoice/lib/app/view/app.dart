@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/app_router.dart';
+import 'package:multichoice/app/engine/app_router.dart';
 
 class App extends StatelessWidget {
   App({super.key});
