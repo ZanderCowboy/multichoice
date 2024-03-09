@@ -4,7 +4,7 @@ import 'package:models/models.dart';
 import 'package:models/src/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
 
 @AutoMappr([
-  MapType<Tabs, TabDTO>(
+  MapType<Tabs, TabsDTO>(
     fields: [
       Field('uuid', custom: TabsMapper.mapUuid),
       Field('title', custom: TabsMapper.mapTitle),
