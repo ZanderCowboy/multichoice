@@ -7,7 +7,6 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onGetTab(int tabId) = OnGetTab;
 
   const factory HomeEvent.onPressedAddTab() = OnPressedAddTab;
-
   const factory HomeEvent.onPressedAddEntry() = OnPressedAddEntry;
 
   const factory HomeEvent.onChangedTabTitle(String text) = OnChangedTabTitle;
@@ -20,9 +19,7 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.onSubmitEditTab() = OnSubmitEditTab;
   const factory HomeEvent.onSubmitEditEntry() = OnSubmitEditEntry;
-
-  const factory HomeEvent.onPressedCancelTab() = OnPressedCancelTab;
-  const factory HomeEvent.onPressedCancelEntry() = OnPressedCancelEntry;
+  const factory HomeEvent.onPressedCancel() = OnPressedCancel;
 
   const factory HomeEvent.onUpdateTabId(int id) = OnUpdateTabId;
   const factory HomeEvent.onUpdateEntry(int tabId, int entryId) = OnUpdateEntry;

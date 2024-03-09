@@ -38,21 +38,29 @@ class _EntryCard extends StatelessWidget {
             );
           },
           child: Card(
-            elevation: 5,
+            elevation: 7,
             shadowColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: circularBorder5,
             ),
-            color: Colors.blueGrey,
+            color: const Color.fromARGB(255, 81, 153, 187),
             child: Padding(
               padding: allPadding4,
               child: Column(
                 children: [
-                  Text(entry.title),
-                  Text(entry.subtitle),
-                  Text('t-id: ${entry.tabId}'),
-                  gap4,
-                  Text('e-id: ${entry.id}'),
+                  Text(
+                    entry.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    entry.subtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
             ),

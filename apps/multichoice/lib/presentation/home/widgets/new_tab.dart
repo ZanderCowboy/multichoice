@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class _NewTab extends HookWidget {
+class _NewTab extends StatelessWidget {
   const _NewTab();
 
   @override
@@ -52,7 +52,7 @@ class _NewTab extends HookWidget {
                               OutlinedButton(
                                 onPressed: () {
                                   context.read<HomeBloc>().add(
-                                        const HomeEvent.onPressedCancelTab(),
+                                        const HomeEvent.onPressedCancel(),
                                       );
                                   Navigator.of(context).pop();
                                   titleTextController.clear();

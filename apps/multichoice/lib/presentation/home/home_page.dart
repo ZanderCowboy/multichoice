@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 part 'widgets/vertical_tab.dart';
 
+@RoutePage()
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -58,27 +60,29 @@ class _HomePage extends StatelessWidget {
       builder: (context, state) {
         final tabs = state.tabs ?? [];
 
-        return Padding(
-          padding: allPadding12,
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height / 1.25,
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: ScrollController(),
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (_, index) {
-                    final tab = tabs[index];
+        return Center(
+          child: Padding(
+            padding: allPadding12,
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height / 1.25,
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: ScrollController(),
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
 
-                    return _VerticalTab(tab: tab);
-                  },
-                ),
-                const SliverToBoxAdapter(
-                  child: _NewTab(),
-                ),
-              ],
+                      return _VerticalTab(tab: tab);
+                    },
+                  ),
+                  const SliverToBoxAdapter(
+                    child: _NewTab(),
+                  ),
+                ],
+              ),
             ),
           ),
         );
