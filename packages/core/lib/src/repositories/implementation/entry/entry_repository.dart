@@ -136,4 +136,29 @@ class EntryRepository implements IEntryRepository {
       return false;
     }
   }
+
+  @override
+  Future<bool> deleteEntries(int tabId) async {
+    try {
+      return await db.writeTxn(() async {
+        final tab = await db.tabs.get(tabId) ?? Tabs.empty();
+        final entryIds = tab.entryIds ?? [];
+
+        await db.entrys.deleteAll(entryIds);
+
+        final newTab = tab.copyWith(entryIds: null);
+        await db.tabs.put(newTab);
+        await db.tabs.delete(tabId);
+
+        if ((await db.tabs.get(tabId))?.entryIds == null) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
 }

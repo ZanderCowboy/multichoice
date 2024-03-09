@@ -130,4 +130,23 @@ class TabsRepository implements ITabsRepository {
       return false;
     }
   }
+
+  @override
+  Future<bool> deleteTabs() async {
+    try {
+      return await db.writeTxn(() async {
+        await db.entrys.clear();
+        await db.tabs.clear();
+
+        if (await db.tabs.count() == 0) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
 }

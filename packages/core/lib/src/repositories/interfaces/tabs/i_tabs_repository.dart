@@ -10,4 +10,6 @@ abstract class ITabsRepository {
   Future<int> updateTab(int id, String title, String subtitle);
 
   Future<bool> deleteTab(int? tabId);
+
+  Future<bool> deleteTabs();
 }

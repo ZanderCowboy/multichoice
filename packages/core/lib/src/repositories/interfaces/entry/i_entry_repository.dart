@@ -21,4 +21,6 @@ abstract class IEntryRepository {
     int tabId,
     int entryId,
   );
+
+  Future<bool> deleteEntries(int tabId);
 }
