@@ -22,7 +22,7 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onPressedCancel() = OnPressedCancel;
 
   const factory HomeEvent.onUpdateTabId(int id) = OnUpdateTabId;
-  const factory HomeEvent.onUpdateEntry(int tabId, int entryId) = OnUpdateEntry;
+  const factory HomeEvent.onUpdateEntry(int id) = OnUpdateEntry;
 
   const factory HomeEvent.onLongPressedDeleteTab(int tabId) =
       OnLongPressedDeleteTab;
