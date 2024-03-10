@@ -27,8 +27,9 @@ This ticket was to add the necessary and required widgets to the dialog for addi
 - [X] Add `menu item` for tabs to `clear entries`
 - [X] Create Edit Page for Entries
 - [X] Add menu options to entries
+- [X] Multiple refactorings to use new decoupled files structure
 
 ### What needs to be done
 
-- [ ] Deleting tabs from the `menu` does not render correctly everytime
-- [ ] Adding new entries use data from previous entry added
+- [X] Deleting tabs from the `menu` does not render correctly everytime
+- [X] Adding new entries use data from previous entry added
