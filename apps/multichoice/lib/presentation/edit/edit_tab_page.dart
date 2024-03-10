@@ -24,7 +24,7 @@ class EditTabPage extends StatelessWidget {
           leading: IconButton(
             onPressed: () {
               ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
-              context.router.pop();
+              context.router.popUntilRoot();
             },
             icon: const Icon(
               Icons.arrow_back_ios_new_outlined,
@@ -46,7 +46,7 @@ class _EditPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading || state.tab.id == 0) {
+        if (state.isLoading) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
@@ -89,9 +89,9 @@ class _EditPage extends StatelessWidget {
                     TextButton(
                       onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
-                              context.read<HomeBloc>()
-                                ..add(const HomeEvent.onSubmitEditTab())
-                                ..add(const HomeEvent.onGetTabs());
+                              context
+                                  .read<HomeBloc>()
+                                  .add(const HomeEvent.onSubmitEditTab());
 
                               context.router.popUntilRoot();
                             }
@@ -103,7 +103,7 @@ class _EditPage extends StatelessWidget {
                         context.read<HomeBloc>().add(
                               const HomeEvent.onPressedCancel(),
                             );
-                        context.router.pop();
+                        context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
                     ),

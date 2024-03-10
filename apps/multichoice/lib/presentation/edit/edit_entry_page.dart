@@ -25,6 +25,7 @@ class EditEntryPage extends StatelessWidget {
               title: const Text('Edit entry'),
               leading: IconButton(
                 onPressed: () {
+                  ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
                   context.router.popUntilRoot();
                 },
                 icon: const Icon(
@@ -49,6 +50,12 @@ class _EditEntryPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        }
+
         return Padding(
           padding: allPadding12,
           child: Form(
@@ -100,7 +107,7 @@ class _EditEntryPage extends StatelessWidget {
                         context.read<HomeBloc>().add(
                               const HomeEvent.onPressedCancel(),
                             );
-                        context.router.pop();
+                        context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
                     ),
