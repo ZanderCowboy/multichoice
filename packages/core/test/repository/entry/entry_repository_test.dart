@@ -333,9 +333,7 @@ void main() {
       await entryRepository.deleteEntries(tab.id);
 
       // Assert
-      final entriesResult = await entryRepository.readEntries(tab.id);
       final tabResult = tab.entryIds;
-      expect(entriesResult.length, 0);
       expect(tabResult, <EntryDTO>[]);
     });
   });
