@@ -165,6 +165,24 @@ void main() {
   });
 
   group('EntryRepository - updateEntry', () {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+      entryRepository = EntryRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+      await tabsRepository.addTab('not a title', 'not a subtitle');
+      await tabsRepository.addTab('another t', 'another sub');
+
+      final tabs = await db.tabs.where().findAll();
+      final tab = tabs.firstWhere((element) => element.title == 'another t');
+      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
+      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+    });
+
     test('should return int when updateEntry is called', () async {
       // Arrange
       final entries = await db.entrys.where().findAll();
