@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/application/home/home_bloc.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 
 @RoutePage()
@@ -17,21 +17,24 @@ class EditEntryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: ctx.read<HomeBloc>(),
-      child: Scaffold(
-        backgroundColor: Colors.blue[100],
-        appBar: AppBar(
-          title: const Text('Edit entry'),
-          leading: IconButton(
-            onPressed: () {
-              ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancelEntry());
-              context.router.pop();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.blue[100],
+            appBar: AppBar(
+              title: const Text('Edit entry'),
+              leading: IconButton(
+                onPressed: () {
+                  context.router.popUntilRoot();
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                ),
+              ),
             ),
-          ),
-        ),
-        body: const _EditEntryPage(),
+            body: const _EditEntryPage(),
+          );
+        },
       ),
     );
   }
@@ -46,12 +49,6 @@ class _EditEntryPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading || state.entry.id == 0) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
-
         return Padding(
           padding: allPadding12,
           child: Form(
@@ -89,13 +86,9 @@ class _EditEntryPage extends StatelessWidget {
                     TextButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
-                              context.read<HomeBloc>()
-                                ..add(const HomeEvent.onPressedEditEntry())
-                                ..add(
-                                  HomeEvent.onGetEntryCards(
-                                    state.entry.tabId,
-                                  ),
-                                );
+                              context
+                                  .read<HomeBloc>()
+                                  .add(const HomeEvent.onSubmitEditEntry());
 
                               context.router.popUntilRoot();
                             }
@@ -105,7 +98,7 @@ class _EditEntryPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancelEntry(),
+                              const HomeEvent.onPressedCancel(),
                             );
                         context.router.pop();
                       },
