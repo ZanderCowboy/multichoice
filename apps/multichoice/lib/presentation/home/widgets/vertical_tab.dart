@@ -15,7 +15,25 @@ class _VerticalTab extends StatelessWidget {
       onLongPress: () {
         CustomDialog<AlertDialog>.show(
           context: context,
-          title: Text('Delete ${tab.title}?'),
+          title: RichText(
+            text: TextSpan(
+              text: 'Delete ',
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+              children: [
+                TextSpan(
+                  text: tab.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(
+                  text: '?',
+                  style:
+                      DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+                ),
+              ],
+            ),
+          ),
           content: Text(
             "Are you sure you want to delete tab ${tab.title} and all it's entries?",
           ),
@@ -66,7 +84,7 @@ class _VerticalTab extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // TODOadd MenuWidget
+                      MenuWidget(tab: tab),
                     ],
                   ),
                   const Divider(
