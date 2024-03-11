@@ -36,13 +36,13 @@ runs:
     - name: Update version in pubspec.yaml
       shell: bash
       run: |
-        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update-pubspec.outputs.new-version }}/g" pubspec.yaml
+        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update-pubspec.outputs.new-version }}/g" apps/multichoice/pubspec.yaml
 
     - name: Upload pubspec.yaml
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.upload-filename }}
-        path: pubspec.yaml
+        path: apps/multichoice/pubspec.yaml
 
     - name: Echo version number
       id: id_out

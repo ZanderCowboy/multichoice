@@ -1,0 +1,44 @@
+name: multichoice
+
+packages:
+  - packages/**
+  - apps/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  build:
+    exec: dart run build_runner build --delete-conflicting-outputs
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  get:
+    exec: flutter pub get
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  clean-build:
+    exec: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+
+  test:
+    exec: flutter test --coverage
+    failFast: true
+    concurrency: 1
+    orderDependents: true
+    packageFilters:
+      dart: true
+      scope: "core"
+
+command:
+  bootstrap:
+    runPubGetInParallel: false
+    usePubspecOverrides: true
