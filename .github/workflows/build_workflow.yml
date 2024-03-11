@@ -24,8 +24,16 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - run: echo "The triggering workflow 'Linting' passed and running tests"
-      - run: echo "Tests completed."
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: melos test all
+        run: melos test:all
 
   analyze:
     name: Analyze
@@ -84,7 +92,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "none"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file"
 
       - name: read-config-file

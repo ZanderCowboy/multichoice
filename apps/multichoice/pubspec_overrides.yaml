@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: core,models
+dependency_overrides:
+  core:
+    path: ../../packages/core
+  models:
+    path: ../../packages/models

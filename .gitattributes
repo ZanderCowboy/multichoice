@@ -1,3 +1,10 @@
-*.vcproj    eol=crlf
-*.sh		eol=lf
-*.dart      eol=crlf
+*.vcproj        eol=crlf
+*.sh		    eol=lf
+*.dart          eol=crlf
+**.*.dart       eol=crlf
+*.swift         eol=lf
+*.xc*           eol=lf
+*.xml           eol=crlf
+*.gradle        eol=crlf
+*.plist         eol=lf
+*.storyboard    eol=lf
