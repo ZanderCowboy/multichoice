@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class CustomDialog<T> {
   CustomDialog.show({
     required this.context,
-    required this.title,
-    required this.actions,
+    this.title,
+    this.actions,
     this.content,
   }) {
     showDialog<T>(

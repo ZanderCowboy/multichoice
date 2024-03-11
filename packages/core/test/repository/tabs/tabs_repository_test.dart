@@ -24,37 +24,28 @@ void main() {
     tabsRepository = TabsRepository(db);
     entryRepository = EntryRepository(db);
     mockTabsRepository = MockTabsRepository();
-
-    await db.writeTxn(() => db.clear());
-    await tabsRepository.addTab('title', 'subtitle');
-    await tabsRepository.addTab('not a title', 'not a subtitle');
-    await tabsRepository.addTab('another t', 'another sub');
-
-    final tabs = await db.tabs.where().findAll();
-    final tab = tabs.firstWhere((element) => element.title == 'another t');
-    await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-    await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
   });
+
+  tearDown(() => db.close());
 
   group('TabsRepository - addTab', () {
     test('should return int when addTab is called', () async {
       // Arrange
+      await db.writeTxn(() => db.clear());
+
       // Act
       await tabsRepository.addTab('new title', 'new subtitle');
-      final tabs = await tabsRepository.readTabs();
+      final tabs = await db.tabs.where().findAll();
       final result = tabs.length;
 
       // Assert
-      expect(result, 4);
+      expect(result, 1);
     });
 
     test('should add a new tab when addTab is called', () async {
       // Arrange
       const title = 'Test Title';
       const subtitle = 'Test Subtitle';
-
-      when(mockTabsRepository.addTab(title, subtitle))
-          .thenAnswer((_) => Future.value(1));
 
       // Act
       final result = await tabsRepository.addTab(title, subtitle);
@@ -63,17 +54,28 @@ void main() {
       final tabs = await db.tabs.where().findAll();
       expect(result, tabs.firstWhere((element) => element.title == title).id);
     });
-
-    test('should throw an error wehn addTab is called', () async {
-      // Arrange
-      // Act
-      // Assert
-    });
   });
 
   group('TabsRepository - readTabs', () {
-    setUp(() async {});
-    test('should return a list of TabsDTO when readTabs is called', () async {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+      entryRepository = EntryRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+      await tabsRepository.addTab('not a title', 'not a subtitle');
+      await tabsRepository.addTab('another t', 'another sub');
+
+      final tabs = await db.tabs.where().findAll();
+      final tab = tabs.firstWhere((element) => element.title == 'another t');
+      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
+      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+    });
+
+    test('should return List<TabsDTO> when readTabs is called', () async {
       // Arrange
       final tabs = await db.tabs.where().findAll();
       final entries = await db.entrys.where().findAll();
@@ -135,6 +137,18 @@ void main() {
   });
 
   group('TabsRepository - getTab', () {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+      entryRepository = EntryRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+      await tabsRepository.addTab('not a title', 'not a subtitle');
+      await tabsRepository.addTab('another t', 'another sub');
+    });
     test('should return a TabsDTO instance when getTab is called', () async {
       // Arrange
       final tabs = await db.tabs.where().findAll();
@@ -157,23 +171,74 @@ void main() {
     });
   });
 
+  group('TabsRepository - updateTab', () {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+    });
+    test('should return int when updateTab is called', () async {
+      // Arrange
+      final tab = (await db.tabs.where().findAll()).first;
+
+      // Act
+      final result = await tabsRepository.updateTab(
+        tab.id,
+        'who let the dogs out',
+        'me',
+      );
+
+      // Assert
+      expect(result, tab.id);
+    });
+  });
+
   group('TabsRepository - deleteTab', () {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+      await tabsRepository.addTab('not a title', 'not a subtitle');
+
+      final tabs = await db.tabs.where().findAll();
+      final tab = tabs.firstWhere((element) => element.title == 'not a title');
+      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
+      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+    });
+    test('should return bool when deleteTab is called', () async {
+      // Arrange
+      final tabs = await db.tabs.where().findAll();
+      final tab = tabs.firstWhere((element) => element.title == 'title');
+
+      // Act
+      final result = await tabsRepository.deleteTab(tab.id);
+
+      // Assert
+      expect(result, true);
+    });
     test(
         "should delete a tab and all it's entries and return a bool when deleteTab is called",
         () async {
       // Arrange
       final tabs = await db.tabs.where().findAll();
       final tabId =
-          tabs.firstWhere((element) => element.title == 'another t').id;
-
-      when(mockTabsRepository.deleteTab(any))
-          .thenAnswer((_) => Future.value(true));
+          tabs.firstWhere((element) => element.title == 'not a title').id;
 
       // Act
       final result = await tabsRepository.deleteTab(tabId);
 
       // Assert
+      final entries = await db.entrys.where().findAll();
       expect(result, true);
+      expect(entries.length, 0);
     });
 
     test('should return false when deleteTab is called on a tab not in the db',
@@ -189,6 +254,39 @@ void main() {
 
       // Assert
       expect(result, false);
+    });
+  });
+
+  group('TabsRepository - deleteTabs', () {
+    setUp(() async {
+      if (!db.isOpen) {
+        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      }
+      tabsRepository = TabsRepository(db);
+
+      await db.writeTxn(() => db.clear());
+      await tabsRepository.addTab('title', 'subtitle');
+      await tabsRepository.addTab('not a title', 'not a subtitle');
+      await tabsRepository.addTab('another t', 'another sub');
+    });
+    test('should return bool when deleteTabs is called', () async {
+      // Arrange
+
+      // Act
+      final result = await tabsRepository.deleteTabs();
+
+      // Assert
+      expect(result, true);
+    });
+    test('should delete all the entries and all the tabs', () async {
+      // Arrange
+
+      // Act
+      await tabsRepository.deleteTabs();
+
+      // Assert
+      expect(await db.tabs.count(), 0);
+      expect(await db.entrys.count(), 0);
     });
   });
 }

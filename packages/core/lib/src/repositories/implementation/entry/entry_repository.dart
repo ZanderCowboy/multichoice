@@ -40,6 +40,20 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
+  Future<EntryDTO> getEntry(int entryId) async {
+    try {
+      final entry = await db.entrys.get(entryId) ?? Entry.empty();
+
+      final result = EntryMapper().convert<Entry, EntryDTO>(entry);
+
+      return result;
+    } catch (e) {
+      log(e.toString());
+      return EntryDTO.empty();
+    }
+  }
+
+  @override
   Future<List<EntryDTO>> readEntries(int tabId) async {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
@@ -77,6 +91,29 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
+  Future<int> updateEntry(
+    int id,
+    int tabId,
+    String title,
+    String subtitle,
+  ) async {
+    try {
+      return await db.writeTxn(() async {
+        final entry = await db.entrys.get(id);
+
+        final newEntry = entry?.copyWith(title: title, subtitle: subtitle);
+
+        final result = await db.entrys.put(newEntry!);
+
+        return result;
+      });
+    } catch (e) {
+      log(e.toString());
+      return -1;
+    }
+  }
+
+  @override
   Future<bool> deleteEntry(int tabId, int entryId) async {
     try {
       return await db.writeTxn(() async {
@@ -92,6 +129,30 @@ class EntryRepository implements IEntryRepository {
         }
 
         return result;
+      });
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> deleteEntries(int tabId) async {
+    try {
+      return await db.writeTxn(() async {
+        final tab = await db.tabs.get(tabId) ?? Tabs.empty();
+        final entryIds = tab.entryIds ?? [];
+
+        await db.entrys.deleteAll(entryIds);
+
+        final newTab = tab.copyWith(entryIds: null);
+        await db.tabs.put(newTab);
+
+        if ((await db.tabs.get(tabId))?.entryIds == null) {
+          return true;
+        } else {
+          return false;
+        }
       });
     } catch (e) {
       log(e.toString());

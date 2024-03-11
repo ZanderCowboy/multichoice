@@ -21,6 +21,7 @@ pubspec.lock
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart
+**/*.gr.dart
 **/*.isar
 **/*.isar.lock
 **/libisar.dylib
