@@ -3,11 +3,9 @@ part of '../home_page.dart';
 class _NewEntry extends StatelessWidget {
   const _NewEntry({
     required this.tabId,
-    required this.entryCount,
   });
 
   final int tabId;
-  final int entryCount;
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +22,9 @@ class _NewEntry extends StatelessWidget {
               context: context,
               title: RichText(
                 text: TextSpan(
-                  text: 'Add new entry',
+                  text: 'Add New Entry',
                   style:
                       DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
-                  // children: [
-                  //   TextSpan(
-                  //     text: state.tab.title,
-                  //     style: const TextStyle(
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ],
                 ),
               ),
               content: BlocProvider.value(

@@ -6,7 +6,7 @@
 
 ### Overview
 
-This was a bug issue where the UI code was rewritten to make there is a solid understanding of `BLoC` and state management
+This was a bug issue where the UI code was rewritten to make sure there is a solid understanding of `BLoC` and state management
 
 ### What was done
 
@@ -14,10 +14,7 @@ This was a bug issue where the UI code was rewritten to make there is a solid un
 - [X] Added `tabs_repository_test.dart`
 - [X] Rewrote the UI code and did cleanup
 - [X] Merged changes from #98 into this branch and refactored issues
-
-### What needs to be done
-
-- [ ] Update [#11](https://github.com/ZanderCowboy/multichoice/issues/11) after merging this branch and refactor codebase accordingly
+- [X] Update [#11](https://github.com/ZanderCowboy/multichoice/issues/11) after merging this branch and refactor codebase accordingly
 
 ### Resources
 

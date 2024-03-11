@@ -29,7 +29,6 @@ class _Cards extends StatelessWidget {
               SliverToBoxAdapter(
                 child: _NewEntry(
                   tabId: id,
-                  entryCount: entries.length,
                 ),
               ),
             ],

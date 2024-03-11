@@ -41,9 +41,6 @@ scripts:
 
   test:core:
     run: flutter test -j 1 --coverage
-    # run: |
-    #   melos exec -c 1 --fail-fast -- \
-    #     "flutter test"
     exec:
       failFast: true
       concurrency: 1
@@ -55,4 +52,3 @@ scripts:
 command:
   bootstrap:
     runPubGetInParallel: false
-    # usePubspecOverrides: true
