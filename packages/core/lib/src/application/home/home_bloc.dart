@@ -37,16 +37,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(state.copyWith(isLoading: true));
 
           final tab = await _tabsRepository.getTab(value.tabId);
-          final entries = await _entryRepository.readEntries(value.tabId);
+
           emit(
             state.copyWith(
               tab: tab,
-              entryCards: entries,
               isLoading: false,
             ),
           );
         },
-        onPressedAddTab: (value) async {
+        onPressedAddTab: (_) async {
           emit(
             state.copyWith(
               isLoading: true,
@@ -54,17 +53,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
 
-          await _tabsRepository.addTab(value.title, value.subtitle);
+          final tab = state.tab;
+          await _tabsRepository.addTab(tab.title, tab.subtitle);
+          final tabs = await _tabsRepository.readTabs();
 
           emit(
             state.copyWith(
-              tabs: await _tabsRepository.readTabs(),
+              tab: TabsDTO.empty(),
+              tabs: tabs,
               isLoading: false,
               isAdded: false,
             ),
           );
         },
-        onPressedAddEntry: (value) async {
+        onPressedAddEntry: (_) async {
           emit(
             state.copyWith(
               isLoading: true,
@@ -72,21 +74,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
 
+          final tab = state.tab;
+          final entry = state.entry;
+
           await _entryRepository.addEntry(
-            value.tabId,
-            value.title,
-            value.subtitle,
+            tab.id,
+            entry.title,
+            entry.subtitle,
           );
 
-          final entryCards = await _entryRepository.readEntries(
-            value.tabId,
-          );
           final tabs = await _tabsRepository.readTabs();
 
           emit(
             state.copyWith(
+              tab: TabsDTO.empty(),
               tabs: tabs,
-              entryCards: entryCards,
+              entry: EntryDTO.empty(),
               isLoading: false,
               isAdded: false,
             ),
@@ -137,23 +140,155 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
         },
+        onPressedDeleteAllEntries: (value) async {
+          emit(state.copyWith(isLoading: true));
+
+          final result = await _entryRepository.deleteEntries(value.tabId);
+          final tabs = await _tabsRepository.readTabs();
+
+          if (result) {
+            emit(
+              state.copyWith(
+                tabs: tabs,
+                entryCards: [],
+                isLoading: false,
+              ),
+            );
+          } else {
+            emit(
+              state.copyWith(
+                errorMessage: 'Tab entries failed to delete.',
+              ),
+            );
+          }
+        },
         onPressedDeleteAll: (_) async {
           emit(state.copyWith(isLoading: true));
 
-          final tabs = await _tabsRepository.readTabs();
+          final result = await _tabsRepository.deleteTabs();
 
-          for (final element in tabs) {
-            await _tabsRepository.deleteTab(element.id);
+          if (result) {
+            emit(
+              state.copyWith(
+                tab: TabsDTO.empty(),
+                tabs: [],
+                entry: EntryDTO.empty(),
+                entryCards: null,
+                isLoading: false,
+                isValid: false,
+              ),
+            );
+          } else {
+            emit(state.copyWith(errorMessage: 'Failed to delete all tabs.'));
+          }
+        },
+        onChangedTabTitle: (value) {
+          final isValid = _validate(value.text);
+
+          emit(
+            state.copyWith(
+              tab: state.tab.copyWith(title: value.text),
+              isValid: isValid,
+            ),
+          );
+        },
+        onChangedTabSubtitle: (value) {
+          var isValid = _validate(value.text);
+
+          if (value.text.isEmpty) {
+            isValid = true;
           }
 
           emit(
             state.copyWith(
-              tab: TabsDTO.empty(),
-              tabs: [],
-              entryCards: null,
-              isLoading: false,
+              tab: state.tab.copyWith(subtitle: value.text),
+              isValid: isValid,
             ),
           );
+        },
+        onChangedEntryTitle: (value) {
+          final isValid = _validate(value.text);
+
+          emit(
+            state.copyWith(
+              entry: state.entry.copyWith(title: value.text),
+              isValid: isValid,
+            ),
+          );
+        },
+        onChangedEntrySubtitle: (value) {
+          var isValid = _validate(value.text);
+
+          if (value.text.isEmpty) {
+            isValid = true;
+          }
+
+          emit(
+            state.copyWith(
+              entry: state.entry.copyWith(subtitle: value.text),
+              isValid: isValid,
+            ),
+          );
+        },
+        onSubmitEditTab: (OnSubmitEditTab value) async {
+          emit(state.copyWith(isLoading: true));
+
+          final tab = state.tab;
+
+          await _tabsRepository.updateTab(tab.id, tab.title, tab.subtitle);
+
+          final tabs = await _tabsRepository.readTabs();
+
+          emit(
+            state.copyWith(
+              tab: TabsDTO.empty(),
+              tabs: tabs,
+              isLoading: false,
+              isValid: false,
+            ),
+          );
+        },
+        onSubmitEditEntry: (OnSubmitEditEntry value) async {
+          emit(state.copyWith(isLoading: true));
+
+          final entry = state.entry;
+
+          await _entryRepository.updateEntry(
+            entry.id,
+            entry.tabId,
+            entry.title,
+            entry.subtitle,
+          );
+
+          final tabs = await _tabsRepository.readTabs();
+          final entryCards = await _entryRepository.readEntries(entry.tabId);
+
+          emit(
+            state.copyWith(
+              tabs: tabs,
+              entry: EntryDTO.empty(),
+              entryCards: entryCards,
+              isLoading: false,
+              isValid: false,
+            ),
+          );
+        },
+        onPressedCancel: (_) {
+          emit(
+            state.copyWith(
+              tab: TabsDTO.empty(),
+              entry: EntryDTO.empty(),
+              isValid: false,
+            ),
+          );
+        },
+        onUpdateTabId: (value) async {
+          final tab = await _tabsRepository.getTab(value.id);
+          emit(state.copyWith(tab: tab, isValid: false));
+        },
+        onUpdateEntry: (value) async {
+          final entry = await _entryRepository.getEntry(value.id);
+          emit(state.copyWith(entry: entry, isValid: false));
         },
       );
     });
@@ -161,4 +296,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
+}
+
+bool _validate(String value) {
+  final regex = RegExp(r'^[a-zA-Z0-9\s-?!,]+$');
+
+  final result = value.isNotEmpty && regex.hasMatch(value);
+
+  return result;
 }

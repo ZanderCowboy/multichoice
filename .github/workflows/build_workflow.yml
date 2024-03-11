@@ -32,8 +32,8 @@ jobs:
       - name: Set up Flutter
         uses: ./.github/actions/setup-flutter
 
-      - name: melos test
-        run: melos test
+      - name: melos test all
+        run: melos test:all
 
   analyze:
     name: Analyze

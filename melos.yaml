@@ -6,39 +6,53 @@ packages:
 
 scripts:
   analyze:
-    exec: dart analyze .
-    failFast: true
-    concurrency: 1
-    orderDependents: true
+    run: dart analyze .
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
 
   build:
-    exec: dart run build_runner build --delete-conflicting-outputs
-    failFast: true
-    concurrency: 1
-    orderDependents: true
+    run: dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
 
   get:
-    exec: flutter pub get
-    failFast: true
-    concurrency: 1
-    orderDependents: true
+    run: flutter pub get
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
 
   clean-build:
-    exec: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
-    failFast: true
-    concurrency: 1
-    orderDependents: true
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 10
+      orderDependents: true
 
-  test:
-    exec: flutter test --coverage
-    failFast: true
-    concurrency: 1
-    orderDependents: true
+  test:all:
+    run: |
+      melos run test:core --no-select
+    description: |
+      Run all tests available.
+
+  test:core:
+    run: flutter test -j 1 --coverage
+    # run: |
+    #   melos exec -c 1 --fail-fast -- \
+    #     "flutter test"
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
     packageFilters:
-      dart: true
+      flutter: true
       scope: "core"
 
 command:
   bootstrap:
     runPubGetInParallel: false
-    usePubspecOverrides: true
+    # usePubspecOverrides: true
