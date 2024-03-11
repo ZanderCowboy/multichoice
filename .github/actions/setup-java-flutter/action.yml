@@ -16,14 +16,22 @@ runs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: "3.16.x"
+        flutter-version: "3.19.x"
         channel: "stable"
         cache: true
 
-    - name: Get dependencies
+    - name: Activate Melos
       shell: bash
-      run: flutter pub get
+      run: dart pub global activate melos
 
-    - name: Dart Build-runner
+    - name: melos bootstrap
       shell: bash
-      run: dart run build_runner build --delete-conflicting-outputs
+      run: melos bootstrap
+
+    - name: melos clean-build
+      shell: bash
+      run: melos clean-build
+
+    - name: melos bootstrap
+      shell: bash
+      run: melos bootstrap

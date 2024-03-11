@@ -1,27 +1,44 @@
-# See https://www.dartlang.org/guides/libraries/private-files
+# Ignore platform code in root directory
+/android/
+/ios/
+/web/
+/windows/
 
 # Files and directories created by pub
 .dart_tool/
 .packages
 build/
-# If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
 
-# Directory created by dartdoc
-# If you don't generate documentation locally you can remove this line.
-doc/api/
+# Generated Code
+**/*.freezed.dart
+**/*.g.dart
+**/*.config.dart
+**/*.auto_mappr.dart
+**/*.gr.dart
+**/*.isar
+**/*.isar.lock
+**/libisar.dylib
+**/coverage
+**/*.mocks.dart
 
 # Keys and Secrets
 password.txt
 upload-keystore.*
+**/key.properties
+**/multichoice-*.json
+**/**/.ssh
 
 # dotenv environment variables file
 .env*
-
-# Keys and Secrets
-password.txt
-**/multichoice-*.json
-**/**/.ssh
+**/tmp.*
+**/tmp/
 
 # Avoid committing generated Javascript files:
 *.dart.js
@@ -31,9 +48,6 @@ password.txt
 *.js_
 *.js.deps
 *.js.map
-
-.flutter-plugins
-.flutter-plugins-dependencies
 
 # Miscellaneous
 *.class
@@ -53,30 +67,3 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
