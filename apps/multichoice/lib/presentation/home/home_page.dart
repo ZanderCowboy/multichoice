@@ -39,9 +39,28 @@ class HomePage extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {
-                    context
-                        .read<HomeBloc>()
-                        .add(const HomeEvent.onPressedDeleteAll());
+                    CustomDialog<AlertDialog>.show(
+                      context: context,
+                      title: const Text('Delete all tabs and entries?'),
+                      content: const Text(
+                        'Are you sure you want to delete all tabs and their entries?',
+                      ),
+                      actions: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('No, cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context
+                                .read<HomeBloc>()
+                                .add(const HomeEvent.onPressedDeleteAll());
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Yes, delete'),
+                        ),
+                      ],
+                    );
                   },
                   icon: const Icon(
                     Icons.delete_sweep_rounded,
@@ -71,7 +90,7 @@ class _HomePage extends StatelessWidget {
           child: Padding(
             padding: allPadding12,
             child: SizedBox(
-              height: MediaQuery.sizeOf(context).height / 1.25,
+              height: MediaQuery.sizeOf(context).height / 1.15,
               child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: ScrollController(),
