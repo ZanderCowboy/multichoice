@@ -16,7 +16,7 @@ class _NewEntry extends StatelessWidget {
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
         return AddEntryCard(
-          padding: allPadding6,
+          padding: zeroPadding,
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
@@ -47,6 +47,7 @@ class _NewEntry extends StatelessWidget {
                               hintText: 'Title',
                             ),
                           ),
+                          gap10,
                           TextFormField(
                             controller: subtitleTextController,
                             onChanged: (value) => context.read<HomeBloc>().add(

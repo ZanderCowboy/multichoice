@@ -58,18 +58,15 @@ class _VerticalTab extends StatelessWidget {
         padding: right4,
         child: Card(
           color: context.theme.appColors.primary,
-          elevation: 5,
-          shadowColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: borderCircular12,
-          ),
           child: Padding(
-            padding: vertical8horizontal4,
+            padding: allPadding2,
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width / 4,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Padding(
@@ -83,18 +80,23 @@ class _VerticalTab extends StatelessWidget {
                       MenuWidget(tab: tab),
                     ],
                   ),
-                  const Divider(
+                  Divider(
+                    color: context.theme.appColors.secondaryLight,
+                    thickness: 2,
                     indent: 4,
                     endIndent: 4,
                   ),
-                  Padding(
-                    padding: left4,
-                    child: Text(
-                      tab.subtitle,
-                      style: context.theme.appTextTheme.titleSmall,
+                  if (tab.subtitle.isEmpty)
+                    const SizedBox.shrink()
+                  else
+                    Padding(
+                      padding: left4,
+                      child: Text(
+                        tab.subtitle,
+                        style: context.theme.appTextTheme.subtitleMedium,
+                      ),
                     ),
-                  ),
-                  gap10,
+                  gap4,
                   _Cards(id: tab.id, entries: entries),
                 ],
               ),

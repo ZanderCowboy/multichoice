@@ -25,6 +25,17 @@ class AppTheme with ChangeNotifier {
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         ),
       ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.white,
+        selectionHandleColor: Colors.grey,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll(
+            AppPalette.grey.geyserLight,
+          ),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: _lightAppColors.secondary,
@@ -57,6 +68,19 @@ class AppTheme with ChangeNotifier {
         titleMedium: _lightTextTheme.titleMedium,
         bodyMedium: _lightTextTheme.bodyMedium,
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: const TextStyle(color: AppPalette.white),
+        hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
+        floatingLabelStyle: const TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: borderCircular8,
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: borderCircular8,
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+      ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
@@ -80,7 +104,7 @@ class AppTheme with ChangeNotifier {
     primaryLight: AppPalette.grey.geyserLight,
     secondary: AppPalette.grey.sanJuan,
     secondaryLight: AppPalette.grey.sanJuanLight,
-    ternary: null,
+    ternary: AppPalette.grey.bigStone,
     foreground: AppPalette.grey.bigStone,
     background: AppPalette.grey.slateGray,
     white: null,
@@ -99,9 +123,11 @@ class AppTheme with ChangeNotifier {
       color: AppPalette.grey.bigStone,
     ),
     subtitleLarge: null,
-    subtitleMedium: null,
+    subtitleMedium: AppTypography.subtitleMedium.copyWith(
+      color: AppPalette.grey.bigStone,
+    ),
     subtitleSmall: null,
-    bodyLarge: null,
+    bodyLarge: AppTypography.bodyLarge,
     bodyMedium: AppTypography.bodyMedium.copyWith(
       color: AppPalette.grey.geyser,
     ),
@@ -167,6 +193,23 @@ class AppTheme with ChangeNotifier {
         size: 18,
         color: AppPalette.paletteTwo.sanJuan,
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: const TextStyle(color: AppPalette.white),
+        hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
+        floatingLabelStyle: const TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: borderCircular8,
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: borderCircular8,
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.white,
+        selectionHandleColor: Colors.grey,
+      ),
       extensions: [
         _darkAppColors,
         _darkTextTheme,
@@ -179,7 +222,7 @@ class AppTheme with ChangeNotifier {
     primaryLight: AppPalette.paletteTwo.geyserLight,
     secondary: AppPalette.paletteTwo.slateGray,
     secondaryLight: AppPalette.paletteTwo.slateGrayLight,
-    ternary: null,
+    ternary: AppPalette.paletteTwo.sanJuan,
     foreground: AppPalette.paletteTwo.bigStone,
     background: AppPalette.paletteTwo.slateGray,
     white: null,
@@ -198,7 +241,9 @@ class AppTheme with ChangeNotifier {
       color: AppPalette.paletteTwo.sanJuan,
     ),
     subtitleLarge: null,
-    subtitleMedium: null,
+    subtitleMedium: AppTypography.subtitleMedium.copyWith(
+      color: AppPalette.paletteTwo.sanJuan,
+    ),
     subtitleSmall: null,
     bodyLarge: AppTypography.bodyLarge.copyWith(
       color: AppPalette.paletteTwo.sanJuan,

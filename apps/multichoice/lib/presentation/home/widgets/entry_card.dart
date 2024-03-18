@@ -92,8 +92,8 @@ class _EntryCard extends HookWidget {
             child: Padding(
               padding: allPadding2,
               child: Card(
-                elevation: 7,
-                shadowColor: Colors.white,
+                elevation: 3,
+                shadowColor: Colors.grey[400],
                 shape: RoundedRectangleBorder(
                   borderRadius: borderCircular5,
                 ),

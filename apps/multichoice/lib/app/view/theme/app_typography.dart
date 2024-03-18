@@ -35,11 +35,11 @@ abstract class AppTypography {
   );
   static const subtitleLarge = TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w500,
   );
   static const subtitleMedium = TextStyle(
     fontSize: 16,
-    fontWeight: FontWeight.w300,
+    fontWeight: FontWeight.w400,
   );
   static const subtitleSmall = TextStyle(
     fontSize: 12,

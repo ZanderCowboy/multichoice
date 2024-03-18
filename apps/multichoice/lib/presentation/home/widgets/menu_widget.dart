@@ -24,6 +24,7 @@ class MenuWidget extends StatelessWidget {
                 }
               },
               icon: const Icon(Icons.more_vert_outlined),
+              color: context.theme.appColors.ternary,
               padding: EdgeInsets.zero,
             );
           },

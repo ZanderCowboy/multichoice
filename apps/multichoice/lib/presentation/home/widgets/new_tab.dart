@@ -35,6 +35,7 @@ class _NewTab extends StatelessWidget {
                               hintText: 'Title',
                             ),
                           ),
+                          gap10,
                           TextFormField(
                             controller: subtitleTextController,
                             onChanged: (value) => context

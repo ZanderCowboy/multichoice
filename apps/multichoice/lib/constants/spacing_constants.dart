@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 // Gaps
 const gap4 = Gap(4);
 
+const gap8 = Gap(8);
+
 const gap10 = Gap(10);
 
 const gap12 = Gap(12);
@@ -17,6 +19,8 @@ const gap24 = Gap(24);
 const gap56 = Gap(56);
 
 // Padding
+const zeroPadding = EdgeInsets.zero;
+
 const allPadding2 = EdgeInsets.all(2);
 
 const allPadding4 = EdgeInsets.all(4);

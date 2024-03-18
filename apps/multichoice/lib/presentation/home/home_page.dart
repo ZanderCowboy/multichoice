@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
+part 'widgets/drawer.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
@@ -35,13 +36,7 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Multichoice'),
-              centerTitle: true,
-              backgroundColor: Colors.lightBlue,
               actions: [
-                _ThemeButton(
-                  sharedPref: coreSl<SharedPreferences>(),
-                  state: state,
-                ),
                 IconButton(
                   onPressed: () {
                     context
@@ -54,47 +49,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            drawer: Drawer(
-              width: MediaQuery.sizeOf(context).width,
-              backgroundColor: context.theme.appColors.background,
-              child: Padding(
-                padding: allPadding12,
-                child: Column(
-                  children: [
-                    gap56,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Settings',
-                            style: context.theme.appTextTheme.titleMedium
-                                ?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            if (Navigator.canPop(context)) {
-                              Navigator.pop(context);
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.close_outlined,
-                            size: 28,
-                          ),
-                        ),
-                      ],
-                    ),
-                    gap24,
-                    _ThemeButton(
-                      sharedPref: coreSl<SharedPreferences>(),
-                      state: state,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            drawer: const HomeDrawer(),
             body: const _HomePage(),
           );
         },
