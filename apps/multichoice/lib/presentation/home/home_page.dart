@@ -5,11 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
+import 'package:multichoice/app/extensions/theme_getter.dart';
+import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
 import 'package:multichoice/constants/border_constants.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
@@ -34,6 +38,10 @@ class HomePage extends StatelessWidget {
               centerTitle: true,
               backgroundColor: Colors.lightBlue,
               actions: [
+                _ThemeButton(
+                  sharedPref: coreSl<SharedPreferences>(),
+                  state: state,
+                ),
                 IconButton(
                   onPressed: () {
                     context
@@ -45,6 +53,47 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            drawer: Drawer(
+              width: MediaQuery.sizeOf(context).width,
+              backgroundColor: context.theme.appColors.background,
+              child: Padding(
+                padding: allPadding12,
+                child: Column(
+                  children: [
+                    gap56,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Settings',
+                            style: context.theme.appTextTheme.titleMedium
+                                ?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (Navigator.canPop(context)) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.close_outlined,
+                            size: 28,
+                          ),
+                        ),
+                      ],
+                    ),
+                    gap24,
+                    _ThemeButton(
+                      sharedPref: coreSl<SharedPreferences>(),
+                      state: state,
+                    ),
+                  ],
+                ),
+              ),
             ),
             body: const _HomePage(),
           );
@@ -91,5 +140,47 @@ class _HomePage extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _ThemeButton extends StatelessWidget {
+  const _ThemeButton({
+    required this.sharedPref,
+    required this.state,
+  });
+
+  final SharedPreferences sharedPref;
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.theme == 'light') {
+      return IconButton(
+        onPressed: () {
+          _darkMode(context);
+          sharedPref.setString('theme', 'dark');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.dark_mode_outlined),
+      );
+    } else if (state.theme == 'dark') {
+      return IconButton(
+        onPressed: () {
+          _lightMode(context);
+          sharedPref.setString('theme', 'light');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.light_mode_outlined),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  void _lightMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.light;
+  }
+
+  void _darkMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.dark;
   }
 }

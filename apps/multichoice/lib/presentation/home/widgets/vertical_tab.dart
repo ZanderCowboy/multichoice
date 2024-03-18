@@ -57,14 +57,14 @@ class _VerticalTab extends StatelessWidget {
       child: Padding(
         padding: right4,
         child: Card(
-          color: Colors.grey[200],
+          color: context.theme.appColors.primary,
           elevation: 5,
           shadowColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: circularBorder12,
+            borderRadius: borderCircular12,
           ),
           child: Padding(
-            padding: allPadding4,
+            padding: vertical8horizontal4,
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width / 4,
               child: Column(
@@ -76,11 +76,7 @@ class _VerticalTab extends StatelessWidget {
                           padding: left4,
                           child: Text(
                             tab.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                            ),
+                            style: context.theme.appTextTheme.titleSmall,
                           ),
                         ),
                       ),
@@ -95,7 +91,7 @@ class _VerticalTab extends StatelessWidget {
                     padding: left4,
                     child: Text(
                       tab.subtitle,
-                      style: const TextStyle(color: Colors.black),
+                      style: context.theme.appTextTheme.titleSmall,
                     ),
                   ),
                   gap10,

@@ -89,31 +89,35 @@ class _EntryCard extends HookWidget {
                 menuController.open();
               }
             },
-            child: Card(
-              elevation: 7,
-              shadowColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: circularBorder5,
-              ),
-              color: const Color.fromARGB(255, 81, 153, 187),
-              child: Padding(
-                padding: allPadding4,
-                child: Column(
-                  children: [
-                    Text(
-                      entry.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+            child: Padding(
+              padding: allPadding2,
+              child: Card(
+                elevation: 7,
+                shadowColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: borderCircular5,
+                ),
+                margin: EdgeInsets.zero,
+                color: context.theme.appColors.secondary,
+                child: Padding(
+                  padding: allPadding4,
+                  child: Column(
+                    children: [
+                      Text(
+                        entry.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    Text(
-                      entry.subtitle,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      Text(
+                        entry.subtitle,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
