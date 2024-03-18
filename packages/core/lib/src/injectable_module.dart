@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:models/models.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class InjectableModule {
@@ -19,5 +20,14 @@ abstract class InjectableModule {
     );
 
     return isar;
+  }
+
+  @preResolve
+  Future<SharedPreferences> get sharedPref async {
+    final sharedPref = await SharedPreferences.getInstance();
+
+    await sharedPref.setString('theme', 'light');
+
+    return sharedPref;
   }
 }
