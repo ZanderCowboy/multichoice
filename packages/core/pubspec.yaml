@@ -20,6 +20,7 @@ dependencies:
   models: ^0.0.1
   package_info_plus: ^4.2.0
   path_provider: ^2.1.2
+  shared_preferences: ^2.2.2
   uuid: ^4.3.3
   version: ^3.0.2
 

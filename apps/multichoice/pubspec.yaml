@@ -17,6 +17,9 @@ dependencies:
   flutter_hooks: ^0.20.5
   gap: ^3.0.1
   models: ^0.0.1
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  theme: ^0.0.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding

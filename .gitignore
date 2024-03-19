@@ -21,6 +21,7 @@ pubspec.lock
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart
+**/*.tailor.dart
 **/*.gr.dart
 **/*.isar
 **/*.isar.lock

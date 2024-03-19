@@ -5,14 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
+import 'package:multichoice/app/extensions/theme_getter.dart';
+import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
 import 'package:multichoice/constants/border_constants.dart';
 import 'package:multichoice/constants/spacing_constants.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
+part 'widgets/drawer.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
@@ -31,14 +36,31 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Multichoice'),
-              centerTitle: true,
-              backgroundColor: Colors.lightBlue,
               actions: [
                 IconButton(
                   onPressed: () {
-                    context
-                        .read<HomeBloc>()
-                        .add(const HomeEvent.onPressedDeleteAll());
+                    CustomDialog<AlertDialog>.show(
+                      context: context,
+                      title: const Text('Delete all tabs and entries?'),
+                      content: const Text(
+                        'Are you sure you want to delete all tabs and their entries?',
+                      ),
+                      actions: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('No, cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context
+                                .read<HomeBloc>()
+                                .add(const HomeEvent.onPressedDeleteAll());
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Yes, delete'),
+                        ),
+                      ],
+                    );
                   },
                   icon: const Icon(
                     Icons.delete_sweep_rounded,
@@ -46,6 +68,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+            drawer: const HomeDrawer(),
             body: const _HomePage(),
           );
         },
@@ -67,7 +90,7 @@ class _HomePage extends StatelessWidget {
           child: Padding(
             padding: allPadding12,
             child: SizedBox(
-              height: MediaQuery.sizeOf(context).height / 1.25,
+              height: MediaQuery.sizeOf(context).height / 1.15,
               child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: ScrollController(),
@@ -91,5 +114,47 @@ class _HomePage extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _ThemeButton extends StatelessWidget {
+  const _ThemeButton({
+    required this.sharedPref,
+    required this.state,
+  });
+
+  final SharedPreferences sharedPref;
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.theme == 'light') {
+      return IconButton(
+        onPressed: () {
+          _darkMode(context);
+          sharedPref.setString('theme', 'dark');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.dark_mode_outlined),
+      );
+    } else if (state.theme == 'dark') {
+      return IconButton(
+        onPressed: () {
+          _lightMode(context);
+          sharedPref.setString('theme', 'light');
+          context.read<HomeBloc>().add(const HomeEvent.onPressedTheme());
+        },
+        icon: const Icon(Icons.light_mode_outlined),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  void _lightMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.light;
+  }
+
+  void _darkMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.dark;
   }
 }
