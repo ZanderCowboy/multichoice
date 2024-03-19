@@ -90,7 +90,7 @@ class _EntryCard extends HookWidget {
               }
             },
             child: Padding(
-              padding: allPadding2,
+              padding: allPadding4,
               child: Card(
                 elevation: 3,
                 shadowColor: Colors.grey[400],
@@ -101,22 +101,21 @@ class _EntryCard extends HookWidget {
                 color: context.theme.appColors.secondary,
                 child: Padding(
                   padding: allPadding4,
-                  child: Column(
-                    children: [
-                      Text(
-                        entry.title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height / 12,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          entry.title,
+                          style: context.theme.appTextTheme.titleSmall,
                         ),
-                      ),
-                      Text(
-                        entry.subtitle,
-                        style: const TextStyle(
-                          fontSize: 14,
+                        Text(
+                          entry.subtitle,
+                          style: context.theme.appTextTheme.subtitleSmall,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -23,7 +23,9 @@ class MenuWidget extends StatelessWidget {
                   menuController.open();
                 }
               },
+              visualDensity: VisualDensity.compact,
               icon: const Icon(Icons.more_vert_outlined),
+              iconSize: 20,
               color: context.theme.appColors.ternary,
               padding: EdgeInsets.zero,
             );

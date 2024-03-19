@@ -54,52 +54,49 @@ class _VerticalTab extends StatelessWidget {
           ],
         );
       },
-      child: Padding(
-        padding: right4,
-        child: Card(
-          color: context.theme.appColors.primary,
-          child: Padding(
-            padding: allPadding2,
-            child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: left4,
-                          child: Text(
-                            tab.title,
-                            style: context.theme.appTextTheme.titleSmall,
-                          ),
+      child: Card(
+        color: context.theme.appColors.primary,
+        child: Padding(
+          padding: allPadding2,
+          child: SizedBox(
+            width: MediaQuery.sizeOf(context).width / 3.65,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: left4top4,
+                        child: Text(
+                          tab.title,
+                          style: context.theme.appTextTheme.titleMedium,
                         ),
                       ),
-                      MenuWidget(tab: tab),
-                    ],
-                  ),
-                  Divider(
-                    color: context.theme.appColors.secondaryLight,
-                    thickness: 2,
-                    indent: 4,
-                    endIndent: 4,
-                  ),
-                  if (tab.subtitle.isEmpty)
-                    const SizedBox.shrink()
-                  else
-                    Padding(
-                      padding: left4,
-                      child: Text(
-                        tab.subtitle,
-                        style: context.theme.appTextTheme.subtitleMedium,
-                      ),
                     ),
-                  gap4,
-                  _Cards(id: tab.id, entries: entries),
-                ],
-              ),
+                    MenuWidget(tab: tab),
+                  ],
+                ),
+                if (tab.subtitle.isEmpty)
+                  const SizedBox.shrink()
+                else
+                  Padding(
+                    padding: left4,
+                    child: Text(
+                      tab.subtitle,
+                      style: context.theme.appTextTheme.subtitleMedium,
+                    ),
+                  ),
+                Divider(
+                  color: context.theme.appColors.secondaryLight,
+                  thickness: 2,
+                  indent: 4,
+                  endIndent: 4,
+                ),
+                gap4,
+                _Cards(id: tab.id, entries: entries),
+              ],
             ),
           ),
         ),

@@ -70,7 +70,10 @@ class AppTheme with ChangeNotifier {
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: const TextStyle(color: AppPalette.white),
-        hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
+        hintStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
         floatingLabelStyle: const TextStyle(color: Colors.white),
         enabledBorder: OutlineInputBorder(
           borderRadius: borderCircular8,
@@ -120,13 +123,15 @@ class AppTheme with ChangeNotifier {
       color: AppPalette.grey.bigStone,
     ),
     titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.grey.bigStone,
+      color: AppPalette.grey.geyser,
     ),
     subtitleLarge: null,
     subtitleMedium: AppTypography.subtitleMedium.copyWith(
       color: AppPalette.grey.bigStone,
     ),
-    subtitleSmall: null,
+    subtitleSmall: AppTypography.subtitleSmall.copyWith(
+      color: AppPalette.grey.geyser,
+    ),
     bodyLarge: AppTypography.bodyLarge,
     bodyMedium: AppTypography.bodyMedium.copyWith(
       color: AppPalette.grey.geyser,
@@ -140,16 +145,18 @@ class AppTheme with ChangeNotifier {
     return defaultTheme.copyWith(
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: _darkAppColors.foreground,
+          foregroundColor: _darkAppColors.white,
           textStyle: AppTypography.bodyLarge,
-          side: BorderSide(color: _darkAppColors.primary ?? Colors.white),
+          side: BorderSide(
+            color: _darkAppColors.white ?? Colors.white,
+          ),
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: AppPalette.paletteTwo.slateGray,
-          backgroundColor: AppPalette.paletteTwo.geyser,
+          foregroundColor: AppPalette.paletteTwo.primary0,
+          backgroundColor: AppPalette.white,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           textStyle: AppTypography.bodyLarge,
         ),
@@ -195,7 +202,10 @@ class AppTheme with ChangeNotifier {
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: const TextStyle(color: AppPalette.white),
-        hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
+        hintStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
         floatingLabelStyle: const TextStyle(color: Colors.white),
         enabledBorder: OutlineInputBorder(
           borderRadius: borderCircular8,
@@ -210,6 +220,13 @@ class AppTheme with ChangeNotifier {
         cursorColor: Colors.white,
         selectionHandleColor: Colors.grey,
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll(
+            AppPalette.grey.geyserLight,
+          ),
+        ),
+      ),
       extensions: [
         _darkAppColors,
         _darkTextTheme,
@@ -218,14 +235,15 @@ class AppTheme with ChangeNotifier {
   }();
 
   static final _darkAppColors = AppColorsExtension(
-    primary: AppPalette.paletteTwo.geyser,
-    primaryLight: AppPalette.paletteTwo.geyserLight,
-    secondary: AppPalette.paletteTwo.slateGray,
+    // primary: AppPalette.paletteTwo.geyser,
+    primary: AppPalette.paletteTwo.primary5,
+    primaryLight: AppPalette.grey.geyserLight.withOpacity(0.2),
+    secondary: AppPalette.paletteTwo.primary10,
     secondaryLight: AppPalette.paletteTwo.slateGrayLight,
     ternary: AppPalette.paletteTwo.sanJuan,
-    foreground: AppPalette.paletteTwo.bigStone,
-    background: AppPalette.paletteTwo.slateGray,
-    white: null,
+    foreground: AppPalette.paletteTwo.primary15,
+    background: AppPalette.paletteTwo.primary0,
+    white: AppPalette.white,
     black: AppPalette.black,
   );
 
@@ -235,21 +253,23 @@ class AppTheme with ChangeNotifier {
     h1: null,
     titleLarge: null,
     titleMedium: AppTypography.titleMedium.copyWith(
-      color: AppPalette.paletteTwo.sanJuan,
+      color: AppPalette.paletteTwo.geyser,
     ),
     titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.paletteTwo.sanJuan,
+      color: AppPalette.paletteTwo.primary5,
     ),
     subtitleLarge: null,
     subtitleMedium: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.paletteTwo.sanJuan,
+      color: AppPalette.paletteTwo.geyser,
     ),
-    subtitleSmall: null,
+    subtitleSmall: AppTypography.subtitleMedium.copyWith(
+      color: AppPalette.paletteTwo.primary5,
+    ),
     bodyLarge: AppTypography.bodyLarge.copyWith(
-      color: AppPalette.paletteTwo.sanJuan,
+      color: AppPalette.paletteTwo.primary5,
     ),
     bodyMedium: AppTypography.bodyMedium.copyWith(
-      color: AppPalette.paletteTwo.sanJuan,
+      color: AppPalette.paletteTwo.geyser,
     ),
     bodySmall: null,
   );
