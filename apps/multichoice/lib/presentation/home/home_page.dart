@@ -5,11 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
-import 'package:multichoice/app/extensions/theme_getter.dart';
+import 'package:multichoice/app/extensions/extension_getters.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
-import 'package:multichoice/constants/border_constants.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
@@ -38,30 +37,32 @@ class HomePage extends StatelessWidget {
               title: const Text('Multichoice'),
               actions: [
                 IconButton(
-                  onPressed: () {
-                    CustomDialog<AlertDialog>.show(
-                      context: context,
-                      title: const Text('Delete all tabs and entries?'),
-                      content: const Text(
-                        'Are you sure you want to delete all tabs and their entries?',
-                      ),
-                      actions: [
-                        OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('No, cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            context
-                                .read<HomeBloc>()
-                                .add(const HomeEvent.onPressedDeleteAll());
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Yes, delete'),
-                        ),
-                      ],
-                    );
-                  },
+                  onPressed: state.tabs != null
+                      ? () {
+                          CustomDialog<AlertDialog>.show(
+                            context: context,
+                            title: const Text('Delete all tabs and entries?'),
+                            content: const Text(
+                              'Are you sure you want to delete all tabs and their entries?',
+                            ),
+                            actions: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('No, cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.read<HomeBloc>().add(
+                                        const HomeEvent.onPressedDeleteAll(),
+                                      );
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Yes, delete'),
+                              ),
+                            ],
+                          );
+                        }
+                      : null,
                   icon: const Icon(
                     Icons.delete_sweep_rounded,
                   ),
