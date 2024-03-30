@@ -90,7 +90,7 @@ class _EditEntryPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(
+                    OutlinedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
                               const HomeEvent.onPressedCancel(),
@@ -99,7 +99,7 @@ class _EditEntryPage extends StatelessWidget {
                       },
                       child: const Text('Cancel'),
                     ),
-                    TextButton(
+                    ElevatedButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
                               context
