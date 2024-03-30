@@ -12,7 +12,9 @@ import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
@@ -28,6 +30,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firstTooltip = GlobalKey();
+    final secondTooltip = GlobalKey();
+
     return BlocProvider(
       create: (context) => coreSl<HomeBloc>()
         ..add(
@@ -35,45 +40,75 @@ class HomePage extends StatelessWidget {
         ),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              actions: [
-                IconButton(
-                  onPressed: state.tabs != null
-                      ? () {
-                          CustomDialog<AlertDialog>.show(
-                            context: context,
-                            title: const Text('Delete all tabs and entries?'),
-                            content: const Text(
-                              'Are you sure you want to delete all tabs and their entries?',
-                            ),
-                            actions: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('No, cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  context.read<HomeBloc>().add(
-                                        const HomeEvent.onPressedDeleteAll(),
-                                      );
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Yes, delete'),
-                              ),
-                            ],
-                          );
-                        }
-                      : null,
-                  icon: const Icon(
-                    Icons.delete_sweep_rounded,
+          return ProductTour(
+            firstTooltip: firstTooltip,
+            secondTooltip: secondTooltip,
+            builder: (context) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Multichoice'),
+                  actions: [
+                    Showcase(
+                      key: firstTooltip,
+                      description: 'Delete all data',
+                      onBarrierClick: () => productTourController.nextStep(
+                        context: context,
+                      ),
+                      child: IconButton(
+                        onPressed: state.tabs != null
+                            ? () {
+                                CustomDialog<AlertDialog>.show(
+                                  context: context,
+                                  title: const Text(
+                                    'Delete all tabs and entries?',
+                                  ),
+                                  content: const Text(
+                                    'Are you sure you want to delete all tabs and their entries?',
+                                  ),
+                                  actions: [
+                                    OutlinedButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('No, cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        context.read<HomeBloc>().add(
+                                              const HomeEvent
+                                                  .onPressedDeleteAll(),
+                                            );
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Yes, delete'),
+                                    ),
+                                  ],
+                                );
+                              }
+                            : null,
+                        icon: const Icon(
+                          Icons.delete_sweep_rounded,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                floatingActionButton: Showcase(
+                  key: secondTooltip,
+                  // disposeOnTap: true,
+                  onBarrierClick: () =>
+                      productTourController.nextStep(context: context),
+                  description:
+                      'This is the button you can press to increment the counter',
+                  child: const FloatingActionButton(
+                    onPressed: null,
+                    tooltip: 'Increment',
+                    child: Icon(Icons.add),
                   ),
                 ),
-              ],
-            ),
-            drawer: const _HomeDrawer(),
-            body: const _HomePage(),
+                drawer: const _HomeDrawer(),
+                body: const _HomePage(),
+              );
+            },
           );
         },
       ),

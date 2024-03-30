@@ -40,5 +40,6 @@ class SimpleBlocObserver extends BlocObserver {
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureCoreDependencies();
+  await productTourController.init();
   Bloc.observer = const SimpleBlocObserver();
 }
