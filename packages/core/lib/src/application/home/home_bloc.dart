@@ -290,15 +290,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           final entry = await _entryRepository.getEntry(value.id);
           emit(state.copyWith(entry: entry, isValid: false));
         },
-        onPressedTheme: (_) {
-          emit(state.copyWith(isLoading: true));
-
-          if (state.theme == 'light') {
-            emit(state.copyWith(theme: 'dark', isLoading: false));
-          } else {
-            emit(state.copyWith(theme: 'light', isLoading: false));
-          }
-        },
       );
     });
   }
