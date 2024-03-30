@@ -20,9 +20,9 @@ class EditEntryPage extends StatelessWidget {
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: Colors.blue[100],
             appBar: AppBar(
               title: const Text('Edit entry'),
+              centerTitle: false,
               leading: IconButton(
                 onPressed: () {
                   ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
@@ -57,7 +57,7 @@ class _EditEntryPage extends StatelessWidget {
         }
 
         return Padding(
-          padding: allPadding12,
+          padding: allPadding18,
           child: Form(
             key: formKey,
             child: Column(
@@ -90,7 +90,16 @@ class _EditEntryPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(
+                    OutlinedButton(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(
+                              const HomeEvent.onPressedCancel(),
+                            );
+                        context.router.popUntilRoot();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
                               context
@@ -101,15 +110,6 @@ class _EditEntryPage extends StatelessWidget {
                             }
                           : null,
                       child: const Text('Ok'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
-                        context.router.popUntilRoot();
-                      },
-                      child: const Text('Cancel'),
                     ),
                   ],
                 ),

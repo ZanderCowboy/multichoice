@@ -18,9 +18,9 @@ class EditTabPage extends StatelessWidget {
     return BlocProvider<HomeBloc>.value(
       value: ctx.read<HomeBloc>(),
       child: Scaffold(
-        backgroundColor: Colors.blue[100],
         appBar: AppBar(
           title: const Text('Edit Tab'),
+          centerTitle: false,
           leading: IconButton(
             onPressed: () {
               ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
@@ -53,7 +53,7 @@ class _EditPage extends StatelessWidget {
         }
 
         return Padding(
-          padding: allPadding12,
+          padding: allPadding18,
           child: Form(
             key: formKey,
             child: Column(
@@ -86,7 +86,16 @@ class _EditPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(
+                    OutlinedButton(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(
+                              const HomeEvent.onPressedCancel(),
+                            );
+                        context.router.popUntilRoot();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
                       onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
                               context
@@ -97,15 +106,6 @@ class _EditPage extends StatelessWidget {
                             }
                           : null,
                       child: const Text('Ok'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
-                        context.router.popUntilRoot();
-                      },
-                      child: const Text('Cancel'),
                     ),
                   ],
                 ),

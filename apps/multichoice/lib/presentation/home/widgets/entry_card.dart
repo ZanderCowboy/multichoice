@@ -20,7 +20,9 @@ class _EntryCard extends HookWidget {
           menuChildren: [
             MenuItemButton(
               onPressed: () {
-                context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
+                context.read<HomeBloc>().add(
+                      HomeEvent.onUpdateEntry(entry.id),
+                    );
                 context.router.push(EditEntryPageRoute(ctx: context));
               },
               child: Text(MenuItems.edit.name),
@@ -78,6 +80,18 @@ class _EntryCard extends HookWidget {
             ),
           ],
           child: GestureDetector(
+            onTap: () {
+              CustomDialog<AlertDialog>.show(
+                context: context,
+                title: SizedBox(
+                  width: 150,
+                  child: Text(
+                    entry.title,
+                  ),
+                ),
+                content: Text(entry.subtitle),
+              );
+            },
             onDoubleTap: () {
               context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
               context.router.push(EditEntryPageRoute(ctx: context));
@@ -89,31 +103,38 @@ class _EntryCard extends HookWidget {
                 menuController.open();
               }
             },
-            child: Card(
-              elevation: 7,
-              shadowColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: circularBorder5,
-              ),
-              color: const Color.fromARGB(255, 81, 153, 187),
-              child: Padding(
-                padding: allPadding4,
-                child: Column(
-                  children: [
-                    Text(
-                      entry.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
+            child: Padding(
+              padding: allPadding4,
+              child: Card(
+                elevation: 3,
+                shadowColor: Colors.grey[400],
+                shape: RoundedRectangleBorder(
+                  borderRadius: borderCircular5,
+                ),
+                margin: EdgeInsets.zero,
+                color: context.theme.appColors.secondary,
+                child: Padding(
+                  padding: allPadding4,
+                  child: SizedBox(
+                    height: UIConstants.entryHeight(context),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          entry.title,
+                          style: context.theme.appTextTheme.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          entry.subtitle,
+                          style: context.theme.appTextTheme.subtitleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ],
                     ),
-                    Text(
-                      entry.subtitle,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
