@@ -7,6 +7,7 @@ const entryCardMinimumSize = null;
 const entryCardMinimumHeight = 90.0;
 const entryCardMinimumWidth = 0;
 const tabCardMinimumWidth = 120.0;
+double tabsHeightConstant = 1.15;
 double tabsWidthConstant = 3.65;
 
 const _mobileScreenWidth = 450;
@@ -24,6 +25,10 @@ class UIConstants {
     return mediaHeight;
   }
 
+  static double? tabHeight(BuildContext context) {
+    return MediaQuery.sizeOf(context).height / tabsHeightConstant;
+  }
+
   static double? tabWidth(BuildContext context) {
     final mediaWidth = MediaQuery.sizeOf(context).width;
 
@@ -37,5 +42,9 @@ class UIConstants {
       return tabCardMinimumWidth;
     }
     return tabsWidth;
+  }
+
+  static double? newTabWidth(BuildContext context) {
+    return MediaQuery.sizeOf(context).width / 6;
   }
 }

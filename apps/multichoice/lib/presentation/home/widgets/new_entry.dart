@@ -23,8 +23,9 @@ class _NewEntry extends StatelessWidget {
               title: RichText(
                 text: TextSpan(
                   text: 'Add New Entry',
-                  style:
-                      DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                        fontSize: 24,
+                      ),
                 ),
               ),
               content: BlocProvider.value(

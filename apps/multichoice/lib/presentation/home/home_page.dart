@@ -29,7 +29,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => coreSl<HomeBloc>()..add(const HomeEvent.onGetTabs()),
+      create: (context) => coreSl<HomeBloc>()
+        ..add(
+          const HomeEvent.onGetTabs(),
+        ),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return Scaffold(
@@ -69,7 +72,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            drawer: const HomeDrawer(),
+            drawer: const _HomeDrawer(),
             body: const _HomePage(),
           );
         },
@@ -97,7 +100,7 @@ class _HomePage extends StatelessWidget {
           child: Padding(
             padding: allPadding12,
             child: SizedBox(
-              height: MediaQuery.sizeOf(context).height / 1.15,
+              height: UIConstants.tabHeight(context),
               child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: ScrollController(),

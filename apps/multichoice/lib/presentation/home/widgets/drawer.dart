@@ -1,7 +1,7 @@
 part of '../home_page.dart';
 
-class HomeDrawer extends StatelessWidget {
-  const HomeDrawer({super.key});
+class _HomeDrawer extends StatelessWidget {
+  const _HomeDrawer();
 
   @override
   Widget build(BuildContext context) {

@@ -20,7 +20,9 @@ class _EntryCard extends HookWidget {
           menuChildren: [
             MenuItemButton(
               onPressed: () {
-                context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
+                context.read<HomeBloc>().add(
+                      HomeEvent.onUpdateEntry(entry.id),
+                    );
                 context.router.push(EditEntryPageRoute(ctx: context));
               },
               child: Text(MenuItems.edit.name),

@@ -18,7 +18,9 @@ class _VerticalTab extends StatelessWidget {
           title: RichText(
             text: TextSpan(
               text: 'Delete ',
-              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+              style: DefaultTextStyle.of(context).style.copyWith(
+                    fontSize: 24,
+                  ),
               children: [
                 TextSpan(
                   text: tab.title,
@@ -28,8 +30,9 @@ class _VerticalTab extends StatelessWidget {
                 ),
                 TextSpan(
                   text: '?',
-                  style:
-                      DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                        fontSize: 24,
+                      ),
                 ),
               ],
             ),

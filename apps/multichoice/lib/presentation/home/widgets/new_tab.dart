@@ -12,7 +12,7 @@ class _NewTab extends StatelessWidget {
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
         return AddTabCard(
-          width: MediaQuery.sizeOf(context).width / 6,
+          width: UIConstants.newTabWidth(context),
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
