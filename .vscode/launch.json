@@ -7,19 +7,22 @@
         {
             "name": "multichoice",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "apps/multichoice/lib/main.dart"
         },
         {
             "name": "multichoice (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "apps/multichoice/lib/main.dart"
         },
         {
             "name": "multichoice (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "apps/multichoice/lib/main.dart"
         },
     ]
 }

@@ -6,7 +6,7 @@
 
 ### Overview
 
-This ticket is primarily to set up `DTO's` and `AutoMapper's` for our codebase. It allows us to separate our `database` models from our front-end.
+This ticket is primarily to set up `DTO's` and `AutoMapper's` for our codebase. It allows us to separate our `database` models from our front-end's models.
 
 ### What was done
 
