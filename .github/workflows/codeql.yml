@@ -41,13 +41,13 @@ jobs:
         run: flutter build web --base-href='/multichoice/' --release
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.13.4
+        uses: gittools/actions/gitversion/setup@v1.1.1
         with:
           versionSpec: "5.x"
 
       - name: Use GitVersion
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.13.4
+        uses: gittools/actions/gitversion/execute@v1.1.1
 
       - name: Create version.txt with nuGetVersion
         shell: bash
@@ -69,7 +69,7 @@ jobs:
 
       - name: Update pubspec.yml version action
         id: update-pubspec
-        uses: stikkyapp/update-pubspec-version@v1
+        uses: stikkyapp/update-pubspec-version@v2
         with:
           strategy: "none"
           # bump-build: true
