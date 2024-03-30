@@ -21,8 +21,10 @@ class AppTheme with ChangeNotifier {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: _lightAppColors.primary,
+          textStyle: TextStyle(color: _lightAppColors.background),
           side: BorderSide(color: _lightAppColors.primary ?? Colors.white),
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+          minimumSize: outlinedButtonMinimumSize,
         ),
       ),
       textSelectionTheme: const TextSelectionThemeData(
@@ -31,6 +33,9 @@ class AppTheme with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+          foregroundColor: MaterialStatePropertyAll(
+            _lightAppColors.black,
+          ),
           backgroundColor: MaterialStatePropertyAll(
             AppPalette.grey.geyserLight,
           ),
@@ -40,6 +45,7 @@ class AppTheme with ChangeNotifier {
         style: ElevatedButton.styleFrom(
           foregroundColor: _lightAppColors.secondary,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+          minimumSize: elevatedButtonMinimumSize,
         ),
       ),
       dialogBackgroundColor: _lightAppColors.background,
@@ -111,7 +117,7 @@ class AppTheme with ChangeNotifier {
     foreground: AppPalette.grey.bigStone,
     background: AppPalette.grey.slateGray,
     white: null,
-    black: null,
+    black: AppPalette.black,
   );
 
   static final _lightTextTheme = AppTextExtension(
@@ -151,6 +157,7 @@ class AppTheme with ChangeNotifier {
             color: _darkAppColors.white ?? Colors.white,
           ),
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+          minimumSize: outlinedButtonMinimumSize,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -159,6 +166,7 @@ class AppTheme with ChangeNotifier {
           backgroundColor: AppPalette.white,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           textStyle: AppTypography.bodyLarge,
+          minimumSize: elevatedButtonMinimumSize,
         ),
       ),
       dialogBackgroundColor: _darkAppColors.background,
