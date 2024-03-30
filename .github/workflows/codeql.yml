@@ -69,7 +69,7 @@ jobs:
 
       - name: Update pubspec.yml version action
         id: update-pubspec
-        uses: stikkyapp/update-pubspec-version@v1
+        uses: stikkyapp/update-pubspec-version@v2
         with:
           strategy: "none"
           # bump-build: true
