@@ -78,6 +78,18 @@ class _EntryCard extends HookWidget {
             ),
           ],
           child: GestureDetector(
+            onTap: () {
+              CustomDialog<AlertDialog>.show(
+                context: context,
+                title: SizedBox(
+                  width: 150,
+                  child: Text(
+                    entry.title,
+                  ),
+                ),
+                content: Text(entry.subtitle),
+              );
+            },
             onDoubleTap: () {
               context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
               context.router.push(EditEntryPageRoute(ctx: context));
@@ -102,17 +114,21 @@ class _EntryCard extends HookWidget {
                 child: Padding(
                   padding: allPadding4,
                   child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height / 12,
+                    height: UIConstants.entryHeight(context),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           entry.title,
                           style: context.theme.appTextTheme.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                         Text(
                           entry.subtitle,
                           style: context.theme.appTextTheme.subtitleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ],
                     ),

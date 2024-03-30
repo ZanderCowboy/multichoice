@@ -59,7 +59,7 @@ class _VerticalTab extends StatelessWidget {
         child: Padding(
           padding: allPadding2,
           child: SizedBox(
-            width: MediaQuery.sizeOf(context).width / 3.65,
+            width: UIConstants.tabWidth(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,14 +68,14 @@ class _VerticalTab extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: left4top4,
+                        padding: left4,
                         child: Text(
                           tab.title,
                           style: context.theme.appTextTheme.titleMedium,
                         ),
                       ),
                     ),
-                    MenuWidget(tab: tab),
+                    _MenuWidget(tab: tab),
                   ],
                 ),
                 if (tab.subtitle.isEmpty)

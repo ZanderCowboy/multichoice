@@ -37,6 +37,8 @@ const vertical8 = EdgeInsets.symmetric(vertical: 8);
 
 const left4 = EdgeInsets.only(left: 4);
 
+const left4top2 = EdgeInsets.only(left: 4, top: 2);
+
 const left4top4 = EdgeInsets.only(left: 4, top: 4);
 
 const right4 = EdgeInsets.only(right: 4);
