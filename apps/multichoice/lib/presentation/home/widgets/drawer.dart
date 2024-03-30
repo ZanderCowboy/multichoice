@@ -8,6 +8,7 @@ class HomeDrawer extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final appVersion = coreSl<IAppInfoService>().getAppVersion();
+        final sharedPref = coreSl<SharedPreferences>();
 
         return Drawer(
           width: MediaQuery.sizeOf(context).width,
@@ -47,7 +48,7 @@ class HomeDrawer extends StatelessWidget {
                       child: Text('Light/Dark Mode'),
                     ),
                     _ThemeButton(
-                      sharedPref: coreSl<SharedPreferences>(),
+                      sharedPref: sharedPref,
                       state: state,
                     ),
                   ],
@@ -77,5 +78,45 @@ class HomeDrawer extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _ThemeButton extends StatelessWidget {
+  const _ThemeButton({
+    required this.sharedPref,
+    required this.state,
+  });
+
+  final SharedPreferences sharedPref;
+  final HomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (sharedPref.getString('theme') == 'light') {
+      return IconButton(
+        onPressed: () {
+          _darkMode(context);
+          sharedPref.setString('theme', 'dark');
+        },
+        icon: const Icon(Icons.dark_mode_outlined),
+      );
+    } else if (sharedPref.getString('theme') == 'dark') {
+      return IconButton(
+        onPressed: () {
+          _lightMode(context);
+          sharedPref.setString('theme', 'light');
+        },
+        icon: const Icon(Icons.light_mode_outlined),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  void _lightMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.light;
+  }
+
+  void _darkMode(BuildContext context) {
+    context.read<AppTheme>().themeMode = ThemeMode.dark;
   }
 }
