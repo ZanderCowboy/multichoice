@@ -86,6 +86,12 @@ class _HomePage extends StatelessWidget {
       builder: (context, state) {
         final tabs = state.tabs ?? [];
 
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        }
+
         return Center(
           child: Padding(
             padding: allPadding12,
