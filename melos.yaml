@@ -1,0 +1,54 @@
+name: multichoice
+
+packages:
+  - packages/**
+  - apps/**
+
+scripts:
+  analyze:
+    run: dart analyze .
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+
+  build:
+    run: dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+
+  get:
+    run: flutter pub get
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+
+  clean-build:
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 10
+      orderDependents: true
+
+  test:all:
+    run: |
+      melos run test:core --no-select
+    description: |
+      Run all tests available.
+
+  test:core:
+    run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: "core"
+
+command:
+  bootstrap:
+    runPubGetInParallel: false
