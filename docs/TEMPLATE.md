@@ -13,3 +13,7 @@
 ### What needs to be done
 
 - [ ] todo
+
+### Resources
+
+- [example](https://example.com)
