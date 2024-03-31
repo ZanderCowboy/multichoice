@@ -27,10 +27,11 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/lib/auth/secrets.dart
 
 # dotenv environment variables file
 .env*
-**/tmp.*
+**/tmp*
 **/tmp/
 
 # Avoid committing generated Javascript files:
