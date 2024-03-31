@@ -106,3 +106,5 @@ jobs:
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
           file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
+          releaseNotesFile: ./apps/multichoice/CHANGELOG.txt
+          debug: true

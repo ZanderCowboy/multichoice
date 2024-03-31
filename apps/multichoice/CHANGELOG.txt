@@ -1,0 +1,9 @@
+CHANGELOG
+
+Version 0.1.4+119:
+- Added a change log
+- Added custom launcher icons
+- Designed a custom icon with drawio
+
+Version 0.1.4+117:
+- Earlier version details
