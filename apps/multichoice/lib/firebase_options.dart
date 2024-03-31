@@ -47,7 +47,7 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
+  static FirebaseOptions web = FirebaseOptions(
     apiKey: '${webApiKey}',
     appId: '${webAppId}',
     messagingSenderId: '82796040762',
@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
     measurementId: 'G-RKRDGDJMDK',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
+  static FirebaseOptions android = FirebaseOptions(
     apiKey: '${androidApiKey}',
     appId: '${androidAppId}',
     messagingSenderId: '82796040762',
@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'multichoice-412309.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
+  static FirebaseOptions ios = FirebaseOptions(
     apiKey: '${iosApiKey}',
     appId: '${iosAppId}',
     messagingSenderId: '82796040762',
