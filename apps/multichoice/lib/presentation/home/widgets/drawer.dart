@@ -92,19 +92,22 @@ class _ThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (sharedPref.getString('theme') == 'light') {
+    final isDarkMode =
+        sharedPref.getBool('isDarkMode') ?? ThemeMode.system == ThemeMode.dark;
+
+    if (!isDarkMode) {
       return IconButton(
         onPressed: () {
           _darkMode(context);
-          sharedPref.setString('theme', 'dark');
+          sharedPref.setBool('isDarkMode', true);
         },
         icon: const Icon(Icons.dark_mode_outlined),
       );
-    } else if (sharedPref.getString('theme') == 'dark') {
+    } else if (isDarkMode) {
       return IconButton(
         onPressed: () {
           _lightMode(context);
-          sharedPref.setString('theme', 'light');
+          sharedPref.setBool('isDarkMode', false);
         },
         icon: const Icon(Icons.light_mode_outlined),
       );
