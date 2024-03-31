@@ -46,11 +46,6 @@ jobs:
           echo "android_release_name=${{ steps.read_config_yaml.outputs.android_deploy__android_release_name }}" >> $GITHUB_OUTPUT
           echo "android_deploy_status=${{ steps.read_config_yaml.outputs.android_deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
 
-      - name: Set up Firebase config
-        run: |
-          echo ${{ secrets.FIREBASE_OPTIONS }} > firebase_options.dart
-        working-directory: apps/multichoice/lib
-
   deploy:
     name: Deploy Apps
     if: success()
