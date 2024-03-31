@@ -99,6 +99,16 @@ jobs:
           name: pubspec-file
           path: ${{ github.workspace }}/apps/multichoice/
 
+      - name: Create secrets.dart
+        run: |
+          echo "String webApiKey=${{ secrets.WEB_API_KEY }}" > secrets.dart
+          echo "String webAppId=${{ secrets.WEB_APP_ID }}" >> secrets.dart
+          echo "String androidApiKey=${{ secrets.ANDROID_API_KEY }}" >> secrets.dart
+          echo "String androidAppId=${{ secrets.ANDROID_APP_ID }}" >> secrets.dart
+          echo "String iosApiKey=${{ secrets.IOS_API_KEY }}" >> secrets.dart
+          echo "String iosAppId=${{ secrets.IOS_APP_ID }}" >> secrets.dart
+        working-directory: ./apps/multichoice/lib/auth/
+
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false && success()

@@ -50,27 +50,27 @@ class DefaultFirebaseOptions {
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: '${webApiKey}',
     appId: '${webAppId}',
-    messagingSenderId: '${messagingSenderId}',
-    projectId: '${projectId}',
-    authDomain: '${authDomain}',
-    storageBucket: '${storageBucket}',
-    measurementId: '${measurementId}',
+    messagingSenderId: '82796040762',
+    projectId: 'multichoice-412309',
+    authDomain: 'multichoice-412309.firebaseapp.com',
+    storageBucket: 'multichoice-412309.appspot.com',
+    measurementId: 'G-RKRDGDJMDK',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: '${androidApiKey}',
     appId: '${androidAppId}',
-    messagingSenderId: '${messagingSenderId}',
-    projectId: '${projectId}',
-    storageBucket: '${storageBucket}',
+    messagingSenderId: '82796040762',
+    projectId: 'multichoice-412309',
+    storageBucket: 'multichoice-412309.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: '${iosApiKey}',
     appId: '${iosAppId}',
-    messagingSenderId: '${messagingSenderId}',
-    projectId: '${projectId}',
-    storageBucket: '${storageBucket}',
-    iosBundleId: '${iosBundleId}',
+    messagingSenderId: '82796040762',
+    projectId: 'multichoice-412309',
+    storageBucket: 'multichoice-412309.appspot.com',
+    iosBundleId: 'com.example.multichoice',
   );
 }
