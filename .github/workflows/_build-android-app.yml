@@ -79,6 +79,12 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> secrets.dart
         working-directory: apps/multichoice/lib/
 
+      - name: Upload secrets.dart
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets.dart
+          path: ./apps/multichoice/lib/auth/secrets.dart
+
       - name: Start ${{ inputs.environment-flag }} build
         if: success()
         run: flutter build appbundle --${{ inputs.environment-flag }}
