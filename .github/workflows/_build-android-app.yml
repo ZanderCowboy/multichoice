@@ -79,22 +79,21 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      - name: Upload secrets.dart
-        uses: actions/upload-artifact@v4
-        with:
-          name: secrets.dart
-          path: ./apps/multichoice/lib/auth/secrets.dart
-
-      - name: Start ${{ inputs.environment-flag }} build
+      - name: Start appbundle ${{ inputs.environment-flag }} build
         if: success()
         run: flutter build appbundle --${{ inputs.environment-flag }}
         working-directory: apps/multichoice/
 
-      - name: Upload Android ${{ inputs.environment-flag }}
+      - name: Start apk ${{ inputs.environment-flag }} build
+        if: success()
+        run: flutter build apk --${{ inputs.environment-flag }}
+        working-directory: apps/multichoice/
+
+      - name: Upload Android ${{ inputs.environment-flag }} appbundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment-flag }}/app-${{ inputs.environment-flag }}.aab
 
       - name: Upload artifact to Firebase App Distribution
         if: success()
@@ -103,4 +102,4 @@ jobs:
           appId: ${{secrets.APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
-          file: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment-flag }}.apk
