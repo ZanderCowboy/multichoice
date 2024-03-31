@@ -109,8 +109,8 @@ jobs:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
 
-  build:
-    name: Build Apps
+  buildRelease:
+    name: Build Apps for Release
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [bumpVersion]
