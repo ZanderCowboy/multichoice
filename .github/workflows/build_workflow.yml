@@ -38,6 +38,11 @@ jobs:
       - name: Set up Flutter
         uses: ./.github/actions/setup-flutter
 
+      - name: Set up Firebase config
+        run: |
+          echo ${{ secrets.FIREBASE_OPTIONS }} > firebase_options.dart
+        working-directory: apps/multichoice/lib
+
       - name: melos test all
         run: melos test:all
 

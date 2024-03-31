@@ -109,6 +109,11 @@ jobs:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
 
+      - name: Set up Firebase config
+        run: |
+          echo ${{ secrets.FIREBASE_OPTIONS }} > firebase_options.dart
+        working-directory: apps/multichoice/lib
+
   build:
     name: Build Apps
     if: github.event.pull_request.draft == false
