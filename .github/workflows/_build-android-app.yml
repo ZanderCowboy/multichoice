@@ -19,18 +19,50 @@ on:
         type: string
 
 jobs:
-  buildAndroid:
-    name: Build Android
-    if: ${{ inputs.build-flag == true }}
+  testAndAnalyze:
+    name: Test and Analyze
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # - name: Set up Flutter
+      #   uses: ./.github/actions/setup-flutter
+
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-java-flutter
+
+      - name: melos test all
+        run: melos test:all
+
+      - run: echo "Starting analyze"
+
+      - name: ⚠️ℹ️ Run Dart analysis
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          working-directory: "${{github.workspace}}/"
+
+  buildAndroid:
+    name: Build Android
+    if: ${{ inputs.build-flag == true }}
+    runs-on: ubuntu-latest
+    needs: [testAndAnalyze]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # - name: Set up Flutter and Java
+      #   uses: ./.github/actions/setup-java-flutter
 
       - name: Get pubspec.yaml
         uses: actions/download-artifact@v4
@@ -57,12 +89,12 @@ jobs:
       - name: Create secrets.dart
         run: |
           mkdir auth
-          echo "String webApiKey=${{ secrets.WEB_API_KEY }};" > auth/secrets.dart
-          echo "String webAppId=${{ secrets.WEB_APP_ID }};" >> secrets.dart
-          echo "String androidApiKey=${{ secrets.ANDROID_API_KEY }};" >> secrets.dart
-          echo "String androidAppId=${{ secrets.ANDROID_APP_ID }};" >> secrets.dart
-          echo "String iosApiKey=${{ secrets.IOS_API_KEY }};" >> secrets.dart
-          echo "String iosAppId=${{ secrets.IOS_APP_ID }};" >> secrets.dart
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> secrets.dart
         working-directory: apps/multichoice/lib/
 
       - name: Start ${{ inputs.environment-flag }} build

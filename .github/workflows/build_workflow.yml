@@ -20,36 +20,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  testAndAnalyze:
-    name: Test and Analyze
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Flutter
-        uses: ./.github/actions/setup-flutter
-
-      - name: melos test all
-        run: melos test:all
-
-      - run: echo "Starting analyze"
-
-      - name: ⚠️ℹ️ Run Dart analysis
-        uses: zgosalvez/github-actions-analyze-dart@v3
-        with:
-          working-directory: "${{github.workspace}}/"
-
   preBuild:
-    name: Bump build number
+    name: Prebuild - Bump build number
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     concurrency:
@@ -103,7 +75,7 @@ jobs:
     name: Build Apps
     if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: [testAndAnalyze, preBuild]
+    needs: [preBuild]
     secrets: inherit
     with:
       pubspec-filename: "pubspec-file"
