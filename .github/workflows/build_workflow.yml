@@ -101,6 +101,7 @@ jobs:
 
       - name: Create secrets.dart
         run: |
+          mkdir auth
           echo "String webApiKey=${{ secrets.WEB_API_KEY }}" > auth/secrets.dart
           echo "String webAppId=${{ secrets.WEB_APP_ID }}" >> secrets.dart
           echo "String androidApiKey=${{ secrets.ANDROID_API_KEY }}" >> secrets.dart
