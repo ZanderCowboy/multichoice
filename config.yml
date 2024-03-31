@@ -8,6 +8,7 @@ build:
   windows_build_flag: false
 
 # This can be used to determine the environment to build the app in.
+# Note: This is used in both build_workflow and release_workflow
 # Options: profile, release (debug is by default empty)
 environment:
   web_environment_flag: "release"

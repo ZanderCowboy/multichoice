@@ -2,21 +2,24 @@ name: Android Build workflow
 on:
   workflow_call:
     inputs:
-      pubspec-filename:
+      pubspec_filename:
         required: true
         type: string
-      environment-flag:
+      environment_flag:
         required: true
         type: string
       versionNumber:
         required: true
         type: string
-      build-flag:
+      build_flag:
         required: true
         type: boolean
-      build-artifact:
+      build_artifact:
         required: true
         type: string
+      build_appbundle:
+        required: true
+        type: boolean
 
 jobs:
   testAnalyzeBuildAndroid:
@@ -45,10 +48,10 @@ jobs:
       - run: echo "Starting build process"
 
       - name: Get pubspec.yaml
-        if: ${{ inputs.build-flag == true }} && success()
+        if: ${{ inputs.build_flag == true }} && success()
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.pubspec-filename }}
+          name: ${{ inputs.pubspec_filename }}
           path: ${{ github.workspace }}/apps/multichoice/
 
       - name: Download Android keystore
@@ -60,7 +63,7 @@ jobs:
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Create key.properties
-        if: ${{ inputs.environment-flag }} == 'release'
+        if: ${{ inputs.environment_flag }} == 'release'
         run: |
           echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
@@ -79,21 +82,21 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      - name: Start appbundle ${{ inputs.environment-flag }} build
-        if: success()
-        run: flutter build appbundle --${{ inputs.environment-flag }}
+      - name: Start appbundle ${{ inputs.environment_flag }} build
+        if: ${{ inputs.build_appbundle == true }} && success()
+        run: flutter build appbundle --${{ inputs.environment_flag }}
         working-directory: apps/multichoice/
 
-      - name: Start apk ${{ inputs.environment-flag }} build
+      - name: Start apk ${{ inputs.environment_flag }} build
         if: success()
-        run: flutter build apk --${{ inputs.environment-flag }}
+        run: flutter build apk --${{ inputs.environment_flag }}
         working-directory: apps/multichoice/
 
-      - name: Upload Android ${{ inputs.environment-flag }} appbundle
+      - name: Upload Android ${{ inputs.environment_flag }} appbundle
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.build-artifact }}
-          path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment-flag }}/app-${{ inputs.environment-flag }}.aab
+          name: ${{ inputs.build_artifact }}
+          path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment_flag }}/app-${{ inputs.environment_flag }}.aab
 
       - name: Upload artifact to Firebase App Distribution
         if: success()
@@ -102,4 +105,4 @@ jobs:
           appId: ${{secrets.APP_ID}}
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment-flag }}.apk
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk

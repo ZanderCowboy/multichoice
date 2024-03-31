@@ -82,15 +82,16 @@ jobs:
       packages: read
       statuses: write
     with:
-      pubspec-filename: "pubspec-file"
-      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
-      web-environment-flag: ${{ needs.preBuild.outputs.web_environment_flag }}
-      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
-      android-environment-flag: ${{ needs.preBuild.outputs.android_environment_flag }}
-      android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      android-build-artifact: "android-release"
-      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
-      windows-environment-flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
+      pubspec_filename: "pubspec-file"
+      web_build_flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
+      web_environment_flag: ${{ needs.preBuild.outputs.web_environment_flag }}
+      android_build_flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
+      android_environment_flag: ${{ needs.preBuild.outputs.android_environment_flag }}
+      android_versionNumber: ${{ needs.preBuild.outputs.version_number }}
+      android_build_artifact: "android-release"
+      android_build_appbundle: false
+      windows_build_flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
+      windows_environment_flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
 
   post-build:
     name: Post Build
