@@ -77,6 +77,10 @@ jobs:
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [preBuild]
     secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     with:
       pubspec-filename: "pubspec-file"
       web-build-flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
