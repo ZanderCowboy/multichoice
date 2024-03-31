@@ -74,6 +74,7 @@ jobs:
 
   preBuild:
     name: Bump build number
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
