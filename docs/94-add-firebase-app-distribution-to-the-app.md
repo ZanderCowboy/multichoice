@@ -14,6 +14,8 @@ This ticket is about setting up `Firebase App Distribution` to our app
 - [X] Update `build.gradle` files for Google Services
 - [X] Set up firebase config
 - [X] Update `_build-android-app.yml` file for firebase app distribution
+- [X] Update workflows overall
+- [X] Fix firebase_options.dart not found by GitHub Actions
 
 ### What needs to be done
 
@@ -24,3 +26,5 @@ This ticket is about setting up `Firebase App Distribution` to our app
 - [Service accounts for project 'Multichoice'](https://console.cloud.google.com/iam-admin/serviceaccounts?project=multichoice-412309)
 - [Github Action and Firebase App Distribution — CI/CD Ways — Part 2](https://steveos.medium.com/github-action-and-firebase-app-distribution-ci-cd-ways-part-2-fcf9ba425c0)
 - [Firebase-Distribution-Github-Action](https://github.com/wzieba/Firebase-Distribution-Github-Action)
+
+- [](https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/tracks/internal-testing)
