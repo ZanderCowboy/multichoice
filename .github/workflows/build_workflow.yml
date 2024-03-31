@@ -89,7 +89,7 @@ jobs:
       android_environment_flag: ${{ needs.preBuild.outputs.android_environment_flag }}
       android_versionNumber: ${{ needs.preBuild.outputs.version_number }}
       android_build_artifact: "android-release"
-      android_build_appbundle: false
+      android_build_appbundle: ${{ 'false' == 'true' }}
       windows_build_flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
       windows_environment_flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
 

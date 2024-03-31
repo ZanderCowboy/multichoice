@@ -123,7 +123,7 @@ jobs:
       android_environment_flag: ${{ needs.bumpVersion.outputs.android_environment_flag }}
       android_versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
       android_build_artifact: "android-release"
-      android_build_appbundle: true
+      android_build_appbundle: ${{ 'true' == 'true' }}
       windows_build_flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
       windows_environment_flag: ${{ needs.bumpVersion.outputs.windows_environment_flag }}
 
