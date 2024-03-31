@@ -54,6 +54,17 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
         working-directory: apps/multichoice/android/
 
+      - name: Create secrets.dart
+        run: |
+          mkdir auth
+          echo "String webApiKey=${{ secrets.WEB_API_KEY }}" > auth/secrets.dart
+          echo "String webAppId=${{ secrets.WEB_APP_ID }}" >> secrets.dart
+          echo "String androidApiKey=${{ secrets.ANDROID_API_KEY }}" >> secrets.dart
+          echo "String androidAppId=${{ secrets.ANDROID_APP_ID }}" >> secrets.dart
+          echo "String iosApiKey=${{ secrets.IOS_API_KEY }}" >> secrets.dart
+          echo "String iosAppId=${{ secrets.IOS_APP_ID }}" >> secrets.dart
+        working-directory: apps/multichoice/lib/
+
       - name: Start ${{ inputs.environment-flag }} build
         run: flutter build appbundle --${{ inputs.environment-flag }}
         working-directory: apps/multichoice/
