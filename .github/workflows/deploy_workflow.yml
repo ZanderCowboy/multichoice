@@ -20,6 +20,7 @@ jobs:
       windows_deploy_flag: ${{ steps.id_out.outputs.windows_deploy_flag }}
 
       android_package_name: ${{ steps.id_out.outputs.android_package_name }}
+      android_environment_url: ${{ steps.id_out.outputs.android_environment_url }}
       android_track: ${{ steps.id_out.outputs.android_track }}
       android_release_name: ${{ steps.id_out.outputs.android_release_name }}
       android_deploy_status: ${{ steps.id_out.outputs.android_deploy_status }}
@@ -40,6 +41,7 @@ jobs:
           echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
           echo "android_package_name=${{ steps.read_config_yaml.outputs.android_deploy__android_package_name }}" >> $GITHUB_OUTPUT
+          echo "android_environment_url=${{ steps.read_config_yaml.outputs.android_deploy__android_environment_url }}" >> $GITHUB_OUTPUT
           echo "android_track=${{ steps.read_config_yaml.outputs.android_deploy__android_track }}" >> $GITHUB_OUTPUT
           echo "android_release_name=${{ steps.read_config_yaml.outputs.android_deploy__android_release_name }}" >> $GITHUB_OUTPUT
           echo "android_deploy_status=${{ steps.read_config_yaml.outputs.android_deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
@@ -54,15 +56,15 @@ jobs:
     secrets: inherit
     with:
       web_deploy_flag: ${{ needs.preDeploy.outputs.web_deploy_flag == 'true' }}
-      web-environment-flag: "Web Prod"
+      web_environment_flag: "Web Prod"
 
       android_deploy_flag: ${{ needs.preDeploy.outputs.android_deploy_flag == 'true' }}
-      android-environment-flag: "Android Prod"
-      android-package-name: ${{ needs.preDeploy.outputs.android_package_name }}
-      # TODO(ZK): add android environment url
-      android-track: ${{ needs.preDeploy.outputs.android_track }}
-      android-release-name: ${{ needs.preDeploy.outputs.android_release_name }}
-      android-deploy-status: ${{ needs.preDeploy.outputs.android_deploy_status }}
+      android_environment_flag: "Android Prod"
+      android_package_name: ${{ needs.preDeploy.outputs.android_package_name }}
+      android_environment_url: ${{ needs.preDeploy.outputs.android_environment_url }}
+      android_track: ${{ needs.preDeploy.outputs.android_track }}
+      android_release_name: ${{ needs.preDeploy.outputs.android_release_name }}
+      android_deploy_status: ${{ needs.preDeploy.outputs.android_deploy_status }}
 
       windows_deploy_flag: ${{ needs.preDeploy.outputs.windows_deploy_flag == 'true' }}
-      windows-environment-flag: "Windows Prod"
+      windows_environment_flag: "Windows Prod"
