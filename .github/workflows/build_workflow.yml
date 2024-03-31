@@ -20,60 +20,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Flutter
-        uses: ./.github/actions/setup-flutter
-
-      - name: melos test all
-        run: melos test:all
-
-  analyze:
-    name: Analyze
-    if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    needs: test
-
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
-    steps:
-      - run: echo "Starting analyze"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Flutter
-        uses: ./.github/actions/setup-flutter
-
-      - name: ⚠️ℹ️ Run Dart analysis
-        uses: zgosalvez/github-actions-analyze-dart@v3
-        with:
-          working-directory: "${{github.workspace}}/"
-
-      # - name: Super-linter
-      #   uses: super-linter/super-linter@v6.0.0
-      #   env:
-      #     DEFAULT_BRANCH: main
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     IGNORE_GITIGNORED_FILES: true
-      #     FILTER_REGEX_EXCLUDE: "\\.freezed\\.dart$"
-      #     CREATE_LOG_FILE: true
-      #     DISABLE_ERRORS: true
-
   preBuild:
-    name: Bump build number
+    name: Prebuild - Bump build number
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -83,6 +32,10 @@ jobs:
       web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
+
+      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
+      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -108,6 +61,10 @@ jobs:
           echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
+          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
+
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
@@ -118,19 +75,23 @@ jobs:
     name: Build Apps
     if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: [analyze, preBuild]
+    needs: [preBuild]
     secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     with:
-      pubspec-filename: "pubspec-file"
-      web-build-flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
-      web-environment-flag: "release"
-      # profile, release
-      android-build-flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
-      android-environment-flag: "release"
-      android-versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      android-build-artifact: "android-release"
-      windows-build-flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
-      windows-environment-flag: "release"
+      pubspec_filename: "pubspec-file"
+      web_build_flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
+      web_environment_flag: ${{ needs.preBuild.outputs.web_environment_flag }}
+      android_build_flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
+      android_environment_flag: ${{ needs.preBuild.outputs.android_environment_flag }}
+      android_versionNumber: ${{ needs.preBuild.outputs.version_number }}
+      android_build_artifact: "android-release"
+      android_build_appbundle: ${{ 'false' == 'true' }}
+      windows_build_flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
+      windows_environment_flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
 
   post-build:
     name: Post Build

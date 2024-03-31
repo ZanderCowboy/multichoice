@@ -6,19 +6,19 @@ on:
       deploy_flag:
         required: true
         type: boolean
-      environment-flag:
+      environment_flag:
         required: true
         type: string
-      package-name:
+      package_name:
         required: true
         type: string
       track:
         required: true
         type: string
-      release-name:
+      release_name:
         required: true
         type: string
-      deploy-status:
+      deploy_status:
         required: true
         type: string
 
@@ -47,9 +47,9 @@ jobs:
         with:
           releaseFiles: app-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: ${{ inputs.package-name }}
+          packageName: ${{ inputs.package_name }}
           track: ${{ inputs.track }}
-          releaseName: ${{ inputs.release-name }}
+          releaseName: ${{ inputs.release_name }}
           # inAppUpdatePriority: 2
           # userFraction: 0.5
-          status: ${{ inputs.deploy-status }}
+          status: ${{ inputs.deploy_status }}

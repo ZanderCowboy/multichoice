@@ -6,7 +6,7 @@ on:
       deploy_flag:
         required: true
         type: boolean
-      environment-flag:
+      environment_flag:
         required: true
         type: string
   workflow_dispatch:
