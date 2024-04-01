@@ -5,33 +5,33 @@ on:
       web_deploy_flag:
         required: true
         type: boolean
-      web-environment-flag:
+      web_environment_flag:
         required: true
         type: string
 
       android_deploy_flag:
         required: true
         type: boolean
-      android-environment-flag:
+      android_environment_flag:
         required: true
         type: string
-      android-package-name:
+      android_package_name:
         required: true
         type: string
-      android-track:
+      android_track:
         required: true
         type: string
-      android-release-name:
+      android_release_name:
         required: true
         type: string
-      android-deploy-status:
+      android_deploy_status:
         required: true
         type: string
 
       windows_deploy_flag:
         required: true
         type: boolean
-      windows-environment-flag:
+      windows_environment_flag:
         required: true
         type: string
 
@@ -46,21 +46,21 @@ jobs:
     secrets: inherit
     with:
       deploy_flag: ${{ inputs.web_deploy_flag }}
-      environment-flag: ${{ inputs.web-environment-flag }}
+      environment_flag: ${{ inputs.web_environment_flag }}
   deployAndroid:
     name: "Deploy Android app"
     uses: ./.github/workflows/_deploy-android-app.yml
     secrets: inherit
     with:
       deploy_flag: ${{ inputs.android_deploy_flag }}
-      environment-flag: ${{ inputs.android-environment-flag }}
-      package-name: ${{ inputs.android-package-name }}
-      track: ${{ inputs.android-track }}
-      release-name: ${{ inputs.android-release-name }}
-      deploy-status: ${{ inputs.android-deploy-status }}
+      environment_flag: ${{ inputs.android_environment_flag }}
+      package_name: ${{ inputs.android_package_name }}
+      track: ${{ inputs.android_track }}
+      release_name: ${{ inputs.android_release_name }}
+      deploy_status: ${{ inputs.android_deploy_status }}
   deployWindows:
     name: "Deploy Windows app"
     uses: ./.github/workflows/_deploy-windows-app.yml
     with:
       deploy_flag: ${{ inputs.windows_deploy_flag }}
-      environment-flag: ${{ inputs.windows-environment-flag }}
+      environment_flag: ${{ inputs.windows_environment_flag }}

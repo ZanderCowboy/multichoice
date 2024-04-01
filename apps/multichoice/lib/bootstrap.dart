@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:core/core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:multichoice/firebase_options.dart';
 
 class SimpleBlocObserver extends BlocObserver {
   const SimpleBlocObserver();
@@ -41,5 +43,8 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureCoreDependencies();
   await productTourController.init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   Bloc.observer = const SimpleBlocObserver();
 }

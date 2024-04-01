@@ -19,6 +19,7 @@ pubspec.lock
 **/*.isar.lock
 **/libisar.dylib
 **/coverage
+**/firebase_options.dart
 
 # Keys and Secrets
 password.txt
@@ -26,10 +27,11 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/lib/auth/secrets.dart
 
 # dotenv environment variables file
 .env*
-**/tmp.*
+**/tmp*
 **/tmp/
 
 # Avoid committing generated Javascript files:
