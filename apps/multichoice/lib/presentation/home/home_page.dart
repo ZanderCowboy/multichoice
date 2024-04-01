@@ -9,9 +9,11 @@ import 'package:multichoice/app/extensions/extension_getters.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
 import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/layout/app_layout.dart';
+import 'package:multichoice/layout/home_layout/home_layout.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
-import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
@@ -35,26 +37,30 @@ class HomePage extends StatelessWidget {
         ),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context)
-                      ..clearSnackBars()
-                      ..showSnackBar(
-                        const SnackBar(
-                          content: Text('Search has not been implemented yet.'),
-                        ),
-                      );
-                  },
-                  icon: const Icon(Icons.search_outlined),
-                ),
-              ],
+          return ChangeNotifierProvider(
+            create: (context) => AppLayout(),
+            builder: (context, child) => Scaffold(
+              appBar: AppBar(
+                title: const Text('Multichoice'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context)
+                        ..clearSnackBars()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Search has not been implemented yet.'),
+                          ),
+                        );
+                    },
+                    icon: const Icon(Icons.search_outlined),
+                  ),
+                ],
+              ),
+              drawer: const _HomeDrawer(),
+              body: const _HomePage(),
             ),
-            drawer: const _HomeDrawer(),
-            body: const _HomePage(),
           );
         },
       ),
@@ -77,38 +83,7 @@ class _HomePage extends StatelessWidget {
           );
         }
 
-        return Center(
-          child: Padding(
-            padding: vertical12,
-            child: SizedBox(
-              height: UIConstants.tabHeight(context),
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: ScrollController(),
-                scrollBehavior: CustomScrollBehaviour(),
-                slivers: [
-                  SliverPadding(
-                    padding: left12,
-                    sliver: SliverList.builder(
-                      itemCount: tabs.length,
-                      itemBuilder: (_, index) {
-                        final tab = tabs[index];
-
-                        return _VerticalTab(tab: tab);
-                      },
-                    ),
-                  ),
-                  const SliverPadding(
-                    padding: right12,
-                    sliver: SliverToBoxAdapter(
-                      child: _NewTab(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        return HomeLayout(tabs: tabs);
       },
     );
   }

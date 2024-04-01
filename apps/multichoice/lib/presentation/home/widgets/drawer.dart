@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class _HomeDrawer extends StatelessWidget {
+class _HomeDrawer extends HookWidget {
   const _HomeDrawer();
 
   @override
@@ -92,6 +92,19 @@ class _HomeDrawer extends StatelessWidget {
                       icon: const Icon(
                         Icons.delete_sweep_rounded,
                       ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Horizontal/Vertical Layout'),
+                    ),
+                    Switch(
+                      value: context.watch<AppLayout>().appLayout,
+                      onChanged: (value) {
+                        context.read<AppLayout>().appLayout = value;
+                      },
                     ),
                   ],
                 ),

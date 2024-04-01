@@ -1,7 +1,10 @@
 part of '../home_page.dart';
 
-class _EntryCard extends HookWidget {
-  const _EntryCard({required this.entry});
+class EntryCard extends HookWidget {
+  const EntryCard({
+    required this.entry,
+    super.key,
+  });
 
   final EntryDTO entry;
 
