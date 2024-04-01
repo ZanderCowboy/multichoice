@@ -83,6 +83,7 @@ class AppTheme with ChangeNotifier {
       ),
       textTheme: defaultTheme.textTheme.copyWith(
         titleMedium: _lightTextTheme.titleMedium,
+        titleSmall: _lightTextTheme.titleSmall,
         bodyMedium: _lightTextTheme.bodyMedium,
       ),
       inputDecorationTheme: InputDecorationTheme(

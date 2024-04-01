@@ -1,5 +1,11 @@
 CHANGELOG
 
+Version 0.1.4+122:
+- Reworked custom app icon
+- Moved `deleteAll` button to drawer and replaced with a `Search` button (not implemented yet)
+- Added SliverPadding to have initial padding around tabs, but falls away as user scrolls
+
+
 Version 0.1.4+119:
 - Added a change log
 - Added custom launcher icons

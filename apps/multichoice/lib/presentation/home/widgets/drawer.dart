@@ -53,6 +53,48 @@ class _HomeDrawer extends StatelessWidget {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Delete All Data'),
+                    ),
+                    IconButton(
+                      onPressed: state.tabs != null && state.tabs!.isNotEmpty
+                          ? () {
+                              CustomDialog<AlertDialog>.show(
+                                context: context,
+                                title: const Text(
+                                  'Delete all tabs and entries?',
+                                ),
+                                content: const Text(
+                                  'Are you sure you want to delete all tabs and their entries?',
+                                ),
+                                actions: [
+                                  OutlinedButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('No, cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context.read<HomeBloc>().add(
+                                            const HomeEvent
+                                                .onPressedDeleteAll(),
+                                          );
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Yes, delete'),
+                                  ),
+                                ],
+                              );
+                            }
+                          : null,
+                      icon: const Icon(
+                        Icons.delete_sweep_rounded,
+                      ),
+                    ),
+                  ],
+                ),
                 const Expanded(
                   child: SizedBox.expand(),
                 ),
