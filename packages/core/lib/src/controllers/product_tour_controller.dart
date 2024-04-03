@@ -1,5 +1,7 @@
 import 'package:core/core.dart';
+import 'package:core/src/repositories/implementation/demo/demo_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 ProductTourController get productTourController =>
@@ -12,6 +14,7 @@ class ProductTourController {
 
   Future<void> init() async {
     await progressController.init();
+    late DemoRepository demoRepository;
   }
 
   bool shouldShowWelcomePopup() => progressController.currentStep == 0;

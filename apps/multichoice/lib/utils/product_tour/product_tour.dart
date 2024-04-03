@@ -2,6 +2,8 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+part 'widgets/popup.dart';
+
 class ProductTour extends StatefulWidget {
   const ProductTour({
     required this.builder,
@@ -26,8 +28,9 @@ class _ProductTourState extends State<ProductTour> {
     return ShowCaseWidget(
       builder: Builder(
         builder: (context) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((timeStamp) => handleProductTour(context));
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => handleProductTour(context),
+          );
           return widget.builder(context);
         },
       ),
@@ -55,7 +58,7 @@ class _ProductTourState extends State<ProductTour> {
 
   void openWelcomePopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
+      (_) {
         _isShowingStep = true;
         showDialog<AlertDialog>(
           context: context,
@@ -65,7 +68,7 @@ class _ProductTourState extends State<ProductTour> {
             buttonText: 'Next',
           ),
         ).then(
-          (value) {
+          (_) {
             _isShowingStep = false;
             return handleProductTour(context);
           },
@@ -76,7 +79,7 @@ class _ProductTourState extends State<ProductTour> {
 
   void openThanksPopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
+      (_) {
         _isShowingStep = true;
         showDialog<AlertDialog>(
           context: context,
@@ -86,40 +89,12 @@ class _ProductTourState extends State<ProductTour> {
             buttonText: 'Close',
           ),
         ).then(
-          (value) {
+          (_) {
             _isShowingStep = false;
             return handleProductTour(context);
           },
         );
       },
-    );
-  }
-}
-
-class _MyPopup extends StatelessWidget {
-  const _MyPopup({
-    required this.title,
-    required this.content,
-    required this.buttonText,
-  });
-  final String title;
-  final String content;
-  final String buttonText;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(title),
-      content: Text(content),
-      actions: [
-        TextButton(
-          onPressed: () {
-            productTourController.nextStep();
-            Navigator.of(context).pop();
-          },
-          child: Text(buttonText),
-        ),
-      ],
     );
   }
 }
