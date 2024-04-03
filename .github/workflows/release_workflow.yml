@@ -40,7 +40,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update patch version number and download
@@ -49,7 +49,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "patch"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update minor version number and download
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "minor"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: Update major version number and download
@@ -67,7 +67,7 @@ jobs:
         uses: ./.github/actions/app-versioning
         with:
           bump-strategy: "major"
-          file-path: "./pubspec.yaml"
+          file-path: "./apps/multichoice/pubspec.yaml"
           upload-filename: "pubspec-file-release"
 
       - name: read-config-file
@@ -107,24 +107,25 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pubspec-file-release
+          path: ${{ github.workspace }}/apps/multichoice/
 
-  build:
-    name: Build Apps
+  buildRelease:
+    name: Build Apps for Release
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [bumpVersion]
     secrets: inherit
     with:
-      pubspec-filename: "pubspec-file-release"
-      web-build-flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
-      web-environment-flag: "release"
-      # profile, release
-      android-build-flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
-      android-environment-flag: "release"
-      android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
-      android-build-artifact: "android-release"
-      windows-build-flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
-      windows-environment-flag: "release"
+      pubspec_filename: "pubspec-file-release"
+      web_build_flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
+      web_environment_flag: ${{ needs.bumpVersion.outputs.web_environment_flag }}
+      android_build_flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
+      android_environment_flag: ${{ needs.bumpVersion.outputs.android_environment_flag }}
+      android_versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
+      android_build_artifact: "android-release"
+      android_build_appbundle: ${{ 'true' == 'true' }}
+      windows_build_flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
+      windows_environment_flag: ${{ needs.bumpVersion.outputs.windows_environment_flag }}
 
   commitBump:
     name: Auto Commit Bumped Version

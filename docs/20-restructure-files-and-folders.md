@@ -6,8 +6,9 @@
 
 ### Overview
 
-This was a simple ticket to update the file and folder structure.
+This was a simple ticket to update the files and folders structure.
 
 ### What was done
 
 - [X] Create `repositories` folder and made changes
+- [X] Implement files structure used for clean architecture
