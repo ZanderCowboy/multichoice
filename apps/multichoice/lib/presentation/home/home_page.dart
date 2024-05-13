@@ -40,35 +40,16 @@ class HomePage extends StatelessWidget {
               title: const Text('Multichoice'),
               actions: [
                 IconButton(
-                  onPressed: state.tabs != null
-                      ? () {
-                          CustomDialog<AlertDialog>.show(
-                            context: context,
-                            title: const Text('Delete all tabs and entries?'),
-                            content: const Text(
-                              'Are you sure you want to delete all tabs and their entries?',
-                            ),
-                            actions: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('No, cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  context.read<HomeBloc>().add(
-                                        const HomeEvent.onPressedDeleteAll(),
-                                      );
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Yes, delete'),
-                              ),
-                            ],
-                          );
-                        }
-                      : null,
-                  icon: const Icon(
-                    Icons.delete_sweep_rounded,
-                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context)
+                      ..clearSnackBars()
+                      ..showSnackBar(
+                        const SnackBar(
+                          content: Text('Search has not been implemented yet.'),
+                        ),
+                      );
+                  },
+                  icon: const Icon(Icons.search_outlined),
                 ),
               ],
             ),
@@ -98,7 +79,7 @@ class _HomePage extends StatelessWidget {
 
         return Center(
           child: Padding(
-            padding: allPadding12,
+            padding: vertical12,
             child: SizedBox(
               height: UIConstants.tabHeight(context),
               child: CustomScrollView(
@@ -106,16 +87,22 @@ class _HomePage extends StatelessWidget {
                 controller: ScrollController(),
                 scrollBehavior: CustomScrollBehaviour(),
                 slivers: [
-                  SliverList.builder(
-                    itemCount: tabs.length,
-                    itemBuilder: (_, index) {
-                      final tab = tabs[index];
+                  SliverPadding(
+                    padding: left12,
+                    sliver: SliverList.builder(
+                      itemCount: tabs.length,
+                      itemBuilder: (_, index) {
+                        final tab = tabs[index];
 
-                      return _VerticalTab(tab: tab);
-                    },
+                        return _VerticalTab(tab: tab);
+                      },
+                    ),
                   ),
-                  const SliverToBoxAdapter(
-                    child: _NewTab(),
+                  const SliverPadding(
+                    padding: right12,
+                    sliver: SliverToBoxAdapter(
+                      child: _NewTab(),
+                    ),
                   ),
                 ],
               ),

@@ -26,8 +26,6 @@ abstract class InjectableModule {
   Future<SharedPreferences> get sharedPref async {
     final sharedPref = await SharedPreferences.getInstance();
 
-    await sharedPref.setString('theme', 'light');
-
     return sharedPref;
   }
 }
