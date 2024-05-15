@@ -1,5 +1,12 @@
 CHANGELOG
 
+Version 0.1.4+128:
+- Fix horizontal layout not working
+- Change the 'add entry' card to align with entry cards in horizontal mode
+- Add validator to validate user input and trim whitespaces
+- Add new colors for enabled/disabled buttons
+- Update drawer 'delete all' button with enabled/disabled colors
+
 Version 0.1.4+124:
 - Added more padding around icon to avoid cutoffs
 - Reworked custom app icon
