@@ -24,6 +24,7 @@ class _VerticalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
+
     return Card(
       color: context.theme.appColors.primary,
       child: Padding(
