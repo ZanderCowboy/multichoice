@@ -89,9 +89,15 @@ class _HomeDrawer extends HookWidget {
                               );
                             }
                           : null,
-                      icon: const Icon(
-                        Icons.delete_sweep_rounded,
-                      ),
+                      icon: state.tabs == null || state.tabs!.isEmpty
+                          ? Icon(
+                              Icons.delete_sweep_outlined,
+                              color: context.theme.appColors.disabled,
+                            )
+                          : Icon(
+                              Icons.delete_sweep_rounded,
+                              color: context.theme.appColors.enabled,
+                            ),
                     ),
                   ],
                 ),
