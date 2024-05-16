@@ -1,8 +1,9 @@
 part of '../home_page.dart';
 
-class _NewEntry extends StatelessWidget {
-  const _NewEntry({
+class NewEntry extends StatelessWidget {
+  const NewEntry({
     required this.tabId,
+    super.key,
   });
 
   final int tabId;

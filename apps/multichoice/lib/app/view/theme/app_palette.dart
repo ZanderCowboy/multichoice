@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 abstract class AppPalette {
   static const white = Color(0xffffffff);
   static const black = Color(0xff000000);
+  static const transparent = Colors.transparent;
+  static const lightGrey = Color(0xffF5F5F5);
+  static const enabledColor = Color(0xffF0F0F0);
+  static const disabledColor = Color(0x80FFFFFF);
 
   static const red = Colors.red;
   static const imperialRed = Color(0xFFE54B4B);

@@ -8,6 +8,7 @@ const entryCardMinimumHeight = 90.0;
 const entryCardMinimumWidth = 0;
 const tabCardMinimumWidth = 120.0;
 double tabsHeightConstant = 1.15;
+double tabsHeightConstantHori = 4;
 double tabsWidthConstant = 3.65;
 
 const _mobileScreenWidth = 450;
@@ -25,11 +26,25 @@ class UIConstants {
     return mediaHeight;
   }
 
-  static double? tabHeight(BuildContext context) {
+  static double? horiTabHeight(BuildContext context) {
+    return MediaQuery.sizeOf(context).height / 4.1;
+  }
+
+  static double? horiTabWidth(BuildContext context) {
+    return MediaQuery.sizeOf(context).width;
+  }
+
+  static double? horiTabHeaderWidth(BuildContext context) {
+    final horizontalTabWidth =
+        horiTabWidth(context) ?? MediaQuery.sizeOf(context).width;
+    return horizontalTabWidth / 6.25;
+  }
+
+  static double? vertTabHeight(BuildContext context) {
     return MediaQuery.sizeOf(context).height / tabsHeightConstant;
   }
 
-  static double? tabWidth(BuildContext context) {
+  static double? vertTabWidth(BuildContext context) {
     final mediaWidth = MediaQuery.sizeOf(context).width;
 
     if (mediaWidth > _mobileScreenWidth) {

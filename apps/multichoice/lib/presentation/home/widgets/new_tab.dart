@@ -1,7 +1,7 @@
 part of '../home_page.dart';
 
-class _NewTab extends StatelessWidget {
-  const _NewTab();
+class NewTab extends StatelessWidget {
+  const NewTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +11,7 @@ class _NewTab extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
+
         return AddTabCard(
           width: UIConstants.newTabWidth(context),
           onPressed: () {

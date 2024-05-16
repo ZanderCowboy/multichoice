@@ -1,16 +1,15 @@
 part of '../home_page.dart';
 
-class _VerticalTab extends StatelessWidget {
-  const _VerticalTab({
+class VerticalTab extends StatelessWidget {
+  const VerticalTab({
     required this.tab,
+    super.key,
   });
 
   final TabsDTO tab;
 
   @override
   Widget build(BuildContext context) {
-    final entries = tab.entries;
-
     return GestureDetector(
       onLongPress: () {
         CustomDialog<AlertDialog>.show(
@@ -57,53 +56,7 @@ class _VerticalTab extends StatelessWidget {
           ],
         );
       },
-      child: Card(
-        color: context.theme.appColors.primary,
-        child: Padding(
-          padding: allPadding2,
-          child: SizedBox(
-            width: UIConstants.tabWidth(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: left4,
-                        child: Text(
-                          tab.title,
-                          style: context.theme.appTextTheme.titleMedium,
-                        ),
-                      ),
-                    ),
-                    _MenuWidget(tab: tab),
-                  ],
-                ),
-                if (tab.subtitle.isEmpty)
-                  const SizedBox.shrink()
-                else
-                  Padding(
-                    padding: left4,
-                    child: Text(
-                      tab.subtitle,
-                      style: context.theme.appTextTheme.subtitleMedium,
-                    ),
-                  ),
-                Divider(
-                  color: context.theme.appColors.secondaryLight,
-                  thickness: 2,
-                  indent: 4,
-                  endIndent: 4,
-                ),
-                gap4,
-                _Cards(id: tab.id, entries: entries),
-              ],
-            ),
-          ),
-        ),
-      ),
+      child: TabLayout(tab: tab),
     );
   }
 }

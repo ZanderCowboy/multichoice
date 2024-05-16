@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class _HomeDrawer extends StatelessWidget {
+class _HomeDrawer extends HookWidget {
   const _HomeDrawer();
 
   @override
@@ -89,9 +89,28 @@ class _HomeDrawer extends StatelessWidget {
                               );
                             }
                           : null,
-                      icon: const Icon(
-                        Icons.delete_sweep_rounded,
-                      ),
+                      icon: state.tabs == null || state.tabs!.isEmpty
+                          ? Icon(
+                              Icons.delete_sweep_outlined,
+                              color: context.theme.appColors.disabled,
+                            )
+                          : Icon(
+                              Icons.delete_sweep_rounded,
+                              color: context.theme.appColors.enabled,
+                            ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Horizontal/Vertical Layout'),
+                    ),
+                    Switch(
+                      value: context.watch<AppLayout>().appLayout,
+                      onChanged: (value) {
+                        context.read<AppLayout>().appLayout = value;
+                      },
                     ),
                   ],
                 ),
