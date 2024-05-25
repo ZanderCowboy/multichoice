@@ -13,6 +13,9 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.4
   freezed_annotation: ^2.4.1
+  firebase_analytics: ^10.10.5
+  firebase_core: ^2.27.2
+  firebase_remote_config: ^4.4.5
   get_it: ^7.6.4
   injectable: ^2.3.2
   isar: ^3.1.0+1

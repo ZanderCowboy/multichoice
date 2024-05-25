@@ -33,30 +33,38 @@ class HomePage extends StatelessWidget {
         ..add(
           const HomeEvent.onGetTabs(),
         ),
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context)
-                      ..clearSnackBars()
-                      ..showSnackBar(
-                        const SnackBar(
-                          content: Text('Search has not been implemented yet.'),
-                        ),
-                      );
+      child: BlocProvider(
+        create: (context) => coreSl<FirebaseBloc>(),
+        child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                title: BlocBuilder<FirebaseBloc, FirebaseState>(
+                  builder: (context, state) {
+                    return Text(state.color);
                   },
-                  icon: const Icon(Icons.search_outlined),
                 ),
-              ],
-            ),
-            drawer: const _HomeDrawer(),
-            body: const _HomePage(),
-          );
-        },
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context)
+                        ..clearSnackBars()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Search has not been implemented yet.'),
+                          ),
+                        );
+                    },
+                    icon: const Icon(Icons.search_outlined),
+                  ),
+                ],
+              ),
+              drawer: const _HomeDrawer(),
+              body: const _HomePage(),
+            );
+          },
+        ),
       ),
     );
   }
