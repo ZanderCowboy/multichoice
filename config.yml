@@ -21,6 +21,6 @@ deploy:
 
 android_deploy:
   android_package_name: "co.za.zanderkotze.multichoice"
-  android_track: "alpha"
+  android_track: "internal"
   android_release_name: "v1.0.0"
   android_deploy_status: "draft"
