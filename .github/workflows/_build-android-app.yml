@@ -32,6 +32,25 @@ jobs:
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-java-flutter
 
+      - name: melos test all
+        run: melos test:all
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          fail_ci_if_error: true
+
+      - run: echo "Starting analyze"
+
+      - name: ⚠️ℹ️ Run Dart analysis
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          working-directory: "${{github.workspace}}/"
+
+      - run: echo "Starting build process"
+
       - name: Get pubspec.yaml
         uses: actions/download-artifact@v4
         with:
