@@ -5,21 +5,23 @@ class AddTabCard extends StatelessWidget {
     required this.onPressed,
     this.semanticLabel,
     this.width,
+    this.color,
     super.key,
   });
 
   final String? semanticLabel;
   final double? width;
   final VoidCallback onPressed;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return _BaseCard(
       semanticLabel: semanticLabel ?? '',
       elevation: 5,
-      color: Colors.grey[600],
+      color: color ?? context.theme.appColors.primaryLight,
       shape: RoundedRectangleBorder(
-        borderRadius: circularBorder12,
+        borderRadius: borderCircular12,
       ),
       child: Padding(
         padding: allPadding6,

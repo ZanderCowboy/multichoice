@@ -7,6 +7,14 @@ build:
   android_build_flag: true
   windows_build_flag: false
 
+# This can be used to determine the environment to build the app in.
+# Note: This is used in both build_workflow and release_workflow
+# Options: profile, release (debug is by default empty)
+environment:
+  web_environment_flag: "release"
+  android_environment_flag: "release"
+  windows_environment_flag: "release"
+
 # This can be used to determine the state of releases to Github.
 release:
   body: "Release notes here"
@@ -21,6 +29,7 @@ deploy:
 
 android_deploy:
   android_package_name: "co.za.zanderkotze.multichoice"
+  android_environment_url: "https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/tracks/internal-testing"
   android_track: "internal"
   android_release_name: "v1.0.0"
   android_deploy_status: "draft"

@@ -2,56 +2,60 @@ name: Build Android, Web, & Windows Apps
 on:
   workflow_call:
     inputs:
-      pubspec-filename:
+      pubspec_filename:
         required: true
         type: string
-      web-build-flag:
+      web_build_flag:
         required: true
         type: boolean
-      web-environment-flag:
+      web_environment_flag:
         required: true
         type: string
-      android-build-flag:
+      android_build_flag:
         required: true
         type: boolean
-      android-environment-flag:
+      android_environment_flag:
         required: true
         type: string
-      android-versionNumber:
+      android_versionNumber:
         required: true
         type: string
-      android-build-artifact:
+      android_build_artifact:
         required: true
         type: string
-      windows-build-flag:
+      android_build_appbundle:
         required: true
         type: boolean
-      windows-environment-flag:
+      windows_build_flag:
+        required: true
+        type: boolean
+      windows_environment_flag:
         required: true
         type: string
 
 jobs:
   buildWeb:
-    name: "Build Web app"
+    name: Web
     uses: ./.github/workflows/_build-web-app.yml
     with:
-      pubspec-filename: ${{ inputs.pubspec-filename }}
-      environment-flag: ${{ inputs.web-environment-flag }}
-      build-flag: ${{ inputs.web-build-flag }}
+      pubspec_filename: ${{ inputs.pubspec_filename }}
+      environment_flag: ${{ inputs.web_environment_flag }}
+      build_flag: ${{ inputs.web_build_flag }}
   buildAndroid:
-    name: "Build Android app"
+    name: Android
     uses: ./.github/workflows/_build-android-app.yml
     secrets: inherit
     with:
-      pubspec-filename: ${{ inputs.pubspec-filename }}
-      environment-flag: ${{ inputs.android-environment-flag }}
-      versionNumber: ${{ inputs.android-versionNumber }}
-      build-flag: ${{ inputs.android-build-flag }}
-      build-artifact: ${{ inputs.android-build-artifact }}
+      pubspec_filename: ${{ inputs.pubspec_filename }}
+      environment_flag: ${{ inputs.android_environment_flag }}
+      versionNumber: ${{ inputs.android_versionNumber }}
+      build_flag: ${{ inputs.android_build_flag }}
+      build_artifact: ${{ inputs.android_build_artifact }}
+      build_appbundle: ${{ inputs.android_build_appbundle }}
   buildWindows:
-    name: "Build Windows app"
+    name: Windows
     uses: ./.github/workflows/_build-windows-app.yml
     with:
-      pubspec-filename: ${{ inputs.pubspec-filename }}
-      environment-flag: ${{ inputs.windows-environment-flag }}
-      build-flag: ${{ inputs.windows-build-flag }}
+      pubspec_filename: ${{ inputs.pubspec_filename }}
+      environment_flag: ${{ inputs.windows_environment_flag }}
+      build_flag: ${{ inputs.windows_build_flag }}

@@ -14,5 +14,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  melos: ^4.1.0
+  melos: ^6.0.0
   very_good_analysis: ^5.1.0

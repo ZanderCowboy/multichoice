@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   bumpVersion:
-    name: Bump build number and get prebuild ready
+    name: Bump Build Number, Prebuild
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -30,6 +30,9 @@ jobs:
       web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
+      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
+      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -103,33 +106,37 @@ jobs:
           echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
+          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
+
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
 
-  build:
-    name: Build Apps
+  buildRelease:
+    name: Release Build
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [bumpVersion]
     secrets: inherit
     with:
-      pubspec-filename: "pubspec-file-release"
-      web-build-flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
-      web-environment-flag: "release"
-      # profile, release
-      android-build-flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
-      android-environment-flag: "release"
-      android-versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
-      android-build-artifact: "android-release"
-      windows-build-flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
-      windows-environment-flag: "release"
+      pubspec_filename: "pubspec-file-release"
+      web_build_flag: ${{ needs.bumpVersion.outputs.web_build_flag == 'true' }}
+      web_environment_flag: ${{ needs.bumpVersion.outputs.web_environment_flag }}
+      android_build_flag: ${{ needs.bumpVersion.outputs.android_build_flag == 'true' }}
+      android_environment_flag: ${{ needs.bumpVersion.outputs.android_environment_flag }}
+      android_versionNumber: ${{ needs.bumpVersion.outputs.version_number }}
+      android_build_artifact: "android-release"
+      android_build_appbundle: ${{ 'true' == 'true' }}
+      windows_build_flag: ${{ needs.bumpVersion.outputs.windows_build_flag == 'true' }}
+      windows_environment_flag: ${{ needs.bumpVersion.outputs.windows_environment_flag }}
 
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build, bumpVersion]
+    needs: [bumpVersion, buildRelease]
     if: success()
     runs-on: ubuntu-latest
     concurrency:
@@ -154,7 +161,7 @@ jobs:
           download_filename: "pubspec-file-release"
 
   tagAndRelease:
-    name: Git tagging and releases
+    name: Git Tagging, Release
     needs: [commitBump, bumpVersion]
     if: github.event.pull_request.draft == false && success()
     runs-on: ubuntu-latest
