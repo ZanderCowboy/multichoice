@@ -44,10 +44,10 @@ class AppTheme with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(
+          foregroundColor: WidgetStatePropertyAll(
             _lightAppColors.black,
           ),
-          backgroundColor: MaterialStatePropertyAll(
+          backgroundColor: WidgetStatePropertyAll(
             AppPalette.grey.geyserLight,
           ),
         ),
@@ -104,9 +104,9 @@ class AppTheme with ChangeNotifier {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
-          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
-          side: const MaterialStatePropertyAll(BorderSide.none),
+          foregroundColor: WidgetStatePropertyAll(AppPalette.grey.geyser),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          side: const WidgetStatePropertyAll(BorderSide.none),
         ),
       ),
       iconTheme: IconThemeData(
@@ -211,9 +211,9 @@ class AppTheme with ChangeNotifier {
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           foregroundColor:
-              MaterialStatePropertyAll(AppPalette.paletteTwo.sanJuan),
-          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
-          side: const MaterialStatePropertyAll(BorderSide.none),
+              WidgetStatePropertyAll(AppPalette.paletteTwo.sanJuan),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          side: const WidgetStatePropertyAll(BorderSide.none),
         ),
       ),
       iconTheme: IconThemeData(
@@ -242,7 +242,7 @@ class AppTheme with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(
+          backgroundColor: WidgetStatePropertyAll(
             AppPalette.grey.geyserLight,
           ),
         ),
