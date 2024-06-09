@@ -1,9 +1,8 @@
 part of '../home_page.dart';
 
-class MenuWidget extends StatelessWidget {
-  const MenuWidget({
+class _MenuWidget extends StatelessWidget {
+  const _MenuWidget({
     required this.tab,
-    super.key,
   });
 
   final TabsDTO tab;
@@ -23,8 +22,11 @@ class MenuWidget extends StatelessWidget {
                   menuController.open();
                 }
               },
+              // visualDensity: VisualDensity.adaptivePlatformDensity,
               icon: const Icon(Icons.more_vert_outlined),
-              padding: EdgeInsets.zero,
+              iconSize: 20,
+              color: context.theme.appColors.ternary,
+              padding: zeroPadding,
             );
           },
           menuChildren: [
@@ -36,51 +38,53 @@ class MenuWidget extends StatelessWidget {
               child: Text(MenuItems.edit.name),
             ),
             MenuItemButton(
-              onPressed: () {
-                CustomDialog<AlertDialog>.show(
-                  context: context,
-                  title: RichText(
-                    text: TextSpan(
-                      text: 'Delete all entries of ',
-                      style: DefaultTextStyle.of(context)
-                          .style
-                          .copyWith(fontSize: 24),
-                      children: [
-                        TextSpan(
-                          text: tab.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+              onPressed: tab.entries.isNotEmpty
+                  ? () {
+                      CustomDialog<AlertDialog>.show(
+                        context: context,
+                        title: RichText(
+                          text: TextSpan(
+                            text: 'Delete all entries of ',
+                            style: DefaultTextStyle.of(context)
+                                .style
+                                .copyWith(fontSize: 24),
+                            children: [
+                              TextSpan(
+                                text: tab.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '?',
+                                style: DefaultTextStyle.of(context)
+                                    .style
+                                    .copyWith(fontSize: 24),
+                              ),
+                            ],
                           ),
                         ),
-                        TextSpan(
-                          text: '?',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontSize: 24),
+                        content: Text(
+                          'Are you sure you want to delete all the entries of ${tab.title}?',
                         ),
-                      ],
-                    ),
-                  ),
-                  content: Text(
-                    'Are you sure you want to delete all the entries of ${tab.title}?',
-                  ),
-                  actions: [
-                    OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              HomeEvent.onPressedDeleteAllEntries(tab.id),
-                            );
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Delete Entries'),
-                    ),
-                  ],
-                );
-              },
+                        actions: [
+                          OutlinedButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<HomeBloc>().add(
+                                    HomeEvent.onPressedDeleteAllEntries(tab.id),
+                                  );
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Delete Entries'),
+                          ),
+                        ],
+                      );
+                    }
+                  : null,
               child: Text(MenuItems.deleteEntries.name),
             ),
             MenuItemButton(

@@ -2,27 +2,30 @@ name: Android Build workflow
 on:
   workflow_call:
     inputs:
-      pubspec-filename:
+      pubspec_filename:
         required: true
         type: string
-      environment-flag:
+      environment_flag:
         required: true
         type: string
       versionNumber:
         required: true
         type: string
-      build-flag:
+      build_flag:
         required: true
         type: boolean
-      build-artifact:
+      build_artifact:
         required: true
         type: string
+      build_appbundle:
+        required: true
+        type: boolean
 
 jobs:
-  buildAndroid:
-    name: Build Android
-    if: ${{ inputs.build-flag == true }}
+  testAnalyzeBuildAndroid:
+    name: Android - Test, Analyze, Build
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,33 +55,63 @@ jobs:
       - run: echo "Starting build process"
 
       - name: Get pubspec.yaml
+        if: ${{ inputs.build_flag == true }} && success()
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.pubspec-filename }}
+          name: ${{ inputs.pubspec_filename }}
           path: ${{ github.workspace }}/apps/multichoice/
 
       - name: Download Android keystore
         id: android_keystore
+        if: success()
         uses: timheuer/base64-to-file@v1.2.4
         with:
           fileName: upload-keystore.jks
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: Create key.properties
-        if: ${{ inputs.environment-flag }} == 'release'
+        if: ${{ inputs.environment_flag }} == 'release'
         run: |
           echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
-        working-directory: apps/multichoice/android
+        working-directory: apps/multichoice/android/
 
-      - name: Start ${{ inputs.environment-flag }} build
-        run: flutter build appbundle --${{ inputs.environment-flag }}
-        working-directory: ./apps/multichoice
+      - name: Create secrets.dart
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
 
-      - name: Upload Android ${{ inputs.environment-flag }}
+      - name: Start appbundle ${{ inputs.environment_flag }} build
+        if: ${{ inputs.build_appbundle == true }} && success()
+        run: flutter build appbundle --${{ inputs.environment_flag }}
+        working-directory: apps/multichoice/
+
+      - name: Start apk ${{ inputs.environment_flag }} build
+        if: success()
+        run: flutter build apk --${{ inputs.environment_flag }}
+        working-directory: apps/multichoice/
+
+      - name: Upload Android ${{ inputs.environment_flag }} appbundle
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.build-artifact }}
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          name: ${{ inputs.build_artifact }}
+          path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment_flag }}/app-${{ inputs.environment_flag }}.aab
+
+      - name: Upload artifact to Firebase App Distribution
+        if: success()
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          groups: testers
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
+          releaseNotesFile: ./apps/multichoice/CHANGELOG.txt
+          debug: true

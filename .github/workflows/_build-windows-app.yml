@@ -2,20 +2,20 @@ name: Windows Build workflow
 on:
   workflow_call:
     inputs:
-      pubspec-filename:
+      pubspec_filename:
         required: true
         type: string
-      environment-flag:
+      environment_flag:
         required: true
         type: string
-      build-flag:
+      build_flag:
         required: true
         type: boolean
 
 jobs:
   buildWindows:
-    name: Build Windows
-    if: ${{ inputs.build-flag == true }}
+    name: Windows - Test, Analyze, Build
+    if: ${{ inputs.build_flag == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

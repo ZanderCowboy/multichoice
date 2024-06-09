@@ -18,7 +18,9 @@ class _VerticalTab extends StatelessWidget {
           title: RichText(
             text: TextSpan(
               text: 'Delete ',
-              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+              style: DefaultTextStyle.of(context).style.copyWith(
+                    fontSize: 24,
+                  ),
               children: [
                 TextSpan(
                   text: tab.title,
@@ -28,8 +30,9 @@ class _VerticalTab extends StatelessWidget {
                 ),
                 TextSpan(
                   text: '?',
-                  style:
-                      DefaultTextStyle.of(context).style.copyWith(fontSize: 24),
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                        fontSize: 24,
+                      ),
                 ),
               ],
             ),
@@ -54,54 +57,49 @@ class _VerticalTab extends StatelessWidget {
           ],
         );
       },
-      child: Padding(
-        padding: right4,
-        child: Card(
-          color: Colors.grey[200],
-          elevation: 5,
-          shadowColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: circularBorder12,
-          ),
-          child: Padding(
-            padding: allPadding4,
-            child: SizedBox(
-              width: MediaQuery.sizeOf(context).width / 4,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: left4,
-                          child: Text(
-                            tab.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                            ),
-                          ),
+      child: Card(
+        color: context.theme.appColors.primary,
+        child: Padding(
+          padding: allPadding2,
+          child: SizedBox(
+            width: UIConstants.tabWidth(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: left4,
+                        child: Text(
+                          tab.title,
+                          style: context.theme.appTextTheme.titleMedium,
                         ),
                       ),
-                      MenuWidget(tab: tab),
-                    ],
-                  ),
-                  const Divider(
-                    indent: 4,
-                    endIndent: 4,
-                  ),
+                    ),
+                    _MenuWidget(tab: tab),
+                  ],
+                ),
+                if (tab.subtitle.isEmpty)
+                  const SizedBox.shrink()
+                else
                   Padding(
                     padding: left4,
                     child: Text(
                       tab.subtitle,
-                      style: const TextStyle(color: Colors.black),
+                      style: context.theme.appTextTheme.subtitleMedium,
                     ),
                   ),
-                  gap10,
-                  _Cards(id: tab.id, entries: entries),
-                ],
-              ),
+                Divider(
+                  color: context.theme.appColors.secondaryLight,
+                  thickness: 2,
+                  indent: 4,
+                  endIndent: 4,
+                ),
+                gap4,
+                _Cards(id: tab.id, entries: entries),
+              ],
             ),
           ),
         ),
