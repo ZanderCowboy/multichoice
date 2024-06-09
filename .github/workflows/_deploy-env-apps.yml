@@ -18,6 +18,9 @@ on:
       android_package_name:
         required: true
         type: string
+      android_environment_url:
+        required: true
+        type: string
       android_track:
         required: true
         type: string
