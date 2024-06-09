@@ -129,7 +129,7 @@ jobs:
 
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build, bumpVersion]
+    needs: [bumpVersion]
     if: success()
     runs-on: ubuntu-latest
     concurrency:
