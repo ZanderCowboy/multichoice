@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   bumpVersion:
-    name: Bump build number and get prebuild ready
+    name: Bump Build Number, Prebuild
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -30,6 +30,9 @@ jobs:
       web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
+      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
+      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -103,6 +106,10 @@ jobs:
           echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
+          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
+
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
         with:
@@ -110,7 +117,7 @@ jobs:
           path: ${{ github.workspace }}/apps/multichoice/
 
   buildRelease:
-    name: Build Apps for Release
+    name: Release Build
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [bumpVersion]
@@ -129,7 +136,7 @@ jobs:
 
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [bumpVersion]
+    needs: [bumpVersion, buildRelease]
     if: success()
     runs-on: ubuntu-latest
     concurrency:
@@ -154,7 +161,7 @@ jobs:
           download_filename: "pubspec-file-release"
 
   tagAndRelease:
-    name: Git tagging and releases
+    name: Git Tagging, Release
     needs: [commitBump, bumpVersion]
     if: github.event.pull_request.draft == false && success()
     runs-on: ubuntu-latest
