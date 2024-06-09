@@ -95,9 +95,6 @@ jobs:
             version_num=${{ steps.id_unlabeled.outputs.version-number }}
           fi
 
-          # echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
-          # version_num=${{ steps.id_unlabeled.outputs.version-number }}
-
           echo "version_number=${version_num}"
           version=$(echo "${version_num}" | sed 's/+.*//')
           echo "version_rel=${version}" >> $GITHUB_OUTPUT
