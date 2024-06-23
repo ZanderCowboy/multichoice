@@ -35,14 +35,14 @@ on:
 
 jobs:
   buildWeb:
-    name: "Build Web app"
+    name: Web
     uses: ./.github/workflows/_build-web-app.yml
     with:
       pubspec_filename: ${{ inputs.pubspec_filename }}
       environment_flag: ${{ inputs.web_environment_flag }}
       build_flag: ${{ inputs.web_build_flag }}
   buildAndroid:
-    name: "Build Android app"
+    name: Android
     uses: ./.github/workflows/_build-android-app.yml
     secrets: inherit
     with:
@@ -53,7 +53,7 @@ jobs:
       build_artifact: ${{ inputs.android_build_artifact }}
       build_appbundle: ${{ inputs.android_build_appbundle }}
   buildWindows:
-    name: "Build Windows app"
+    name: Windows
     uses: ./.github/workflows/_build-windows-app.yml
     with:
       pubspec_filename: ${{ inputs.pubspec_filename }}

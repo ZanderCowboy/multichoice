@@ -30,9 +30,7 @@ class _HomeDrawer extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
+                        Navigator.of(context).pop();
                       },
                       icon: const Icon(
                         Icons.close_outlined,
@@ -50,6 +48,48 @@ class _HomeDrawer extends StatelessWidget {
                     _ThemeButton(
                       sharedPref: sharedPref,
                       state: state,
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text('Delete All Data'),
+                    ),
+                    IconButton(
+                      onPressed: state.tabs != null && state.tabs!.isNotEmpty
+                          ? () {
+                              CustomDialog<AlertDialog>.show(
+                                context: context,
+                                title: const Text(
+                                  'Delete all tabs and entries?',
+                                ),
+                                content: const Text(
+                                  'Are you sure you want to delete all tabs and their entries?',
+                                ),
+                                actions: [
+                                  OutlinedButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('No, cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context.read<HomeBloc>().add(
+                                            const HomeEvent
+                                                .onPressedDeleteAll(),
+                                          );
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Yes, delete'),
+                                  ),
+                                ],
+                              );
+                            }
+                          : null,
+                      icon: const Icon(
+                        Icons.delete_sweep_rounded,
+                      ),
                     ),
                   ],
                 ),
@@ -92,19 +132,22 @@ class _ThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (sharedPref.getString('theme') == 'light') {
+    final isDarkMode =
+        sharedPref.getBool('isDarkMode') ?? ThemeMode.system == ThemeMode.dark;
+
+    if (!isDarkMode) {
       return IconButton(
         onPressed: () {
           _darkMode(context);
-          sharedPref.setString('theme', 'dark');
+          sharedPref.setBool('isDarkMode', true);
         },
         icon: const Icon(Icons.dark_mode_outlined),
       );
-    } else if (sharedPref.getString('theme') == 'dark') {
+    } else if (isDarkMode) {
       return IconButton(
         onPressed: () {
           _lightMode(context);
-          sharedPref.setString('theme', 'light');
+          sharedPref.setBool('isDarkMode', false);
         },
         icon: const Icon(Icons.light_mode_outlined),
       );

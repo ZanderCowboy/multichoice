@@ -1,16 +1,27 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
 import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:multichoice/constants/export_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
 
 class AppTheme with ChangeNotifier {
+  final _prefs = coreSl<SharedPreferences>();
+
   ThemeMode _themeMode = ThemeMode.system;
 
-  ThemeMode get themeMode => _themeMode;
+  bool isDarkTheme() =>
+      _prefs.getBool('isDarkMode') ?? _themeMode == ThemeMode.dark;
+
+  ThemeMode get themeMode => isDarkTheme() ? ThemeMode.dark : ThemeMode.light;
 
   set themeMode(ThemeMode themeMode) {
     _themeMode = themeMode;
+
+    final isDarkMode = themeMode == ThemeMode.dark;
+    _prefs.setBool('isDarkMode', isDarkMode);
+
     notifyListeners();
   }
 
@@ -33,10 +44,10 @@ class AppTheme with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(
+          foregroundColor: WidgetStatePropertyAll(
             _lightAppColors.black,
           ),
-          backgroundColor: MaterialStatePropertyAll(
+          backgroundColor: WidgetStatePropertyAll(
             AppPalette.grey.geyserLight,
           ),
         ),
@@ -72,6 +83,7 @@ class AppTheme with ChangeNotifier {
       ),
       textTheme: defaultTheme.textTheme.copyWith(
         titleMedium: _lightTextTheme.titleMedium,
+        titleSmall: _lightTextTheme.titleSmall,
         bodyMedium: _lightTextTheme.bodyMedium,
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -92,9 +104,9 @@ class AppTheme with ChangeNotifier {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(AppPalette.grey.geyser),
-          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
-          side: const MaterialStatePropertyAll(BorderSide.none),
+          foregroundColor: WidgetStatePropertyAll(AppPalette.grey.geyser),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          side: const WidgetStatePropertyAll(BorderSide.none),
         ),
       ),
       iconTheme: IconThemeData(
@@ -199,9 +211,9 @@ class AppTheme with ChangeNotifier {
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
           foregroundColor:
-              MaterialStatePropertyAll(AppPalette.paletteTwo.sanJuan),
-          padding: const MaterialStatePropertyAll(EdgeInsets.zero),
-          side: const MaterialStatePropertyAll(BorderSide.none),
+              WidgetStatePropertyAll(AppPalette.paletteTwo.sanJuan),
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          side: const WidgetStatePropertyAll(BorderSide.none),
         ),
       ),
       iconTheme: IconThemeData(
@@ -230,7 +242,7 @@ class AppTheme with ChangeNotifier {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(
+          backgroundColor: WidgetStatePropertyAll(
             AppPalette.grey.geyserLight,
           ),
         ),

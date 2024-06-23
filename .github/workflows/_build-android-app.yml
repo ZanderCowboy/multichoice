@@ -38,6 +38,13 @@ jobs:
       - name: melos test all
         run: melos test:all
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          fail_ci_if_error: true
+
       - run: echo "Starting analyze"
 
       - name: ⚠️ℹ️ Run Dart analysis
@@ -106,3 +113,5 @@ jobs:
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
           file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
+          releaseNotesFile: ./apps/multichoice/CHANGELOG.txt
+          debug: true
