@@ -23,6 +23,65 @@ class DataTransferPageState extends State<DataTransferScreen> {
 
   String? _fileName;
 
+  @override
+  Widget build(BuildContext context) {
+    final isDBEmpty = dataExchangeService.isDBEmpty();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Data Transfer',
+        ),
+        leading: IconButton(
+          onPressed: () {
+            context.router.maybePop();
+          },
+          tooltip: TooltipEnums.back.tooltip,
+          icon: const Icon(
+            Icons.arrow_back_ios_new_outlined,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.router.replace(const HomePageRoute());
+            },
+            tooltip: TooltipEnums.home.tooltip,
+            icon: const Icon(Icons.home),
+          ),
+        ],
+      ),
+      body: Center(
+        child: FutureBuilder(
+          future: isDBEmpty,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                !snapshot.hasData) {
+              return const CircularProgressIndicator();
+            }
+
+            final isDBEmpty = snapshot.data ?? false;
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _importFile(context),
+                  child: const Text('Import'),
+                ),
+                gap10,
+                ElevatedButton(
+                  onPressed: isDBEmpty ? null : _exportFile,
+                  child: const Text('Export'),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   Future<void> _importFile(BuildContext context) async {
     final filePath = await dataExchangeService.pickFile();
 
@@ -157,51 +216,6 @@ class DataTransferPageState extends State<DataTransferScreen> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Data Transfer',
-        ),
-        leading: IconButton(
-          onPressed: () {
-            context.router.maybePop();
-          },
-          tooltip: TooltipEnums.back.tooltip,
-          icon: const Icon(
-            Icons.arrow_back_ios_new_outlined,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.router.popUntilRoot();
-            },
-            tooltip: TooltipEnums.home.tooltip,
-            icon: const Icon(Icons.home),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => _importFile(context),
-              child: const Text('Import'),
-            ),
-            gap10,
-            ElevatedButton(
-              onPressed: _exportFile,
-              child: const Text('Export'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
