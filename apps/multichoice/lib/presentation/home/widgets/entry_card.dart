@@ -28,54 +28,7 @@ class _EntryCard extends HookWidget {
               child: Text(MenuItems.edit.name),
             ),
             MenuItemButton(
-              onPressed: () {
-                CustomDialog<AlertDialog>.show(
-                  context: context,
-                  title: RichText(
-                    text: TextSpan(
-                      text: 'Delete ',
-                      style: DefaultTextStyle.of(context)
-                          .style
-                          .copyWith(fontSize: 24),
-                      children: [
-                        TextSpan(
-                          text: entry.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '?',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontSize: 24),
-                        ),
-                      ],
-                    ),
-                  ),
-                  content: Text(
-                    "Are you sure you want to delete ${entry.title} and all it's data?",
-                  ),
-                  actions: [
-                    OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              HomeEvent.onLongPressedDeleteEntry(
-                                entry.tabId,
-                                entry.id,
-                              ),
-                            );
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                );
-              },
+              onPressed: () => _onDeleteEntry(context),
               child: Text(MenuItems.delete.name),
             ),
           ],
@@ -140,6 +93,25 @@ class _EntryCard extends HookWidget {
             ),
           ),
         );
+      },
+    );
+  }
+
+  void _onDeleteEntry(BuildContext context) {
+    deleteModal(
+      context: context,
+      title: entry.title,
+      content: Text(
+        "Are you sure you want to delete ${entry.title} and all it's data?",
+      ),
+      onConfirm: () {
+        context.read<HomeBloc>().add(
+              HomeEvent.onLongPressedDeleteEntry(
+                entry.tabId,
+                entry.id,
+              ),
+            );
+        Navigator.of(context).pop();
       },
     );
   }

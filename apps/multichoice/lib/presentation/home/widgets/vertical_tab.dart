@@ -12,51 +12,7 @@ class _VerticalTab extends StatelessWidget {
     final entries = tab.entries;
 
     return GestureDetector(
-      onLongPress: () {
-        CustomDialog<AlertDialog>.show(
-          context: context,
-          title: RichText(
-            text: TextSpan(
-              text: 'Delete ',
-              style: DefaultTextStyle.of(context).style.copyWith(
-                    fontSize: 24,
-                  ),
-              children: [
-                TextSpan(
-                  text: tab.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text: '?',
-                  style: DefaultTextStyle.of(context).style.copyWith(
-                        fontSize: 24,
-                      ),
-                ),
-              ],
-            ),
-          ),
-          content: Text(
-            "Are you sure you want to delete tab ${tab.title} and all it's entries?",
-          ),
-          actions: [
-            OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context
-                    .read<HomeBloc>()
-                    .add(HomeEvent.onLongPressedDeleteTab(tab.id));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
+      onLongPress: () => _onDeleteTab(context),
       child: Card(
         color: context.theme.appColors.primary,
         child: Padding(
@@ -104,6 +60,20 @@ class _VerticalTab extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _onDeleteTab(BuildContext context) {
+    deleteModal(
+      context: context,
+      title: tab.title,
+      content: Text(
+        "Are you sure you want to delete tab ${tab.title} and all it's entries?",
+      ),
+      onConfirm: () {
+        context.read<HomeBloc>().add(HomeEvent.onLongPressedDeleteTab(tab.id));
+        Navigator.of(context).pop();
+      },
     );
   }
 }

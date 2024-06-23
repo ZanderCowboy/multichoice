@@ -30,7 +30,7 @@ scripts:
     run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
     exec:
       failFast: true
-      concurrency: 10
+      concurrency: 1
       orderDependents: true
 
   upgrade:
