@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
@@ -26,51 +29,68 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _checkAndRequestPermissions();
+
+    final sharedPref = coreSl<SharedPreferences>();
+
+    final isPermissionsChecked =
+        sharedPref.getBool('isPermissionsChecked') ?? false;
+
+    if (!isPermissionsChecked) _checkAndRequestPermissions();
   }
 
   Future<void> _checkAndRequestPermissions() async {
-    if (await Permission.manageExternalStorage.isGranted) {
-      // Permission is already granted, proceed with your logic
-      // todo add a dialog to explain why the permission is needed
-      // todo add a dialog to request the permission
+    var status = await Permission.manageExternalStorage.status;
+
+    if (status.isGranted) {
       return;
     }
 
-    if (await Permission.manageExternalStorage.isDenied) {
-      // Request permission
-      final status = await Permission.manageExternalStorage.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
-        // Handle the case where the user has denied the permission
+    if (status.isDenied) {
+      await showDialog<AlertDialog>(
+        context: context,
+        builder: (BuildContext context) {
+          coreSl<SharedPreferences>().setBool('isPermissionsChecked', true);
+
+          return AlertDialog(
+            title: const Text('Permission Required'),
+            content:
+                const Text('Storage permission is required for import/export.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Deny'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  status = await Permission.manageExternalStorage.request();
+                  // openAppSettings();
+                },
+                child: const Text('Open Settings'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // final _status = await Permission.manageExternalStorage.request();
+
+      if (status.isPermanentlyDenied) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Storage permission is required to proceed.'),
+            content:
+                Text('Storage permission will be needed for import/export.'),
           ),
         );
-        if (status.isPermanentlyDenied) {
-          await openAppSettings();
-        }
-      }
-    } else {
-      // Request permission for the first time
-      final status = await Permission.manageExternalStorage.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
-        // Handle the case where the user has denied the permission
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Storage permission is required to proceed.'),
-          ),
-        );
-        if (status.isPermanentlyDenied) {
-          await openAppSettings();
-        }
       }
     }
   }
