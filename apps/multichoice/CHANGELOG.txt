@@ -13,6 +13,8 @@ Version 0.3.0+132:
 - Add 'tooltip_enums' for maintainability
 - Add permission request dialog for the 'home_page'
 - Update 'AndroidManifest' for permission
+- Update 'home_page' to save check for permissions
+- Update 'data_transfer_page' to conditionally render export button if db is empty or not
 
 
 Version 0.1.4+124:
