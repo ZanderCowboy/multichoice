@@ -33,9 +33,12 @@ class EntryRepository implements IEntryRepository {
 
         return result;
       });
-    } catch (e, s) {
+    } on isar.IsarError catch (e, s) {
       log(e.toString(), error: e, stackTrace: s);
-      return 0;
+      return -1;
+    } on Exception catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+      return -1;
     }
   }
 
