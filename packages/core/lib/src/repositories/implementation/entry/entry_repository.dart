@@ -33,8 +33,8 @@ class EntryRepository implements IEntryRepository {
 
         return result;
       });
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
       return 0;
     }
   }

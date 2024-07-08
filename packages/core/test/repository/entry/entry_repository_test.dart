@@ -54,6 +54,22 @@ void main() {
       expect(entries.length, 1);
       expect(newTab.entryIds?.length, 1);
     });
+
+    // test('should throw an exceptions when addEntry is called', () async {
+    //   // Arrange
+    //   await db.close();
+    //   // provideDummy((_) async {
+    //   //   when(await entryRepository.addEntry(0, 'slayer', 'you go queen'))
+    //   //       .thenThrow(IsarError('Database is closed'));
+    //   // });
+
+    //   // Act
+    //   final result =
+    //       await entryRepository.addEntry(0, 'slayer', 'you go queen');
+
+    //   // Assert
+    //   expect(result, throwsA(isA<IsarError>()));
+    // });
   });
 
   group('EntryRepository - getEntry', () {
