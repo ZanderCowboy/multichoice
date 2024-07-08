@@ -42,6 +42,14 @@ class AppTheme with ChangeNotifier {
         cursorColor: Colors.white,
         selectionHandleColor: Colors.grey,
       ),
+      listTileTheme: ListTileThemeData(
+        tileColor: _lightAppColors.background,
+        textColor: _lightAppColors.primary,
+        leadingAndTrailingTextStyle: TextStyle(
+          color: _lightAppColors.primary,
+        ),
+        iconColor: _lightAppColors.primary,
+      ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStatePropertyAll(
@@ -202,11 +210,21 @@ class AppTheme with ChangeNotifier {
         margin: vertical12horizontal4,
         elevation: 7,
         shadowColor: _darkAppColors.black,
-        shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        shape: RoundedRectangleBorder(
+          borderRadius: borderCircular12,
+        ),
       ),
       textTheme: defaultTheme.textTheme.copyWith(
         titleMedium: _darkTextTheme.titleMedium,
         bodyMedium: _darkTextTheme.bodyMedium,
+      ),
+      listTileTheme: ListTileThemeData(
+        tileColor: _darkAppColors.background,
+        textColor: _darkAppColors.white,
+        leadingAndTrailingTextStyle: TextStyle(
+          color: _darkAppColors.white,
+        ),
+        iconColor: _darkAppColors.white,
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(

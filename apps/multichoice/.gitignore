@@ -20,6 +20,7 @@ pubspec.lock
 **/libisar.dylib
 **/coverage
 **/firebase_options.dart
+**/gen/
 
 # Keys and Secrets
 password.txt
