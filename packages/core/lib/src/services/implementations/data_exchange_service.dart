@@ -1,0 +1,105 @@
+import 'dart:developer';
+
+import 'package:core/core.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:injectable/injectable.dart';
+import 'package:isar/isar.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:models/models.dart';
+
+@LazySingleton(as: IDataExchangeService)
+class DataExchangeService implements IDataExchangeService {
+  final Isar isar;
+
+  DataExchangeService(this.isar);
+
+  @override
+  Future<String?> pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null && result.files.isNotEmpty) {
+      return result.files.single.path;
+    }
+    return null;
+  }
+
+  @override
+  Future<String?> saveFile() async {
+    try {
+      final result = await FilePicker.platform.getDirectoryPath();
+
+      if (result != null) {
+        final outputFilePath = '${result}';
+
+        return outputFilePath;
+      } else {
+        return null;
+      }
+    } on UnsupportedError catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+    } catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+    }
+    return null;
+  }
+
+  @override
+  Future<String> exportDataToJSON() async {
+    final tabsData = await isar.tabs.where().findAll();
+    final entriesData = await isar.entrys.where().findAll();
+
+    final json = jsonEncode({
+      'tabs': tabsData.map((item) => item.toJson()).toList(),
+      'entries': entriesData.map((item) => item.toJson()).toList(),
+    });
+
+    return json;
+  }
+
+  @override
+  Future<bool?> importDataFromJSON(String filePath) async {
+    final file = File(filePath);
+    final jsonData = await file.readAsString();
+    final data = jsonDecode(jsonData) as Map<String, dynamic>;
+
+    final List<Map<String, dynamic>> tabsData = (data['tabs'] as List)
+        .map((item) => item as Map<String, dynamic>)
+        .toList();
+    final List<Map<String, dynamic>> entriesData = (data['entries'] as List)
+        .map((item) => item as Map<String, dynamic>)
+        .toList();
+
+    try {
+      await isar.writeTxn(() async {
+        await isar.clear();
+
+        for (var tab in tabsData) {
+          await isar.tabs.put(Tabs.fromJson(tab));
+          ;
+        }
+        for (var entry in entriesData) {
+          await isar.entrys.put(Entry.fromJson(entry));
+        }
+      });
+
+      return true;
+    } catch (e, s) {
+      log(
+        e.toString(),
+        error: e,
+        stackTrace: s,
+      );
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> isDBEmpty() async {
+    final tabsData = await isar.tabs.where().findAll();
+    final entriesData = await isar.entrys.where().findAll();
+
+    return tabsData.isEmpty && entriesData.isEmpty;
+  }
+}

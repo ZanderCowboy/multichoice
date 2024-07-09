@@ -26,6 +26,8 @@ pubspec.lock
 **/*.isar
 **/*.isar.lock
 **/libisar.dylib
+**/*.isar-lck
+**/isar.dll
 **/coverage
 **/*.mocks.dart
 

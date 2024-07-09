@@ -1,5 +1,21 @@
 CHANGELOG
 
+Version 0.3.0+138:
+- Added 'data_exchange_service' to import/export data
+- Update 'home_drawer', added assets and flutter_gen, and cleaned up code
+- Added a 'delete_modal' and update files
+    => 'entry_card'
+    => 'menu_widget'
+    => 'vertical_tab'
+- Update 'app_theme' for listTiles
+- Update 'melos.dart'
+- Add 'data_transfer_page' for import/export
+- Add 'tooltip_enums' for maintainability
+- Add permission request dialog for the 'home_page'
+- Update 'AndroidManifest' for permission
+- Update 'home_page' to save check for permissions
+- Update 'data_transfer_page' to conditionally render export button if db is empty or not
+
 Version 0.1.4+128:
 - Fix horizontal layout not working
 - Change the 'add entry' card to align with entry cards in horizontal mode
