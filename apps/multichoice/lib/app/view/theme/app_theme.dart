@@ -138,6 +138,10 @@ class AppTheme with ChangeNotifier {
     background: AppPalette.grey.slateGray,
     white: null,
     black: AppPalette.black,
+    error: null,
+    success: null,
+    enabled: AppPalette.enabledColor,
+    disabled: AppPalette.disabledColor,
   );
 
   static final _lightTextTheme = AppTextExtension(
@@ -273,7 +277,6 @@ class AppTheme with ChangeNotifier {
   }();
 
   static final _darkAppColors = AppColorsExtension(
-    // primary: AppPalette.paletteTwo.geyser,
     primary: AppPalette.paletteTwo.primary5,
     primaryLight: AppPalette.grey.geyserLight.withOpacity(0.2),
     secondary: AppPalette.paletteTwo.primary10,
@@ -283,6 +286,10 @@ class AppTheme with ChangeNotifier {
     background: AppPalette.paletteTwo.primary0,
     white: AppPalette.white,
     black: AppPalette.black,
+    error: null,
+    success: null,
+    enabled: AppPalette.enabledColor,
+    disabled: AppPalette.disabledColor,
   );
 
   static final _darkTextTheme = AppTextExtension(

@@ -1,8 +1,9 @@
 part of '../home_page.dart';
 
-class _MenuWidget extends StatelessWidget {
-  const _MenuWidget({
+class MenuWidget extends StatelessWidget {
+  const MenuWidget({
     required this.tab,
+    super.key,
   });
 
   final TabsDTO tab;

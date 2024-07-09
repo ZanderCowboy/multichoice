@@ -59,7 +59,10 @@ class DataExchangeService implements IDataExchangeService {
   }
 
   @override
-  Future<bool?> importDataFromJSON(String filePath) async {
+  Future<bool?> importDataFromJSON(
+    String filePath, {
+    bool shouldAppend = true,
+  }) async {
     final file = File(filePath);
     final jsonData = await file.readAsString();
     final data = jsonDecode(jsonData) as Map<String, dynamic>;
@@ -73,15 +76,15 @@ class DataExchangeService implements IDataExchangeService {
 
     try {
       await isar.writeTxn(() async {
-        await isar.clear();
+        final newTabs = tabsData.map((e) => Tabs.fromJson(e)).toList();
+        final newEntries = entriesData.map((e) => Entry.fromJson(e)).toList();
 
-        for (var tab in tabsData) {
-          await isar.tabs.put(Tabs.fromJson(tab));
-          ;
+        if (!shouldAppend) {
+          await isar.clear();
         }
-        for (var entry in entriesData) {
-          await isar.entrys.put(Entry.fromJson(entry));
-        }
+
+        await isar.tabs.putAll(newTabs);
+        await isar.entrys.putAll(newEntries);
       });
 
       return true;

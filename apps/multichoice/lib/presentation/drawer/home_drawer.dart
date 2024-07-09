@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/export_app.dart';
+import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/gen/assets.gen.dart';
@@ -58,6 +59,15 @@ class HomeDrawer extends StatelessWidget {
                   children: [
                     const _LightDarkModeButton(),
                     ListTile(
+                      title: const Text('Horizontal/Vertical Layout'),
+                      trailing: Switch(
+                        value: context.watch<AppLayout>().appLayout,
+                        onChanged: (value) {
+                          context.read<AppLayout>().appLayout = value;
+                        },
+                      ),
+                    ),
+                    ListTile(
                       title: const Text('Delete All Data'),
                       trailing: IconButton(
                         onPressed: state.tabs != null && state.tabs!.isNotEmpty
@@ -91,9 +101,15 @@ class HomeDrawer extends StatelessWidget {
                               }
                             : null,
                         tooltip: TooltipEnums.deleteAllData.tooltip,
-                        icon: const Icon(
-                          Icons.delete_sweep_rounded,
-                        ),
+                        icon: state.tabs == null || state.tabs!.isEmpty
+                            ? Icon(
+                                Icons.delete_sweep_outlined,
+                                color: context.theme.appColors.disabled,
+                              )
+                            : Icon(
+                                Icons.delete_sweep_rounded,
+                                color: context.theme.appColors.enabled,
+                              ),
                       ),
                     ),
                     ListTile(

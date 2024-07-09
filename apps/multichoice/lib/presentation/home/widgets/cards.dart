@@ -1,9 +1,10 @@
 part of '../home_page.dart';
 
-class _Cards extends StatelessWidget {
-  const _Cards({
+class Cards extends StatelessWidget {
+  const Cards({
     required this.id,
     required this.entries,
+    super.key,
   });
 
   final int id;
@@ -13,26 +14,9 @@ class _Cards extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return Expanded(
-          child: CustomScrollView(
-            controller: ScrollController(),
-            scrollBehavior: CustomScrollBehaviour(),
-            slivers: [
-              SliverList.builder(
-                itemCount: entries.length,
-                itemBuilder: (context, index) {
-                  final entry = entries[index];
-
-                  return _EntryCard(entry: entry);
-                },
-              ),
-              SliverToBoxAdapter(
-                child: _NewEntry(
-                  tabId: id,
-                ),
-              ),
-            ],
-          ),
+        return EntryLayout(
+          id: id,
+          entries: entries,
         );
       },
     );

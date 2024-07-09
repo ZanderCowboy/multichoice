@@ -8,13 +8,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/export_app.dart';
+import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/layouts/export_layouts.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
-import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/cards.dart';
@@ -106,35 +108,39 @@ class HomePageState extends State<HomePage> {
         ),
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          return Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              actions: [
-                IconButton(
+          return ChangeNotifierProvider(
+            create: (context) => AppLayout(),
+            builder: (context, child) => Scaffold(
+              key: scaffoldKey,
+              appBar: AppBar(
+                title: const Text('Multichoice'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context)
+                        ..clearSnackBars()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Search has not been implemented yet.'),
+                          ),
+                        );
+                    },
+                    tooltip: TooltipEnums.search.tooltip,
+                    icon: const Icon(Icons.search_outlined),
+                  ),
+                ],
+                leading: IconButton(
                   onPressed: () {
-                    ScaffoldMessenger.of(context)
-                      ..clearSnackBars()
-                      ..showSnackBar(
-                        const SnackBar(
-                          content: Text('Search has not been implemented yet.'),
-                        ),
-                      );
+                    scaffoldKey.currentState?.openDrawer();
                   },
-                  tooltip: TooltipEnums.search.tooltip,
-                  icon: const Icon(Icons.search_outlined),
+                  tooltip: TooltipEnums.settings.tooltip,
+                  icon: const Icon(Icons.settings_outlined),
                 ),
-              ],
-              leading: IconButton(
-                onPressed: () {
-                  scaffoldKey.currentState?.openDrawer();
-                },
-                tooltip: TooltipEnums.settings.tooltip,
-                icon: const Icon(Icons.settings_outlined),
               ),
+              drawer: const HomeDrawer(),
+              body: const _HomePage(),
             ),
-            drawer: const HomeDrawer(),
-            body: const _HomePage(),
           );
         },
       ),
@@ -157,38 +163,7 @@ class _HomePage extends StatelessWidget {
           );
         }
 
-        return Center(
-          child: Padding(
-            padding: vertical12,
-            child: SizedBox(
-              height: UIConstants.tabHeight(context),
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: ScrollController(),
-                scrollBehavior: CustomScrollBehaviour(),
-                slivers: [
-                  SliverPadding(
-                    padding: left12,
-                    sliver: SliverList.builder(
-                      itemCount: tabs.length,
-                      itemBuilder: (_, index) {
-                        final tab = tabs[index];
-
-                        return _VerticalTab(tab: tab);
-                      },
-                    ),
-                  ),
-                  const SliverPadding(
-                    padding: right12,
-                    sliver: SliverToBoxAdapter(
-                      child: _NewTab(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        return HomeLayout(tabs: tabs);
       },
     );
   }

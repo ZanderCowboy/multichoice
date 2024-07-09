@@ -15,6 +15,7 @@ class _BaseCard extends StatelessWidget {
     this.child,
     this.icon,
     this.padding,
+    this.margin,
     this.iconSize,
     this.onPressed,
   }) : assert(
@@ -28,6 +29,7 @@ class _BaseCard extends StatelessWidget {
   final ShapeBorder? shape;
   final Widget? child;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final double? iconSize;
   final VoidCallback? onPressed;
   final Widget? icon;
@@ -38,6 +40,7 @@ class _BaseCard extends StatelessWidget {
       label: semanticLabel,
       child: Card(
         elevation: elevation,
+        margin: margin,
         color: color,
         shape: shape,
         child: child ??
