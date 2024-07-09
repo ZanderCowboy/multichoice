@@ -30,9 +30,7 @@ class _HomeDrawer extends HookWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
+                        Navigator.of(context).pop();
                       },
                       icon: const Icon(
                         Icons.close_outlined,

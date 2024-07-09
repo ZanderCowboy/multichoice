@@ -33,6 +33,18 @@ scripts:
       concurrency: 10
       orderDependents: true
 
+  upgrade:
+    run: flutter pub upgrade --major-versions
+    exec:
+      failFast: true
+      concurrency: 1
+
+  upgrade:global:
+    run: flutter clean && flutter pub upgrade --major-versions
+    exec:
+      failFast: true
+      concurrency: 1
+
   test:all:
     run: |
       melos run test:core --no-select
