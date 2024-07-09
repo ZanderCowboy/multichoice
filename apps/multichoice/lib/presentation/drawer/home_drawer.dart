@@ -59,6 +59,15 @@ class HomeDrawer extends StatelessWidget {
                   children: [
                     const _LightDarkModeButton(),
                     ListTile(
+                      title: const Text('Horizontal/Vertical Layout'),
+                      trailing: Switch(
+                        value: context.watch<AppLayout>().appLayout,
+                        onChanged: (value) {
+                          context.read<AppLayout>().appLayout = value;
+                        },
+                      ),
+                    ),
+                    ListTile(
                       title: const Text('Delete All Data'),
                       trailing: IconButton(
                         onPressed: state.tabs != null && state.tabs!.isNotEmpty
@@ -101,15 +110,6 @@ class HomeDrawer extends StatelessWidget {
                                 Icons.delete_sweep_rounded,
                                 color: context.theme.appColors.enabled,
                               ),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('Horizontal/Vertical Layout'),
-                      trailing: Switch(
-                        value: context.watch<AppLayout>().appLayout,
-                        onChanged: (value) {
-                          context.read<AppLayout>().appLayout = value;
-                        },
                       ),
                     ),
                     ListTile(

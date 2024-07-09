@@ -89,33 +89,40 @@ class DataTransferPageState extends State<DataTransferScreen> {
       final isDBEmpty = await dataExchangeService.isDBEmpty();
 
       if (!isDBEmpty) {
-        final shouldClearDB = await showDialog<bool>(
+        final shouldAppendDB = await showDialog<bool>(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: const Text('Warning!'),
               content: const Text(
-                'Importing data will clear all existing data. Do you want to proceed?',
+                'Importing data will alter existing data. Do you want to overwrite or append?',
               ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: const Text('No'),
+                  child: const Text('Overwrite'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: const Text('Yes'),
+                  child: const Text('Append'),
                 ),
               ],
             );
           },
         );
 
-        if (shouldClearDB == null || !shouldClearDB) {
+        // Should not clear DB = false
+        if (shouldAppendDB == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Aborted import operation'),
@@ -125,9 +132,10 @@ class DataTransferPageState extends State<DataTransferScreen> {
           return;
         }
 
-        await _showFeedback(filePath);
+        await _showFeedback(filePath, shouldAppend: shouldAppendDB);
       }
 
+      /// DB is empty, should not clear, so shouldAppend = true, default action
       await _showFeedback(filePath);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -138,9 +146,12 @@ class DataTransferPageState extends State<DataTransferScreen> {
     }
   }
 
-  Future<void> _showFeedback(String filePath) async {
-    final result =
-        await dataExchangeService.importDataFromJSON(filePath) ?? false;
+  Future<void> _showFeedback(String filePath, {bool? shouldAppend}) async {
+    final result = await dataExchangeService.importDataFromJSON(
+          filePath,
+          shouldAppend: shouldAppend ?? true,
+        ) ??
+        false;
 
     if (result) {
       ScaffoldMessenger.of(context).showSnackBar(
