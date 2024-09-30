@@ -11,6 +11,7 @@ import 'package:multichoice/constants/export_constants.dart';
 import 'package:multichoice/gen/assets.gen.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 part 'widgets/_light_dark_mode_button.dart';
 part 'widgets/_app_version.dart';
@@ -40,14 +41,23 @@ class HomeDrawer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
+                    Showcase(
+                      key: coreSl<ShowcaseManager>().closeButton,
+                      title: 'Close',
+                      description: 'Close the settings drawer',
+                      onTargetClick: () {
                         Navigator.of(context).pop();
                       },
-                      tooltip: TooltipEnums.close.tooltip,
-                      icon: const Icon(
-                        Icons.close_outlined,
-                        size: 28,
+                      disposeOnTap: true,
+                      child: IconButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                        tooltip: TooltipEnums.close.tooltip,
+                        icon: const Icon(
+                          Icons.close_outlined,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ],
@@ -123,6 +133,31 @@ class HomeDrawer extends StatelessWidget {
                           Icons.import_export_outlined,
                         ),
                       ),
+                    ),
+                    ListTile(
+                      title: const Text('View User Guide'),
+                      trailing: IconButton(
+                        onPressed: () {
+                          ShowcaseController.resetShowcase();
+                          coreSl<ShowcaseManager>().startShowcase(context);
+                        },
+                        tooltip: TooltipEnums.userGuide.tooltip,
+                        icon: const Icon(
+                          Icons.play_circle_fill_outlined,
+                        ),
+                      ),
+                    ),
+                    Showcase(
+                      key: coreSl<ShowcaseManager>().info,
+                      title: 'Info',
+                      description: 'Light/Dark mode, layout, and more',
+                      onBarrierClick: () => debugPrint('Barrier clicked'),
+                      disposeOnTap: true,
+                      onTargetClick: () {
+                        coreSl<ShowcaseManager>().startCloseShowcase(context);
+                      },
+                      overlayOpacity: 0,
+                      child: const SizedBox.shrink(),
                     ),
                   ],
                 ),

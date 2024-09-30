@@ -50,7 +50,9 @@ class EntryCard extends HookWidget {
             },
             onDoubleTap: () {
               context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
-              context.router.push(EditEntryPageRoute(ctx: context));
+              context.router.push(EditEntryPageRoute(ctx: context)).then((_) {
+                coreSl<ShowcaseManager>().startEditEntryShowcase(context);
+              });
             },
             onLongPress: () {
               if (menuController.isOpen) {

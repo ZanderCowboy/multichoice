@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:core/core.dart';
@@ -16,7 +15,7 @@ class SimpleBlocObserver extends BlocObserver {
     Object? event,
   ) {
     super.onEvent(bloc, event);
-    log('${bloc.runtimeType} $event');
+    // log('${bloc.runtimeType} $event');
   }
 
   @override
@@ -25,7 +24,7 @@ class SimpleBlocObserver extends BlocObserver {
     Object error,
     StackTrace stackTrace,
   ) {
-    log('${bloc.runtimeType} $error');
+    // log('${bloc.runtimeType} $error');
     super.onError(bloc, error, stackTrace);
   }
 
@@ -35,13 +34,14 @@ class SimpleBlocObserver extends BlocObserver {
     Transition<dynamic, dynamic> transition,
   ) {
     super.onTransition(bloc, transition);
-    log('$transition');
+    // log('$transition');
   }
 }
 
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureCoreDependencies();
+  // await productTourController.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

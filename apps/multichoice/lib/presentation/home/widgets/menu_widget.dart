@@ -14,19 +14,35 @@ class MenuWidget extends StatelessWidget {
       builder: (context, state) {
         return MenuAnchor(
           consumeOutsideTap: true,
+          onClose: () =>
+              coreSl<ShowcaseManager>().startEntryMenuShowcase(context),
           builder: (_, menuController, child) {
-            return IconButton(
-              onPressed: () {
+            return Showcase(
+              key: coreSl<ShowcaseManager>().tabsMenu,
+              title: 'Tabs Menu',
+              description:
+                  'This is the menu for the tabs. You can edit, delete, or delete all entries of a tab.',
+              onTargetClick: () {
                 if (menuController.isOpen) {
                   menuController.close();
                 } else {
                   menuController.open();
                 }
               },
-              icon: const Icon(Icons.more_vert_outlined),
-              iconSize: 20,
-              color: context.theme.appColors.ternary,
-              padding: zeroPadding,
+              disposeOnTap: true,
+              child: IconButton(
+                onPressed: () {
+                  if (menuController.isOpen) {
+                    menuController.close();
+                  } else {
+                    menuController.open();
+                  }
+                },
+                icon: const Icon(Icons.more_vert_outlined),
+                iconSize: 20,
+                color: context.theme.appColors.ternary,
+                padding: zeroPadding,
+              ),
             );
           },
           menuChildren: [

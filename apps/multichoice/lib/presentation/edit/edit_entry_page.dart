@@ -27,11 +27,33 @@ class EditEntryPage extends StatelessWidget {
                 onPressed: () {
                   ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
                   context.router.popUntilRoot();
+                  coreSl<ShowcaseManager>().startSearchShowcase(context);
                 },
                 icon: const Icon(
                   Icons.arrow_back_ios_new_outlined,
                 ),
               ),
+              // leading: Showcase(
+              //   key: coreSl<ShowcaseManager>().backButton,
+              //   title: 'Back',
+              //   description: 'Go back to the previous page',
+              //   disposeOnTap: true,
+              //   onTargetClick: () {
+              //     ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+              //     context.router.popUntilRoot();
+              //     coreSl<ShowcaseManager>().startSearchShowcase(context);
+              //   },
+              //   child: IconButton(
+              //     onPressed: () {
+              //       ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+              //       context.router.popUntilRoot();
+              //       coreSl<ShowcaseManager>().startSearchShowcase(context);
+              //     },
+              //     icon: const Icon(
+              //       Icons.arrow_back_ios_new_outlined,
+              //     ),
+              //   ),
+              // ),
             ),
             body: const _EditEntryPage(),
           );
@@ -96,6 +118,7 @@ class _EditEntryPage extends StatelessWidget {
                               const HomeEvent.onPressedCancel(),
                             );
                         context.router.popUntilRoot();
+                        coreSl<ShowcaseManager>().startSearchShowcase(context);
                       },
                       child: const Text('Cancel'),
                     ),
@@ -107,6 +130,8 @@ class _EditEntryPage extends StatelessWidget {
                                   .add(const HomeEvent.onSubmitEditEntry());
 
                               context.router.popUntilRoot();
+                              coreSl<ShowcaseManager>()
+                                  .startSearchShowcase(context);
                             }
                           : null,
                       child: const Text('Ok'),

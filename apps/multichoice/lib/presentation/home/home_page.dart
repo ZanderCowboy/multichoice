@@ -18,7 +18,10 @@ import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
+part 'utils/_check_and_request_permissions.dart';
+part 'widgets/_app_bar.dart';
 part 'widgets/cards.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/menu_widget.dart';
@@ -31,70 +34,118 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  HomePageState createState() => HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
+    final showcaseManager = coreSl<ShowcaseManager>();
     final sharedPref = coreSl<SharedPreferences>();
+
+    // showcaseManager.startShowcase(context);
 
     final isPermissionsChecked =
         sharedPref.getBool('isPermissionsChecked') ?? false;
+    final hasShowcaseStarted = sharedPref.getBool('hasShowcaseStarted') ?? true;
+    final isStepOneFinished = sharedPref.getBool('isShowcaseFinished') ?? false;
+    final isStepTwoFinished = sharedPref.getBool('isStepTwoFinished') ?? false;
+    final isStepThreeFinished =
+        sharedPref.getBool('isStepThreeFinished') ?? false;
+    final isStepFourFinished =
+        sharedPref.getBool('isStepFourFinished') ?? false;
+    final isShowcaseFinished =
+        sharedPref.getBool('isShowcaseFinished') ?? false;
 
-    if (!isPermissionsChecked) _checkAndRequestPermissions();
-  }
+    if (!isPermissionsChecked) _checkAndRequestPermissions(context);
 
-  Future<void> _checkAndRequestPermissions() async {
-    var status = await Permission.manageExternalStorage.status;
+    // if (!hasShowcaseStarted) {
+    //   startDialog(context);
+    // }
 
-    if (status.isGranted) {
-      return;
-    }
-
-    if (status.isDenied) {
-      await showDialog<AlertDialog>(
-        context: context,
-        builder: (BuildContext context) {
-          coreSl<SharedPreferences>().setBool('isPermissionsChecked', true);
-
-          return AlertDialog(
-            title: const Text('Permission Required'),
-            content:
-                const Text('Storage permission is required for import/export.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Deny'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  status = await Permission.manageExternalStorage.request();
-                  // openAppSettings();
-                },
-                child: const Text('Open Settings'),
-              ),
-            ],
-          );
-        },
-      );
-
-      // final _status = await Permission.manageExternalStorage.request();
-
-      if (status.isPermanentlyDenied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Storage permission will be needed for import/export.'),
-          ),
-        );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!hasShowcaseStarted) {
+        startDialog(context);
       }
-    }
+    });
+
+    // if (!hasShowcaseStarted) {
+    //   CustomDialog<AboutDialog>.show(
+    //     context: context,
+    //     title: const Text('Welcome to Multichoice'),
+    //     content: const Text(
+    //       'Multichoice is a simple app that can be used to manage your data.\n\n'
+    //       'You can create tabs and add entries to them.\n\n'
+    //       'You can also import and export your data.\n\n'
+    //       'Start product tour.',
+    //     ),
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () {
+    //           showcaseManager.startShowcase(context);
+    //           Navigator.of(context).pop();
+    //         },
+    //         child: const Text('Start Tour'),
+    //       ),
+    //     ],
+    //   );
+    // }
+    // if (!isStepOneFinished ||
+    //     !isStepTwoFinished ||
+    //     !isStepThreeFinished ||
+    //     !isStepFourFinished) {
+    //   CustomDialog<AboutDialog>.show(
+    //     context: context,
+    //     title: const Text('Product Tour'),
+    //     content: const Text(
+    //       'Do you want to continue the product tour?',
+    //     ),
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () {
+    //           Navigator.of(context).pop();
+    //           coreSl<SharedPreferences>()
+    //               .setBool(Keys.isShowcaseFinished, true);
+    //         },
+    //         child: const Text('Skip'),
+    //       ),
+    //       TextButton(
+    //         onPressed: () {
+    //           Navigator.of(context).pop();
+    //           if (!isStepOneFinished) {
+    //             coreSl<ShowcaseManager>().startShowcase(context);
+    //           } else if (!isStepTwoFinished) {
+    //             coreSl<ShowcaseManager>().startEditEntryShowcase(context);
+    //           } else if (!isStepThreeFinished) {
+    //             coreSl<ShowcaseManager>().startSearchShowcase(context);
+    //           } else if (!isStepFourFinished) {
+    //             coreSl<ShowcaseManager>().startInfoShowcase(context);
+    //           }
+    //         },
+    //         child: const Text('Continue'),
+    //       ),
+    //     ],
+    //   );
+    // }
+
+    // if (isShowcaseFinished) {
+    //   CustomDialog<AboutDialog>.show(
+    //     context: context,
+    //     title: const Text('Product Tour'),
+    //     content: const Text(
+    //       'This is the end of the product tour.\n\n',
+    //     ),
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () {
+    //           Navigator.of(context).pop();
+    //         },
+    //         child: const Text('Finish Tour'),
+    //       ),
+    //     ],
+    //   );
+    // }
   }
 
   @override
@@ -117,25 +168,55 @@ class HomePageState extends State<HomePage> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context)
-                        ..clearSnackBars()
-                        ..showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Search has not been implemented yet.'),
-                          ),
-                        );
+                      ShowcaseController.resetShowcase();
+                      coreSl<ShowcaseManager>().startShowcase(context);
                     },
-                    tooltip: TooltipEnums.search.tooltip,
-                    icon: const Icon(Icons.search_outlined),
+                    icon: const Icon(
+                      Icons.play_arrow,
+                    ),
+                  ),
+                  Showcase(
+                    key: coreSl<ShowcaseManager>().searchButton,
+                    title: 'Search',
+                    description: 'Search for tabs or entries',
+                    onBarrierClick: () => debugPrint('Barrier clicked'),
+                    disposeOnTap: true,
+                    onTargetClick: () {
+                      coreSl<ShowcaseManager>().startSettingsShowcase(context);
+                    },
+                    child: IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context)
+                          ..clearSnackBars()
+                          ..showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Search has not been implemented yet.'),
+                            ),
+                          );
+                      },
+                      tooltip: TooltipEnums.search.tooltip,
+                      icon: const Icon(Icons.search_outlined),
+                    ),
                   ),
                 ],
-                leading: IconButton(
-                  onPressed: () {
+                leading: Showcase(
+                  key: coreSl<ShowcaseManager>().openSettings,
+                  title: 'Settings',
+                  description: 'Open the settings drawer',
+                  onBarrierClick: () => debugPrint('Barrier clicked'),
+                  disposeOnTap: true,
+                  onTargetClick: () {
                     scaffoldKey.currentState?.openDrawer();
+                    coreSl<ShowcaseManager>().startInfoShowcase(context);
                   },
-                  tooltip: TooltipEnums.settings.tooltip,
-                  icon: const Icon(Icons.settings_outlined),
+                  child: IconButton(
+                    onPressed: () {
+                      scaffoldKey.currentState?.openDrawer();
+                    },
+                    tooltip: TooltipEnums.settings.tooltip,
+                    icon: const Icon(Icons.settings_outlined),
+                  ),
                 ),
               ),
               drawer: const HomeDrawer(),
@@ -153,6 +234,10 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sharedPref = coreSl<SharedPreferences>();
+    // final showcaseManager = coreSl<ShowcaseManager>();
+    final hasShowcaseStarted = sharedPref.getBool('hasShowcaseStarted') ?? true;
+
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final tabs = state.tabs ?? [];
@@ -167,4 +252,30 @@ class _HomePage extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> startDialog(BuildContext context) async {
+  await showDialog<AlertDialog>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Welcome to Multichoice'),
+        content: const Text(
+          'Multichoice is a simple app that can be used to manage your data.\n\n'
+          'You can create tabs and add entries to them.\n\n'
+          'You can also import and export your data.\n\n'
+          'Start product tour.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              coreSl<ShowcaseManager>().startShowcase(context);
+              Navigator.of(context).pop();
+            },
+            child: const Text('Start Tour'),
+          ),
+        ],
+      );
+    },
+  );
 }

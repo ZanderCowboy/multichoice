@@ -71,6 +71,8 @@ class NewTab extends StatelessWidget {
                                               const HomeEvent.onPressedAddTab(),
                                             );
                                         Navigator.of(context).pop();
+                                        coreSl<ShowcaseManager>()
+                                            .startAddEntryShowcase(context);
                                         titleTextController.clear();
                                         subtitleTextController.clear();
                                       }

@@ -6,7 +6,7 @@ class AppLayout with ChangeNotifier {
   final _prefs = coreSl<SharedPreferences>();
 
   bool _appLayout = true;
-  bool get appLayout => isLayoutVertical();
+  bool get appLayout => _isLayoutVertical();
 
   set appLayout(bool isLayoutVertical) {
     _appLayout = isLayoutVertical;
@@ -16,5 +16,5 @@ class AppLayout with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isLayoutVertical() => _prefs.getBool('isLayoutVertical') ?? _appLayout;
+  bool _isLayoutVertical() => _prefs.getBool('isLayoutVertical') ?? _appLayout;
 }

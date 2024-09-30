@@ -2,5 +2,8 @@
 library core;
 
 export 'src/application/export_application.dart';
+export 'src/controllers/export_controllers.dart';
 export 'src/get_it_injection.dart';
 export 'src/services/export_services.dart';
+export 'src/showcase_manager.dart';
+export 'src/global_keys.dart';

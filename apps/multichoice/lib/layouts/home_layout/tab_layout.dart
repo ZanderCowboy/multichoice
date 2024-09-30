@@ -8,8 +8,8 @@ import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:provider/provider.dart';
 
-part 'widgets/tab/horizontal_tab.dart';
-part 'widgets/tab/vertical_tab.dart';
+part 'widgets/tab/_horizontal_tab.dart';
+part 'widgets/tab/_vertical_tab.dart';
 
 class TabLayout extends StatelessWidget {
   const TabLayout({
@@ -25,12 +25,4 @@ class TabLayout extends StatelessWidget {
         ? _VerticalTab(tab: tab)
         : _HorizontalTab(tab: tab);
   }
-}
-
-class TabLay {
-  TabLay();
-
-  static VertTab vert(TabsDTO tab) => VertTab(tab: tab);
-
-  static HorizontalTab hori(TabsDTO tab) => HorizontalTab(tab: tab);
 }

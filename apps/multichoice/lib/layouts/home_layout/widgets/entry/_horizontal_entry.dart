@@ -1,4 +1,4 @@
-part of '../../card_layout.dart';
+part of '../../entry_layout.dart';
 
 class _HorizontalEntry extends StatelessWidget {
   const _HorizontalEntry({

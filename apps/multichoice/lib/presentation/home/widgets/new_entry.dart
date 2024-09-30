@@ -87,6 +87,8 @@ class NewEntry extends StatelessWidget {
                                                   .onPressedAddEntry(),
                                             );
                                         Navigator.of(context).pop();
+                                        coreSl<ShowcaseManager>()
+                                            .startTabsMenuShowcase(context);
                                         titleTextController.clear();
                                         subtitleTextController.clear();
                                       }

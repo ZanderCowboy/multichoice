@@ -1,19 +1,5 @@
 part of '../../tab_layout.dart';
 
-class HorizontalTab extends StatelessWidget {
-  const HorizontalTab({
-    required this.tab,
-    super.key,
-  });
-
-  final TabsDTO tab;
-
-  @override
-  Widget build(BuildContext context) {
-    return _HorizontalTab(tab: tab);
-  }
-}
-
 class _HorizontalTab extends StatelessWidget {
   const _HorizontalTab({
     required this.tab,

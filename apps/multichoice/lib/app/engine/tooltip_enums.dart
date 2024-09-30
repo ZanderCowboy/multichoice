@@ -14,6 +14,7 @@ enum TooltipEnums {
   editTab('Edit Tab'),
   editEntry('Edit Entry'),
   importExport('Import/Export'),
+  userGuide('User Guide'),
   import('Import'),
   export('Export'),
   settings('Settings'),

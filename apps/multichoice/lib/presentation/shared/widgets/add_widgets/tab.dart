@@ -27,10 +27,19 @@ class AddTabCard extends StatelessWidget {
         padding: allPadding6,
         child: SizedBox(
           width: width,
-          child: IconButton(
-            iconSize: 36,
-            onPressed: onPressed,
-            icon: const Icon(Icons.add_outlined),
+          child: Showcase(
+            key: coreSl<ShowcaseManager>().addTabCardKey,
+            title: 'New Column',
+            description: 'Adds a new column to the list',
+            onBarrierClick: () => debugPrint('Tabs Barrier clicked'),
+            tooltipPosition: TooltipPosition.top,
+            disposeOnTap: true,
+            onTargetClick: onPressed,
+            child: IconButton(
+              onPressed: onPressed,
+              iconSize: 36,
+              icon: const Icon(Icons.add_outlined),
+            ),
           ),
         ),
       ),

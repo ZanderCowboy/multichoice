@@ -22,6 +22,5 @@ void main() async {
   } catch (e) {
     log(e.toString());
   }
-
   runApp(App());
 }
