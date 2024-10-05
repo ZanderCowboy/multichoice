@@ -61,6 +61,7 @@ class HomeDrawer extends StatelessWidget {
                     ListTile(
                       title: const Text('Horizontal/Vertical Layout'),
                       trailing: Switch(
+                        key: const Key('layoutSwitch'),
                         value: context.watch<AppLayout>().appLayout,
                         onChanged: (value) {
                           context.read<AppLayout>().appLayout = value;

@@ -17,7 +17,7 @@ class AddTabCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _BaseCard(
-      semanticLabel: semanticLabel ?? '',
+      semanticLabel: semanticLabel ?? 'AddTab',
       elevation: 5,
       color: color ?? context.theme.appColors.primaryLight,
       shape: RoundedRectangleBorder(
@@ -26,6 +26,7 @@ class AddTabCard extends StatelessWidget {
       child: Padding(
         padding: allPadding6,
         child: SizedBox(
+          key: const Key('AddTabSizedBox'),
           width: width,
           child: IconButton(
             iconSize: 36,
