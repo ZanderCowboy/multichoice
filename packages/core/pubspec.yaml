@@ -26,6 +26,7 @@ dependencies:
   version: ^3.0.2
 
 dev_dependencies:
+  bloc_test: ^9.1.7
   build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
@@ -33,7 +34,7 @@ dev_dependencies:
   injectable_generator: ^2.4.1
   json_serializable: ^6.7.1
   mockito: ^5.4.4
-  very_good_analysis: ^5.1.0
+  very_good_analysis: ^6.0.0
 
 global_options:
   freezed:freezed:
