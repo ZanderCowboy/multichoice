@@ -105,6 +105,23 @@ jobs:
           name: ${{ inputs.build_artifact }}
           path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment_flag }}/app-${{ inputs.environment_flag }}.aab
 
+      # Generate a changelog based on the latest changes
+      - name: Install conventional-changelog
+        run: npm install -g conventional-changelog-cli
+
+      - name: Generate Changelog
+        run: conventional-changelog -p angular -i CHANGELOG.md -s -r 1
+        working-directory: apps/multichoice/
+
+      # Commit the updated changelog (optional)
+      - name: Commit Changelog
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/multichoice/CHANGELOG.md
+          git commit -m "chore: update changelog [skip ci]" || echo "No changes to commit"
+          git push
+
       - name: Upload artifact to Firebase App Distribution
         if: success()
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -113,5 +130,5 @@ jobs:
           serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
           groups: testers
           file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
-          releaseNotesFile: ./apps/multichoice/CHANGELOG.txt
+          releaseNotesFile: ./apps/multichoice/CHANGELOG.md
           debug: true

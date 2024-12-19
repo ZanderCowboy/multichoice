@@ -247,8 +247,8 @@ class IsarCollectionImpl<OBJ> extends IsarCollection<OBJ> {
 
   int putByIndexSyncInternal({
     required Txn txn,
-    int? indexId,
     required OBJ object,
+    int? indexId,
     bool saveLinks = true,
   }) {
     final cObjPtr = txn.getCObject();
