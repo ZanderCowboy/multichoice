@@ -13,6 +13,7 @@ void deleteModal({
   CustomDialog<AlertDialog>.show(
     context: context,
     title: RichText(
+      key: const Key('DeleteModalTitle'),
       text: TextSpan(
         text: 'Delete ',
         style: DefaultTextStyle.of(context).style.copyWith(
