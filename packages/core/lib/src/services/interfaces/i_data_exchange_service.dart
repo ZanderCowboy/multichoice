@@ -1,6 +1,8 @@
+import 'dart:typed_data';
+
 abstract class IDataExchangeService {
   Future<String?> pickFile();
-  Future<String?> saveFile();
+  Future<void> saveFile(String fileName, Uint8List fileBytes);
 
   Future<String> exportDataToJSON();
   Future<bool?> importDataFromJSON(

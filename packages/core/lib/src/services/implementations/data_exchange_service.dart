@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,23 +27,24 @@ class DataExchangeService implements IDataExchangeService {
   }
 
   @override
-  Future<String?> saveFile() async {
+  Future<void> saveFile(String fileName, Uint8List fileBytes) async {
     try {
-      final result = await FilePicker.platform.getDirectoryPath();
+      final String? filePath = await FilePicker.platform.saveFile(
+        dialogTitle: "Save JSON File",
+        fileName: "$fileName.json",
+        bytes: fileBytes,
+      );
 
-      if (result != null) {
-        final outputFilePath = '${result}';
-
-        return outputFilePath;
+      if (filePath != null) {
+        File file = File(filePath);
+        await file.writeAsBytes(fileBytes);
+        print("File saved successfully at: $filePath");
       } else {
-        return null;
+        print("User canceled file selection.");
       }
-    } on UnsupportedError catch (e, s) {
-      log(e.toString(), error: e, stackTrace: s);
-    } catch (e, s) {
-      log(e.toString(), error: e, stackTrace: s);
+    } catch (e) {
+      print("Error saving file: $e");
     }
-    return null;
   }
 
   @override

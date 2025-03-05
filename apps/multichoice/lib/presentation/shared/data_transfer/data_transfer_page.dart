@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
@@ -170,30 +171,17 @@ class DataTransferPageState extends State<DataTransferScreen> {
   }
 
   Future<void> _exportFile() async {
-    final filePath = await dataExchangeService.saveFile();
+    final jsonString = await dataExchangeService.exportDataToJSON();
 
-    if (filePath != null) {
-      final json = await dataExchangeService.exportDataToJSON();
+    await _showInputModal(context);
 
-      await _showInputModal(context);
+    final fileBytes = Uint8List.fromList(utf8.encode(jsonString));
 
-      final updatedFilePath = '$filePath/$_fileName.json';
+    await dataExchangeService.saveFile(_fileName ?? 'default', fileBytes);
 
-      final file = File(updatedFilePath);
-      await file.writeAsString(json);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('File saved at: $updatedFilePath'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Save operation cancelled'),
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('File saved successfully!')),
+    );
   }
 
   Future<void> _showInputModal(BuildContext context) async {
