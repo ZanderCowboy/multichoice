@@ -63,3 +63,7 @@ ON PUSH - TO MAIN
 ## Websites and Links
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ZanderCowboy_multichoice)
+
+## Errors and Fixes
+
+### Android Gradle Upgrade
