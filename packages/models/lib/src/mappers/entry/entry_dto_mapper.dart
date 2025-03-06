@@ -7,8 +7,8 @@ import 'package:models/src/mappers/entry/entry_dto_mapper.auto_mappr.dart';
   MapType<Entry, EntryDTO>(
     fields: [
       Field('id', custom: EntryMapper.mapUuid),
-      Field('tabId', custom: EntryMapper.mapTabId),
-      Field('title', custom: EntryMapper.mapTitle),
+      Field('tabId'),
+      Field('title'),
       Field('subtitle', custom: EntryMapper.mapSubtitle),
       Field('timestamp', custom: EntryMapper.mapTimestamp),
     ],
@@ -16,8 +16,6 @@ import 'package:models/src/mappers/entry/entry_dto_mapper.auto_mappr.dart';
 ])
 class EntryMapper extends $EntryMapper {
   static int mapUuid(Entry content) => content.id;
-  static int mapTabId(Entry content) => content.tabId;
-  static String mapTitle(Entry content) => content.title;
   static String mapSubtitle(Entry content) => content.subtitle ?? '';
   static DateTime mapTimestamp(Entry content) =>
       content.timestamp ?? DateTime.now();
