@@ -64,7 +64,7 @@ jobs:
           flutter pub global activate coverage
           flutter pub global run coverage:format_coverage \
             --lcov \
-            --in=packages\core\coverage \
+            --in=packages/core/coverage \
             --out=coverage/lcov.info \
             --report-on=apps/multichoice/lib,packages/core/lib
 
