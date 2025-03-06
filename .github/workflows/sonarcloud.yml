@@ -68,6 +68,12 @@ jobs:
             --out=coverage/lcov.info \
             --report-on=apps/multichoice/lib,packages/core/lib
 
+      # if requied, change 'Aggregate coverage report' with 'Move coverage report'
+      # - name: Move coverage report
+      #   run: |
+      #     mkdir -p coverage
+      #     cp packages/core/coverage/lcov.info coverage/lcov.info
+
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         env:
