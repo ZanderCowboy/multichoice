@@ -1,6 +1,7 @@
 extension FashHashExtension on String {
   /// FNV-1a 64bit hash algorithm optimized for Dart Strings
   int fastHash() {
+    // The hash value is intentionally rounded for compatibility with JavaScript
     // ignore: avoid_js_rounded_ints
     var hash = 0xcbf29ce484222325;
 

@@ -26,6 +26,14 @@ OR
 sudo chown -R node:node /flutter
 ```
 
+### Environment
+
+- Flutter version: 3.27.1 (Last updated on day-Month-year)
+- Dart version: 3.6.0
+- VS Code version: ...
+- Android Studio version:
+- Windows
+
 ### Platforms
 
 This project is specifically meant for `Android`, `Web`, and `Windows`. Run this command
