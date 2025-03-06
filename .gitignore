@@ -5,6 +5,7 @@
 /windows/
 
 /apps/showcase/
+/tools/
 
 # Files and directories created by pub
 .dart_tool/
@@ -72,3 +73,6 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
+
+# FVM Version Cache
+.fvm/

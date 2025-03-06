@@ -8,7 +8,7 @@ part 'entry.g.dart';
 @freezed
 @Collection(ignore: {'copyWith'})
 class Entry with _$Entry {
-  factory Entry({
+  const factory Entry({
     required String uuid,
     required int tabId,
     required String title,
@@ -16,9 +16,9 @@ class Entry with _$Entry {
     required DateTime? timestamp,
   }) = _Entry;
 
-  Entry._();
+  const Entry._();
 
-  factory Entry.empty() => Entry(
+  factory Entry.empty() => const Entry(
         uuid: '',
         tabId: 0,
         title: '',
