@@ -55,7 +55,7 @@ scripts:
       Run all tests available.
 
   test:core:
-    run: flutter test -j 1 --coverage
+    run: flutter test -j 1
     exec:
       failFast: true
       concurrency: 1
