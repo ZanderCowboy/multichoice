@@ -57,7 +57,7 @@ jobs:
         uses: ./.github/actions/setup-java-flutter
 
       - name: Run tests and generate coverage
-        run: melos exec -- flutter test --coverage
+        run: melos test:all
 
       - name: Aggregate coverage report
         run: |
