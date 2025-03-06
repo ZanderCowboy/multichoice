@@ -1,4 +1,4 @@
-// This ignore is necessary because the context is used after an async gap, but it is safe in this case.
+// The context is used synchronously in this file, and the asynchronous usage is safe here.
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';

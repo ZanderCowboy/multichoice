@@ -67,7 +67,6 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _lightAppColors.background,
       dialogTheme: DialogTheme(
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
@@ -193,7 +192,6 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _darkAppColors.background,
       dialogTheme: DialogTheme(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
