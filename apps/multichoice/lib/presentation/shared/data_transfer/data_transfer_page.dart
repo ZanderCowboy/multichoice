@@ -1,3 +1,4 @@
+// This ignore is necessary because the context is used after an async gap, but it is safe in this case.
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
@@ -179,6 +180,7 @@ class DataTransferPageState extends State<DataTransferScreen> {
 
     await dataExchangeService.saveFile(_fileName ?? 'default', fileBytes);
 
+    // TODO(@ZanderCowboy): This needs to be updated to show when the user cancels the action and not just always success
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('File saved successfully!')),
     );

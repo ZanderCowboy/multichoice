@@ -1,3 +1,4 @@
+// This ignore is necessary because the context is used synchronously in the permission dialog.
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:auto_route/auto_route.dart';
