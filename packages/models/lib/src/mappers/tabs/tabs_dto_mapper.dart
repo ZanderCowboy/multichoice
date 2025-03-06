@@ -6,11 +6,11 @@ import 'package:models/src/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
 @AutoMappr([
   MapType<Tabs, TabsDTO>(
     fields: [
-      Field('uuid', custom: TabsMapper.mapUuid),
+      Field('id', custom: TabsMapper.mapUuid),
       Field('title', custom: TabsMapper.mapTitle),
       Field('subtitle', custom: TabsMapper.mapSubtitle),
       Field('timestamp', custom: TabsMapper.mapTimestamp),
-      Field('entryIds', custom: TabsMapper.mapEntryIds),
+      Field('entries', custom: TabsMapper.mapEntryIds),
     ],
   ),
 ])

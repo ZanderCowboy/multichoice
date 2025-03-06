@@ -6,7 +6,7 @@ import 'package:models/src/mappers/entry/entry_dto_mapper.auto_mappr.dart';
 @AutoMappr([
   MapType<Entry, EntryDTO>(
     fields: [
-      Field('uuid', custom: EntryMapper.mapUuid),
+      Field('id', custom: EntryMapper.mapUuid),
       Field('tabId', custom: EntryMapper.mapTabId),
       Field('title', custom: EntryMapper.mapTitle),
       Field('subtitle', custom: EntryMapper.mapSubtitle),
