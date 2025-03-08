@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  melos: ^6.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  melos: ^6.0.0
-  very_good_analysis: ^5.1.0
+  very_good_analysis: ^7.0.0

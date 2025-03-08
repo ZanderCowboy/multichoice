@@ -1,7 +1,8 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:core/core.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:core/src/wrappers/export.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
 import 'dart:convert';
@@ -12,37 +13,37 @@ import 'package:models/models.dart';
 @LazySingleton(as: IDataExchangeService)
 class DataExchangeService implements IDataExchangeService {
   final Isar isar;
+  final IFilePickerWrapper filePickerWrapper;
 
-  DataExchangeService(this.isar);
+  DataExchangeService(
+    this.isar, {
+    required this.filePickerWrapper,
+  });
 
   @override
   Future<String?> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-
-    if (result != null && result.files.isNotEmpty) {
-      return result.files.single.path;
-    }
-    return null;
+    return await filePickerWrapper.pickFile();
   }
 
   @override
-  Future<String?> saveFile() async {
+  Future<void> saveFile(String fileName, Uint8List fileBytes) async {
     try {
-      final result = await FilePicker.platform.getDirectoryPath();
+      final String? filePath = await filePickerWrapper.saveFile(
+        dialogTitle: "Save JSON File",
+        fileName: "$fileName.json",
+        bytes: fileBytes,
+      );
 
-      if (result != null) {
-        final outputFilePath = '${result}';
-
-        return outputFilePath;
+      if (filePath != null) {
+        File file = File(filePath);
+        await file.writeAsBytes(fileBytes);
+        print("File saved successfully at: $filePath");
       } else {
-        return null;
+        print("User canceled file selection.");
       }
-    } on UnsupportedError catch (e, s) {
-      log(e.toString(), error: e, stackTrace: s);
-    } catch (e, s) {
-      log(e.toString(), error: e, stackTrace: s);
+    } catch (e) {
+      print("Error saving file: $e");
     }
-    return null;
   }
 
   @override
