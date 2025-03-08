@@ -75,13 +75,3 @@ ON PUSH - TO MAIN
 ## Errors and Fixes
 
 ### Android Gradle Upgrade
-
-## Configuration
-
-### config.yml
-
-Found in root.
-
-### Makefile
-
-Write about usage

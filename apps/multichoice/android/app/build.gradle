@@ -42,9 +42,6 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        ndk {
-            debugSymbolLevel = 'FULL'
-        }
     }
 
     signingConfigs {
@@ -60,7 +57,7 @@ android {
         release {
             signingConfig = signingConfigs.release
             ndk {
-                debugSymbolLevel = 'FULL'
+                debugSymbolLevel 'FULL'
             }
         }
     }
