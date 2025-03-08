@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:multichoice/main.dart' as app; // Replace with your app import
+import 'package:multichoice/main.dart' as app;
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
 void main() {
@@ -30,6 +30,7 @@ void main() {
     await tester.pumpAndSettle();
 
     var isVertical = true;
+    // Will still possibly be used.
     // ignore: unused_local_variable
     final layoutSwitch = Switch(
       value: isVertical,

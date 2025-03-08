@@ -90,6 +90,7 @@ void main() {
       (WidgetTester tester) async {
     // Track if the onConfirm callback is triggered
     var confirmPressed = false;
+    // Will still possibly be used.
     // ignore: unused_local_variable
     const cancelPressed = false;
 
