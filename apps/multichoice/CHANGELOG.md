@@ -1,13 +1,12 @@
-CHANGELOG
+# CHANGELOG
 
 Setting up Integration Testing:
-https://chatgpt.com/share/66fdf56f-3724-8004-9d18-5a52f68b20a7
+<https://chatgpt.com/share/66fdf56f-3724-8004-9d18-5a52f68b20a7>
 Create documentation
 
 - start cmd /k "run_integration_test.bat %* && call shutdown_emulator.bat && exit"
 
-
-
+---
 Version 0.3.0+140:
 - Added 'data_exchange_service' to import/export data
 - Update 'home_drawer', added assets and flutter_gen, and cleaned up code
@@ -38,7 +37,7 @@ Version 0.1.4+124:
 - Moved `deleteAll` button to drawer and replaced with a `Search` button (not implemented yet)
 - Added SliverPadding to have initial padding around tabs, but falls away as user scrolls
 
-
+---
 Version 0.1.4+119:
 - Added a change log
 - Added custom launcher icons
