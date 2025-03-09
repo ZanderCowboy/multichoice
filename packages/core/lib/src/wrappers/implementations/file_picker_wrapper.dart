@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:core/src/wrappers/export.dart';
+import 'package:core/core.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,7 +9,7 @@ class FilePickerWrapper implements IFilePickerWrapper {
   final FilePicker _filePicker;
 
   FilePickerWrapper({required FilePicker? filePicker})
-      : _filePicker = filePicker ?? FilePicker.platform;
+      : _filePicker = filePicker ?? coreSl<FilePicker>();
 
   @override
   Future<String?> pickFile() async {
