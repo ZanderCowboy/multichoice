@@ -1,24 +1,33 @@
-import 'package:core/src/repositories/export_repositories.dart';
+import 'package:core/src/repositories/implementation/entry/entry_repository.dart';
+import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:models/models.dart';
+import 'package:clock/clock.dart';
+
+import '../../injection.dart';
 
 void main() {
   late TabsRepository tabsRepository;
   late EntryRepository entryRepository;
   late Isar db;
+  late Clock clock;
 
   setUpAll(() async {
-    await Isar.initializeIsarCore(download: true);
-    db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+    db = await configureTestCoreDependencies();
+    clock = Clock();
   });
 
   setUp(() async {
     if (!db.isOpen) {
-      db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      db = await configureTestCoreDependencies();
     }
-    tabsRepository = TabsRepository(db);
+    tabsRepository = TabsRepository(db, clock);
     entryRepository = EntryRepository(db);
+  });
+
+  tearDownAll(() {
+    closeIsarInstance();
   });
 
   group('EntryRepository - addEntry', () {
@@ -63,37 +72,15 @@ void main() {
       final result =
           await entryRepository.addEntry(0, 'slayer', 'you go queen');
 
-      // // Assert
+      // Assert
       expect(result, -1);
     });
-
-    // test('should throw an exceptions when addEntry is called', () async {
-    //   // Arrange
-    //   // await db.close();
-    //   // provideDummy((_) async {
-    //   //   when(await entryRepository.addEntry(
-    //   //           -155454545454555, 'slayer', 'you go queen'))
-    //   //       .thenThrow(Exception('Database is closed'));
-    //   // });
-
-    //   // Act
-    //   final result = await entryRepository.addEntry(
-    //       'test'.hashCode, 'slayer', 'you go queen');
-
-    //   // // Assert
-    //   expect(result, -1);
-    //   expect(await entryRepository.addEntry(0, 'slayer', 'you go queen'),
-    //       throwsException);
-    // });
   });
 
   group('EntryRepository - getEntry', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
       entryRepository = EntryRepository(db);
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('another t', 'another sub');
@@ -121,7 +108,7 @@ void main() {
           tabId: entry.tabId,
           title: 'apple',
           subtitle: 'pineapple',
-          timestamp: entry.timestamp ?? DateTime.now(),
+          timestamp: entry.timestamp ?? clock.now(),
         ),
       );
     });
@@ -129,10 +116,7 @@ void main() {
 
   group('EntryRepository - readEntries', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -184,10 +168,7 @@ void main() {
 
   group('EntryRepository - readAllEntries', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -251,10 +232,7 @@ void main() {
 
   group('EntryRepository - updateEntry', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -325,10 +303,7 @@ void main() {
 
   group('EntryRepository - deleteEntry', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -383,10 +358,7 @@ void main() {
 
   group('EntryRepository - deleteEntries', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
-      tabsRepository = TabsRepository(db);
+      tabsRepository = TabsRepository(db, clock);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
