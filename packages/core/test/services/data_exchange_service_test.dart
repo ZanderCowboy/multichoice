@@ -18,8 +18,9 @@ void main() {
   late Isar db;
 
   setUpAll(() async {
-    configureTestDependencies();
     db = await configureIsarInstance();
+
+    configureTestDependencies();
     mockFilePickerWrapper = MockFilePickerWrapper();
     dataExchangeService = DataExchangeService(
       db,
