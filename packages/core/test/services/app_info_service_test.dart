@@ -24,7 +24,7 @@ void main() {
       buildSignature: 'signature',
     );
 
-    db = await configureTestCoreDependencies();
+    db = await configureIsarInstance();
   });
 
   setUp(() async {

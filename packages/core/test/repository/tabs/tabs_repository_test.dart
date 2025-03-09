@@ -17,13 +17,13 @@ void main() {
   late Clock clock;
 
   setUpAll(() async {
-    db = await configureTestCoreDependencies();
+    db = await configureIsarInstance();
     clock = Clock();
   });
 
   setUp(() async {
     if (!db.isOpen) {
-      db = await configureTestCoreDependencies();
+      db = await configureIsarInstance();
     }
     tabsRepository = TabsRepository(db, clock);
     entryRepository = EntryRepository(db);

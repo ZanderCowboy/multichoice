@@ -27,7 +27,7 @@ void main() {
   final timestamp = DateTime(2025, 03, 01, 12, 00, 00, 00, 00);
 
   setUpAll(() async {
-    db = await configureTestCoreDependencies();
+    db = await configureIsarInstance();
     await getit.registerSingleton<Clock>(Clock.fixed(timestamp));
     clock = getit<Clock>();
 
