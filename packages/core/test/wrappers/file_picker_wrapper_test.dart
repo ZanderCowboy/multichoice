@@ -16,7 +16,7 @@ void main() {
 
     setUpAll(() {
       mockFilePicker = MockFilePicker();
-      filePickerWrapper = FilePickerWrapper(filePicker: mockFilePicker);
+      filePickerWrapper = FilePickerWrapper(mockFilePicker);
     });
 
     group('pickFile', () {

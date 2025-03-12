@@ -5,7 +5,8 @@ import 'package:isar/isar.dart';
 import 'package:models/models.dart';
 
 Future<Isar> configureIsarInstance() async {
-  await Isar.initializeIsarCore(libraries: {}, download: true);
+  await closeIsarInstance();
+  await Isar.initializeIsarCore(download: true);
   return await Isar.open([TabsSchema, EntrySchema], directory: '');
 }
 

@@ -14,8 +14,6 @@ import '../mocks.mocks.dart';
 final getIt = GetIt.instance;
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   late DataExchangeService dataExchangeService;
   late MockFilePickerWrapper mockFilePickerWrapper;
   late Isar db;
@@ -23,12 +21,15 @@ void main() {
   setUpAll(() async {
     db = await configureIsarInstance();
     mockFilePickerWrapper = MockFilePickerWrapper();
-    dataExchangeService = DataExchangeService(
-      db,
-      filePickerWrapper: mockFilePickerWrapper,
-    );
 
-    getIt.registerSingleton<DataExchangeService>(dataExchangeService);
+    dataExchangeService =
+        DataExchangeService(db, filePickerWrapper: mockFilePickerWrapper);
+
+    getIt.registerSingleton(dataExchangeService);
+  });
+
+  tearDownAll(() {
+    closeIsarInstance();
   });
 
   group('DataExchangeService', () {

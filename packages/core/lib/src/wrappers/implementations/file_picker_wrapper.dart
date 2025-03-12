@@ -8,8 +8,7 @@ import 'package:injectable/injectable.dart';
 class FilePickerWrapper implements IFilePickerWrapper {
   final FilePicker _filePicker;
 
-  FilePickerWrapper({required FilePicker? filePicker})
-      : _filePicker = filePicker ?? coreSl<FilePicker>();
+  FilePickerWrapper(this._filePicker);
 
   @override
   Future<String?> pickFile() async {
