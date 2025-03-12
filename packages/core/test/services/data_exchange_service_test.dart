@@ -3,12 +3,15 @@ import 'dart:typed_data';
 import 'package:core/src/services/implementations/data_exchange_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
 import '../injection.dart';
 import '../mocks.mocks.dart';
+
+final getIt = GetIt.instance;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,13 +22,13 @@ void main() {
 
   setUpAll(() async {
     db = await configureIsarInstance();
-
-    configureTestDependencies();
     mockFilePickerWrapper = MockFilePickerWrapper();
     dataExchangeService = DataExchangeService(
       db,
       filePickerWrapper: mockFilePickerWrapper,
     );
+
+    getIt.registerSingleton<DataExchangeService>(dataExchangeService);
   });
 
   group('DataExchangeService', () {
