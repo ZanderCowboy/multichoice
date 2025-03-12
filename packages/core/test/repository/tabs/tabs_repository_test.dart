@@ -1,9 +1,11 @@
-import 'package:core/src/repositories/export_repositories.dart';
+import 'package:core/src/repositories/implementation/entry/entry_repository.dart';
+import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
+import '../../injection.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
@@ -13,20 +15,21 @@ void main() {
   late Isar db;
 
   setUpAll(() async {
-    await Isar.initializeIsarCore(download: true);
-    db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+    db = await configureIsarInstance();
   });
 
   setUp(() async {
     if (!db.isOpen) {
-      db = await Isar.open([TabsSchema, EntrySchema], directory: '');
+      db = await configureIsarInstance();
     }
     tabsRepository = TabsRepository(db);
     entryRepository = EntryRepository(db);
     mockTabsRepository = MockTabsRepository();
   });
 
-  tearDown(() => db.close());
+  tearDownAll(() {
+    closeIsarInstance();
+  });
 
   group('TabsRepository - addTab', () {
     test('should return int when addTab is called', () async {
@@ -58,9 +61,6 @@ void main() {
 
   group('TabsRepository - readTabs', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
       tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
@@ -138,9 +138,6 @@ void main() {
 
   group('TabsRepository - getTab', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
       tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
@@ -149,6 +146,7 @@ void main() {
       await tabsRepository.addTab('not a title', 'not a subtitle');
       await tabsRepository.addTab('another t', 'another sub');
     });
+
     test('should return a TabsDTO instance when getTab is called', () async {
       // Arrange
       final tabs = await db.tabs.where().findAll();
@@ -173,14 +171,12 @@ void main() {
 
   group('TabsRepository - updateTab', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema], directory: '');
-      }
       tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('title', 'subtitle');
     });
+
     test('should return int when updateTab is called', () async {
       // Arrange
       final tab = (await db.tabs.where().findAll()).first;
@@ -199,9 +195,6 @@ void main() {
 
   group('TabsRepository - deleteTab', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema], directory: '');
-      }
       tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -213,6 +206,7 @@ void main() {
       await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
       await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
     });
+
     test('should return bool when deleteTab is called', () async {
       // Arrange
       final tabs = await db.tabs.where().findAll();
@@ -224,6 +218,7 @@ void main() {
       // Assert
       expect(result, true);
     });
+
     test(
         "should delete a tab and all it's entries and return a bool when deleteTab is called",
         () async {
@@ -259,9 +254,6 @@ void main() {
 
   group('TabsRepository - deleteTabs', () {
     setUp(() async {
-      if (!db.isOpen) {
-        db = await Isar.open([TabsSchema, EntrySchema], directory: '');
-      }
       tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -269,6 +261,7 @@ void main() {
       await tabsRepository.addTab('not a title', 'not a subtitle');
       await tabsRepository.addTab('another t', 'another sub');
     });
+
     test('should return bool when deleteTabs is called', () async {
       // Arrange
 
@@ -278,6 +271,7 @@ void main() {
       // Assert
       expect(result, true);
     });
+
     test('should delete all the entries and all the tabs', () async {
       // Arrange
 

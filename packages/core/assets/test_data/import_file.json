@@ -1,0 +1,31 @@
+{
+    "tabs": [
+        {
+            "uuid": "test",
+            "title": "First",
+            "subtitle": "Second",
+            "entryIds": [
+                590699460983228343,
+                590700560494856554
+            ]
+        },
+        {
+            "uuid": "moon",
+            "title": "Donkey",
+            "subtitle": "Dog",
+            "entryIds": null
+        }
+    ],
+    "entries": [
+        {
+            "uuid": "1",
+            "tabId": 2715383224155124699,
+            "title": "hello"
+        },
+        {
+            "uuid": "2",
+            "tabId": 2715383224155124699,
+            "title": "bye"
+        }
+    ]
+}

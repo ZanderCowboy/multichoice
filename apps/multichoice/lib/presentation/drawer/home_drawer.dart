@@ -8,7 +8,7 @@ import 'package:multichoice/app/export_app.dart';
 import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/constants/export_constants.dart';
-import 'package:multichoice/gen/assets.gen.dart';
+import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
