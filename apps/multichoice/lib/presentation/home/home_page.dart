@@ -1,3 +1,4 @@
+// The context is used synchronously in this file, and the asynchronous usage is safe here.
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:auto_route/auto_route.dart';

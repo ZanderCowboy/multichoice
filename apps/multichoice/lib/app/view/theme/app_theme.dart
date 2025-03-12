@@ -67,7 +67,6 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _lightAppColors.background,
       dialogTheme: DialogTheme(
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
@@ -193,7 +192,6 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _darkAppColors.background,
       dialogTheme: DialogTheme(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
@@ -278,7 +276,7 @@ class AppTheme with ChangeNotifier {
 
   static final _darkAppColors = AppColorsExtension(
     primary: AppPalette.paletteTwo.primary5,
-    primaryLight: AppPalette.grey.geyserLight.withOpacity(0.2),
+    primaryLight: AppPalette.grey.geyserLight.withValues(alpha: 0.2),
     secondary: AppPalette.paletteTwo.primary10,
     secondaryLight: AppPalette.paletteTwo.slateGrayLight,
     ternary: AppPalette.paletteTwo.sanJuan,

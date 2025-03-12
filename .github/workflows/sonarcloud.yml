@@ -53,35 +53,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-java-flutter
+
+      - name: Run tests and generate coverage
+        run: melos coverage:core
+
+      - name: Aggregate coverage report
+        run: |
+          flutter pub global activate coverage
+          flutter pub global run coverage:format_coverage \
+            --lcov \
+            --in=packages/core/coverage \
+            --out=coverage/lcov.info \
+            --report-on=apps/multichoice/lib,packages/core/lib
+
+      # if requied, change 'Aggregate coverage report' with 'Move coverage report'
+      # - name: Move coverage report
+      #   run: |
+      #     mkdir -p coverage
+      #     cp packages/core/coverage/lcov.info coverage/lcov.info
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args:
-            # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
-            # mandatory
-            -Dsonar.projectKey=ZanderCowboy_multichoice
-            -Dsonar.organization=zandercowboy
-            -Dsonar.projectName=multichoice
-            -Dsonar.projectVersion=1.0.0
-            -Dsonar.c.file.suffixes=-
-            -Dsonar.cpp.file.suffixes=-
-            -Dsonar.objc.file.suffixes=-
-            -Dsonar.swift.file.suffixes=-
-            # Comma-separated paths to directories containing main source files.
-            #-Dsonar.sources= # optional, default is project base directory
-            # When you need the analysis to take place in a directory other than the one from which it was launched
-            #-Dsonar.projectBaseDir= # optional, default is .
-            # Comma-separated paths to directories containing test source files.
-            #-Dsonar.tests= # optional. For more info about Code Coverage, please refer to https://docs.sonarcloud.io/enriching/test-coverage/overview/
-            # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
-            #-Dsonar.verbose= # optional, default is false
-            #-Dsonar.sourceEncoding=UTF-8
