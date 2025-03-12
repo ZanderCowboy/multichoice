@@ -16,8 +16,6 @@ import '../../mocks.mocks.dart';
 final getit = GetIt.instance;
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   late HomeBloc homeBloc;
   late MockTabsRepository mockTabsRepository;
   late MockEntryRepository mockEntryRepository;
@@ -31,7 +29,7 @@ void main() {
     await getit.registerSingleton<Clock>(Clock.fixed(timestamp));
     clock = getit<Clock>();
 
-    getit.registerLazySingleton(() => TabsRepository(db, clock));
+    getit.registerLazySingleton(() => TabsRepository(db));
     getit.registerLazySingleton(() => EntryRepository(db));
     getit.registerLazySingleton(() => FakePathProviderPlatform());
   });

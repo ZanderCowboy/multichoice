@@ -22,7 +22,7 @@ void main() {
     if (!db.isOpen) {
       db = await configureIsarInstance();
     }
-    tabsRepository = TabsRepository(db, clock);
+    tabsRepository = TabsRepository(db);
     entryRepository = EntryRepository(db);
   });
 
@@ -80,7 +80,7 @@ void main() {
   group('EntryRepository - getEntry', () {
     setUp(() async {
       entryRepository = EntryRepository(db);
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('another t', 'another sub');
@@ -116,7 +116,7 @@ void main() {
 
   group('EntryRepository - readEntries', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -168,7 +168,7 @@ void main() {
 
   group('EntryRepository - readAllEntries', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -232,7 +232,7 @@ void main() {
 
   group('EntryRepository - updateEntry', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -303,7 +303,7 @@ void main() {
 
   group('EntryRepository - deleteEntry', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -358,7 +358,7 @@ void main() {
 
   group('EntryRepository - deleteEntries', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());

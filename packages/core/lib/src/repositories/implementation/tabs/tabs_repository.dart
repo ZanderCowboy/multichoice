@@ -9,10 +9,9 @@ import 'package:clock/clock.dart';
 
 @LazySingleton(as: ITabsRepository)
 class TabsRepository implements ITabsRepository {
-  TabsRepository(this.db, this.clock);
+  TabsRepository(this.db);
 
   final isar.Isar db;
-  final Clock clock;
 
   /// Adds a new tab to the database.
   ///

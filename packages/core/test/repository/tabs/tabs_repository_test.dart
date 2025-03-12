@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:isar/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
-import 'package:clock/clock.dart';
 
 import '../../injection.dart';
 import '../../mocks.mocks.dart';
@@ -14,18 +13,16 @@ void main() {
   late EntryRepository entryRepository;
   late MockTabsRepository mockTabsRepository;
   late Isar db;
-  late Clock clock;
 
   setUpAll(() async {
     db = await configureIsarInstance();
-    clock = Clock();
   });
 
   setUp(() async {
     if (!db.isOpen) {
       db = await configureIsarInstance();
     }
-    tabsRepository = TabsRepository(db, clock);
+    tabsRepository = TabsRepository(db);
     entryRepository = EntryRepository(db);
     mockTabsRepository = MockTabsRepository();
   });
@@ -64,7 +61,7 @@ void main() {
 
   group('TabsRepository - readTabs', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -141,7 +138,7 @@ void main() {
 
   group('TabsRepository - getTab', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
@@ -174,7 +171,7 @@ void main() {
 
   group('TabsRepository - updateTab', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('title', 'subtitle');
@@ -198,7 +195,7 @@ void main() {
 
   group('TabsRepository - deleteTab', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('title', 'subtitle');
@@ -257,7 +254,7 @@ void main() {
 
   group('TabsRepository - deleteTabs', () {
     setUp(() async {
-      tabsRepository = TabsRepository(db, clock);
+      tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
       await tabsRepository.addTab('title', 'subtitle');
