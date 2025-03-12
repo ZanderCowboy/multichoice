@@ -86,10 +86,22 @@ scripts:
 
   coverage:core:
     run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: "core"
+
+  coverage:windows:
+    run: flutter test -j 1 --coverage && perl "C:\\ProgramData\\chocolatey\\lib\\lcov\\tools\\bin\\genhtml" --no-function-coverage -o coverage\html coverage\lcov.info && start coverage\html\index.html
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
     packageFilters:
       scope: "core"
-    exec:
-      concurrency: 1
 
 command:
   bootstrap:

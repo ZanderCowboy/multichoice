@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:core/src/repositories/interfaces/entry/i_entry_repository.dart';
 import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
-import 'package:core/src/utils/validator.dart';
+import 'package:core/src/utils/validator/validator.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';

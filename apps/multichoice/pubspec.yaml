@@ -48,3 +48,4 @@ flutter:
 flutter_gen:
   integrations:
     flutter_svg: true
+  output: lib/generated/

@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:core/core.dart';
-import 'package:core/src/wrappers/export.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
 import 'dart:convert';
@@ -64,7 +63,12 @@ class DataExchangeService implements IDataExchangeService {
     String filePath, {
     bool shouldAppend = true,
   }) async {
-    final file = File(filePath);
+    final file = await _getFile(filePath);
+
+    if (file == null) {
+      return false;
+    }
+
     final jsonData = await file.readAsString();
     final data = jsonDecode(jsonData) as Map<String, dynamic>;
 
@@ -97,6 +101,23 @@ class DataExchangeService implements IDataExchangeService {
       );
       return false;
     }
+  }
+
+  Future<File?> _getFile(String filePath) async {
+    try {
+      final file = File(filePath);
+
+      if (await file.exists()) {
+        return file;
+      }
+    } catch (e, s) {
+      log(
+        e.toString(),
+        error: e,
+        stackTrace: s,
+      );
+    }
+    return null;
   }
 
   @override
