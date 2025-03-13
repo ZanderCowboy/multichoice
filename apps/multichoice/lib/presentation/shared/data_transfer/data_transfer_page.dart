@@ -10,7 +10,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/engine/tooltip_enums.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/export.dart';
 
 @RoutePage()
 class DataTransferScreen extends StatefulWidget {

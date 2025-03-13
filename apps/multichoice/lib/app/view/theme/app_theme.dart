@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
 import 'package:multichoice/app/view/theme/app_typography.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
 
