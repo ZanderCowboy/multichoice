@@ -36,8 +36,6 @@ dev_dependencies:
   flutter_gen_runner: ^5.5.0+1
   flutter_test:
     sdk: flutter
-  integration_test:
-    sdk: flutter
   very_good_analysis: ^7.0.0
 
 flutter:
