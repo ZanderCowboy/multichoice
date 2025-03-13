@@ -1,10 +1,10 @@
 # CHANGELOG
 
-Setting up Integration Testing:
-<https://chatgpt.com/share/66fdf56f-3724-8004-9d18-5a52f68b20a7>
-Create documentation
-
-- start cmd /k "run_integration_test.bat %* && call shutdown_emulator.bat && exit"
+Version 0.3.0+153:
+- Setup and add widget tests
+- Update melos scripts
+- Refactor and clean up code
+- Create 'WidgetKeys` class
 
 ---
 Version 0.3.0+140:
