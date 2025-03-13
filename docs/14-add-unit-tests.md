@@ -23,7 +23,7 @@ As of now, the test coverage is at 90.3%.
 
 There is a `melos` command that can be used to get test coverage and open the report.
 ```bash
-melos coverage:windows
+melos coverage:core:windows
 ```
 
 ## Dealing with Issues when Generating Code
