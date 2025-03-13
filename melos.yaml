@@ -95,6 +95,16 @@ scripts:
       scope: "core"
 
   coverage:multichoice:
+    run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: "core"
+
+  coverage:multichoice:windows:
     run: flutter test -j 1 --coverage && perl "C:\\ProgramData\\chocolatey\\lib\\lcov\\tools\\bin\\genhtml" --no-function-coverage -o coverage\html coverage\lcov.info && start coverage\html\index.html
     exec:
       failFast: false
@@ -104,7 +114,7 @@ scripts:
       flutter: true
       scope: ["multichoice"]
 
-  coverage:windows:
+  coverage:core:windows:
     run: flutter test -j 1 --coverage && perl "C:\\ProgramData\\chocolatey\\lib\\lcov\\tools\\bin\\genhtml" --no-function-coverage -o coverage\html coverage\lcov.info && start coverage\html\index.html
     exec:
       failFast: true
