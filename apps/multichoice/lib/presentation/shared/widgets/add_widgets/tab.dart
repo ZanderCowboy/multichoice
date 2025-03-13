@@ -26,7 +26,7 @@ class AddTabCard extends StatelessWidget {
       child: Padding(
         padding: allPadding6,
         child: SizedBox(
-          key: const Key('AddTabSizedBox'),
+          key: context.keys.addTabSizedBox,
           width: width,
           child: IconButton(
             iconSize: 36,
