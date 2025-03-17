@@ -17,11 +17,13 @@ class NewEntry extends StatelessWidget {
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
         return AddEntryCard(
+          key: context.keys.addNewEntryButton,
           padding: zeroPadding,
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
               title: RichText(
+                key: context.keys.addNewEntryTitle,
                 text: TextSpan(
                   text: 'Add New Entry',
                   style: DefaultTextStyle.of(context).style.copyWith(
