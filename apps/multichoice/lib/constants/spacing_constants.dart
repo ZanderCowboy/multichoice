@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 // Gaps
+const gap2 = Gap(2);
+
 const gap4 = Gap(4);
 
 const gap8 = Gap(8);
@@ -36,9 +38,14 @@ const allPadding24 = EdgeInsets.all(24);
 const vertical8 = EdgeInsets.symmetric(vertical: 8);
 
 const vertical12 = EdgeInsets.symmetric(vertical: 12);
+
+const horizontal8 = EdgeInsets.symmetric(horizontal: 8);
+
 const horizontal12 = EdgeInsets.symmetric(horizontal: 12);
 
 const left4 = EdgeInsets.only(left: 4);
+
+const left6 = EdgeInsets.only(left: 6);
 
 const left12 = EdgeInsets.only(left: 12);
 

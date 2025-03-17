@@ -39,15 +39,10 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    final sharedPref = coreSl<SharedPreferences>();
-
-    final isPermissionsChecked =
-        sharedPref.getBool('isPermissionsChecked') ?? false;
-
-    if (!isPermissionsChecked) _checkAndRequestPermissions();
   }
 
+  // Needs to be refactored
+  // ignore: unused_element
   Future<void> _checkAndRequestPermissions() async {
     var status = await Permission.manageExternalStorage.status;
 

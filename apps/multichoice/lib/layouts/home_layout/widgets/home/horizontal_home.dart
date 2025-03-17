@@ -10,7 +10,7 @@ class _HorizontalHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: horizontal12,
+      padding: horizontal8,
       child: SizedBox(
         width: UIConstants.horiTabWidth(context),
         child: CustomScrollView(
