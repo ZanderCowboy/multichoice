@@ -10,7 +10,7 @@ class _VerticalHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: vertical8,
+      padding: left0top4right0bottom24,
       child: SizedBox(
         height: UIConstants.vertTabHeight(context),
         child: CustomScrollView(
@@ -25,7 +25,7 @@ class _VerticalHome extends StatelessWidget {
                 itemBuilder: (_, index) {
                   final tab = tabs[index];
 
-                  return VerticalTab(tab: tab);
+                  return CollectionTab(tab: tab);
                 },
               ),
             ),

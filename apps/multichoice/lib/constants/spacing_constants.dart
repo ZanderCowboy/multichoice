@@ -57,12 +57,22 @@ const right4 = EdgeInsets.only(right: 4);
 
 const right12 = EdgeInsets.only(right: 12);
 
+const right18 = EdgeInsets.only(right: 18);
+
+const top4 = EdgeInsets.only(top: 4);
+
 const top12 = EdgeInsets.only(top: 12);
 
 const bottom12 = EdgeInsets.only(bottom: 12);
+
+const bottom24 = EdgeInsets.only(bottom: 24);
 
 const vertical8horizontal4 = EdgeInsets.symmetric(vertical: 8, horizontal: 4);
 
 const vertical12horizontal4 = EdgeInsets.symmetric(horizontal: 4, vertical: 12);
 
+const vertical4horizontal8 = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+
 const vertical2left14right2 = EdgeInsets.fromLTRB(14, 2, 2, 2);
+
+const left0top4right0bottom24 = EdgeInsets.fromLTRB(0, 4, 0, 24);

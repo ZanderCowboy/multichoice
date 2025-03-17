@@ -26,6 +26,7 @@ class _VerticalTab extends StatelessWidget {
     final entries = tab.entries;
 
     return Card(
+      margin: allPadding4,
       color: context.theme.appColors.primary,
       child: Padding(
         padding: allPadding2,
@@ -66,7 +67,7 @@ class _VerticalTab extends StatelessWidget {
                 endIndent: 4,
               ),
               gap4,
-              Cards(id: tab.id, entries: entries),
+              Items(id: tab.id, entries: entries),
             ],
           ),
         ),

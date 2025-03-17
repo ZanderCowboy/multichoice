@@ -1,19 +1,5 @@
 part of '../../tab_layout.dart';
 
-class HorizontalTab extends StatelessWidget {
-  const HorizontalTab({
-    required this.tab,
-    super.key,
-  });
-
-  final TabsDTO tab;
-
-  @override
-  Widget build(BuildContext context) {
-    return _HorizontalTab(tab: tab);
-  }
-}
-
 class _HorizontalTab extends StatelessWidget {
   const _HorizontalTab({
     required this.tab,
@@ -26,6 +12,7 @@ class _HorizontalTab extends StatelessWidget {
     final entries = tab.entries;
 
     return Card(
+      margin: allPadding4,
       color: context.theme.appColors.primary,
       child: Padding(
         padding: allPadding2,
@@ -46,7 +33,10 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style: context.theme.appTextTheme.titleMedium,
+                          style:
+                              context.theme.appTextTheme.titleMedium?.copyWith(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
@@ -56,11 +46,14 @@ class _HorizontalTab extends StatelessWidget {
                           padding: left4,
                           child: Text(
                             tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium,
+                            style: context.theme.appTextTheme.subtitleMedium
+                                ?.copyWith(fontSize: 12),
                           ),
                         ),
                       const Expanded(child: SizedBox()),
-                      MenuWidget(tab: tab),
+                      Center(
+                        child: MenuWidget(tab: tab),
+                      ),
                     ],
                   ),
                 ),
@@ -90,11 +83,6 @@ class _HorizontalTab extends StatelessWidget {
                   return EntryCard(entry: entry);
                 },
               ),
-              // SliverToBoxAdapter(
-              //   child: NewEntry(
-              //     tabId: tab.id,
-              //   ),
-              // ),
             ],
           ),
         ),
