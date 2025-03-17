@@ -7,6 +7,9 @@ Version: 0.3.0+156:
 - Add testing files - found under 'apps\multichoice\test\data'
 - Made changes to the UI to be more readible
 - Update .gitignore
+- More changes to UI to deal with both Vertical and Horizontal Modes
+- Rename VerticalTab to CollectionTab
+- Rename Cards to Items
 
 Version 0.3.0+153:
 - Setup and add widget tests
