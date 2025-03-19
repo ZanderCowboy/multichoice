@@ -34,11 +34,11 @@ runs:
           && sudo apt update \
           && sudo apt install gh -y
 
-    - name: Set up Git
-      shell: bash
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
+    # - name: Set up Git
+    #   shell: bash
+    #   run: |
+    #     git config user.name "github-actions[bot]"
+    #     git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Run version bump script
       shell: bash
@@ -98,13 +98,6 @@ runs:
         NEW_VERSION="$MAJOR.$MINOR.$PATCH+$BUILD_NUM"
         echo "New version: $NEW_VERSION"
         echo "new-version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+        echo "new-version=$NEW_VERSION" >> "$GITHUB_ENV"
 
         sed -i -E "s/^(version:[[:space:]]*).*/\1$NEW_VERSION/" $VERSION_FILE
-
-    - name: Auto commit new pubspec version
-      id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Bump pubspec version to $NEW_VERSION"
-        file_pattern: "apps/multichoice/pubspec.*"
-        disable_globbing: true
