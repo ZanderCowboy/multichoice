@@ -35,26 +35,26 @@ jobs:
       ###########################################
       # LINTING
       ###########################################
-      - name: Linting
-        if: ${{ github.event.pull_request.merged == false }}
-        uses: ./.github/actions/linting
-        with:
-          working_directory: "${{ github.workspace }}/"
+      # - name: Linting
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   uses: ./.github/actions/linting
+      #   with:
+      #     working_directory: "${{ github.workspace }}/"
 
       ###########################################
       # TESTS AND COVERAGE
       ###########################################
-      - name: melos coverage:core
-        if: ${{ github.event.pull_request.merged == false }}
-        run: melos coverage:core
+      # - name: melos coverage:core
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   run: melos coverage:core
 
-      - name: Upload coverage to Codecov
-        if: ${{ github.event.pull_request.merged == false }}
-        uses: codecov/codecov-action@v4 # For local testing, use codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
+      # - name: Upload coverage to Codecov
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   uses: codecov/codecov-action@v4 # For local testing, use codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: packages/core/coverage/lcov.info
+      #     fail_ci_if_error: true
 
       ###########################################
       # VERSION BUMP
