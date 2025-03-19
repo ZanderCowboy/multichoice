@@ -1,0 +1,23 @@
+name: "Linting"
+description: "Reusable action for running Flutter and Dart linting"
+inputs:
+  working_directory:
+    description: The working directory for Dart analysis.
+    required: true
+    default: .
+
+runs:
+  using: "composite"
+  steps:
+    - name: melos analyze
+      shell: bash
+      run: melos analyze
+
+    - name: Analyzing code with Dart analyzer
+      shell: bash
+      run: dart analyze --fatal-infos
+
+    - name: Run Dart analysis
+      uses: zgosalvez/github-actions-analyze-dart@v3
+      with:
+        working-directory: ${{ inputs.working_directory }}
