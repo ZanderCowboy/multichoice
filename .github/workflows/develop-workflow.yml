@@ -83,6 +83,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_VERSION: ${{ env.new_version }}
         with:
-          commit_message: "Bump pubspec version to ${{ NEW_VERSION }}"
+          commit_message: "Bump pubspec version to $NEW_VERSION"
           file_pattern: "apps/multichoice/pubspec.yaml"
           disable_globbing: true
