@@ -65,12 +65,10 @@ runs:
         echo "Bump type identified: $BUMP_TYPE"
 
         git fetch --tags
-        LATEST_TAG=$(git tag --sort=-version:refname 'v*.*.*' | head -n1)
-        if [ -z "$LATEST_TAG" ]; then
-          echo "Error: No tags found in the repository."
-          exit 1
-        fi
-        echo "Latest tag: $LATEST_TAG"
+        LATEST_TAG=$(git tag -l 'v*.*.*' --sort=-version:refname | head -n1)
+        LATEST_TAG=${LATEST_TAG:-v0.0.0}
+        echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
+        echo "LATEST_TAG=$LATEST_TAG"
 
         SEMVER=${LATEST_TAG#v}
         echo "Current version: $SEMVER"
