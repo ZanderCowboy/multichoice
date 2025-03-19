@@ -76,13 +76,12 @@ jobs:
       ###########################################
       # COMMIT NEW VERSION
       ###########################################
-      - name: Auto commit new pubspec version
-        id: auto-commit-action
-        uses: stefanzweifel/git-auto-commit-action@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_VERSION: ${{ env.new_version }}
-        with:
-          commit_message: "Bump pubspec version to $NEW_VERSION"
-          file_pattern: "apps/multichoice/pubspec.yaml"
-          disable_globbing: true
+      # - name: Auto commit new pubspec version
+      #   id: auto-commit-action
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     commit_message: "Bump pubspec version to ${{ env.new_version }}"
+      #     file_pattern: "apps/multichoice/pubspec.yaml"
+      #     disable_globbing: true
