@@ -78,6 +78,10 @@ runs:
         PATCH=$(echo "$SEMVER" | cut -d '.' -f 3 | cut -d '+' -f 1)
         BUILD=$(echo "$SEMVER" | grep '+' | cut -d '+' -f 2)
 
+        BUILD=${BUILD:-1}
+
+        echo "Bump type:"
+
         case $BUMP_TYPE in
           major)
             MAJOR=$((MAJOR++))
