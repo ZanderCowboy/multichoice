@@ -2,17 +2,17 @@ name: "Version Bumper"
 description: "Bumps semantic version based on PR labels and increments build number."
 
 inputs:
-  github-token:
-    description: "GitHub token"
+  github_token:
+    description: "Github Token"
     required: true
-  version-file:
+  pubspec_file:
     description: "Path to pubspec file"
     required: true
 
 outputs:
-  new-version:
+  new_version:
     description: "New semantic version generated"
-    value: ${{ steps.output.outputs.new-version }}
+    value: ${{ steps.output.outputs.new_version }}
 
 runs:
   using: "composite"
@@ -34,18 +34,18 @@ runs:
           && sudo apt update \
           && sudo apt install gh -y
 
-    - name: Set up Git
-      shell: bash
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        # git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/ZanderCowboy/multichoice.git
+    # - name: Set up Git
+    #   shell: bash
+    #   run: |
+    #     git config user.name "github-actions[bot]"
+    #     git config user.email "github-actions[bot]@users.noreply.github.com"
+    #     # git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/ZanderCowboy/multichoice.git
 
     - name: Run version bump logic
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        VERSION_FILE: ${{ inputs.version-file }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        PUBSPEC_FILE: ${{ inputs.pubspec_file }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         LABELS=$(gh pr view "$PR_NUMBER" --json labels -q '.labels[].name')
@@ -58,51 +58,56 @@ runs:
         elif echo "$LABELS" | grep -qi "patch"; then
           BUMP_TYPE="patch"
         else
-          echo "No valid bump label found (major/minor/patch). Exiting."
-          exit 0
+          echo "No valid bump label found (major/minor/patch). Bumping build number."
+          # exit 0
         fi
 
         echo "Bump type identified: $BUMP_TYPE"
 
         git fetch --tags
         LATEST_TAG=$(git tag -l 'v*.*.*' --sort=-version:refname | head -n1)
-        LATEST_TAG=${LATEST_TAG:-v0.0.0}
+        # LATEST_TAG=${LATEST_TAG:-v0.0.0}
         echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
         echo "LATEST_TAG=$LATEST_TAG"
 
         SEMVER=${LATEST_TAG#v}
         echo "Current version: $SEMVER"
+
         MAJOR=$(echo "$SEMVER" | cut -d '.' -f 1)
         MINOR=$(echo "$SEMVER" | cut -d '.' -f 2)
-        PATCH=$(echo "$SEMVER" | cut -d '.' -f 3)
+        PATCH=$(echo "$SEMVER" | cut -d '.' -f 3 | cut -d '+' -f 1)
+        BUILD=$(echo "$SEMVER" | grep '+' | cut -d '+' -f 2)
 
         case $BUMP_TYPE in
           major)
-            MAJOR=$((MAJOR + 1))
+            MAJOR=$((MAJOR++))
             MINOR=0
             PATCH=0
             ;;
           minor)
-            MINOR=$((MINOR + 1))
+            MINOR=$((MINOR++))
             PATCH=0
             ;;
           patch)
-            PATCH=$((PATCH + 1))
+            PATCH=$((PATCH++))
             ;;
         esac
 
         NEW_SEMVER="$MAJOR.$MINOR.$PATCH"
+        NEW_BUILD=$((BUILD++))
+
         echo "New version: $NEW_SEMVER"
-        NEW_VERSION="${NEW_SEMVER}+${{ github.run_number }}"
+        NEW_VERSION="${NEW_SEMVER}+${NEW_BUILD}"
         echo "New version with build number: $NEW_VERSION"
 
-        sed -i -E "s/^version:.*/version: $NEW_VERSION/" "${{ inputs.version-file }}"
+        sed -i -E "s/^version:[[:space:]]*.*/version: $NEW_VERSION/" "${{ inputs.pubspec_file }}"
 
-        git add "${{ inputs.version-file }}"
-        git commit -m "chore: bump version to $NEW_VERSION"
-        git push origin HEAD
+        # git add "${{ inputs.pubspec_file }}"
+        # git commit -m "chore: bump version to $NEW_VERSION"
+        # git push origin HEAD
 
-        git tag "v${NEW_SEMVER}"
-        git push origin "v${NEW_SEMVER}"
+        # git tag "v${NEW_SEMVER}"
+        # git push origin "v${NEW_SEMVER}"
 
-        echo "new-version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+        echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+        echo "new_version=$NEW_VERSION" >> "$GITHUB_ENV"

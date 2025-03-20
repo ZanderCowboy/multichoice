@@ -62,8 +62,8 @@ jobs:
       - name: Bump version based on PR labels
         uses: ./.github/actions/version-bump
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          version-file: "apps/multichoice/pubspec.yaml"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pubspec_file: "apps/multichoice/pubspec.yaml"
 
       ###########################################
       # BUILD
