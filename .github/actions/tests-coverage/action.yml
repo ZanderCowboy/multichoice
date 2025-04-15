@@ -1,0 +1,26 @@
+name: Tests and Coverage
+description: Run tests, analyze Dart code, and upload coverage to Codecov.
+inputs:
+  working_directory:
+    description: The working directory for Dart analysis.
+    required: true
+    default: .
+
+runs:
+  using: "composite"
+  steps:
+    - name: melos coverage:core
+      shell: bash
+      run: melos coverage:core
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: packages/core/coverage/lcov.info
+        fail_ci_if_error: true
+
+    - name: Run Dart analysis
+      uses: zgosalvez/github-actions-analyze-dart@v3
+      with:
+        working-directory: ${{ inputs.working_directory }}

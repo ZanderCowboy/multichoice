@@ -1,0 +1,11 @@
+{
+    "pull_request": {
+        "number": 162,
+        "merged": true,
+        "labels": [
+            {
+                "name": "patch"
+            }
+        ]
+    }
+}
