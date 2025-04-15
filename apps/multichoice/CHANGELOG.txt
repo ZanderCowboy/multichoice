@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Test Self-hosted runner on GitHub
+
 Version 0.3.0+153:
 - Setup and add widget tests
 - Update melos scripts
