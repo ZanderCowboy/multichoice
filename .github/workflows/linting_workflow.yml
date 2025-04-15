@@ -18,7 +18,7 @@ concurrency:
 jobs:
   run-lint:
     name: Flutter Lint
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     permissions:
       contents: read
