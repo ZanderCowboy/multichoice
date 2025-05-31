@@ -1,7 +1,6 @@
 # Document Setting up App for Release
 
 This document describes the process of how one can go about releasing an app to the Play Store.
-
 It also details the process of how to get the app in a state ready for deploying a release.
 
 ## Setup
