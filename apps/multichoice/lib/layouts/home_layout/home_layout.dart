@@ -3,6 +3,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/presentation/home/widgets/tour_collection_tab.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:provider/provider.dart';
 

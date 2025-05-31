@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
+  flutter_dotenv: ^5.2.1
   flutter_hooks: ^0.21.2
   flutter_svg: ^2.0.10+1
   flutter_svg_provider: ^1.0.7
@@ -24,6 +25,7 @@ dependencies:
   permission_handler: ^11.3.1
   provider: ^6.1.1
   shared_preferences: ^2.2.2
+  showcaseview: ^2.0.4
   theme: ^0.0.1
   window_size:
     git:
@@ -43,6 +45,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/images/
 
 flutter_gen:

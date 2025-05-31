@@ -25,7 +25,7 @@ class _VerticalHome extends StatelessWidget {
                 itemBuilder: (_, index) {
                   final tab = tabs[index];
 
-                  return CollectionTab(tab: tab);
+                  return TourCollectionTab(tab: tab);
                 },
               ),
             ),
