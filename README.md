@@ -85,3 +85,5 @@ Found in root.
 ### Makefile
 
 Write about usage
+
+### .scripts folder
