@@ -59,14 +59,26 @@ jobs:
       - name: Run tests and generate coverage
         run: melos coverage:core
 
-      - name: Aggregate coverage report
+      - name: Format app coverage
         run: |
           flutter pub global activate coverage
           flutter pub global run coverage:format_coverage \
             --lcov \
-            --in=packages/core/coverage \
-            --out=coverage/lcov.info \
-            --report-on=apps/multichoice/lib,packages/core/lib
+            --in=apps/multichoice/coverage/lcov.info \
+            --out=coverage/app_lcov.info \
+            --report-on=apps/multichoice/lib
+
+      - name: Format core coverage
+        run: |
+          flutter pub global run coverage:format_coverage \
+            --lcov \
+            --in=packages/core/coverage/lcov.info \
+            --out=coverage/core_lcov.info \
+            --report-on=packages/core/lib
+
+      - name: Merge coverage reports
+        run: |
+          cat coverage/app_lcov.info coverage/core_lcov.info > coverage/lcov.info
 
       # if requied, change 'Aggregate coverage report' with 'Move coverage report'
       # - name: Move coverage report
