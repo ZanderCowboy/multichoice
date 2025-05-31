@@ -12,6 +12,8 @@ class WidgetKeys {
   final lightDarkModeSwitch = const Key('LightDarkSwitch');
   final addTabSizedBox = const Key('AddTabSizedBox');
   final addNewTabButton = const Key('AddNewTabButton');
+  final deleteAllDataButton = const Key('DeleteAllDataButton');
+  final importExportDataButton = const Key('ImportExportDataButton');
 }
 
 extension WidgetKeysExtension on BuildContext {

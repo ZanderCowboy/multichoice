@@ -5,6 +5,9 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/main.dart' as app;
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
+import 'shared/export.dart';
+import 'shared/settings_methods.dart';
+
 /// This test will run a journey where the user
 ///
 /// - opens the app with no existing data,
@@ -18,64 +21,49 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   final keys = WidgetKeys.instance;
 
-  testWidgets('Test counter increment', (WidgetTester tester) async {
+  testWidgets('Test User Journey', (WidgetTester tester) async {
     app.main();
     // Wait for the app to settle
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    // Verify a Permission Required dialog appears
-    expect(find.text('Permission Required'), findsOneWidget);
-    expect(find.text('Deny'), findsOneWidget);
-    expect(find.text('Open Settings'), findsOneWidget);
-    await tester.tap(find.text('Deny'));
-    await tester.pumpAndSettle();
+    // Note: Permission dialog is not shown as storage permissions are not requested
+    // If you need to test with permissions, uncomment the following line and enable
+    // storage permissions in AndroidManifest.xml
+    // await permissionsDialog(tester, shouldDeny: true);
 
     // On Home Screen - Verify Add Tab Card
     expect(find.byIcon(Icons.add_outlined), findsOneWidget);
     expect(find.byType(AddTabCard), findsOneWidget);
 
     // Open Settings Drawer - Test Layout Switch
-    expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.settings_outlined));
-    await tester.pumpAndSettle();
-    expect(find.text('Horizontal/Vertical Layout'), findsOneWidget);
-    expect(find.byKey(keys.layoutSwitch), findsOneWidget);
-    await tester.tap(find.byKey(keys.layoutSwitch));
-    await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.close_outlined), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close_outlined));
-    await tester.pumpAndSettle();
+    await SettingsMethods.openOrCloseSettingsDrawer(tester);
+    await SettingsMethods.toggleLayoutSwitch(
+      tester,
+      'Horizontal/Vertical Layout',
+      keys.layoutSwitch,
+    );
+    await SettingsMethods.openOrCloseSettingsDrawer(tester, shouldClose: true);
 
     // On Home Screen - Add New Tab
     expect(find.byIcon(Icons.add_outlined), findsOneWidget);
     expect(find.byType(AddTabCard), findsOneWidget);
-    await tester.tap(find.byType(AddTabCard));
-    await tester.pumpAndSettle();
 
-    // Add New Tab Dialog
-    expect(find.text('Add New Tab'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Add'), findsOneWidget);
-
-    // Enter Tab Data
-    expect(find.byType(TextFormField), findsExactly(2));
-    await tester.enterText(find.byType(TextFormField).first, 'Tab 1');
-    await tester.enterText(find.byType(TextFormField).last, 'Tab 2');
-    await tester.pumpAndSettle();
-    expect(find.text('Tab 1'), findsOneWidget);
-    expect(find.text('Tab 2'), findsOneWidget);
-    await tester.tap(find.text('Add'));
-    await tester.pumpAndSettle();
+    // Opens new tab dialog, enters details, and closes dialog
+    await TabsActions.pressAndOpenAddTab(tester);
+    await TabsActions.addTabDialog(tester, 'Tab 1', 'Tab 2');
+    await TabsActions.pressAndCloseDialog(tester);
 
     expect(find.text('Tab 1'), findsOneWidget);
 
     // Open Settings Drawer - Test Light/Dark Mode
-    await tester.tap(find.byIcon(Icons.settings_outlined));
-    await tester.pumpAndSettle();
-    expect(find.text('Light / Dark Mode'), findsOneWidget);
-    expect(find.byKey(keys.lightDarkModeSwitch), findsOneWidget);
-    await tester.tap(find.byKey(keys.lightDarkModeSwitch));
-    await tester.pumpAndSettle();
+    await SettingsMethods.openOrCloseSettingsDrawer(tester);
+    await SettingsMethods.toggleLightDarkModeSwitch(
+      tester,
+      'Light / Dark Mode',
+      keys.lightDarkModeSwitch,
+    );
+    await SettingsMethods.openOrCloseSettingsDrawer(tester, shouldClose: true);
+
     expect(find.text('Tab 1'), findsOneWidget);
     expect(find.byType(AddTabCard), findsOneWidget);
     final BuildContext context = tester.element(find.byType(AddTabCard));
@@ -86,55 +74,25 @@ void main() {
     await tester.tap(find.byIcon(Icons.search_outlined));
     await tester.pumpAndSettle();
     expect(find.textContaining('not been implemented'), findsOneWidget);
-  });
-}
-import 'shared/export.dart';
 
-
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  testWidgets('Test User Journey', (WidgetTester tester) async {
-    app.main();
-    await tester.pumpAndSettle(const Duration(seconds: 5));
-
-    await permissionsDialog(tester, shouldDeny: true);
-
-    expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.settings_outlined));
-    await tester.pumpAndSettle();
-
-    var isVertical = true;
-    // Will still possibly be used.
-    // ignore: unused_local_variable
-    final layoutSwitch = Switch(
-      value: isVertical,
-      onChanged: (bool value) {
-        isVertical = value;
-      },
+    // Open Settings Drawer - Test Delete All Data - Cancel
+    await SettingsMethods.openOrCloseSettingsDrawer(tester);
+    await SettingsMethods.pressDeleteAllButton(
+      tester,
+      keys.deleteAllDataButton,
     );
-    expect(find.text('Horizontal/Vertical Layout'), findsOneWidget);
-    expect(find.byKey(const Key('layoutSwitch')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('layoutSwitch')));
-    await tester.pumpAndSettle();
+    await SettingsMethods.deleteAllDataDialog(tester, shouldCancel: true);
+    await SettingsMethods.openOrCloseSettingsDrawer(tester, shouldClose: true);
 
-    expect(find.byIcon(Icons.close_outlined), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close_outlined));
-    await tester.pumpAndSettle();
+    // Open Settings Drawer - Test Delete All Data - Delete
+    await SettingsMethods.openOrCloseSettingsDrawer(tester);
+    await SettingsMethods.pressDeleteAllButton(
+      tester,
+      keys.deleteAllDataButton,
+    );
+    await SettingsMethods.deleteAllDataDialog(tester);
+    await SettingsMethods.openOrCloseSettingsDrawer(tester, shouldClose: true);
 
-    expect(find.byIcon(Icons.add_outlined), findsOneWidget);
-    expect(find.byType(AddTabCard), findsOneWidget);
-
-    await tester.tap(find.byType(AddTabCard));
-    await tester.pumpAndSettle();
-
-    await TabsActions.pressAndOpenAddTab(tester);
-    await TabsActions.addTabDialog(tester, 'Tab 1', 'Tab 2');
-
-    expect(find.text('Tab 1'), findsOneWidget);
-
-    await tester.tap(find.byIcon(Icons.search_outlined));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('not been implemented'), findsOneWidget);
+    expect(find.text('Tab 1'), findsNothing);
   });
 }
