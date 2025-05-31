@@ -2,9 +2,14 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
 import 'package:multichoice/app/view/theme/app_typography.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
+
+part 'theme_extension/_dark_app_colors.dart';
+part 'theme_extension/_dark_text_theme.dart';
+part 'theme_extension/_light_app_colors.dart';
+part 'theme_extension/_light_text_theme.dart';
 
 class AppTheme with ChangeNotifier {
   final _prefs = coreSl<SharedPreferences>();
@@ -73,6 +78,7 @@ class AppTheme with ChangeNotifier {
         titleTextStyle: AppTypography.titleMedium,
         contentTextStyle: AppTypography.bodyMedium,
         actionsPadding: allPadding12,
+        backgroundColor: _lightAppColors.secondary,
       ),
       scaffoldBackgroundColor: _lightAppColors.background,
       appBarTheme: AppBarTheme(
@@ -126,47 +132,6 @@ class AppTheme with ChangeNotifier {
       ],
     );
   }();
-
-  static final _lightAppColors = AppColorsExtension(
-    primary: AppPalette.grey.geyser,
-    primaryLight: AppPalette.grey.geyserLight,
-    secondary: AppPalette.grey.sanJuan,
-    secondaryLight: AppPalette.grey.sanJuanLight,
-    ternary: AppPalette.grey.bigStone,
-    foreground: AppPalette.grey.bigStone,
-    background: AppPalette.grey.slateGray,
-    white: null,
-    black: AppPalette.black,
-    error: null,
-    success: null,
-    enabled: AppPalette.enabledColor,
-    disabled: AppPalette.disabledColor,
-  );
-
-  static final _lightTextTheme = AppTextExtension(
-    body1: AppTypography.body1.copyWith(color: _lightAppColors.background),
-    body2: AppTypography.body2,
-    h1: null,
-    titleLarge: null,
-    titleMedium: AppTypography.titleMedium.copyWith(
-      color: AppPalette.grey.bigStone,
-    ),
-    titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    subtitleLarge: null,
-    subtitleMedium: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.grey.bigStone,
-    ),
-    subtitleSmall: AppTypography.subtitleSmall.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    bodyLarge: AppTypography.bodyLarge,
-    bodyMedium: AppTypography.bodyMedium.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    bodySmall: null,
-  );
 
   static final dark = () {
     final defaultTheme = ThemeData.dark();
@@ -273,49 +238,6 @@ class AppTheme with ChangeNotifier {
       ],
     );
   }();
-
-  static final _darkAppColors = AppColorsExtension(
-    primary: AppPalette.paletteTwo.primary5,
-    primaryLight: AppPalette.grey.geyserLight.withValues(alpha: 0.2),
-    secondary: AppPalette.paletteTwo.primary10,
-    secondaryLight: AppPalette.paletteTwo.slateGrayLight,
-    ternary: AppPalette.paletteTwo.sanJuan,
-    foreground: AppPalette.paletteTwo.primary15,
-    background: AppPalette.paletteTwo.primary0,
-    white: AppPalette.white,
-    black: AppPalette.black,
-    error: null,
-    success: null,
-    enabled: AppPalette.enabledColor,
-    disabled: AppPalette.disabledColor,
-  );
-
-  static final _darkTextTheme = AppTextExtension(
-    body1: AppTypography.body1.copyWith(color: _darkAppColors.background),
-    body2: AppTypography.body2,
-    h1: null,
-    titleLarge: null,
-    titleMedium: AppTypography.titleMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    subtitleLarge: null,
-    subtitleMedium: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    subtitleSmall: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    bodyLarge: AppTypography.bodyLarge.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    bodyMedium: AppTypography.bodyMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    bodySmall: null,
-  );
 
   static AppColorsExtension get lightAppColors => _lightAppColors;
 

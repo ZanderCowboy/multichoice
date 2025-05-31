@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/extensions/extension_getters.dart';
-import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/constants/export.dart';
 
 part 'entry.dart';
 part 'tab.dart';

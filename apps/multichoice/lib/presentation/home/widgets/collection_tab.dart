@@ -1,7 +1,7 @@
 part of '../home_page.dart';
 
-class VerticalTab extends StatelessWidget {
-  const VerticalTab({
+class CollectionTab extends StatelessWidget {
+  const CollectionTab({
     required this.tab,
     super.key,
   });

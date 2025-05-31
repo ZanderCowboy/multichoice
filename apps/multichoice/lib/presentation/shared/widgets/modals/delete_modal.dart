@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 
 void deleteModal({
@@ -13,7 +14,7 @@ void deleteModal({
   CustomDialog<AlertDialog>.show(
     context: context,
     title: RichText(
-      key: const Key('DeleteModalTitle'),
+      key: context.keys.deleteModalTitle,
       text: TextSpan(
         text: 'Delete ',
         style: DefaultTextStyle.of(context).style.copyWith(

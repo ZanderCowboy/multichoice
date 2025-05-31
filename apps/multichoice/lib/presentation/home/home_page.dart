@@ -8,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
-import 'package:multichoice/app/export_app.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/layout/app_layout.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/layouts/export_layouts.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
@@ -20,12 +20,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'widgets/cards.dart';
+part 'widgets/items.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
-part 'widgets/vertical_tab.dart';
+part 'widgets/collection_tab.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -39,15 +39,10 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    final sharedPref = coreSl<SharedPreferences>();
-
-    final isPermissionsChecked =
-        sharedPref.getBool('isPermissionsChecked') ?? false;
-
-    if (!isPermissionsChecked) _checkAndRequestPermissions();
   }
 
+  // Needs to be refactored
+  // ignore: unused_element
   Future<void> _checkAndRequestPermissions() async {
     var status = await Permission.manageExternalStorage.status;
 

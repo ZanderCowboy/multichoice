@@ -11,6 +11,7 @@ class EntryCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final menuController = MenuController();
+    final isVerticalLayout = context.watch<AppLayout>().appLayout;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
@@ -60,7 +61,7 @@ class EntryCard extends HookWidget {
               }
             },
             child: Padding(
-              padding: allPadding4,
+              padding: isVerticalLayout ? allPadding2 : allPadding4,
               child: Card(
                 elevation: 3,
                 shadowColor: Colors.grey[400],
@@ -74,19 +75,30 @@ class EntryCard extends HookWidget {
                   child: SizedBox(
                     height: UIConstants.entryHeight(context),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           entry.title,
-                          style: context.theme.appTextTheme.titleSmall,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          entry.subtitle,
-                          style: context.theme.appTextTheme.subtitleSmall,
+                          style:
+                              context.theme.appTextTheme.titleSmall?.copyWith(
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                            height: 1,
+                          ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
+                        ),
+                        gap4,
+                        Text(
+                          entry.subtitle,
+                          style: context.theme.appTextTheme.subtitleSmall
+                              ?.copyWith(
+                            fontSize: 12,
+                            letterSpacing: 0.5,
+                            height: 1.25,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
                         ),
                       ],
                     ),

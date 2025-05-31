@@ -24,9 +24,10 @@ class MenuWidget extends StatelessWidget {
                 }
               },
               icon: const Icon(Icons.more_vert_outlined),
-              iconSize: 20,
+              iconSize: 18,
               color: context.theme.appColors.ternary,
               padding: zeroPadding,
+              visualDensity: VisualDensity.compact,
             );
           },
           menuChildren: [
