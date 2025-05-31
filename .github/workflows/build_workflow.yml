@@ -1,17 +1,11 @@
 ---
 name: Test, Analyze, Build
 on:
-  push:
-    branches:
-      - "develop"
   pull_request:
     branches:
       - "develop"
     types:
-      - "opened"
-      - "synchronize"
-      - "reopened"
-      - "ready_for_review"
+      - "closed"
 
   workflow_dispatch:
 
@@ -22,7 +16,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Bump build number
-    if: github.event.pull_request.draft == false
+    if: contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group

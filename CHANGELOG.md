@@ -1,6 +1,4 @@
-# Integration Tests
+# Update build_workflow
 
-- Update with Integration Tests
-- Made reusable test components
-- Updated WidgetKeys with new keys
-- Update user journey
+- Update the `build_workflow.yml` to only run when the PR is merged.
+- Update the workflow to be skipped when the `no-build` label is found.
