@@ -16,7 +16,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Bump build number
-    if: contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
