@@ -8,20 +8,16 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Test counter increment', (WidgetTester tester) async {
-    // Launch the app
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // Verify initial value is 0
     expect(find.text('Permission Required'), findsOneWidget);
     expect(find.text('Deny'), findsOneWidget);
     expect(find.text('Open Settings'), findsOneWidget);
 
-    // Tap the "+" button
     await tester.tap(find.text('Deny'));
     await tester.pumpAndSettle();
 
-    // Verify the counter has incremented
     expect(find.byIcon(Icons.add_outlined), findsOneWidget);
     expect(find.byType(AddTabCard), findsOneWidget);
 
@@ -29,17 +25,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await tester.pumpAndSettle();
 
-    var isVertical = true;
-    // Will still possibly be used.
-    // ignore: unused_local_variable
-    final layoutSwitch = Switch(
-      value: isVertical,
-      onChanged: (bool value) {
-        isVertical = value;
-      },
-    );
     expect(find.text('Horizontal/Vertical Layout'), findsOneWidget);
-    // expect(find.byWidget(layoutSwitch), findsOneWidget);
     expect(find.byKey(const Key('layoutSwitch')), findsOneWidget);
     await tester.tap(find.byKey(const Key('layoutSwitch')));
     await tester.pumpAndSettle();
@@ -71,9 +57,5 @@ void main() {
     await tester.tap(find.byIcon(Icons.search_outlined));
     await tester.pumpAndSettle();
     expect(find.textContaining('not been implemented'), findsOneWidget);
-
-    // await tester.tap(find.text('Cancel'));
-    // await tester.pumpAndSettle();
-    // expect(find.text('Open Modal'), findsOneWidget);
   });
 }
