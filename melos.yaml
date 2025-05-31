@@ -2,7 +2,6 @@ name: multichoice
 
 packages:
   - packages/**
-  - packages_external/**
   - apps/**
 
 ignore:
