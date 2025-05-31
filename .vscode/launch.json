@@ -24,19 +24,6 @@
             "flutterMode": "release",
             "program": "apps/multichoice/lib/main.dart"
         },
-        // {
-        //     "name": "Flutter Integration Test",
-        //     "program": "test_driver/integration_test.dart",
-        //     "request": "launch",
-        //     "type": "dart",
-        //     "args": [
-        //         "drive",
-        //         "--driver",
-        //         "test_driver/integration_test.dart",
-        //         "--target",
-        //         "integration_test/app_test.dart"
-        //     ]
-        // },
         {
             "name": "Run Integration Test with Emulator",
             "type": "dart",
