@@ -1,9 +1,7 @@
 # CHANGELOG
 
 Setting up Integration Testing:
-<https://chatgpt.com/share/66fdf56f-3724-8004-9d18-5a52f68b20a7>
-Create documentation
-
+- Create documentation (refer to `docs/setting-up-integration-tests.md`)
 - start cmd /k "run_integration_test.bat %* && call shutdown_emulator.bat && exit"
 
 ---
