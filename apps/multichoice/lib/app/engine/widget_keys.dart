@@ -9,6 +9,7 @@ class WidgetKeys {
   final addNewEntryTitle = const Key('AddNewEntry');
   final addNewEntryButton = const Key('AddNewEntryButton');
   final layoutSwitch = const Key('LayoutSwitch');
+  final lightDarkModeSwitch = const Key('LightDarkSwitch');
   final addTabSizedBox = const Key('AddTabSizedBox');
   final addNewTabButton = const Key('AddNewTabButton');
 }

@@ -26,6 +26,7 @@ class _VerticalTab extends StatelessWidget {
     final entries = tab.entries;
 
     return Card(
+      margin: allPadding4,
       color: context.theme.appColors.primary,
       child: Padding(
         padding: allPadding2,
@@ -34,31 +35,31 @@ class _VerticalTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: left4,
-                      child: Text(
-                        tab.title,
-                        style: context.theme.appTextTheme.titleMedium,
-                      ),
+              Padding(
+                padding: left4,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            tab.title,
+                            style: context.theme.appTextTheme.titleMedium,
+                          ),
+                        ),
+                        MenuWidget(tab: tab),
+                      ],
                     ),
-                  ),
-                  MenuWidget(tab: tab),
-                ],
-              ),
-              if (tab.subtitle.isEmpty)
-                const SizedBox.shrink()
-              else
-                Padding(
-                  padding: left4,
-                  child: Text(
-                    tab.subtitle,
-                    style: context.theme.appTextTheme.subtitleMedium,
-                  ),
+                    if (tab.subtitle.isNotEmpty)
+                      Text(
+                        tab.subtitle,
+                        style: context.theme.appTextTheme.subtitleMedium,
+                      )
+                    else
+                      const SizedBox.shrink(),
+                  ],
                 ),
+              ),
               Divider(
                 color: context.theme.appColors.secondaryLight,
                 thickness: 2,
@@ -66,7 +67,7 @@ class _VerticalTab extends StatelessWidget {
                 endIndent: 4,
               ),
               gap4,
-              Cards(id: tab.id, entries: entries),
+              Items(id: tab.id, entries: entries),
             ],
           ),
         ),

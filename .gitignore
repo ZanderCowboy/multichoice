@@ -41,6 +41,7 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/.secrets
 
 # Running Workflows Locally
 **/.secrets

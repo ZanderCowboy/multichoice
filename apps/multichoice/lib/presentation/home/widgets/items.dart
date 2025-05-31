@@ -1,7 +1,7 @@
 part of '../home_page.dart';
 
-class Cards extends StatelessWidget {
-  const Cards({
+class Items extends StatelessWidget {
+  const Items({
     required this.id,
     required this.entries,
     super.key,

@@ -25,11 +25,3 @@ class TabLayout extends StatelessWidget {
         : _HorizontalTab(tab: tab);
   }
 }
-
-class TabLay {
-  TabLay();
-
-  static VertTab vert(TabsDTO tab) => VertTab(tab: tab);
-
-  static HorizontalTab hori(TabsDTO tab) => HorizontalTab(tab: tab);
-}

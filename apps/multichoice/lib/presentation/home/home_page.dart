@@ -20,12 +20,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'widgets/cards.dart';
+part 'widgets/items.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
-part 'widgets/vertical_tab.dart';
+part 'widgets/collection_tab.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -39,15 +39,10 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    final sharedPref = coreSl<SharedPreferences>();
-
-    final isPermissionsChecked =
-        sharedPref.getBool('isPermissionsChecked') ?? false;
-
-    if (!isPermissionsChecked) _checkAndRequestPermissions();
   }
 
+  // Needs to be refactored
+  // ignore: unused_element
   Future<void> _checkAndRequestPermissions() async {
     var status = await Permission.manageExternalStorage.status;
 

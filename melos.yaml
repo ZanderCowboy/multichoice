@@ -84,6 +84,52 @@ scripts:
       flutter: true
       scope: ["integration"]
 
+  test:core:report:
+    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
+    exec:
+      failFast: false
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["core"]
+
+  test:multichoice:report:
+    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
+    exec:
+      failFast: false
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["multichoice"]
+
+  test:integration:report:
+    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
+    exec:
+      failFast: false
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["integration"]
+
+  coverage:all:
+    description: |
+      Run all tests and generate coverage reports.
+    run: |
+      melos run coverage:core --no-select && melos run coverage:multichoice --no-select
+
+  coverage:integration:
+    run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["integration"]
+
   coverage:core:
     run: flutter test -j 1 --coverage
     exec:
