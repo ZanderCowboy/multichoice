@@ -75,9 +75,6 @@ void main() {
   testWidgets('deleteModal displays correctly and handles actions',
       (WidgetTester tester) async {
     var confirmPressed = false;
-    // Will still possibly be used.
-    // ignore: unused_local_variable
-    const cancelPressed = false;
 
     await tester.pumpWidget(
       MaterialApp(

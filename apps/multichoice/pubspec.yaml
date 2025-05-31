@@ -2,7 +2,7 @@ name: multichoice
 description: "The application for the Multichoice repo"
 publish_to: "none"
 
-version: 0.3.0+158
+version: 0.3.0+163
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -35,6 +35,8 @@ dev_dependencies:
   build_runner: ^2.4.8
   flutter_gen_runner: ^5.5.0+1
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   very_good_analysis: ^7.0.0
 

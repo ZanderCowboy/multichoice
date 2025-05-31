@@ -7,6 +7,7 @@ class WidgetKeys {
 
   final deleteModalTitle = const Key('DeleteModalTitle');
   final layoutSwitch = const Key('LayoutSwitch');
+  final lightDarkModeSwitch = const Key('LightDarkSwitch');
   final addTabSizedBox = const Key('AddTabSizedBox');
 }
 
