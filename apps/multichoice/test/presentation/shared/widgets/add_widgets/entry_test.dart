@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
-import '../../../../helpers/widget_wrapper.dart';
+import '../../../../helpers/export.dart';
 
 void main() {
   testWidgets('AddEntryCard renders correctly and responds to tap',

@@ -58,15 +58,13 @@ class HomeDrawer extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     const _LightDarkModeButton(),
-                    ListTile(
+                    SwitchListTile(
+                      key: context.keys.layoutSwitch,
                       title: const Text('Horizontal/Vertical Layout'),
-                      trailing: Switch(
-                        key: context.keys.layoutSwitch,
-                        value: context.watch<AppLayout>().appLayout,
-                        onChanged: (value) {
-                          context.read<AppLayout>().appLayout = value;
-                        },
-                      ),
+                      value: context.watch<AppLayout>().appLayout,
+                      onChanged: (value) {
+                        context.read<AppLayout>().appLayout = value;
+                      },
                     ),
                     ListTile(
                       title: const Text('Delete All Data'),

@@ -11,6 +11,11 @@ Version: 0.3.0+156:
 - Rename VerticalTab to CollectionTab
 - Rename Cards to Items
 
+Setting up Integration Testing:
+- Create documentation (refer to `docs/setting-up-integration-tests.md`)
+- start cmd /k "run_integration_test.bat %* && call shutdown_emulator.bat && exit"
+
+---
 Version 0.3.0+153:
 - Setup and add widget tests
 - Update melos scripts
