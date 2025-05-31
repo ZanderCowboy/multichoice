@@ -2,6 +2,15 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Start Emulator and Run Integration Test",
+            "type": "shell",
+            "command": "./.scripts/run_integration_test.bat",
+            "problemMatcher": [],
+            "args": [
+                "flutter_emulator"
+            ]
+        },
+        {
             "label": "Flutter Integration Test",
             "type": "shell",
             "command": "flutter",
