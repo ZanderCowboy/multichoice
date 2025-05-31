@@ -1,6 +1,6 @@
 # Setting up for App Release
 
-- Write documentation for finalizaing Play Store release
+- Write documentation for finalizing Play Store release
 - Create feature graphic
 - Take screenshots of the app on multiple devices
 - Add testing files - found under 'apps\multichoice\test\data'
