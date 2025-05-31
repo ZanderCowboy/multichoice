@@ -59,28 +59,16 @@ jobs:
       - name: Run tests and generate coverage
         run: melos coverage:all
       
-      - name: Install coverage tool
-        run: flutter pub global activate coverage
-
-      - name: Format Multichoice coverage
+      - name: Debug coverage files
         run: |
-          flutter pub global run coverage:format_coverage \
-            --lcov \
-            --in=apps/multichoice/coverage/lcov.info \
-            --out=coverage/app_lcov.info \
-            --report-on=apps/multichoice/lib
-
-      - name: Format core coverage
-        run: |
-          flutter pub global run coverage:format_coverage \
-            --lcov \
-            --in=packages/core/coverage/lcov.info \
-            --out=coverage/core_lcov.info \
-            --report-on=packages/core/lib
+          ls -la apps/multichoice/coverage/
+          ls -la packages/core/coverage/
 
       - name: Merge coverage reports
         run: |
-          cat coverage/app_lcov.info coverage/core_lcov.info > coverage/lcov.info
+          mkdir -p coverage
+          cat apps/multichoice/coverage/lcov.info packages/core/coverage/lcov.info > coverage/lcov.info
+          cat coverage/lcov.info
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
