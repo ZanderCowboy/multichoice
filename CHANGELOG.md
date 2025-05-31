@@ -1,6 +1,11 @@
-# Set up integration tests
+# Setting up for App Release
 
-- Add integration tests
-- Setup integration tests
-- Add tasks.json file
-- Update _build-android-app file to use this ROOT changelog
+- Write documentation for finalizing Play Store release
+- Create feature graphic
+- Take screenshots of the app on multiple devices
+- Add testing files - found under 'apps\multichoice\test\data'
+- Made changes to the UI to be more readable
+- Update .gitignore
+- More changes to UI to deal with both Vertical and Horizontal Modes
+- Rename VerticalTab to CollectionTab
+- Rename Cards to Items
