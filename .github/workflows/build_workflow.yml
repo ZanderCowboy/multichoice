@@ -23,7 +23,7 @@ jobs:
   preBuild:
     name: Prebuild - Bump build number
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     concurrency:
       group: build-group
       cancel-in-progress: false
@@ -96,7 +96,7 @@ jobs:
   post-build:
     name: Post Build
     needs: [build, preBuild]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     concurrency:
       group: post-build-group
       cancel-in-progress: false
