@@ -3,10 +3,10 @@
 ## How to run integration tests
 
 - Run `apps\multichoice\integration_test\app_test.dart`
--
-
-Safekeep
+- Command for running workflows locally
+```sh
 act -W .github\workflows\_build-android-app.yml --use-new-action-cache --privileged --insecure-secrets --container-architecture linux/amd64
+```
 
 ## Setup
 

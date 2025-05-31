@@ -6,7 +6,7 @@ class WidgetKeys {
   static WidgetKeys instance = WidgetKeys._();
 
   final deleteModalTitle = const Key('DeleteModalTitle');
-  final addNewEntryTitle = const Key('AddNewEntry');
+  final addNewEntryTitle = const Key('AddNewEntryTitle');
   final addNewEntryButton = const Key('AddNewEntryButton');
   final layoutSwitch = const Key('LayoutSwitch');
   final lightDarkModeSwitch = const Key('LightDarkSwitch');

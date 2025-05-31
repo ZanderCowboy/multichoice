@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
-import '../../test/helpers/export.dart';
-
 class EntryMethods {
+  static final keys = WidgetKeys.instance;
+
   static Future<void> pressAndOpenAddEntry(WidgetTester tester) async {
-    // await tester.tapAt(find.);
     await tester.tap(find.byKey(keys.addNewEntryButton).first);
     await tester.pumpAndSettle();
 
@@ -41,7 +41,6 @@ class EntryMethods {
 
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    // add check to confirm modal has closed.
     expect(find.byIcon(Icons.add_outlined), findsAtLeast(1));
     expect(find.byType(AddEntryCard), findsAtLeast(1));
   }
