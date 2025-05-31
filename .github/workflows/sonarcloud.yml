@@ -57,14 +57,16 @@ jobs:
         uses: ./.github/actions/setup-java-flutter
 
       - name: Run tests and generate coverage
-        run: melos coverage:core
+        run: melos coverage:all
+      
+      - name: Install coverage tool
+        run: flutter pub global activate coverage
 
-      - name: Format app coverage
+      - name: Format Multichoice coverage
         run: |
-          flutter pub global activate coverage
           flutter pub global run coverage:format_coverage \
             --lcov \
-            --in=apps/multichoice/coverage/lcov.info \
+            --in=apps\multichoice\coverage\lcov.info \
             --out=coverage/app_lcov.info \
             --report-on=apps/multichoice/lib
 
@@ -79,12 +81,6 @@ jobs:
       - name: Merge coverage reports
         run: |
           cat coverage/app_lcov.info coverage/core_lcov.info > coverage/lcov.info
-
-      # if requied, change 'Aggregate coverage report' with 'Move coverage report'
-      # - name: Move coverage report
-      #   run: |
-      #     mkdir -p coverage
-      #     cp packages/core/coverage/lcov.info coverage/lcov.info
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
