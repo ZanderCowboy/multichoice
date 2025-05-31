@@ -1,0 +1,87 @@
+---
+name: Develop Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  lint-test-report:
+    name: Develop - Lint, Test, Report
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      ###########################################
+      # SETUP FLUTTER AND JAVA
+      ###########################################
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-java-flutter
+
+      ###########################################
+      # LINTING
+      ###########################################
+      # - name: Linting
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   uses: ./.github/actions/linting
+      #   with:
+      #     working_directory: "${{ github.workspace }}/"
+
+      ###########################################
+      # TESTS AND COVERAGE
+      ###########################################
+      # - name: melos coverage:core
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   run: melos coverage:core
+
+      # - name: Upload coverage to Codecov
+      #   if: ${{ github.event.pull_request.merged == false }}
+      #   uses: codecov/codecov-action@v4 # For local testing, use codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: packages/core/coverage/lcov.info
+      #     fail_ci_if_error: true
+
+      ###########################################
+      # VERSION BUMP
+      ###########################################
+      - name: Bump version based on PR labels
+        uses: ./.github/actions/version-bump
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pubspec_file: "apps/multichoice/pubspec.yaml"
+
+      ###########################################
+      # BUILD
+      ###########################################
+
+      ###########################################
+      # FIREBASE UPLOAD
+      ###########################################
+
+      ###########################################
+      # COMMIT NEW VERSION
+      ###########################################
+      # - name: Auto commit new pubspec version
+      #   id: auto-commit-action
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     commit_message: "Bump pubspec version to ${{ env.new_version }}"
+      #     file_pattern: "apps/multichoice/pubspec.yaml"
+      #     disable_globbing: true

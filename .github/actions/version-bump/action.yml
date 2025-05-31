@@ -1,0 +1,117 @@
+name: "Version Bumper"
+description: "Bumps semantic version based on PR labels and increments build number."
+
+inputs:
+  github_token:
+    description: "Github Token"
+    required: true
+  pubspec_file:
+    description: "Path to pubspec file"
+    required: true
+
+outputs:
+  new_version:
+    description: "New semantic version generated"
+    value: ${{ steps.output.outputs.new_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install GitHub CLI (gh)
+      shell: bash
+      run: |
+        (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+          && sudo mkdir -p -m 755 /etc/apt/keyrings \
+                && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+                && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
+    # - name: Set up Git
+    #   shell: bash
+    #   run: |
+    #     git config user.name "github-actions[bot]"
+    #     git config user.email "github-actions[bot]@users.noreply.github.com"
+    #     # git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/ZanderCowboy/multichoice.git
+
+    - name: Run version bump logic
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        PUBSPEC_FILE: ${{ inputs.pubspec_file }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        LABELS=$(gh pr view "$PR_NUMBER" --json labels -q '.labels[].name')
+
+        BUMP_TYPE=""
+        if echo "$LABELS" | grep -qi "major"; then
+          BUMP_TYPE="major"
+        elif echo "$LABELS" | grep -qi "minor"; then
+          BUMP_TYPE="minor"
+        elif echo "$LABELS" | grep -qi "patch"; then
+          BUMP_TYPE="patch"
+        else
+          echo "No valid bump label found (major/minor/patch). Bumping build number."
+          # exit 0
+        fi
+
+        echo "Bump type identified: $BUMP_TYPE"
+
+        git fetch --tags
+        # LATEST_TAG=$(git tag -l 'v*.*.*' --sort=-version:refname | head -n1)
+        LATEST_TAG=${LATEST_TAG:-v0.4.0+123}
+        echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
+        echo "LATEST_TAG=$LATEST_TAG"
+
+        SEMVER=${LATEST_TAG#v}
+        echo "Current version: $SEMVER"
+
+        MAJOR=$(echo "$SEMVER" | cut -d '.' -f 1)
+        MINOR=$(echo "$SEMVER" | cut -d '.' -f 2)
+        PATCH=$(echo "$SEMVER" | cut -d '.' -f 3 | cut -d '+' -f 1)
+        BUILD=$(echo "$SEMVER" | grep '+' | cut -d '+' -f 2)
+
+        BUILD=${BUILD:-1}
+
+        echo "Bump type:"
+
+        case $BUMP_TYPE in
+          major)
+            MAJOR=$((MAJOR++))
+            MINOR=0
+            PATCH=0
+            ;;
+          minor)
+            MINOR=$((MINOR++))
+            PATCH=0
+            ;;
+          patch)
+            PATCH=$((PATCH++))
+            ;;
+        esac
+
+        NEW_SEMVER="$MAJOR.$MINOR.$PATCH"
+        NEW_BUILD=$((BUILD++))
+
+        echo "New version: $NEW_SEMVER"
+        NEW_VERSION="${NEW_SEMVER}+${NEW_BUILD}"
+        echo "New version with build number: $NEW_VERSION"
+
+        sed -i -E "s/^version:[[:space:]]*.*/version: $NEW_VERSION/" "${{ inputs.pubspec_file }}"
+
+        # git add "${{ inputs.pubspec_file }}"
+        # git commit -m "chore: bump version to $NEW_VERSION"
+        # git push origin HEAD
+
+        # git tag "v${NEW_SEMVER}"
+        # git push origin "v${NEW_SEMVER}"
+
+        echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+        echo "new_version=$NEW_VERSION" >> "$GITHUB_ENV"
