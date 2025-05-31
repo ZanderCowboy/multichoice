@@ -9,6 +9,36 @@
             "args": [
                 "flutter_emulator"
             ]
+        },
+        {
+            "label": "Flutter Integration Test",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "drive",
+                "--target=apps/multichoice/test_driver/integration_test.dart"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Uninstall App",
+            "type": "shell",
+            "command": "adb",
+            "args": [
+                "uninstall",
+                "co.za.zanderkotze.multichoice"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Uninstall and Run Integration Test",
+            "dependsOn": [
+                "Uninstall App",
+                "Flutter Integration Test"
+            ],
+            "dependsOrder": "sequence",
+            "group": "test"
         }
     ]
 }

@@ -6,7 +6,7 @@
             "request": "launch",
             "type": "dart",
             "program": "apps/multichoice/test_driver/integration_test.dart",
-            "preLaunchTask": "flutter drive --target=apps/multichoice/test_driver/integration_test.dart"
+            "preLaunchTask": "Flutter Integration Test"
         }
     ]
 }

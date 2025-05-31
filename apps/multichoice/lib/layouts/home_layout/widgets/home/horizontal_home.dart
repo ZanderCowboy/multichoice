@@ -10,32 +10,29 @@ class _HorizontalHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: horizontal12,
-      child: SizedBox(
-        width: UIConstants.horiTabWidth(context),
-        child: CustomScrollView(
-          controller: ScrollController(),
-          scrollBehavior: CustomScrollBehaviour(),
-          slivers: [
-            SliverPadding(
-              padding: top12,
-              sliver: SliverList.builder(
-                itemCount: tabs.length,
-                itemBuilder: (_, index) {
-                  final tab = tabs[index];
+      padding: horizontal8,
+      child: CustomScrollView(
+        controller: ScrollController(),
+        scrollBehavior: CustomScrollBehaviour(),
+        slivers: [
+          SliverPadding(
+            padding: top4,
+            sliver: SliverList.builder(
+              itemCount: tabs.length,
+              itemBuilder: (_, index) {
+                final tab = tabs[index];
 
-                  return VerticalTab(tab: tab);
-                },
-              ),
+                return CollectionTab(tab: tab);
+              },
             ),
-            const SliverPadding(
-              padding: bottom12,
-              sliver: SliverToBoxAdapter(
-                child: NewTab(),
-              ),
+          ),
+          const SliverPadding(
+            padding: bottom24,
+            sliver: SliverToBoxAdapter(
+              child: NewTab(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

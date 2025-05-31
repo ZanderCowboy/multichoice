@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
-import 'package:multichoice/app/export_app.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,15 +58,13 @@ class HomeDrawer extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     const _LightDarkModeButton(),
-                    ListTile(
+                    SwitchListTile(
+                      key: context.keys.layoutSwitch,
                       title: const Text('Horizontal/Vertical Layout'),
-                      trailing: Switch(
-                        key: const Key('layoutSwitch'),
-                        value: context.watch<AppLayout>().appLayout,
-                        onChanged: (value) {
-                          context.read<AppLayout>().appLayout = value;
-                        },
-                      ),
+                      value: context.watch<AppLayout>().appLayout,
+                      onChanged: (value) {
+                        context.read<AppLayout>().appLayout = value;
+                      },
                     ),
                     ListTile(
                       title: const Text('Delete All Data'),

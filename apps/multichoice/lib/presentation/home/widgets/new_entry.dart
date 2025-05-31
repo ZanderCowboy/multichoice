@@ -79,6 +79,12 @@ class NewEntry extends StatelessWidget {
                               ),
                               gap4,
                               ElevatedButton(
+                                style: context.theme.elevatedButtonTheme.style
+                                    ?.copyWith(
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    context.theme.appColors.primary,
+                                  ),
+                                ),
                                 onPressed: state.isValid &&
                                         state.entry.title.isNotEmpty
                                     ? () {

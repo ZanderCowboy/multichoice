@@ -54,10 +54,9 @@ scripts:
       Run all tests available.
     run: |
       melos run test:core --no-select && melos run test:multichoice --no-select
-  # format_coverage --lcov --in coverage/lcov.info -b coverage/html
-  test:core:
-    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
 
+  test:core:
+    run: flutter test -j 1
     exec:
       failFast: false
       concurrency: 1
@@ -67,8 +66,7 @@ scripts:
       scope: ["core"]
 
   test:multichoice:
-    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
-
+    run: flutter test -j 1
     exec:
       failFast: false
       concurrency: 1
@@ -78,10 +76,25 @@ scripts:
       scope: ["multichoice"]
 
   test:integration:
-    run: flutter test -j 1 --coverage && reportgenerator.exe -reports:coverage/lcov.info -targetdir:coverage/html
-
+    run: flutter test -j 1 --coverage
     exec:
       failFast: false
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["integration"]
+
+  coverage:all:
+    description: |
+      Run all tests and generate coverage reports.
+    run: |
+      melos run coverage:core --no-select && melos run coverage:multichoice --no-select
+
+  coverage:integration:
+    run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
       concurrency: 1
       orderDependents: true
     packageFilters:
@@ -96,9 +109,29 @@ scripts:
       orderDependents: true
     packageFilters:
       flutter: true
-      scope: "core"
+      scope: ["core"]
 
-  coverage:windows:
+  coverage:multichoice:
+    run: flutter test -j 1 --coverage
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["multichoice"]
+
+  coverage:multichoice:windows:
+    run: flutter test -j 1 --coverage && perl "C:\\ProgramData\\chocolatey\\lib\\lcov\\tools\\bin\\genhtml" --no-function-coverage -o coverage\html coverage\lcov.info && start coverage\html\index.html
+    exec:
+      failFast: false
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["multichoice"]
+
+  coverage:core:windows:
     run: flutter test -j 1 --coverage && perl "C:\\ProgramData\\chocolatey\\lib\\lcov\\tools\\bin\\genhtml" --no-function-coverage -o coverage\html coverage\lcov.info && start coverage\html\index.html
     exec:
       failFast: true
