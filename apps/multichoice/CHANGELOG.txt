@@ -7,6 +7,13 @@ Create documentation
 - start cmd /k "run_integration_test.bat %* && call shutdown_emulator.bat && exit"
 
 ---
+Version 0.3.0+153:
+- Setup and add widget tests
+- Update melos scripts
+- Refactor and clean up code
+- Create 'WidgetKeys` class
+
+---
 Version 0.3.0+140:
 - Added 'data_exchange_service' to import/export data
 - Update 'home_drawer', added assets and flutter_gen, and cleaned up code

@@ -35,14 +35,14 @@ jobs:
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-java-flutter
 
-      - name: melos test all
-        run: melos test:all
+      - name: melos coverage:core
+        run: melos coverage:core
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/lcov.info
+          files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
       - run: echo "Starting analyze"

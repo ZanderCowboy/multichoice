@@ -10,3 +10,5 @@ analyzer:
     flutter_style_todos: ignore
   exclude:
     - lib/firebase_options.dart
+    - "**/*.gr.dart"
+    - "**/*.gen.dart"
