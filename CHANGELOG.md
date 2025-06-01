@@ -1,4 +1,8 @@
-# Update build_workflow
+# Add Product Tour Feature
 
-- Update the `build_workflow.yml` to only run when the PR is merged.
-- Update the workflow to be skipped when the `no-build` label is found.
+- Add `tour_service`
+- Add `tour_bloc`
+- Add `tour controller, wrapper, and provider`
+- Add separate `TourHomePage` and `TourCollectionTab`
+- Update `firebase_options` to use `.env` instead of `secrets.dart`
+- Update `build_workflow.yml`
