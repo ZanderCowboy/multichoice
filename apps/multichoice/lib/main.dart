@@ -19,7 +19,7 @@ void main() async {
         );
       }
     }
-  } catch (e) {
+  } on Exception catch (e) {
     log(e.toString());
   }
 

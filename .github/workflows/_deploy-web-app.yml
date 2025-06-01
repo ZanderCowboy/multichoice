@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v9
         with:
           workflow: release_workflow.yml
           workflow_conclusion: success
@@ -30,7 +30,7 @@ jobs:
           name: web-release
 
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./

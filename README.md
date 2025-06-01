@@ -26,6 +26,14 @@ OR
 sudo chown -R node:node /flutter
 ```
 
+### Environment
+
+- Flutter version: 3.27.1 (Last updated on day-Month-year)
+- Dart version: 3.6.0
+- VS Code version: ...
+- Android Studio version:
+- Windows
+
 ### Platforms
 
 This project is specifically meant for `Android`, `Web`, and `Windows`. Run this command
@@ -63,3 +71,19 @@ ON PUSH - TO MAIN
 ## Websites and Links
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ZanderCowboy_multichoice)
+
+## Errors and Fixes
+
+### Android Gradle Upgrade
+
+## Configuration
+
+### config.yml
+
+Found in root.
+
+### Makefile
+
+Write about usage
+
+### .scripts folder

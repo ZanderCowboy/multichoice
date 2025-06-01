@@ -4,6 +4,9 @@
 /web/
 /windows/
 
+/apps/showcase/
+/tools/
+
 # Files and directories created by pub
 .dart_tool/
 .packages
@@ -26,6 +29,9 @@ pubspec.lock
 **/*.isar
 **/*.isar.lock
 **/libisar.dylib
+**/*.isar-lck
+**/isar.dll
+**/libisar.so
 **/coverage
 **/*.mocks.dart
 
@@ -35,6 +41,10 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/.secrets
+
+# Running Workflows Locally
+**/.secrets
 
 # dotenv environment variables file
 .env*
@@ -68,3 +78,6 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
+
+# FVM Version Cache
+.fvm/

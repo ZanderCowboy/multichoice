@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart';
 import 'package:models/models.dart';
@@ -27,8 +28,9 @@ abstract class InjectableModule {
     final sharedPref = await SharedPreferences.getInstance();
     await sharedPref.clear();
 
-    await sharedPref.setString('theme', 'light');
-
     return sharedPref;
   }
+
+  @lazySingleton
+  FilePicker get filePicker => FilePicker.platform;
 }

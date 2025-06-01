@@ -24,5 +24,12 @@
             "flutterMode": "release",
             "program": "apps/multichoice/lib/main.dart"
         },
+        {
+            "name": "Run Integration Test with Emulator",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/lib/main.dart",
+            "preLaunchTask": "Start Emulator and Run Integration Test"
+        }
     ]
 }

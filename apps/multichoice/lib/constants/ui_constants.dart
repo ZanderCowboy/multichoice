@@ -3,48 +3,72 @@ import 'package:flutter/material.dart';
 const outlinedButtonMinimumSize = Size(96, 48);
 const elevatedButtonMinimumSize = Size(96, 48);
 
-const entryCardMinimumSize = null;
 const entryCardMinimumHeight = 90.0;
-const entryCardMinimumWidth = 0;
+const entryCardMinimumWidth = 0.0;
 const tabCardMinimumWidth = 120.0;
-double tabsHeightConstant = 1.15;
-double tabsWidthConstant = 3.65;
+const double tabsHeightConstant = 1.15;
+const double tabsHeightConstantHori = 4;
+const double tabsWidthConstantMobile = 3.65;
+const double tabsWidthConstantDesktop = 8;
+
+/// Vertical
+
+/// Horizontal
+const horizontalTabsHeaderFactor = 6.10;
 
 const _mobileScreenWidth = 450;
-// const _desktopScreenWidth = 1920;
 
 class UIConstants {
   UIConstants();
 
-  static double? entryHeight(BuildContext context) {
-    final mediaHeight = MediaQuery.sizeOf(context).height / 12;
-
-    if (mediaHeight < entryCardMinimumHeight) {
-      return entryCardMinimumHeight;
-    }
-    return mediaHeight;
+  static double _getScreenWidth(BuildContext context) {
+    return MediaQuery.sizeOf(context).width;
   }
 
-  static double? tabHeight(BuildContext context) {
-    return MediaQuery.sizeOf(context).height / tabsHeightConstant;
+  static double _getScreenHeight(BuildContext context) {
+    return MediaQuery.sizeOf(context).height;
   }
 
-  static double? tabWidth(BuildContext context) {
-    final mediaWidth = MediaQuery.sizeOf(context).width;
+  /// This determines the height of Entry Cards when in Vertical Layout.
+  ///
+  /// In Horizontal Layout, it has not effect.
+  static double entryHeight(BuildContext context) {
+    final mediaHeight = _getScreenHeight(context) / 20;
 
-    if (mediaWidth > _mobileScreenWidth) {
-      tabsWidthConstant = 8;
-    }
+    return mediaHeight < entryCardMinimumHeight
+        ? entryCardMinimumHeight
+        : mediaHeight;
+  }
+
+  static double newTabWidth(BuildContext context) {
+    return _getScreenWidth(context) / 6;
+  }
+
+  /// Vertical Layout
+
+  /// This determines the height of the collections in Vertical Mode
+  static double vertTabHeight(BuildContext context) {
+    return _getScreenHeight(context) / tabsHeightConstant;
+  }
+
+  static double vertTabWidth(BuildContext context) {
+    final mediaWidth = _getScreenWidth(context);
+    final tabsWidthConstant = mediaWidth > _mobileScreenWidth
+        ? tabsWidthConstantDesktop
+        : tabsWidthConstantMobile;
 
     final tabsWidth = mediaWidth / tabsWidthConstant;
 
-    if (tabsWidth < tabCardMinimumWidth) {
-      return tabCardMinimumWidth;
-    }
-    return tabsWidth;
+    return tabsWidth < tabCardMinimumWidth ? tabCardMinimumWidth : tabsWidth;
   }
 
-  static double? newTabWidth(BuildContext context) {
-    return MediaQuery.sizeOf(context).width / 6;
+  /// Horizontal Layout
+  static double horiTabHeight(BuildContext context) {
+    return _getScreenHeight(context) / 4.1;
+  }
+
+  /// This controls the size for the header section in Horizontal mode
+  static double horiTabHeaderWidth(BuildContext context) {
+    return _getScreenWidth(context) / horizontalTabsHeaderFactor;
   }
 }

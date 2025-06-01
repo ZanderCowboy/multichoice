@@ -1,5 +1,5 @@
 /// Multichoice Models
-library models;
+library;
 
 export 'src/database/export_database.dart';
 export 'src/dto/export_dto.dart';
