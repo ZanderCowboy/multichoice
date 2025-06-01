@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@injectable
+@LazySingleton(as: ITourService)
 class TourService implements ITourService {
   static const String _lastStepKey = 'tour_last_step';
   static const String _isSkippedKey = 'tour_is_skipped';

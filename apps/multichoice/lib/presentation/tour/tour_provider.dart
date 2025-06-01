@@ -25,12 +25,13 @@ class TourProvider extends StatelessWidget {
           }
 
           return ShowCaseWidget(
-            builder: Builder(
-              builder: (context) => child,
-            ),
+            builder: (context) => child,
             onFinish: () {
               context.read<TourBloc>().add(const TourEvent.completeTour());
             },
+            // autoPlay: true,
+            // autoPlayDelay: const Duration(seconds: 1),
+            enableAutoPlayLock: true,
           );
         },
       ),

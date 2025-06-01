@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:core/src/services/implementations/tour_service.dart';
+import 'package:core/core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,7 +7,7 @@ part 'tour_bloc.freezed.dart';
 part 'tour_event.dart';
 part 'tour_state.dart';
 
-@injectable
+@Injectable()
 class TourBloc extends Bloc<TourEvent, TourState> {
   TourBloc(this._tourService) : super(TourState.initial()) {
     on<TourEvent>((event, emit) async {
@@ -17,18 +17,21 @@ class TourBloc extends Bloc<TourEvent, TourState> {
 
           try {
             final progress = await _tourService.getTourProgress();
+            final lastStep = progress['lastStep'] as int?;
+            final isSkipped = progress['isSkipped'] as bool;
 
             emit(state.copyWith(
               isLoading: false,
-              lastStep: progress['lastStep'] as int?,
-              isSkipped: progress['isSkipped'] as bool,
-              currentStep: progress['lastStep'] as int?,
+              lastStep: null,
+              isSkipped: isSkipped,
+              currentStep: null ?? 0,
             ));
           } catch (e) {
             emit(
               state.copyWith(
                 isLoading: false,
                 errorMessage: 'Failed to initialize tour: $e',
+                currentStep: 0,
               ),
             );
           }
@@ -85,5 +88,5 @@ class TourBloc extends Bloc<TourEvent, TourState> {
     });
   }
 
-  final TourService _tourService;
+  final ITourService _tourService;
 }
