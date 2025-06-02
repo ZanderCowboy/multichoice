@@ -1,9 +1,4 @@
 enum ProductTourStep {
-  firstTooltip(1),
-  secondTooltip(2),
-  thirdTooltip(3),
-
-  //
   welcomePopup(0),
   showCollection(1),
   showItemsInCollection(2),
