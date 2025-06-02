@@ -34,7 +34,7 @@ dev_dependencies:
     version: ^3.1.8
     hosted: https://pub.isar-community.dev/
   json_serializable: ^6.7.1
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^8.0.0
 
 global_options:
   freezed:freezed:
