@@ -3,8 +3,8 @@ import 'package:multichoice/app/engine/app_router.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
-class App extends StatelessWidget {
-  App({super.key});
+class Multichoice extends StatelessWidget {
+  Multichoice({super.key});
 
   final _appRouter = AppRouter();
 
