@@ -38,12 +38,12 @@ jobs:
       - name: melos coverage:core
         run: melos coverage:core
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v5
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: packages/core/coverage/lcov.info
+      #     fail_ci_if_error: true
 
       - run: echo "Starting analyze"
 
@@ -80,14 +80,13 @@ jobs:
 
       - name: Create secrets.dart
         run: |
-          mkdir auth
-          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
-          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
-          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
-          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
-          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
-          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
-        working-directory: apps/multichoice/lib/
+          echo "WEB_API_KEY=${{ secrets.WEB_API_KEY }}" > .env
+          echo "WEB_APP_ID=${{ secrets.WEB_APP_ID }}" >> .env
+          echo "ANDROID_API_KEY=${{ secrets.ANDROID_API_KEY }}" >> .env
+          echo "ANDROID_APP_ID=${{ secrets.ANDROID_APP_ID }}" >> .env
+          echo "IOS_API_KEY=${{ secrets.IOS_API_KEY }}" >> .env
+          echo "IOS_APP_ID=${{ secrets.IOS_APP_ID }}" >> .env
+        working-directory: apps/multichoice/
 
       - name: Start appbundle ${{ inputs.environment_flag }} build
         if: ${{ inputs.build_appbundle == true }} && success()
@@ -105,13 +104,13 @@ jobs:
           name: ${{ inputs.build_artifact }}
           path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment_flag }}/app-${{ inputs.environment_flag }}.aab
 
-      - name: Upload artifact to Firebase App Distribution
-        if: success()
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.APP_ID}}
-          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-          groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
-          releaseNotesFile: ./CHANGELOG.md
-          debug: true
+      # - name: Upload artifact to Firebase App Distribution
+      #   if: success()
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
+      #   with:
+      #     appId: ${{secrets.APP_ID}}
+      #     serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+      #     groups: testers
+      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
+      #     releaseNotesFile: ./CHANGELOG.md
+      #     debug: true
