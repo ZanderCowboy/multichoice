@@ -1,5 +1,8 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 part 'widgets/popup.dart';
@@ -7,70 +10,73 @@ part 'widgets/popup.dart';
 class ProductTour extends StatefulWidget {
   const ProductTour({
     required this.builder,
-    required this.firstTooltip,
-    required this.secondTooltip,
     super.key,
   });
 
   final WidgetBuilder builder;
-  final GlobalKey firstTooltip;
-  final GlobalKey secondTooltip;
 
   @override
   State<ProductTour> createState() => _ProductTourState();
 }
 
 class _ProductTourState extends State<ProductTour> {
-  bool _isShowingStep = false;
+  bool _isShowingDialog = false;
+  final _productTourController = coreSl<IProductTourController>();
 
   @override
   Widget build(BuildContext context) {
     return ShowCaseWidget(
-      builder: Builder(
-        builder: (context) {
-          WidgetsBinding.instance.addPostFrameCallback(
-            (_) => handleProductTour(context),
-          );
-          return widget.builder(context);
-        },
-      ),
+      builder: (context) {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => handleProductTour(context),
+        );
+
+        return BlocListener<ProductBloc, ProductState>(
+          listener: (context, state) {
+            if (state.currentStep == ProductTourStep.reset) {
+              handleProductTour(context, shouldRestart: true);
+            }
+
+            final key = getProductTourKey(state.currentStep);
+
+            ShowCaseWidget.of(context).startShowCase([key]);
+          },
+          child: widget.builder(context),
+        );
+      },
     );
   }
 
-  void handleProductTour(BuildContext context) {
-    if (_isShowingStep) return;
+  Future<void> handleProductTour(
+    BuildContext context, {
+    bool shouldRestart = false,
+  }) async {
+    if (_isShowingDialog && !shouldRestart) return;
 
-    if (productTourController.shouldShowThanksPopup()) {
-      openThanksPopup(context);
-    } else if (productTourController.shouldShowFirstTooltip()) {
-      ShowCaseWidget.of(context).startShowCase([
-        widget.firstTooltip,
-        widget.secondTooltip,
-      ]);
-    } else if (productTourController.shouldShowSecondTooltip()) {
-      ShowCaseWidget.of(context).startShowCase([
-        widget.secondTooltip,
-      ]);
-    } else if (productTourController.shouldShowWelcomePopup()) {
-      openWelcomePopup(context);
-    }
+    await _productTourController.currentStep.then((currentStep) {
+      if (currentStep == ProductTourStep.thanksPopup) {
+        if (context.mounted) openThanksPopup(context);
+      } else if (currentStep == ProductTourStep.welcomePopup || shouldRestart) {
+        if (context.mounted) openWelcomePopup(context);
+      }
+    });
   }
 
   void openWelcomePopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        _isShowingStep = true;
+        _isShowingDialog = true;
         showDialog<AlertDialog>(
           context: context,
-          builder: (_) => const _MyPopup(
-            title: 'Welcome',
-            content: 'Welcome to the app!',
+          builder: (_) => const _Popup(
+            title: 'Welcome to Multichoice',
+            content: 'This is a product tour to help you get started. '
+                'You can skip it at any time.',
             buttonText: 'Next',
           ),
         ).then(
           (_) {
-            _isShowingStep = false;
-            return handleProductTour(context);
+            _isShowingDialog = false;
           },
         );
       },
@@ -80,18 +86,19 @@ class _ProductTourState extends State<ProductTour> {
   void openThanksPopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        _isShowingStep = true;
+        _isShowingDialog = true;
         showDialog<AlertDialog>(
           context: context,
-          builder: (_) => const _MyPopup(
-            title: 'Thanks',
-            content: 'Thanks for using the app!',
-            buttonText: 'Close',
+          builder: (_) => const _Popup(
+            title: 'Thank you!',
+            content: 'You have completed the product tour. '
+                'You can always access it again from the settings.',
+            buttonText: 'Exit Tour',
+            showSkipButton: false,
           ),
         ).then(
           (_) {
-            _isShowingStep = false;
-            return handleProductTour(context);
+            _isShowingDialog = false;
           },
         );
       },

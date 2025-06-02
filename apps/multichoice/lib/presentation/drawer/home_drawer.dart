@@ -3,9 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
@@ -122,6 +120,25 @@ class HomeDrawer extends StatelessWidget {
                         tooltip: TooltipEnums.importExport.tooltip,
                         icon: const Icon(
                           Icons.import_export_outlined,
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('Reset User Journey'),
+                      trailing: IconButton(
+                        // key: context.keys.resetAppButton,
+                        onPressed: () async {
+                          // await coreSl<IProductTourController>().resetTour();
+                          coreSl<ProductBloc>().add(
+                            const ProductEvent.resetTour(),
+                          );
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        // tooltip: TooltipEnums.resetApp.tooltip,
+                        icon: const Icon(
+                          Icons.refresh_outlined,
                         ),
                       ),
                     ),
