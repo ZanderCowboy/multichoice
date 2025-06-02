@@ -2,6 +2,9 @@ part of 'product_bloc.dart';
 
 @freezed
 class ProductEvent with _$ProductEvent {
-  const factory ProductEvent.onGetCurrentStep() = OnGetCurrentStep;
-  const factory ProductEvent.updateCurrentStep() = OnUpdateCurrentStep;
+  const factory ProductEvent.init() = OnInit;
+  const factory ProductEvent.nextStep() = OnNextStep;
+  const factory ProductEvent.previousStep() = OnPreviousStep;
+  const factory ProductEvent.skipTour() = OnSkipTour;
+  const factory ProductEvent.resetTour() = OnResetTour;
 }

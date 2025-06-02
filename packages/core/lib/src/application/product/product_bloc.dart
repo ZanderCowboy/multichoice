@@ -1,24 +1,79 @@
 import 'package:bloc/bloc.dart';
+import 'package:core/src/controllers/i_product_tour_controller.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:models/models.dart';
 
 part 'product_bloc.freezed.dart';
 part 'product_event.dart';
 part 'product_state.dart';
 
-@Injectable()
+@Singleton()
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  ProductBloc() : super(ProductState.initial()) {
-    on<ProductEvent>((event, emit) {
-      event.map(
-          onGetCurrentStep: (_) {},
-          updateCurrentStep: (_) {
-            emit(
-              state.copyWith(
-                currentStep: state.currentStep + 1,
-              ),
-            );
-          });
+  ProductBloc(
+    this._productTourController,
+  ) : super(ProductState.initial()) {
+    on<ProductEvent>((event, emit) async {
+      switch (event) {
+        case OnInit():
+          emit(
+            state.copyWith(
+              currentStep: ProductTourStep.welcomePopup,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          );
+          break;
+        case OnNextStep():
+          await _productTourController.nextStep();
+          final currentStep = await _productTourController.currentStep;
+
+          emit(
+            state.copyWith(
+              currentStep: currentStep,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          );
+
+          break;
+        case OnPreviousStep():
+          await _productTourController.previousStep();
+          final currentStep = await _productTourController.currentStep;
+
+          emit(
+            state.copyWith(
+              currentStep: currentStep,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          );
+          break;
+        case OnSkipTour():
+          await _productTourController.completeTour();
+
+          emit(
+            state.copyWith(
+              currentStep: ProductTourStep.none,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          );
+          break;
+        case OnResetTour():
+          await _productTourController.resetTour();
+          emit(
+            state.copyWith(
+              currentStep: ProductTourStep.reset,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          );
+          break;
+        default:
+      }
     });
   }
+
+  final IProductTourController _productTourController;
 }
