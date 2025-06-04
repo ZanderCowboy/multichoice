@@ -69,6 +69,7 @@ class HomeDrawer extends StatelessWidget {
                     ListTile(
                       title: const Text('Delete All Data'),
                       trailing: IconButton(
+                        key: context.keys.deleteAllDataButton,
                         onPressed: state.tabs != null && state.tabs!.isNotEmpty
                             ? () {
                                 CustomDialog<AlertDialog>.show(
@@ -114,6 +115,7 @@ class HomeDrawer extends StatelessWidget {
                     ListTile(
                       title: const Text('Import / Export Data'),
                       trailing: IconButton(
+                        key: context.keys.importExportDataButton,
                         onPressed: () => context.router.push(
                           const DataTransferScreenRoute(),
                         ),

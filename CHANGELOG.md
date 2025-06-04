@@ -1,11 +1,4 @@
-# Setting up for App Release
+# Update build_workflow
 
-- Write documentation for finalizing Play Store release
-- Create feature graphic
-- Take screenshots of the app on multiple devices
-- Add testing files - found under 'apps\multichoice\test\data'
-- Made changes to the UI to be more readable
-- Update .gitignore
-- More changes to UI to deal with both Vertical and Horizontal Modes
-- Rename VerticalTab to CollectionTab
-- Rename Cards to Items
+- Update the `build_workflow.yml` to only run when the PR is merged.
+- Update the workflow to be skipped when the `no-build` label is found.

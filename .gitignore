@@ -43,6 +43,9 @@ upload-keystore.*
 **/**/.ssh
 **/.secrets
 
+# Running Workflows Locally
+**/.secrets
+
 # dotenv environment variables file
 .env*
 **/tmp.*
