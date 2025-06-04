@@ -54,7 +54,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
           emit(
             state.copyWith(
-              currentStep: ProductTourStep.none,
+              currentStep: ProductTourStep.noneCompleted,
               isLoading: false,
               errorMessage: null,
             ),

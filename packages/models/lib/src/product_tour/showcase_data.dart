@@ -4,9 +4,10 @@ class ShowcaseData {
   const ShowcaseData({
     required this.description,
     this.onTargetClick,
-    this.disposeOnTap = false,
+    this.disposeOnTap,
     this.disableBarrierInteraction = false,
     this.onBarrierClick,
+    this.overlayOpacity = 0.5,
   });
 
   factory ShowcaseData.empty() => const ShowcaseData(
@@ -15,7 +16,8 @@ class ShowcaseData {
 
   final String description;
   final VoidCallback? onTargetClick;
-  final bool disposeOnTap;
+  final bool? disposeOnTap;
   final bool disableBarrierInteraction;
   final VoidCallback? onBarrierClick;
+  final double overlayOpacity;
 }

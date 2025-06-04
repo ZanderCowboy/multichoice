@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, document_ignores
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,11 +37,15 @@ class _ProductTourState extends State<ProductTour> {
           listener: (context, state) {
             if (state.currentStep == ProductTourStep.reset) {
               handleProductTour(context, shouldRestart: true);
+              return;
+            } else if (state.currentStep == ProductTourStep.thanksPopup) {
+              handleProductTour(context);
+              return;
             }
 
             final key = getProductTourKey(state.currentStep);
 
-            ShowCaseWidget.of(context).startShowCase([key]);
+            if (key != null) ShowCaseWidget.of(context).startShowCase([key]);
           },
           child: widget.builder(context),
         );
@@ -54,10 +60,17 @@ class _ProductTourState extends State<ProductTour> {
     if (_isShowingDialog && !shouldRestart) return;
 
     await _productTourController.currentStep.then((currentStep) {
+      if (!context.mounted) return;
+
       if (currentStep == ProductTourStep.thanksPopup) {
-        if (context.mounted) openThanksPopup(context);
+        _isShowingDialog = true;
+        Future.delayed(
+          const Duration(milliseconds: 300),
+          () => openThanksPopup(context),
+        );
       } else if (currentStep == ProductTourStep.welcomePopup || shouldRestart) {
-        if (context.mounted) openWelcomePopup(context);
+        _isShowingDialog = true;
+        openWelcomePopup(context);
       }
     });
   }
@@ -65,7 +78,6 @@ class _ProductTourState extends State<ProductTour> {
   void openWelcomePopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        _isShowingDialog = true;
         showDialog<AlertDialog>(
           context: context,
           builder: (_) => const _Popup(
@@ -86,15 +98,15 @@ class _ProductTourState extends State<ProductTour> {
   void openThanksPopup(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        _isShowingDialog = true;
         showDialog<AlertDialog>(
           context: context,
           builder: (_) => const _Popup(
             title: 'Thank you!',
             content: 'You have completed the product tour. '
                 'You can always access it again from the settings.',
-            buttonText: 'Exit Tour',
+            buttonText: 'Finish',
             showSkipButton: false,
+            isCompleted: true,
           ),
         ).then(
           (_) {

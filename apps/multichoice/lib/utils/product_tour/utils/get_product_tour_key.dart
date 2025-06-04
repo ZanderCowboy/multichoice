@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/utils/product_tour/product_tour_keys.dart';
 
-GlobalKey getProductTourKey(dynamic step, {int? tabId}) {
+GlobalKey? getProductTourKey(dynamic step, {int? tabId}) {
   switch (step) {
     case ProductTourStep.welcomePopup:
       return ProductTourKeys.welcomePopup;
@@ -26,10 +26,13 @@ GlobalKey getProductTourKey(dynamic step, {int? tabId}) {
       return ProductTourKeys.showCollectionMenu;
     case ProductTourStep.showSettings:
       return ProductTourKeys.showSettings;
+    case ProductTourStep.showDetails:
+      return ProductTourKeys.showDetails;
+    case ProductTourStep.closeSettings:
+      return ProductTourKeys.closeSettings;
     case ProductTourStep.thanksPopup:
       return ProductTourKeys.thanksPopup;
-
     default:
-      return GlobalKey();
+      return null;
   }
 }

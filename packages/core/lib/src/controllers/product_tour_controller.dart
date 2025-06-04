@@ -20,11 +20,10 @@ class ProductTourController implements IProductTourController {
     final _isCompleted = await _appStorageService.isCompleted;
 
     if (_currentStep < 0 && !_isCompleted) {
-      // throw Exception('Invalid current step index: $_currentStep');
       return ProductTourStep.welcomePopup;
     }
     if (_isCompleted) {
-      return ProductTourStep.none;
+      return ProductTourStep.noneCompleted;
     }
     return ProductTourStep.values[_currentStep];
   }
@@ -34,10 +33,10 @@ class ProductTourController implements IProductTourController {
     final _current = await currentStep;
     final _nextStepIndex = _current.index + 1;
 
-    if (_nextStepIndex < ProductTourStep.values.length) {
+    if (_nextStepIndex < ProductTourStep.values.length - 2) {
       await _appStorageService.setCurrentStep(_nextStepIndex);
     } else {
-      if (_nextStepIndex == ProductTourStep.values.length) {
+      if (_nextStepIndex == ProductTourStep.values.length - 2) {
         await completeTour();
       } else {
         throw Exception('No more steps available in the product tour.');
@@ -55,10 +54,6 @@ class ProductTourController implements IProductTourController {
     } else {
       throw Exception('No previous step available in the product tour.');
     }
-
-    // if (context != null) {
-    //   ShowCaseWidget.of(context).previous();
-    // }
   }
 
   @override

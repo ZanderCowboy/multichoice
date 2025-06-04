@@ -22,27 +22,21 @@ class _VerticalEntry extends StatelessWidget {
               final entry = entries[index];
 
               if (entries.isNotEmpty && index == 0) {
-                return FutureBuilder(
-                  future: coreSl<IProductTourController>().currentStep,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.data ==
-                          ProductTourStep.showItemsInCollection) {
-                        return TourWidgetWrapper(
-                          step: ProductTourStep.showItemsInCollection,
-                          child: EntryCard(entry: entry),
-                        );
-                      } else if (snapshot.data ==
-                          ProductTourStep.showItemActions) {
-                        return TourWidgetWrapper(
-                          step: ProductTourStep.showItemActions,
-                          child: EntryCard(entry: entry),
-                        );
-                      }
-                    }
-                    return EntryCard(entry: entry);
-                  },
-                );
+                final step = context.watch<ProductBloc>().state.currentStep;
+
+                if (step == ProductTourStep.showItemsInCollection) {
+                  return TourWidgetWrapper(
+                    step: ProductTourStep.showItemsInCollection,
+                    child: EntryCard(entry: entry),
+                  );
+                } else if (step == ProductTourStep.showItemActions) {
+                  return TourWidgetWrapper(
+                    step: ProductTourStep.showItemActions,
+                    child: EntryCard(entry: entry),
+                  );
+                }
+
+                return EntryCard(entry: entry);
               }
 
               return EntryCard(entry: entry);
@@ -51,7 +45,6 @@ class _VerticalEntry extends StatelessWidget {
           SliverToBoxAdapter(
             child: TourWidgetWrapper(
               step: ProductTourStep.addNewItem,
-              tabId: id,
               child: NewEntry(
                 tabId: id,
               ),

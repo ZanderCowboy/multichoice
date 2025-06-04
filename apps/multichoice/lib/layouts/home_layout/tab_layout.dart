@@ -5,6 +5,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 
 part 'widgets/tab/horizontal_tab.dart';
 part 'widgets/tab/vertical_tab.dart';

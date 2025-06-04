@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
+import 'package:multichoice/app/export.dart';
 
 class TourConfig {
   static ShowcaseData getShowcaseData(ProductTourStep step) {
@@ -39,14 +40,16 @@ class TourConfig {
         );
       case ProductTourStep.showItemActions:
         return ShowcaseData(
-          description: 'Each item has actions you can perform. Try them out!',
+          description:
+              'Each item has actions you can perform. Try them out! Tap to view details, double tap to edit, and long press to open menu.',
           onBarrierClick: () {
             coreSl<ProductBloc>().add(const ProductEvent.nextStep());
           },
         );
       case ProductTourStep.showCollectionActions:
         return ShowcaseData(
-          description: 'Collections also have their own set of actions.',
+          description:
+              'Collections also have their own set of actions. Long press to delete.',
           onBarrierClick: () {
             coreSl<ProductBloc>().add(const ProductEvent.nextStep());
           },
@@ -68,17 +71,32 @@ class TourConfig {
           disposeOnTap: true,
           disableBarrierInteraction: true,
         );
+      case ProductTourStep.showDetails:
+        return ShowcaseData(
+          description: 'View item details here.',
+          onBarrierClick: () {
+            coreSl<ProductBloc>().add(const ProductEvent.nextStep());
+          },
+          overlayOpacity: 0.3,
+        );
+      case ProductTourStep.closeSettings:
+        return ShowcaseData(
+          description: 'Close settings to return to your collections.',
+          onTargetClick: () {
+            scaffoldKey.currentState?.closeDrawer();
+            coreSl<ProductBloc>().add(const ProductEvent.nextStep());
+          },
+          disposeOnTap: true,
+          disableBarrierInteraction: true,
+        );
       case ProductTourStep.thanksPopup:
         return const ShowcaseData(
           description:
               "Thanks for completing the tour! You're all set to use MultiChoice.",
         );
-      case ProductTourStep.none:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case ProductTourStep.noneCompleted:
       case ProductTourStep.reset:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return ShowcaseData.empty();
     }
   }
 }

@@ -47,7 +47,10 @@ class _VerticalTab extends StatelessWidget {
                             style: context.theme.appTextTheme.titleMedium,
                           ),
                         ),
-                        MenuWidget(tab: tab),
+                        TourWidgetWrapper(
+                          step: ProductTourStep.showCollectionMenu,
+                          child: MenuWidget(tab: tab),
+                        ),
                       ],
                     ),
                     if (tab.subtitle.isNotEmpty)

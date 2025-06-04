@@ -7,3 +7,5 @@
 - Update `home_bloc` and `product_bloc`
 - Create `ProductTourController`
 - Create `showcase_data`
+- Has complete feature, might be buggy. NOTE: There needs to be at least one collection and one item entry.
+- TODO: Ensure that the app loads with dummy data

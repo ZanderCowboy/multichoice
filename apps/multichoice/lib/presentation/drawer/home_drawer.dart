@@ -3,11 +3,13 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/utils/custom_dialog.dart';
+import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'widgets/_light_dark_mode_button.dart';
@@ -29,23 +31,31 @@ class HomeDrawer extends StatelessWidget {
               DrawerHeader(
                 padding: allPadding12,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Settings',
-                        style: context.theme.appTextTheme.titleMedium?.copyWith(
-                          color: Colors.white,
+                    TourWidgetWrapper(
+                      step: ProductTourStep.showDetails,
+                      child: Expanded(
+                        child: Text(
+                          'Settings',
+                          style:
+                              context.theme.appTextTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      tooltip: TooltipEnums.close.tooltip,
-                      icon: const Icon(
-                        Icons.close_outlined,
-                        size: 28,
+                    TourWidgetWrapper(
+                      step: ProductTourStep.closeSettings,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        tooltip: TooltipEnums.close.tooltip,
+                        icon: const Icon(
+                          Icons.close_outlined,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ],
@@ -124,16 +134,17 @@ class HomeDrawer extends StatelessWidget {
                       ),
                     ),
                     ListTile(
-                      title: const Text('Reset User Journey'),
+                      title: const Text('Reset Tutorial'),
                       trailing: IconButton(
                         // key: context.keys.resetAppButton,
                         onPressed: () async {
                           // await coreSl<IProductTourController>().resetTour();
-                          coreSl<ProductBloc>().add(
-                            const ProductEvent.resetTour(),
-                          );
+
                           if (context.mounted) {
                             Navigator.of(context).pop();
+                            coreSl<ProductBloc>().add(
+                              const ProductEvent.resetTour(),
+                            );
                           }
                         },
                         // tooltip: TooltipEnums.resetApp.tooltip,

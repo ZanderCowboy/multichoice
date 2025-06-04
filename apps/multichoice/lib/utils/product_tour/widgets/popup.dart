@@ -6,11 +6,14 @@ class _Popup extends StatelessWidget {
     required this.content,
     required this.buttonText,
     this.showSkipButton = true,
-  });
+    bool? isCompleted,
+  }) : _isCompleted = isCompleted ?? false;
+
   final String title;
   final String content;
   final String buttonText;
   final bool? showSkipButton;
+  final bool _isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,11 @@ class _Popup extends StatelessWidget {
           ),
         TextButton(
           onPressed: () {
-            coreSl<ProductBloc>().add(const ProductEvent.nextStep());
+            coreSl<ProductBloc>().add(
+              _isCompleted
+                  ? const ProductEvent.skipTour()
+                  : const ProductEvent.nextStep(),
+            );
             Navigator.of(context).pop();
           },
           child: Text(buttonText),

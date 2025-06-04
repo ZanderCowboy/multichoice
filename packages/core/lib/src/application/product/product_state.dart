@@ -9,7 +9,7 @@ abstract class ProductState with _$ProductState {
   }) = _ProductState;
 
   factory ProductState.initial() => ProductState(
-        currentStep: ProductTourStep.none,
+        currentStep: ProductTourStep.noneCompleted,
         isLoading: false,
         errorMessage: null,
       );

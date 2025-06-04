@@ -8,8 +8,10 @@ enum ProductTourStep {
   showCollectionActions(6),
   showCollectionMenu(7),
   showSettings(8),
-  thanksPopup(9),
-  none(-1),
+  showDetails(9),
+  closeSettings(10),
+  thanksPopup(11),
+  noneCompleted(-1),
   reset(-2),
   ;
 

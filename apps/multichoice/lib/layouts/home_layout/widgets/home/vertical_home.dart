@@ -26,26 +26,21 @@ class _VerticalHome extends StatelessWidget {
                   final tab = tabs[index];
 
                   if (tabs.isNotEmpty && index == 0) {
-                    return FutureBuilder(
-                      future: coreSl<IProductTourController>().currentStep,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.data == ProductTourStep.showCollection) {
-                            return TourWidgetWrapper(
-                              step: ProductTourStep.showCollection,
-                              child: CollectionTab(tab: tab),
-                            );
-                          } else if (snapshot.data ==
-                              ProductTourStep.showCollectionActions) {
-                            return TourWidgetWrapper(
-                              step: ProductTourStep.showCollectionActions,
-                              child: CollectionTab(tab: tab),
-                            );
-                          }
-                        }
-                        return CollectionTab(tab: tab);
-                      },
-                    );
+                    final step = context.watch<ProductBloc>().state.currentStep;
+
+                    if (step == ProductTourStep.showCollection) {
+                      return TourWidgetWrapper(
+                        step: ProductTourStep.showCollection,
+                        child: CollectionTab(tab: tab),
+                      );
+                    } else if (step == ProductTourStep.showCollectionActions) {
+                      return TourWidgetWrapper(
+                        step: ProductTourStep.showCollectionActions,
+                        child: CollectionTab(tab: tab),
+                      );
+                    }
+
+                    return CollectionTab(tab: tab);
                   }
 
                   return CollectionTab(tab: tab);
