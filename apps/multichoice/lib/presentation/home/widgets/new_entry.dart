@@ -17,11 +17,13 @@ class NewEntry extends StatelessWidget {
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
         return AddEntryCard(
+          key: context.keys.addNewEntryButton,
           padding: zeroPadding,
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
               title: RichText(
+                key: context.keys.addNewEntryTitle,
                 text: TextSpan(
                   text: 'Add New Entry',
                   style: DefaultTextStyle.of(context).style.copyWith(
@@ -79,6 +81,12 @@ class NewEntry extends StatelessWidget {
                               ),
                               gap4,
                               ElevatedButton(
+                                style: context.theme.elevatedButtonTheme.style
+                                    ?.copyWith(
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    context.theme.appColors.primary,
+                                  ),
+                                ),
                                 onPressed: state.isValid &&
                                         state.entry.title.isNotEmpty
                                     ? () {

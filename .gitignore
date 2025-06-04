@@ -31,6 +31,7 @@ pubspec.lock
 **/libisar.dylib
 **/*.isar-lck
 **/isar.dll
+**/libisar.so
 **/coverage
 **/*.mocks.dart
 
@@ -40,6 +41,10 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/.secrets
+
+# Running Workflows Locally
+**/.secrets
 
 # dotenv environment variables file
 .env*

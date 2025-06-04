@@ -32,13 +32,7 @@ void main() {
     final cardWidget = tester.widget<Card>(find.byType(Card));
     expect(cardWidget.color, equals(testColor));
 
-    // debugDumpApp();
     final sizedBox = tester.widget<SizedBox>(
-      // find.descendant(
-      //   of: find.byType(Padding),
-      //   matching: find.byType(SizedBox),
-      //   matchRoot: true,
-      // ),
       find.byKey(const Key('AddTabSizedBox')),
     );
 

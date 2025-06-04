@@ -13,6 +13,7 @@ class NewTab extends StatelessWidget {
         final homeBloc = context.read<HomeBloc>();
 
         return AddTabCard(
+          key: context.keys.addNewTabButton,
           width: UIConstants.newTabWidth(context),
           onPressed: () {
             CustomDialog<AlertDialog>.show(

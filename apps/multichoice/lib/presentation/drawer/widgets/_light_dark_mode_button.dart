@@ -13,6 +13,7 @@ class _LightDarkModeButton extends HookWidget {
     final isDark = useState<bool>(isDarkMode);
 
     return SwitchListTile(
+      key: context.keys.lightDarkModeSwitch,
       title: const Text('Light / Dark Mode'),
       value: isDark.value,
       activeThumbImage: AssetImage(Assets.images.sleepMode.path),
