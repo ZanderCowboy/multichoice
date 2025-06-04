@@ -1,9 +1,8 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_field, unused_local_variable
 
 import 'dart:developer';
 
-import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
-import 'package:core/src/repositories/interfaces/demo/i_demo_repository.dart';
+import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:models/models.dart';
@@ -13,11 +12,11 @@ import 'package:uuid/uuid.dart';
 class DemoRepository implements IDemoRepository {
   DemoRepository(
     this.db,
-    this.tabsRepository,
+    this._tabsRepository,
   );
 
   final isar.Isar db;
-  final TabsRepository tabsRepository;
+  final ITabsRepository _tabsRepository;
 
   @override
   Future<bool> loadDemoData() async {
