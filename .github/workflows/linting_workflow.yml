@@ -34,6 +34,10 @@ jobs:
       - name: Set up Flutter
         uses: ./.github/actions/setup-flutter
 
+      - name: Add .env file
+        run: mkdir -p .env
+        working-directory: apps/multichoice
+
       - name: melos analyze
         run: melos analyze
 
