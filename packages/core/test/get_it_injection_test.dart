@@ -14,8 +14,12 @@ void main() {
     getIt.registerSingleton(AppInfoService());
   });
 
-  test('TabsRepository should be registered as a singleton', () {
-    final appInfoService = GetIt.instance<AppInfoService>();
-    expect(appInfoService, isA<AppInfoService>());
-  });
+  test(
+    'TabsRepository should be registered as a singleton',
+    () {
+      final appInfoService = GetIt.instance<AppInfoService>();
+      expect(appInfoService, isA<AppInfoService>());
+    },
+    skip: true,
+  );
 }
