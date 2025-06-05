@@ -3,7 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kIsWeb;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:multichoice/auth/secrets.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -38,8 +38,8 @@ class DefaultFirebaseOptions {
   }
 
   static FirebaseOptions web = FirebaseOptions(
-    apiKey: dotenv.env['WEB_API_KEY']!,
-    appId: dotenv.env['WEB_APP_ID']!,
+    apiKey: webApiKey,
+    appId: webAppId,
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
     authDomain: 'multichoice-412309.firebaseapp.com',
@@ -48,16 +48,16 @@ class DefaultFirebaseOptions {
   );
 
   static FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['ANDROID_API_KEY']!,
-    appId: dotenv.env['ANDROID_APP_ID']!,
+    apiKey: androidApiKey,
+    appId: androidAppId,
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
     storageBucket: 'multichoice-412309.appspot.com',
   );
 
   static FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['IOS_API_KEY']!,
-    appId: dotenv.env['IOS_APP_ID']!,
+    apiKey: iosApiKey,
+    appId: iosAppId,
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
     storageBucket: 'multichoice-412309.appspot.com',
