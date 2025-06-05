@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - "develop"
-    types:
-      - "closed"
+    # types:
+    #   - "closed"
 
   workflow_dispatch:
 
@@ -69,7 +69,7 @@ jobs:
     name: Build Apps
     # if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
-    needs: [preBuild]
+    # needs: [preBuild]
     secrets: inherit
     permissions:
       contents: read

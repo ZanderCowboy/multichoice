@@ -56,10 +56,6 @@ jobs:
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-java-flutter
 
-      - name: Add .env file
-        run: mkdir -p .env
-        working-directory: apps/multichoice
-
       - name: Run tests and generate coverage
         run: melos coverage:all
 
