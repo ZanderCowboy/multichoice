@@ -28,19 +28,21 @@ part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 
+// TODO(@ZanderCowboy): Rework User Tutorial with Existing Data
+// When the user has existing data,
+// 1. Then the tutorial should first save the existing data to a
+//    file (or something)
+// 2. Then, it should load the dummy data from the file
+// 3. Then, it should show the tutorial with the dummy data
+// 4. Finally, it should restore the original data from the file
+
+// TODO(@ZanderCowboy): Ensure both Layouts Work with the Product Tour
+// 1. Ensure that the Product Tour works with both the Horizontal and
+//  Vertical layouts.
+
 @RoutePage()
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  HomePageState createState() => HomePageState();
-}
-
-class HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class HomePageWrapper extends StatelessWidget {
+  const HomePageWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,55 +55,68 @@ class HomePageState extends State<HomePage> {
             ),
         ),
         BlocProvider(
-          create: (context) => coreSl<ProductBloc>(),
+          create: (_) => coreSl<ProductBloc>(),
         ),
       ],
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return ChangeNotifierProvider(
-            create: (context) => AppLayout(),
-            builder: (context, child) => ProductTour(
-              builder: (context) {
-                return Scaffold(
-                  key: scaffoldKey,
-                  appBar: AppBar(
-                    title: const Text('Multichoice'),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context)
-                            ..clearSnackBars()
-                            ..showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Search has not been implemented yet.',
-                                ),
-                              ),
-                            );
-                        },
-                        tooltip: TooltipEnums.search.tooltip,
-                        icon: const Icon(Icons.search_outlined),
-                      ),
-                    ],
-                    leading: TourWidgetWrapper(
-                      step: ProductTourStep.showSettings,
-                      child: IconButton(
-                        onPressed: () {
-                          scaffoldKey.currentState?.openDrawer();
-                        },
-                        tooltip: TooltipEnums.settings.tooltip,
-                        icon: const Icon(Icons.settings_outlined),
-                      ),
+      child: ChangeNotifierProvider(
+        create: (_) => AppLayout(),
+        child: ProductTour(
+          builder: (_) {
+            return const HomePage();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: const Text('Multichoice'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                ..clearSnackBars()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Search has not been implemented yet.',
                     ),
                   ),
-                  drawer: const HomeDrawer(),
-                  body: const _HomePage(),
                 );
-              },
-            ),
-          );
-        },
+            },
+            tooltip: TooltipEnums.search.tooltip,
+            icon: const Icon(Icons.search_outlined),
+          ),
+        ],
+        leading: TourWidgetWrapper(
+          step: ProductTourStep.showSettings,
+          child: IconButton(
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+            tooltip: TooltipEnums.settings.tooltip,
+            icon: const Icon(Icons.settings_outlined),
+          ),
+        ),
       ),
+      drawer: const HomeDrawer(),
+      body: const _HomePage(),
     );
   }
 }

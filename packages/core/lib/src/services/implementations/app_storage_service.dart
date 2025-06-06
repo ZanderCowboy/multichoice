@@ -25,8 +25,8 @@ class AppStorageService implements IAppStorageService {
   @override
   Future<bool> get isCompleted async {
     final isCompleted =
-        _sharedPreferences.getBool(StorageKeys.isCompleted.name) ?? false;
-    return isCompleted;
+        _sharedPreferences.getBool(StorageKeys.isCompleted.name);
+    return isCompleted ?? false;
   }
 
   @override

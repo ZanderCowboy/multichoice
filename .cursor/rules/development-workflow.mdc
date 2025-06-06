@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Development Workflow Guide
+
+## Getting Started
+1. Ensure you have Flutter installed and configured with FVM
+2. Run `make setup` to initialize the project
+3. Use `melos bootstrap` to install dependencies
+
+## Common Commands
+- `make test` - Run all tests
+- `make format` - Format all Dart code
+- `make analyze` - Run static analysis
+- `make clean` - Clean build artifacts
+
+## Package Development
+When working on shared packages:
+1. Make changes in the relevant package under `packages/`
+2. Run tests and analysis
+3. Update version in package's `pubspec.yaml`
+4. Run `melos publish` to publish changes
+
+## App Development
+When working on applications:
+1. Navigate to the specific app directory under `apps/`
+2. Use `flutter run` to start the development server
+3. Make changes and test locally
+4. Run `flutter test` to verify changes
+
+## Code Style
+- Follow the Dart style guide
+- Use the provided [analysis_options.yaml](mdc:analysis_options.yaml)
+- Run `make format` before committing changes
+
+## Version Control
+- Use feature branches for new development
+- Follow conventional commits format
+- Create pull requests for code review
+- Ensure CI passes before merging
+

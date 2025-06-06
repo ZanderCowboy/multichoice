@@ -1,52 +1,46 @@
 // The context is used synchronously in this file, and the asynchronous usage is safe here.
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/engine/app_router.gr.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/engine/tooltip_enums.dart';
 import 'package:multichoice/constants/export.dart';
+import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
+import 'package:multichoice/presentation/shared/data_transfer/widgets/file_name_dialog.dart';
+import 'package:multichoice/presentation/shared/data_transfer/widgets/import_confirmation_dialog.dart';
 
 @RoutePage()
-class DataTransferScreen extends StatefulWidget {
-  const DataTransferScreen({super.key});
+class DataTransferScreen extends HookWidget {
+  const DataTransferScreen({
+    required this.onCallback,
+    super.key,
+  });
 
-  @override
-  DataTransferPageState createState() => DataTransferPageState();
-}
+  final void Function() onCallback;
 
-class DataTransferPageState extends State<DataTransferScreen> {
-  final dataExchangeService = coreSl<IDataExchangeService>();
-
-  String? _fileName;
+  // TODO(@ZanderCowboy): When the user Appends New Data, the data should
+  // be appended to the end of the existing data, NOT the beginning.
 
   @override
   Widget build(BuildContext context) {
-    final isDBEmpty = dataExchangeService.isDBEmpty();
+    final dataTransferService = useMemoized(DataTransferService.new);
+    final isDBEmpty = useFuture(dataTransferService.isDBEmpty());
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Data Transfer',
-        ),
+        title: const Text('Data Transfer'),
         leading: IconButton(
-          onPressed: () {
-            context.router.maybePop();
-          },
+          onPressed: () => context.router.maybePop(),
           tooltip: TooltipEnums.back.tooltip,
-          icon: const Icon(
-            Icons.arrow_back_ios_new_outlined,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
         ),
         actions: [
           IconButton(
             onPressed: () {
-              context.router.replace(const HomePageRoute());
+              context.router.popUntilRoot();
+              scaffoldKey.currentState?.closeDrawer();
             },
             tooltip: TooltipEnums.home.tooltip,
             icon: const Icon(Icons.home),
@@ -54,169 +48,101 @@ class DataTransferPageState extends State<DataTransferScreen> {
         ],
       ),
       body: Center(
-        child: FutureBuilder(
-          future: isDBEmpty,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting ||
-                !snapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
-
-            final isDBEmpty = snapshot.data ?? false;
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _importFile(context),
-                  child: const Text('Import'),
-                ),
-                gap10,
-                ElevatedButton(
-                  onPressed: isDBEmpty ? null : _exportFile,
-                  child: const Text('Export'),
-                ),
-              ],
-            );
-          },
-        ),
+        child: !isDBEmpty.hasData
+            ? const CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        _handleImport(context, dataTransferService),
+                    child: const Text('Import'),
+                  ),
+                  gap10,
+                  ElevatedButton(
+                    onPressed: isDBEmpty.data ?? true
+                        ? null
+                        : () => _handleExport(context, dataTransferService),
+                    child: const Text('Export'),
+                  ),
+                ],
+              ),
       ),
     );
   }
 
-  Future<void> _importFile(BuildContext context) async {
-    final filePath = await dataExchangeService.pickFile();
+  Future<void> _handleImport(
+    BuildContext context,
+    DataTransferService service,
+  ) async {
+    final filePath = await service.pickFile();
+    if (filePath == null) {
+      _showSnackBar(context, 'No file selected');
+      return;
+    }
 
-    if (filePath != null) {
-      final isDBEmpty = await dataExchangeService.isDBEmpty();
+    final isDBEmpty = await service.isDBEmpty();
+    if (!isDBEmpty) {
+      final shouldAppend = await showDialog<bool>(
+        context: context,
+        builder: (context) => const ImportConfirmationDialog(),
+      );
 
-      if (!isDBEmpty) {
-        final shouldAppendDB = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Warning!'),
-              content: const Text(
-                'Importing data will alter existing data. Do you want to overwrite or append?',
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: const Text('Overwrite'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text('Append'),
-                ),
-              ],
-            );
-          },
-        );
-
-        // Should not clear DB = false
-        if (shouldAppendDB == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Aborted import operation'),
-            ),
-          );
-
-          return;
-        }
-
-        await _showFeedback(filePath, shouldAppend: shouldAppendDB);
+      if (shouldAppend == null) {
+        _showSnackBar(context, 'Aborted import operation');
+        return;
       }
 
-      /// DB is empty, should not clear, so shouldAppend = true, default action
-      await _showFeedback(filePath);
+      await _handleImportFeedback(context, service, filePath, shouldAppend);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No file selected'),
-        ),
-      );
+      await _handleImportFeedback(context, service, filePath, true);
     }
   }
 
-  Future<void> _showFeedback(String filePath, {bool? shouldAppend}) async {
-    final result = await dataExchangeService.importDataFromJSON(
-          filePath,
-          shouldAppend: shouldAppend ?? true,
-        ) ??
-        false;
+  Future<void> _handleImportFeedback(
+    BuildContext context,
+    DataTransferService service,
+    String filePath,
+    bool shouldAppend,
+  ) async {
+    final result = await service.importDataFromJSON(
+      filePath,
+      shouldAppend: shouldAppend,
+    );
 
     if (result) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Data imported successfully'),
-        ),
-      );
-      await context.router.replace(const HomePageRoute());
+      onCallback.call();
+      _showSnackBar(context, 'Data imported successfully');
+      context.router.popUntilRoot();
+      scaffoldKey.currentState?.closeDrawer();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to import data'),
-        ),
-      );
+      _showSnackBar(context, 'Failed to import data');
     }
   }
 
-  Future<void> _exportFile() async {
-    final jsonString = await dataExchangeService.exportDataToJSON();
-
-    await _showInputModal(context);
-
-    final fileBytes = Uint8List.fromList(utf8.encode(jsonString));
-
-    await dataExchangeService.saveFile(_fileName ?? 'default', fileBytes);
-
-    // TODO(@ZanderCowboy): This needs to be updated to show when the user cancels the action and not just always success
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('File saved successfully!')),
+  Future<void> _handleExport(
+    BuildContext context,
+    DataTransferService service,
+  ) async {
+    final jsonString = await service.exportDataToJSON();
+    final fileName = await showDialog<String>(
+      context: context,
+      builder: (context) => const FileNameDialog(),
     );
+
+    if (fileName == null) {
+      _showSnackBar(context, 'Export cancelled');
+      return;
+    }
+
+    final fileBytes = service.convertToBytes(jsonString);
+    await service.saveFile(fileName, fileBytes);
+    _showSnackBar(context, 'File saved successfully!');
   }
 
-  Future<void> _showInputModal(BuildContext context) async {
-    await showDialog<AlertDialog>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter File Name'),
-          content: TextField(
-            onChanged: (value) {
-              _fileName = value;
-            },
-            decoration: const InputDecoration(
-              hintText: 'File Name',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                log('File Name: $_fileName');
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save Export'),
-            ),
-          ],
-        );
-      },
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }

@@ -20,61 +20,60 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Drawer(
-          width: MediaQuery.sizeOf(context).width,
-          backgroundColor: context.theme.appColors.background,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DrawerHeader(
-                padding: allPadding12,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TourWidgetWrapper(
-                      step: ProductTourStep.showDetails,
-                      child: Expanded(
-                        child: Text(
-                          'Settings',
-                          style:
-                              context.theme.appTextTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
+    return Drawer(
+      width: MediaQuery.sizeOf(context).width,
+      backgroundColor: context.theme.appColors.background,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DrawerHeader(
+            padding: allPadding12,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TourWidgetWrapper(
+                  step: ProductTourStep.showDetails,
+                  child: Expanded(
+                    child: Text(
+                      'Settings',
+                      style: context.theme.appTextTheme.titleMedium?.copyWith(
+                        color: Colors.white,
                       ),
                     ),
-                    TourWidgetWrapper(
-                      step: ProductTourStep.closeSettings,
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        tooltip: TooltipEnums.close.tooltip,
-                        icon: const Icon(
-                          Icons.close_outlined,
-                          size: 28,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    const _LightDarkModeButton(),
-                    SwitchListTile(
-                      key: context.keys.layoutSwitch,
-                      title: const Text('Horizontal/Vertical Layout'),
-                      value: context.watch<AppLayout>().appLayout,
-                      onChanged: (value) {
-                        context.read<AppLayout>().appLayout = value;
-                      },
+                TourWidgetWrapper(
+                  step: ProductTourStep.closeSettings,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    tooltip: TooltipEnums.close.tooltip,
+                    icon: const Icon(
+                      Icons.close_outlined,
+                      size: 28,
                     ),
-                    ListTile(
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                const _LightDarkModeButton(),
+                SwitchListTile(
+                  key: context.keys.layoutSwitch,
+                  title: const Text('Horizontal / Vertical Layout'),
+                  value: context.watch<AppLayout>().appLayout,
+                  onChanged: (value) {
+                    context.read<AppLayout>().appLayout = value;
+                  },
+                ),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    return ListTile(
                       title: const Text('Delete All Data'),
                       trailing: IconButton(
                         key: context.keys.deleteAllDataButton,
@@ -119,48 +118,50 @@ class HomeDrawer extends StatelessWidget {
                                 color: context.theme.appColors.enabled,
                               ),
                       ),
-                    ),
-                    ListTile(
-                      title: const Text('Import / Export Data'),
-                      trailing: IconButton(
-                        key: context.keys.importExportDataButton,
-                        onPressed: () => context.router.push(
-                          const DataTransferScreenRoute(),
-                        ),
-                        tooltip: TooltipEnums.importExport.tooltip,
-                        icon: const Icon(
-                          Icons.import_export_outlined,
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('Reset Tutorial'),
-                      trailing: IconButton(
-                        // key: context.keys.resetAppButton,
-                        onPressed: () async {
-                          // await coreSl<IProductTourController>().resetTour();
-
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                            coreSl<ProductBloc>().add(
-                              const ProductEvent.resetTour(),
-                            );
-                          }
-                        },
-                        // tooltip: TooltipEnums.resetApp.tooltip,
-                        icon: const Icon(
-                          Icons.refresh_outlined,
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              ),
-              const _AppVersion(),
-            ],
+                ListTile(
+                  title: const Text('Import / Export Data'),
+                  trailing: IconButton(
+                    key: context.keys.importExportDataButton,
+                    onPressed: () => context.router.push(
+                      DataTransferScreenRoute(
+                        onCallback: () {
+                          context.read<HomeBloc>().add(
+                                const HomeEvent.onGetTabs(),
+                              );
+                        },
+                      ),
+                    ),
+                    tooltip: TooltipEnums.importExport.tooltip,
+                    icon: const Icon(
+                      Icons.import_export_outlined,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Reset Tutorial'),
+                  trailing: IconButton(
+                    onPressed: () async {
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                        coreSl<ProductBloc>().add(
+                          const ProductEvent.resetTour(),
+                        );
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.refresh_outlined,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
-      },
+          const _AppVersion(),
+        ],
+      ),
     );
   }
 }

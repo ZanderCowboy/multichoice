@@ -13,11 +13,7 @@ GlobalKey? getProductTourKey(dynamic step, {int? tabId}) {
     case ProductTourStep.addNewCollection:
       return ProductTourKeys.addNewCollection;
     case ProductTourStep.addNewItem:
-      if (tabId != null) {
-        return GlobalKey(debugLabel: 'addNewItem_$tabId');
-      }
       return ProductTourKeys.addNewItem;
-
     case ProductTourStep.showItemActions:
       return ProductTourKeys.showItemActions;
     case ProductTourStep.showCollectionActions:

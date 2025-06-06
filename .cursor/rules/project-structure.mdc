@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Structure Guide
+
+This is a Flutter monorepo project managed by Melos. The project is organized as follows:
+
+## Main Directories
+- `apps/` - Contains the main Flutter applications:
+  - [multichoice/](mdc:apps/multichoice) - The main application
+  - [showcase/](mdc:apps/showcase) - A showcase/demo application
+
+- `packages/` - Contains shared packages:
+  - [core/](mdc:packages/core) - Core functionality and utilities
+  - [models/](mdc:packages/models) - Shared data models
+  - [theme/](mdc:packages/theme) - Shared theming and styling
+
+## Configuration Files
+- [melos.yaml](mdc:melos.yaml) - Melos workspace configuration
+- [pubspec.yaml](mdc:pubspec.yaml) - Root project dependencies
+- [analysis_options.yaml](mdc:analysis_options.yaml) - Dart analysis configuration
+
+## Development Tools
+- [Makefile](mdc:Makefile) - Common development commands
+- [.fvmrc](mdc:.fvmrc) - Flutter version management
+- [.devcontainer/](mdc:.devcontainer) - Development container configuration
+
+## Documentation
+- [docs/](mdc:docs) - Project documentation
+- [README.md](mdc:README.md) - Project overview and setup instructions
+

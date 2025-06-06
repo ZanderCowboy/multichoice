@@ -16,9 +16,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductEvent>((event, emit) async {
       switch (event) {
         case OnInit():
+          final currentStep = await _productTourController.currentStep;
+
           emit(
             state.copyWith(
-              currentStep: ProductTourStep.welcomePopup,
+              currentStep: currentStep,
               isLoading: false,
               errorMessage: null,
             ),

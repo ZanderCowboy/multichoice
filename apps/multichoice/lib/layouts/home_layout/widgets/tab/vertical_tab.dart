@@ -24,6 +24,7 @@ class _VerticalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
+    final isFirstTab = context.watch<HomeBloc>().state.tabs?.first.id == tab.id;
 
     return Card(
       margin: allPadding4,
@@ -47,10 +48,13 @@ class _VerticalTab extends StatelessWidget {
                             style: context.theme.appTextTheme.titleMedium,
                           ),
                         ),
-                        TourWidgetWrapper(
-                          step: ProductTourStep.showCollectionMenu,
-                          child: MenuWidget(tab: tab),
-                        ),
+                        if (isFirstTab)
+                          TourWidgetWrapper(
+                            step: ProductTourStep.showCollectionMenu,
+                            child: MenuWidget(tab: tab),
+                          )
+                        else
+                          MenuWidget(tab: tab),
                       ],
                     ),
                     if (tab.subtitle.isNotEmpty)

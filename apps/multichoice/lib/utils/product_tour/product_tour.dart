@@ -60,7 +60,9 @@ class _ProductTourState extends State<ProductTour> {
     if (_isShowingDialog && !shouldRestart) return;
 
     await _productTourController.currentStep.then((currentStep) {
-      if (!context.mounted) return;
+      if (!context.mounted || currentStep == ProductTourStep.noneCompleted) {
+        return;
+      }
 
       if (currentStep == ProductTourStep.thanksPopup) {
         _isShowingDialog = true;
@@ -80,7 +82,8 @@ class _ProductTourState extends State<ProductTour> {
       (_) {
         showDialog<AlertDialog>(
           context: context,
-          builder: (_) => const _Popup(
+          builder: (_) => _Popup(
+            context: context,
             title: 'Welcome to Multichoice',
             content: 'This is a product tour to help you get started. '
                 'You can skip it at any time.',
@@ -100,14 +103,44 @@ class _ProductTourState extends State<ProductTour> {
       (_) {
         showDialog<AlertDialog>(
           context: context,
-          builder: (_) => const _Popup(
-            title: 'Thank you!',
-            content: 'You have completed the product tour. '
-                'You can always access it again from the settings.',
-            buttonText: 'Finish',
-            showSkipButton: false,
-            isCompleted: true,
-          ),
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Thank you!'),
+              content: const Text('You have completed the product tour. '
+                  'You can always access it again from the settings.\n\n Would you like to clear all dummy data?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(
+                          const HomeEvent.onPressedDeleteAll(),
+                        );
+                  },
+                  child: const Text('Clear Data'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    coreSl<ProductBloc>().add(const ProductEvent.resetTour());
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Restart Tour'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    coreSl<ProductBloc>().add(const ProductEvent.skipTour());
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Skip Tour'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    coreSl<ProductBloc>().add(const ProductEvent.skipTour());
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Finish'),
+                ),
+              ],
+            );
+          },
         ).then(
           (_) {
             _isShowingDialog = false;

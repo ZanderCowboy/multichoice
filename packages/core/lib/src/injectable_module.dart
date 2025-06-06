@@ -26,7 +26,6 @@ abstract class InjectableModule {
   @preResolve
   Future<SharedPreferences> get sharedPref async {
     final sharedPref = await SharedPreferences.getInstance();
-    await sharedPref.clear();
 
     return sharedPref;
   }

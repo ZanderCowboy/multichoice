@@ -19,12 +19,14 @@ class ProductTourController implements IProductTourController {
     final _currentStep = await _appStorageService.currentStep;
     final _isCompleted = await _appStorageService.isCompleted;
 
-    if (_currentStep < 0 && !_isCompleted) {
-      return ProductTourStep.welcomePopup;
-    }
     if (_isCompleted) {
       return ProductTourStep.noneCompleted;
     }
+
+    if (_currentStep < 0) {
+      return ProductTourStep.welcomePopup;
+    }
+
     return ProductTourStep.values[_currentStep];
   }
 

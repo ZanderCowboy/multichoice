@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppLayout with ChangeNotifier {
   final _prefs = coreSl<SharedPreferences>();
 
-  bool _appLayout = true;
+  bool _appLayout = false;
   bool get appLayout => isLayoutVertical();
 
   set appLayout(bool isLayoutVertical) {
