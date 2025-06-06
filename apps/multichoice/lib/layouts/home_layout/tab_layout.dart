@@ -21,7 +21,7 @@ class TabLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<AppLayout>().appLayout
+    return context.watch<AppLayout>().isLayoutVertical
         ? _VerticalTab(tab: tab)
         : _HorizontalTab(tab: tab);
   }

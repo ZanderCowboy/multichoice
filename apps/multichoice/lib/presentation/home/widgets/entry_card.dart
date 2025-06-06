@@ -11,7 +11,7 @@ class EntryCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final menuController = MenuController();
-    final isVerticalLayout = context.watch<AppLayout>().appLayout;
+    final isLayoutVertical = context.watch<AppLayout>().isLayoutVertical;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
@@ -61,7 +61,7 @@ class EntryCard extends HookWidget {
               }
             },
             child: Padding(
-              padding: isVerticalLayout ? allPadding2 : allPadding4,
+              padding: isLayoutVertical ? allPadding2 : allPadding4,
               child: Card(
                 elevation: 3,
                 shadowColor: Colors.grey[400],

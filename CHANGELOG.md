@@ -9,3 +9,9 @@
 - Create `showcase_data`
 - Has complete feature, might be buggy. NOTE: There needs to be at least one collection and one item entry.
 - TODO: Ensure that the app loads with dummy data
+- TODO: Ensure that if the user follows the tutorial, save any existing data, load dummy data, run tutorial, and afterwards, restore user data.
+
+- Create and update cursor rules
+- Complete refactor and improve of the HomeDrawer
+- Refactor light-dark and layout switch to use new AppStorageService
+- Implement the tour for the horizontal layout.

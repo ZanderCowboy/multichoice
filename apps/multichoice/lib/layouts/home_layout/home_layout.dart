@@ -22,7 +22,7 @@ class HomeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: context.watch<AppLayout>().appLayout
+      child: context.watch<AppLayout>().isLayoutVertical
           ? _VerticalHome(tabs: tabs)
           : _HorizontalHome(tabs: tabs),
     );

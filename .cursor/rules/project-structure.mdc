@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: project-structure.mdc
 alwaysApply: false
 ---
 # Project Structure Guide
@@ -30,4 +30,28 @@ This is a Flutter monorepo project managed by Melos. The project is organized as
 ## Documentation
 - [docs/](mdc:docs) - Project documentation
 - [README.md](mdc:README.md) - Project overview and setup instructions
+
+## Service and Interface Structure
+- For every implementation file (e.g., `AppInfoService`), there must be a corresponding abstract interface file (e.g., `i_app_info_service.dart`).
+- Implementation files should be in the `implementations` directory, and interfaces in the `interfaces` directory.
+
+## UI Constants
+- For any UI constants (e.g., `const SizedBox(width: 16)`), refer to `spacing_constants.dart` in the `/constants` folder.
+- For any `BorderRadius.circular`, look at `border_constants.dart` in the `/constants` folder.
+- Always check the `/constants` folder for UI constants (e.g., padding, gaps, borders, etc.).
+- If a constant does not exist, add it to the appropriate file in `/constants`.
+
+## Page Structure
+- For any new pages (e.g., `edit_tab_page.dart`, `home_page.dart`), place the `Scaffold` and `AppBar` in a parent class.
+- Keep the main body content in a private child class (e.g., `_EditPage`, `_HomePage`).
+
+## Drawer and Widget Modularity
+- When refactoring a class like `HomeDrawer` and creating smaller, more modular classes, create new private files for each modular class.
+- For a public class like `HomeDrawer` found in the `/drawer` folder, if there is a `_Example` class, create a file named `_example.dart` in the `/widgets` folder and use `part`/`part of` for file linkage.
+- `part` sections should always be alphabetical.
+- Modular classes should be in their own file for clarity and maintainability.
+
+## Testing
+- For unit tests, keep the file structure and file name the same as the file being tested. Refer to existing tests in the `packages` directory for structure and naming conventions.
+- For widget/integration tests, refer to `widget_keys.dart` for key usage to ensure consistency and testability.
 

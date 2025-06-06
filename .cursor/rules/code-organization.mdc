@@ -48,11 +48,14 @@ feature_name/
 ```
 
 ## Best Practices
-1. Keep files focused and single-responsibility
-2. Use barrel files (index.dart) for clean exports
+1. Keep files focused and single-responsibility. Multiple files is prefered with part/part-of instead of large files. 
+2. Use barrel files (index.dart) for clean exports, named export.dart
 3. Follow the dependency rule: presentation → domain → data
 4. Keep business logic in the domain layer
 5. Use dependency injection for better testability
+
+## Linting
+1. Avoid missing commas
 
 ## Testing
 - Unit tests for business logic

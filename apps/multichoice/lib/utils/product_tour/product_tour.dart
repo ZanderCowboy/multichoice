@@ -111,25 +111,10 @@ class _ProductTourState extends State<ProductTour> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedDeleteAll(),
-                        );
-                  },
-                  child: const Text('Clear Data'),
-                ),
-                TextButton(
-                  onPressed: () {
                     coreSl<ProductBloc>().add(const ProductEvent.resetTour());
                     Navigator.of(context).pop();
                   },
                   child: const Text('Restart Tour'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    coreSl<ProductBloc>().add(const ProductEvent.skipTour());
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Skip Tour'),
                 ),
                 TextButton(
                   onPressed: () {

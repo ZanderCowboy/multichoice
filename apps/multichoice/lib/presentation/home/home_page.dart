@@ -46,8 +46,11 @@ class HomePageWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => AppLayout(),
+        ),
         BlocProvider(
           create: (_) => coreSl<HomeBloc>()
             ..add(
@@ -58,13 +61,10 @@ class HomePageWrapper extends StatelessWidget {
           create: (_) => coreSl<ProductBloc>(),
         ),
       ],
-      child: ChangeNotifierProvider(
-        create: (_) => AppLayout(),
-        child: ProductTour(
-          builder: (_) {
-            return const HomePage();
-          },
-        ),
+      child: ProductTour(
+        builder: (_) {
+          return const HomePage();
+        },
       ),
     );
   }

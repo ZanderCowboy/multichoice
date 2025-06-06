@@ -11,3 +11,4 @@ analyzer:
   exclude:
     - "**/*.gr.dart"
     - "**/*.gen.dart"
+    - /dummy/

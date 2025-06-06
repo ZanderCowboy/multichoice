@@ -8,6 +8,20 @@ class AppStorageService implements IAppStorageService {
   final _sharedPreferences = coreSl<SharedPreferences>();
 
   @override
+  Future<bool> get isDarkMode async {
+    final isDarkMode = _sharedPreferences.getBool(StorageKeys.isDarkMode.name);
+    return isDarkMode ?? false;
+  }
+
+  @override
+  Future<void> setIsDarkMode(bool isDarkMode) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isDarkMode.name,
+      isDarkMode,
+    );
+  }
+
+  @override
   Future<int> get currentStep async {
     final currentStep =
         _sharedPreferences.getInt(StorageKeys.currentStep.name) ?? -1;
@@ -41,5 +55,19 @@ class AppStorageService implements IAppStorageService {
   Future<void> resetTour() async {
     await setCurrentStep(-1);
     await setIsCompleted(false);
+  }
+
+  @override
+  Future<bool> get isLayoutVertical async {
+    final isVertical = _sharedPreferences.getBool(StorageKeys.isLayoutVertical.name);
+    return isVertical ?? false;
+  }
+
+  @override
+  Future<void> setIsLayoutVertical(bool isVertical) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isLayoutVertical.name,
+      isVertical,
+    );
   }
 }
