@@ -1,7 +1,7 @@
-part of '../home_drawer.dart';
+part of 'export.dart';
 
-class _LightDarkModeButton extends HookWidget {
-  const _LightDarkModeButton();
+class LightDarkModeButton extends HookWidget {
+  const LightDarkModeButton({super.key});
 
   @override
   Widget build(BuildContext context) {

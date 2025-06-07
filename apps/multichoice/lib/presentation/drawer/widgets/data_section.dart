@@ -1,7 +1,7 @@
-part of '../home_drawer.dart';
+part of 'export.dart';
 
-class _DataSection extends StatelessWidget {
-  const _DataSection();
+class DataSection extends StatelessWidget {
+  const DataSection({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
-part of '../home_drawer.dart';
+part of 'export.dart';
 
-class _DrawerHeaderSection extends StatelessWidget {
-  const _DrawerHeaderSection();
+class DrawerHeaderSection extends StatelessWidget {
+  const DrawerHeaderSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,29 +30,23 @@ class _DrawerHeaderSection extends StatelessWidget {
                   ),
                 ),
                 gap4,
-                TourWidgetWrapper(
-                  step: ProductTourStep.showDetails,
-                  child: Text(
-                    'Welcome back!',
-                    style: AppTypography.subtitleMedium.copyWith(
-                      color: Colors.white70,
-                    ),
+                Text(
+                  'Welcome back!',
+                  style: AppTypography.subtitleMedium.copyWith(
+                    color: Colors.white70,
                   ),
                 ),
               ],
             ),
           ),
-          TourWidgetWrapper(
-            step: ProductTourStep.closeSettings,
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              tooltip: TooltipEnums.close.tooltip,
-              icon: const Icon(
-                Icons.close_outlined,
-                size: 28,
-              ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            tooltip: TooltipEnums.close.tooltip,
+            icon: const Icon(
+              Icons.close_outlined,
+              size: 28,
             ),
           ),
         ],

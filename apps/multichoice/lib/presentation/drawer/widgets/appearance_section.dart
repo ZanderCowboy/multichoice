@@ -1,7 +1,7 @@
-part of '../home_drawer.dart';
+part of 'export.dart';
 
-class _AppearanceSection extends StatelessWidget {
-  const _AppearanceSection();
+class AppearanceSection extends StatelessWidget {
+  const AppearanceSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class _AppearanceSection extends StatelessWidget {
             ),
           ),
         ),
-        const _LightDarkModeButton(),
+        const LightDarkModeButton(),
         SwitchListTile(
           key: context.keys.layoutSwitch,
           title: const Text('Horizontal / Vertical Layout'),
