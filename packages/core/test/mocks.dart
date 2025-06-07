@@ -8,6 +8,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 @GenerateNiceMocks([
   MockSpec<ITabsRepository>(as: #MockTabsRepository),
   MockSpec<IEntryRepository>(as: #MockEntryRepository),
+  MockSpec<IDemoRepository>(as: #MockDemoRepository),
   MockSpec<Isar>(as: #MockIsar),
   MockSpec<IFilePickerWrapper>(as: #MockFilePickerWrapper),
   MockSpec<FilePicker>(as: #MockFilePicker),
