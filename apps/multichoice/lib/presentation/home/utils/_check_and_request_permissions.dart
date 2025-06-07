@@ -1,11 +1,20 @@
+// Not used currently, but kept for future use
+// ignore_for_file: unused_element
+
 part of '../home_page.dart';
 
-// Needs to be refactored
-// ignore: unused_element
 Future<void> _checkAndRequestPermissions(BuildContext context) async {
+  final appStorageService = coreSl<IAppStorageService>();
+  final isChecked = await appStorageService.isPermissionsChecked;
+
+  if (isChecked) {
+    return;
+  }
+
   var status = await Permission.manageExternalStorage.status;
 
   if (status.isGranted) {
+    await appStorageService.setIsPermissionsChecked(true);
     return;
   }
 
@@ -13,24 +22,29 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
     await showDialog<AlertDialog>(
       context: context,
       builder: (BuildContext context) {
-        coreSl<SharedPreferences>().setBool('isPermissionsChecked', true);
-
         return AlertDialog(
           title: const Text('Permission Required'),
           content:
               const Text('Storage permission is required for import/export.'),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                await appStorageService.setIsPermissionsChecked(true);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               },
               child: const Text('Deny'),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
                 status = await Permission.manageExternalStorage.request();
-                // openAppSettings();
+                if (status.isGranted) {
+                  await appStorageService.setIsPermissionsChecked(true);
+                }
               },
               child: const Text('Open Settings'),
             ),
@@ -38,8 +52,6 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
         );
       },
     );
-
-    // final _status = await Permission.manageExternalStorage.request();
 
     if (status.isPermanentlyDenied && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

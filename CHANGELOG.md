@@ -15,3 +15,6 @@
 - Complete refactor and improve of the HomeDrawer
 - Refactor light-dark and layout switch to use new AppStorageService
 - Implement the tour for the horizontal layout.
+
+- NOTE!!! On the app version in debug mode, long-press to clear app app-state data
+- Add new dedicated Tutorial page
