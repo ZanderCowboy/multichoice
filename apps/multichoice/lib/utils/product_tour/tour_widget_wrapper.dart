@@ -22,23 +22,30 @@ class TourWidgetWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
-        if (state.currentStep == step) {
-          final key = getProductTourKey(step, tabId: tabId);
-          final showcaseData = TourConfig.getShowcaseData(step);
-
-          if (key != null) {
-            return Showcase(
-              key: key,
-              description: showcaseData.description,
-              onTargetClick: showcaseData.onTargetClick,
-              disposeOnTap: showcaseData.disposeOnTap,
-              disableBarrierInteraction: showcaseData.disableBarrierInteraction,
-              onBarrierClick: showcaseData.onBarrierClick,
-              overlayOpacity: showcaseData.overlayOpacity,
-              child: child,
-            );
-          }
+        if (state.currentStep != step) {
+          return child;
         }
+
+        final key = getProductTourKey(step, tabId: tabId);
+        final showcaseData = TourConfig.getShowcaseData(step);
+        final isLightMode = Theme.of(context).brightness == Brightness.light;
+
+        if (key != null && context.mounted) {
+          return Showcase(
+            key: key,
+            description: showcaseData.description,
+            onTargetClick: showcaseData.onTargetClick,
+            disposeOnTap: showcaseData.disposeOnTap,
+            disableBarrierInteraction: showcaseData.disableBarrierInteraction,
+            onBarrierClick: showcaseData.onBarrierClick,
+            overlayOpacity: isLightMode
+                ? showcaseData.overlayOpacity
+                : showcaseData.overlayOpacity * 0.25,
+            overlayColor: showcaseData.overlayColor,
+            child: child,
+          );
+        }
+
         return child;
       },
     );

@@ -65,7 +65,7 @@ class TourConfig {
         return ShowcaseData(
           description: 'Tap here to access settings and more options here.',
           onTargetClick: () {
-            scaffoldKey.currentState?.openDrawer();
+            scaffoldKeyTutorial.currentState?.openDrawer();
             coreSl<ProductBloc>().add(const ProductEvent.nextStep());
           },
           disposeOnTap: true,
@@ -84,7 +84,7 @@ class TourConfig {
           description:
               'Tap here to close settings to return to your collections.',
           onTargetClick: () {
-            scaffoldKey.currentState?.closeDrawer();
+            scaffoldKeyTutorial.currentState?.closeDrawer();
             coreSl<ProductBloc>().add(const ProductEvent.nextStep());
           },
           disposeOnTap: true,
