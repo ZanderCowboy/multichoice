@@ -68,10 +68,6 @@ class TabsRepository implements ITabsRepository {
         result.add(newTabDTO);
       }
 
-      if (result.isNotEmpty) {
-        result[0] = result[0].copyWith(isFirst: true);
-      }
-
       return result;
     } catch (e) {
       log(e.toString());

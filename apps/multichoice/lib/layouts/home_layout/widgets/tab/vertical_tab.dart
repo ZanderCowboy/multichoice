@@ -1,19 +1,5 @@
 part of '../../tab_layout.dart';
 
-class VertTab extends StatelessWidget {
-  const VertTab({
-    required this.tab,
-    super.key,
-  });
-
-  final TabsDTO tab;
-
-  @override
-  Widget build(BuildContext context) {
-    return _VerticalTab(tab: tab);
-  }
-}
-
 class _VerticalTab extends StatelessWidget {
   const _VerticalTab({
     required this.tab,

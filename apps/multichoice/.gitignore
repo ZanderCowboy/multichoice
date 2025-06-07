@@ -28,6 +28,7 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/lib/auth/
 **/lib/auth/secrets.dart
 
 # dotenv environment variables file

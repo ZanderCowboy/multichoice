@@ -73,9 +73,7 @@ class _HorizontalTab extends StatelessWidget {
                 itemCount: entries.length + 1,
                 itemBuilder: (context, index) {
                   if (index == entries.length) {
-                    return NewEntry(
-                      tabId: tab.id,
-                    );
+                    return NewEntry(tabId: tab.id);
                   }
 
                   final entry = entries[index];
