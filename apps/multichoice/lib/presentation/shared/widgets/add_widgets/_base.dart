@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/constants/export.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'entry.dart';
 part 'tab.dart';

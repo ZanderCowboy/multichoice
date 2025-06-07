@@ -26,6 +26,7 @@ dependencies:
   shared_preferences: ^2.2.2
   showcaseview: ^4.0.1
   theme: ^0.0.1
+  ui_kit: ^0.0.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding
