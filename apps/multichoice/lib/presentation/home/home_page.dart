@@ -8,17 +8,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
+import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
-import 'package:multichoice/utils/custom_dialog.dart';
-import 'package:multichoice/utils/product_tour/product_tour.dart';
-import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_check_and_request_permissions.dart';
 part 'widgets/collection_tab.dart';
@@ -61,11 +59,7 @@ class HomePageWrapper extends StatelessWidget {
           create: (_) => coreSl<ProductBloc>(),
         ),
       ],
-      child: ProductTour(
-        builder: (_) {
-          return const HomePage();
-        },
-      ),
+      child: const HomePage(),
     );
   }
 }
@@ -78,45 +72,22 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Multichoice'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                ..clearSnackBars()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Search has not been implemented yet.',
-                    ),
-                  ),
-                );
+    return WelcomeModalHandler(
+      builder: (context) => const _HomePage(),
+      onSkipTour: () async {
+        context.read<ProductBloc>().add(const ProductEvent.skipTour());
+      },
+      onFollowTutorial: () async {
+        await context.router.push(
+          TutorialPageRoute(
+            onCallback: () {
+              context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
             },
-            tooltip: TooltipEnums.search.tooltip,
-            icon: const Icon(Icons.search_outlined),
           ),
-        ],
-        leading: TourWidgetWrapper(
-          step: ProductTourStep.showSettings,
-          child: IconButton(
-            onPressed: () {
-              scaffoldKey.currentState?.openDrawer();
-            },
-            tooltip: TooltipEnums.settings.tooltip,
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ),
-      ),
-      drawer: const HomeDrawer(),
-      body: const _HomePage(),
+        );
+      },
     );
   }
 }
@@ -126,18 +97,53 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        final tabs = state.tabs ?? [];
+    // this ShowCaseWidget is here to fix an issue where it complains
+    // about ShowCaseView context not being available
+    return ShowCaseWidget(
+      builder: (context) => Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: const Text('Multichoice'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context)
+                  ..clearSnackBars()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Search has not been implemented yet.',
+                      ),
+                    ),
+                  );
+              },
+              tooltip: TooltipEnums.search.tooltip,
+              icon: const Icon(Icons.search_outlined),
+            ),
+          ],
+          leading: IconButton(
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+            tooltip: TooltipEnums.settings.tooltip,
+            icon: const Icon(Icons.settings_outlined),
+          ),
+        ),
+        drawer: const HomeDrawer(),
+        body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            final tabs = state.tabs ?? [];
 
-        if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
+            if (state.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
 
-        return HomeLayout(tabs: tabs);
-      },
+            return HomeLayout(tabs: tabs);
+          },
+        ),
+      ),
     );
   }
 }
