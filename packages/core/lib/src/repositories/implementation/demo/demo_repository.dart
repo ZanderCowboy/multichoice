@@ -4,49 +4,69 @@ import 'dart:developer';
 
 import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart' as isar;
 import 'package:models/models.dart';
-import 'package:uuid/uuid.dart';
 
 @LazySingleton(as: IDemoRepository)
 class DemoRepository implements IDemoRepository {
-  DemoRepository(
-    this.db,
-    this._tabsRepository,
-  );
-
-  final isar.Isar db;
-  final ITabsRepository _tabsRepository;
+  DemoRepository();
 
   @override
-  Future<bool> loadDemoData() async {
+  Future<List<TabsDTO>> loadDemoTabs() async {
     try {
-      return await db.writeTxn(() async {
-        final tabOneId = await db.tabs.put(
-          Tabs(
-            uuid: const Uuid().v4(),
-            title: 'Dummy',
-            subtitle: 'Some dummy',
-            timestamp: DateTime.now(),
-            entryIds: [],
-          ),
-        );
+      final movieEntries = [
+        EntryDTO(
+          id: 1,
+          tabId: 1,
+          title: 'The Shawshank Redemption',
+          subtitle: 'A story of hope and friendship',
+          timestamp: DateTime.now(),
+        ),
+        EntryDTO(
+          id: 2,
+          tabId: 1,
+          title: 'The Godfather',
+          subtitle: 'A crime drama masterpiece',
+          timestamp: DateTime.now(),
+        ),
+      ];
 
-        final tabTwoId = await db.tabs.put(
-          Tabs(
-            uuid: const Uuid().v4(),
-            title: 'Sunshine',
-            subtitle: 'Moonshine',
-            timestamp: DateTime.now(),
-            entryIds: [],
-          ),
-        );
+      final bookEntries = [
+        EntryDTO(
+          id: 3,
+          tabId: 2,
+          title: 'To Kill a Mockingbird',
+          subtitle: 'A classic about justice and morality',
+          timestamp: DateTime.now(),
+        ),
+        EntryDTO(
+          id: 4,
+          tabId: 2,
+          title: '1984',
+          subtitle: 'A dystopian masterpiece',
+          timestamp: DateTime.now(),
+        ),
+      ];
 
-        return false;
-      });
+      final moviesTab = TabsDTO(
+        id: 1,
+        title: 'Movies',
+        subtitle: 'My favorite movies',
+        timestamp: DateTime.now(),
+        entries: movieEntries,
+      );
+
+      final booksTab = TabsDTO(
+        id: 2,
+        title: 'Books',
+        subtitle: 'Must-read books',
+        timestamp: DateTime.now(),
+        entries: bookEntries,
+      );
+
+      return [moviesTab, booksTab];
     } catch (e) {
       log(e.toString());
-      return false;
+      return [];
     }
   }
 }

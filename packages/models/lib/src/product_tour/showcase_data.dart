@@ -8,6 +8,7 @@ class ShowcaseData {
     this.disableBarrierInteraction = false,
     this.onBarrierClick,
     this.overlayOpacity = 0.5,
+    this.overlayColor = Colors.black54,
   });
 
   factory ShowcaseData.empty() => const ShowcaseData(
@@ -20,4 +21,5 @@ class ShowcaseData {
   final bool disableBarrierInteraction;
   final VoidCallback? onBarrierClick;
   final double overlayOpacity;
+  final Color overlayColor;
 }

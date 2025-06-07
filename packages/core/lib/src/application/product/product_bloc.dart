@@ -63,7 +63,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           );
           break;
         case OnResetTour():
+          emit(state.copyWith(isLoading: true));
+
           await _productTourController.resetTour();
+
           emit(
             state.copyWith(
               currentStep: ProductTourStep.reset,

@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,7 +60,8 @@ class AppStorageService implements IAppStorageService {
 
   @override
   Future<bool> get isLayoutVertical async {
-    final isVertical = _sharedPreferences.getBool(StorageKeys.isLayoutVertical.name);
+    final isVertical =
+        _sharedPreferences.getBool(StorageKeys.isLayoutVertical.name);
     return isVertical ?? false;
   }
 
@@ -69,5 +71,46 @@ class AppStorageService implements IAppStorageService {
       StorageKeys.isLayoutVertical.name,
       isVertical,
     );
+  }
+
+  @override
+  Future<bool> get isExistingUser async {
+    final isExisting =
+        _sharedPreferences.getBool(StorageKeys.isExistingUser.name);
+    return isExisting ?? false;
+  }
+
+  @override
+  Future<void> setIsExistingUser(bool isExisting) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isExistingUser.name,
+      isExisting,
+    );
+  }
+
+  @override
+  Future<bool> get isPermissionsChecked async {
+    final isChecked =
+        _sharedPreferences.getBool(StorageKeys.isPermissionsChecked.name);
+    return isChecked ?? false;
+  }
+
+  @override
+  Future<void> setIsPermissionsChecked(bool isChecked) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isPermissionsChecked.name,
+      isChecked,
+    );
+  }
+
+  @override
+  Future<void> clearAllData() async {
+    if (!kDebugMode) return;
+
+    await resetTour();
+    await setIsDarkMode(false);
+    await setIsLayoutVertical(false);
+    await setIsExistingUser(false);
+    await setIsPermissionsChecked(false);
   }
 }

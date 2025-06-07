@@ -35,4 +35,7 @@ class HomeEvent with _$HomeEvent {
       OnPressedDeleteAllEntries;
 
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
+
+  const factory HomeEvent.onLoadDemoData() = OnLoadDemoData;
+  const factory HomeEvent.onResetDemoData() = OnResetDemoData;
 }

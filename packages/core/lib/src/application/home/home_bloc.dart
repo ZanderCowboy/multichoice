@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:core/src/repositories/interfaces/entry/i_entry_repository.dart';
-import 'package:core/src/repositories/interfaces/tabs/i_tabs_repository.dart';
-import 'package:core/src/utils/validator/validator.dart';
+import 'package:core/core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
@@ -15,6 +13,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(
     this._tabsRepository,
     this._entryRepository,
+    this._demoRepository,
   ) : super(HomeState.initial()) {
     on<HomeEvent>(
       (event, emit) async {
@@ -305,12 +304,47 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isLoading: false,
             ));
             break;
+          case OnLoadDemoData():
+            emit(state.copyWith(
+              isLoading: true,
+              tab: TabsDTO.empty(),
+              tabs: null,
+              entry: EntryDTO.empty(),
+              entryCards: null,
+              isValid: false,
+            ));
+
+            final tabs = await _demoRepository.loadDemoTabs();
+
+            emit(state.copyWith(
+              tabs: tabs,
+              isLoading: false,
+            ));
+            break;
+          case OnResetDemoData():
+            emit(
+              state.copyWith(
+                tabs: null,
+                isLoading: true,
+              ),
+            );
+
+            final tabs = await _tabsRepository.readTabs();
+
+            emit(
+              state.copyWith(
+                tabs: tabs,
+                isLoading: false,
+              ),
+            );
+            break;
           default:
         }
       },
     );
   }
 
+  final IDemoRepository _demoRepository;
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
 }

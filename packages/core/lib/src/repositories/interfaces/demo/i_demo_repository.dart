@@ -1,3 +1,5 @@
+import 'package:models/models.dart';
+
 abstract class IDemoRepository {
-  Future<bool> loadDemoData();
+  Future<List<TabsDTO>> loadDemoTabs();
 }
