@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/welcome_modal.dart';
+import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
 
 class WelcomeModalHandler extends StatelessWidget {
   const WelcomeModalHandler({

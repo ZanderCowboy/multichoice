@@ -4,8 +4,8 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/thanks_modal.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/tutorial_welcome_modal.dart';
+import 'package:multichoice/presentation/tutorial/widgets/thanks_modal.dart';
+import 'package:multichoice/presentation/tutorial/widgets/tutorial_welcome_modal.dart';
 import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
 import 'package:showcaseview/showcaseview.dart';
 
