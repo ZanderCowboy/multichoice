@@ -45,6 +45,30 @@ class MoreSection extends StatelessWidget {
             ),
           ),
         ),
+        ListTile(
+          leading: const Icon(Icons.feedback_outlined),
+          title: const Text('Send Feedback'),
+          onTap: () {
+            context.router.push(const FeedbackPageRoute());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.info_outline),
+          title: const Text('About'),
+          onTap: () {
+            showAboutDialog(
+              context: context,
+              applicationName: 'Multichoice',
+              applicationVersion: '0.3.0',
+              applicationIcon: const FlutterLogo(size: 64),
+              children: [
+                const Text(
+                  'Multichoice is a powerful tool for managing your choices and decisions.',
+                ),
+              ],
+            );
+          },
+        ),
       ],
     );
   }
