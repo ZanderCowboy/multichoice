@@ -16,7 +16,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Bump build number
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -69,7 +69,7 @@ jobs:
     name: Build Apps
     # if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
-    # needs: [preBuild]
+    needs: [preBuild]
     secrets: inherit
     permissions:
       contents: read
