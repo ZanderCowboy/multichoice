@@ -26,18 +26,6 @@ part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 
-// TODO(@ZanderCowboy): Rework User Tutorial with Existing Data
-// When the user has existing data,
-// 1. Then the tutorial should first save the existing data to a
-//    file (or something)
-// 2. Then, it should load the dummy data from the file
-// 3. Then, it should show the tutorial with the dummy data
-// 4. Finally, it should restore the original data from the file
-
-// TODO(@ZanderCowboy): Ensure both Layouts Work with the Product Tour
-// 1. Ensure that the Product Tour works with both the Horizontal and
-//  Vertical layouts.
-
 @RoutePage()
 class HomePageWrapper extends StatelessWidget {
   const HomePageWrapper({super.key});
@@ -64,18 +52,13 @@ class HomePageWrapper extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  HomePageState createState() => HomePageState();
-}
-
-class HomePageState extends State<HomePage> {
-  @override
   Widget build(BuildContext context) {
     return WelcomeModalHandler(
-      builder: (context) => const _HomePage(),
+      builder: (_) => const _HomePage(),
       onSkipTour: () async {
         context.read<ProductBloc>().add(const ProductEvent.skipTour());
       },

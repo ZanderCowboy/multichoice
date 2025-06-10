@@ -344,7 +344,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  final IDemoRepository _demoRepository;
+  final ITutorialRepository _demoRepository;
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
 }

@@ -109,7 +109,6 @@ class _ProductTourState extends State<ProductTour> {
           if (context.mounted) {
             coreSl<ProductBloc>().add(const ProductEvent.skipTour());
             widget.onTourComplete(shouldRestoreData: true);
-            // Navigator.of(context).pop();
           }
         },
       ),

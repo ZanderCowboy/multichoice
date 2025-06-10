@@ -6,9 +6,9 @@ import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
-@LazySingleton(as: IDemoRepository)
-class DemoRepository implements IDemoRepository {
-  DemoRepository();
+@LazySingleton(as: ITutorialRepository)
+class TutorialRepository implements ITutorialRepository {
+  TutorialRepository();
 
   @override
   Future<List<TabsDTO>> loadDemoTabs() async {

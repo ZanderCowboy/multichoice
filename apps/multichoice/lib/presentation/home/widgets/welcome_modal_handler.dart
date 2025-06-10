@@ -10,9 +10,9 @@ class WelcomeModalHandler extends StatelessWidget {
     super.key,
   });
 
+  final WidgetBuilder builder;
   final Future<void> Function() onSkipTour;
   final Future<void> Function() onFollowTutorial;
-  final WidgetBuilder builder;
 
   Future<void> _checkAndShowWelcomeModal(BuildContext context) async {
     final appStorageService = coreSl<IAppStorageService>();

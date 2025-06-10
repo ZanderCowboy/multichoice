@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
   const WelcomeModal({
@@ -16,7 +17,7 @@ class WelcomeModal extends StatelessWidget {
       canPop: false,
       child: Dialog(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: allPadding24,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -27,14 +28,14 @@ class WelcomeModal extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              gap16,
               const Text(
                 'Multichoice helps you organize your thoughts and ideas into customizable collections. '
                 'Would you like to follow a quick tutorial to learn how to use the app?',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 24),
+              gap24,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

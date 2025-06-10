@@ -1,5 +1,5 @@
 import 'package:models/models.dart';
 
-abstract class IDemoRepository {
+abstract class ITutorialRepository {
   Future<List<TabsDTO>> loadDemoTabs();
 }

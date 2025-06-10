@@ -2,9 +2,11 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
-import 'package:multichoice/utils/product_tour/tour_config.dart';
+import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+part 'utils/_get_product_tour_data.dart';
 
 class TourWidgetWrapper extends StatelessWidget {
   const TourWidgetWrapper({
@@ -27,7 +29,7 @@ class TourWidgetWrapper extends StatelessWidget {
         }
 
         final key = getProductTourKey(step, tabId: tabId);
-        final showcaseData = TourConfig.getShowcaseData(step);
+        final showcaseData = _getProductTourData(step);
         final isLightMode = Theme.of(context).brightness == Brightness.light;
 
         if (key != null && context.mounted) {
