@@ -19,7 +19,6 @@ void main() {
   late HomeBloc homeBloc;
   late MockTabsRepository mockTabsRepository;
   late MockEntryRepository mockEntryRepository;
-  late MockDemoRepository mockDemoRepository;
   late Isar db;
   late Clock clock;
 
@@ -38,10 +37,8 @@ void main() {
   setUp(() {
     mockTabsRepository = MockTabsRepository();
     mockEntryRepository = MockEntryRepository();
-    mockDemoRepository = MockDemoRepository();
     clock = Clock.fixed(timestamp);
-    homeBloc =
-        HomeBloc(mockTabsRepository, mockEntryRepository, mockDemoRepository);
+    homeBloc = HomeBloc(mockTabsRepository, mockEntryRepository);
   });
 
   tearDown(() {
@@ -429,33 +426,6 @@ void main() {
             .having((s) => s.isValid, 'isValid', false)
             .having((s) => s.isLoading, 'isLoading', false),
       ],
-    );
-  });
-
-  group('HomeBloc Demo Events', () {
-    blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, tab: TabsDTO.empty(), tabs: null, entry: EntryDTO.empty(), entryCards: null, isValid: false, tabs: List<TabsDTO>, isLoading: false] when onLoadDemoData is added',
-      build: () {
-        when(mockDemoRepository.loadDemoTabs())
-            .thenAnswer((_) async => [TabsDTO.empty()]);
-        return homeBloc;
-      },
-      act: (bloc) => bloc.add(HomeEvent.onLoadDemoData()),
-      expect: () => [
-        isA<HomeState>()
-            .having((s) => s.isLoading, 'isLoading', true)
-            .having((s) => s.tab, 'tab', TabsDTO.empty())
-            .having((s) => s.tabs, 'tabs', null)
-            .having((s) => s.entry, 'entry', EntryDTO.empty())
-            .having((s) => s.entryCards, 'entryCards', null)
-            .having((s) => s.isValid, 'isValid', false),
-        isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.isLoading, 'isLoading', false),
-      ],
-      verify: (bloc) {
-        verify(mockDemoRepository.loadDemoTabs()).called(1);
-      },
     );
   });
 }

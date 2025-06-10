@@ -1,3 +1,6 @@
+//
+// ignore_for_file: avoid_catches_without_on_clauses
+
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -53,7 +56,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
         category: _category,
       );
 
-      final repository = FeedbackRepository();
+      final repository = coreSl<IFeedbackRepository>();
       await repository.submitFeedback(feedback);
 
       if (mounted) {

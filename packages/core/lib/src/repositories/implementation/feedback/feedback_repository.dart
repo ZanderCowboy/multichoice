@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
-
-abstract class IFeedbackRepository {
-  Future<void> submitFeedback(FeedbackModel feedback);
-  Stream<List<FeedbackModel>> getFeedback();
-}
 
 @LazySingleton(as: IFeedbackRepository)
 class FeedbackRepository implements IFeedbackRepository {

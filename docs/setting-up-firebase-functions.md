@@ -14,7 +14,7 @@ npm install -g firebase-tools
 ## Project Structure
 
 The Firebase Functions are located in the `functions/` directory with the following structure:
-```
+```sh
 functions/
 ├── src/
 │   └── index.ts         # Main functions file
@@ -27,11 +27,13 @@ functions/
 ## Understanding TypeScript and index.ts
 
 ### What is TypeScript?
+
 TypeScript is a superset of JavaScript that adds static typing. This means you can specify the type of variables, function parameters, and return values, which helps catch errors during development.
 
 ### Key TypeScript Concepts in Our Code
 
 #### 1. Imports
+
 ```typescript
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { defineString } from "firebase-functions/params";
@@ -43,6 +45,7 @@ import * as nodemailer from "nodemailer";
 - `* as admin` imports everything from the package and namespaces it under 'admin'
 
 #### 2. Environment Variables with TypeScript
+
 ```typescript
 const emailUser = defineString("EMAIL_USER");
 const emailPass = defineString("EMAIL_PASS");
@@ -52,6 +55,7 @@ const emailPass = defineString("EMAIL_PASS");
 - `.value()` is used to get the actual value when needed
 
 #### 3. Firebase Admin Initialization
+
 ```typescript
 admin.initializeApp();
 ```
@@ -59,6 +63,7 @@ admin.initializeApp();
 - Required to interact with Firebase services
 
 #### 4. Email Transport Configuration
+
 ```typescript
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -73,6 +78,7 @@ const transporter = nodemailer.createTransport({
 - `.value()` retrieves the actual values from our environment variables
 
 #### 5. Function Definition
+
 ```typescript
 export const onNewFeedback = onDocumentCreated({
   document: "feedback/{feedbackId}",
@@ -91,6 +97,7 @@ Breaking this down:
 - The second parameter is an async function that handles the event
 
 #### 6. Event Handling
+
 ```typescript
 const feedback = event.data?.data();
 if (!feedback) {
@@ -103,6 +110,7 @@ if (!feedback) {
 - TypeScript helps ensure we handle potential null values
 
 #### 7. Email Options
+
 ```typescript
 const mailOptions = {
   from: emailUser.value(),
@@ -116,6 +124,7 @@ const mailOptions = {
 - `||` operator provides fallback values if properties are undefined
 
 #### 8. Error Handling
+
 ```typescript
 try {
   await transporter.sendMail(mailOptions);
@@ -129,6 +138,7 @@ try {
 - TypeScript ensures proper error handling
 
 ### TypeScript Configuration (tsconfig.json)
+
 ```json
 {
   "compilerOptions": {
@@ -240,17 +250,20 @@ firebase deploy --only functions
 ## Troubleshooting
 
 ### Functions Not Showing in Console
+
 - Ensure the function is properly exported in `index.ts`
 - Check that the deployment was successful
 - Verify the region matches your Firebase project settings
 
 ### Email Not Sending
+
 - Verify Gmail app password is correct (including spaces)
 - Check environment variables are set correctly
 - Ensure the Gmail account has 2-factor authentication enabled
 - Check function logs in Firebase Console for specific errors
 
 ### PowerShell Issues
+
 If you encounter PowerShell execution policy issues:
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
@@ -274,4 +287,4 @@ Key dependencies in `package.json`:
 1. Submit feedback through the app
 2. Check Firebase Console → Functions → Logs for execution
 3. Verify email receipt
-4. Check Firestore for feedback document creation 
+4. Check Firestore for feedback document creation

@@ -13,7 +13,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(
     this._tabsRepository,
     this._entryRepository,
-    this._demoRepository,
   ) : super(HomeState.initial()) {
     on<HomeEvent>(
       (event, emit) async {
@@ -311,7 +310,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  final IDemoRepository _demoRepository;
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
 }

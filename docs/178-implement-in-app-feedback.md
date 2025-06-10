@@ -22,7 +22,7 @@ Found in `functions/`
 
 ### Deploy the Function
 
-> Requires `firebase init` in root directory 
+> Requires `firebase init` in root directory
 
 ```sh
 firebase deploy --only functions
@@ -42,7 +42,7 @@ firebase deploy --only functions
 
 `firebase --version`
 
-5. Run firebase ocmmands 
+5. Run firebase ocmmands
 
 `firebase login` etc
 
@@ -163,7 +163,7 @@ PS C:\Users\Zander Kotze> gcloud services enable eventarc.googleapis.com --proje
 Operation "operations/acat.p2-82796040762-729a13b0-684a-4d99-a478-50810080b7e3" finished successfully.
 ```
 
-## Look into 
+## Look into
 
 ```
 +  functions[onNewFeedback(europe-west1)] Successful create operation.
