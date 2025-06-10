@@ -9,8 +9,6 @@ import 'package:multichoice/presentation/tutorial/widgets/tutorial_welcome_modal
 import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-part 'widgets/popup.dart';
-
 class ProductTour extends StatefulWidget {
   const ProductTour({
     required this.builder,
