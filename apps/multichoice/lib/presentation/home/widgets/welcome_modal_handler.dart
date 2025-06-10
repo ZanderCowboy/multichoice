@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/welcome_modal.dart';
+import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
 
 class WelcomeModalHandler extends StatelessWidget {
   const WelcomeModalHandler({
@@ -10,9 +10,9 @@ class WelcomeModalHandler extends StatelessWidget {
     super.key,
   });
 
+  final WidgetBuilder builder;
   final Future<void> Function() onSkipTour;
   final Future<void> Function() onFollowTutorial;
-  final WidgetBuilder builder;
 
   Future<void> _checkAndShowWelcomeModal(BuildContext context) async {
     final appStorageService = coreSl<IAppStorageService>();

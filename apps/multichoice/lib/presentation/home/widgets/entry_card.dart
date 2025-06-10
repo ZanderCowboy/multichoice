@@ -11,7 +11,15 @@ class EntryCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final menuController = MenuController();
-    final isLayoutVertical = context.watch<AppLayout>().isLayoutVertical;
+    final appLayout = context.watch<AppLayout>();
+
+    if (!appLayout.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    final isLayoutVertical = appLayout.isLayoutVertical;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {

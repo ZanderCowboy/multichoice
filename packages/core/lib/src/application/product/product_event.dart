@@ -7,4 +7,6 @@ class ProductEvent with _$ProductEvent {
   const factory ProductEvent.previousStep() = OnPreviousStep;
   const factory ProductEvent.skipTour() = OnSkipTour;
   const factory ProductEvent.resetTour() = OnResetTour;
+  const factory ProductEvent.onLoadData() = OnLoadData;
+  const factory ProductEvent.onClearData() = OnClearData;
 }

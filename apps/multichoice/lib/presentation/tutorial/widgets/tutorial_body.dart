@@ -14,7 +14,7 @@ class TutorialBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -86,7 +86,8 @@ class _HorizontalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
-    final isFirstTab = context.watch<HomeBloc>().state.tabs?.first.id == tab.id;
+    final isFirstTab =
+        context.watch<ProductBloc>().state.tabs?.first.id == tab.id;
 
     return Card(
       margin: allPadding4,

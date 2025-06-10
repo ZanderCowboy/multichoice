@@ -4,12 +4,10 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/thanks_modal.dart';
-import 'package:multichoice/presentation/tutorial/widgets/modals/tutorial_welcome_modal.dart';
+import 'package:multichoice/presentation/tutorial/widgets/thanks_modal.dart';
+import 'package:multichoice/presentation/tutorial/widgets/tutorial_welcome_modal.dart';
 import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
 import 'package:showcaseview/showcaseview.dart';
-
-part 'widgets/popup.dart';
 
 class ProductTour extends StatefulWidget {
   const ProductTour({
@@ -40,7 +38,7 @@ class _ProductTourState extends State<ProductTour> {
         return BlocListener<ProductBloc, ProductState>(
           listener: (context, state) {
             if (state.currentStep == ProductTourStep.reset) {
-              context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
+              context.read<ProductBloc>().add(const ProductEvent.onLoadData());
               handleProductTour(context, shouldRestart: true);
               return;
             } else if (state.currentStep == ProductTourStep.thanksPopup) {
@@ -72,7 +70,7 @@ class _ProductTourState extends State<ProductTour> {
       // Only show welcome modal if we have data
       if (currentStep == ProductTourStep.welcomePopup &&
           !_isShowingDialog &&
-          (context.read<HomeBloc>().state.tabs?.isNotEmpty ?? false)) {
+          (context.read<ProductBloc>().state.tabs?.isNotEmpty ?? false)) {
         _showWelcomeModal(context);
       } else if (currentStep == ProductTourStep.thanksPopup &&
           !_isShowingDialog) {
@@ -109,7 +107,6 @@ class _ProductTourState extends State<ProductTour> {
           if (context.mounted) {
             coreSl<ProductBloc>().add(const ProductEvent.skipTour());
             widget.onTourComplete(shouldRestoreData: true);
-            // Navigator.of(context).pop();
           }
         },
       ),

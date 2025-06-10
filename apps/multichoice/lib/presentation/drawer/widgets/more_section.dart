@@ -19,13 +19,17 @@ class MoreSection extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Text('Reset Tutorial'),
+          title: const Text('Restart Tutorial'),
           subtitle: const Text(
             'Temporarily switches to demo data to show app features, then restores your original data',
             style: TextStyle(fontSize: 12),
           ),
           trailing: IconButton(
             onPressed: () async {
+              final appLayout = context.read<AppLayout>();
+              final originalLayout = appLayout.isLayoutVertical;
+              await appLayout.setLayoutVertical(isVertical: false);
+
               await Future.value(
                 coreSl<IProductTourController>().resetTour(),
               ).whenComplete(() async {
@@ -34,7 +38,11 @@ class MoreSection extends StatelessWidget {
 
                   await context.router.push(
                     TutorialPageRoute(
-                      onCallback: () {},
+                      onCallback: () async {
+                        await appLayout.setLayoutVertical(
+                          isVertical: originalLayout,
+                        );
+                      },
                     ),
                   );
                 }

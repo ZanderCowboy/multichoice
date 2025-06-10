@@ -10,14 +10,14 @@ class AppStorageService implements IAppStorageService {
 
   @override
   Future<bool> get isDarkMode async {
-    final isDarkMode = _sharedPreferences.getBool(StorageKeys.isDarkMode.name);
+    final isDarkMode = _sharedPreferences.getBool(StorageKeys.isDarkMode.key);
     return isDarkMode ?? false;
   }
 
   @override
   Future<void> setIsDarkMode(bool isDarkMode) async {
     await _sharedPreferences.setBool(
-      StorageKeys.isDarkMode.name,
+      StorageKeys.isDarkMode.key,
       isDarkMode,
     );
   }
@@ -25,29 +25,28 @@ class AppStorageService implements IAppStorageService {
   @override
   Future<int> get currentStep async {
     final currentStep =
-        _sharedPreferences.getInt(StorageKeys.currentStep.name) ?? -1;
+        _sharedPreferences.getInt(StorageKeys.currentStep.key) ?? -1;
     return currentStep;
   }
 
   @override
   Future<void> setCurrentStep(int step) async {
     await _sharedPreferences.setInt(
-      StorageKeys.currentStep.name,
+      StorageKeys.currentStep.key,
       step,
     );
   }
 
   @override
   Future<bool> get isCompleted async {
-    final isCompleted =
-        _sharedPreferences.getBool(StorageKeys.isCompleted.name);
+    final isCompleted = _sharedPreferences.getBool(StorageKeys.isCompleted.key);
     return isCompleted ?? false;
   }
 
   @override
   Future<void> setIsCompleted(bool isCompleted) async {
     await _sharedPreferences.setBool(
-      StorageKeys.isCompleted.name,
+      StorageKeys.isCompleted.key,
       isCompleted,
     );
   }
@@ -61,14 +60,14 @@ class AppStorageService implements IAppStorageService {
   @override
   Future<bool> get isLayoutVertical async {
     final isVertical =
-        _sharedPreferences.getBool(StorageKeys.isLayoutVertical.name);
+        _sharedPreferences.getBool(StorageKeys.isLayoutVertical.key);
     return isVertical ?? false;
   }
 
   @override
   Future<void> setIsLayoutVertical(bool isVertical) async {
     await _sharedPreferences.setBool(
-      StorageKeys.isLayoutVertical.name,
+      StorageKeys.isLayoutVertical.key,
       isVertical,
     );
   }
@@ -76,14 +75,14 @@ class AppStorageService implements IAppStorageService {
   @override
   Future<bool> get isExistingUser async {
     final isExisting =
-        _sharedPreferences.getBool(StorageKeys.isExistingUser.name);
+        _sharedPreferences.getBool(StorageKeys.isExistingUser.key);
     return isExisting ?? false;
   }
 
   @override
   Future<void> setIsExistingUser(bool isExisting) async {
     await _sharedPreferences.setBool(
-      StorageKeys.isExistingUser.name,
+      StorageKeys.isExistingUser.key,
       isExisting,
     );
   }
@@ -91,14 +90,14 @@ class AppStorageService implements IAppStorageService {
   @override
   Future<bool> get isPermissionsChecked async {
     final isChecked =
-        _sharedPreferences.getBool(StorageKeys.isPermissionsChecked.name);
+        _sharedPreferences.getBool(StorageKeys.isPermissionsChecked.key);
     return isChecked ?? false;
   }
 
   @override
   Future<void> setIsPermissionsChecked(bool isChecked) async {
     await _sharedPreferences.setBool(
-      StorageKeys.isPermissionsChecked.name,
+      StorageKeys.isPermissionsChecked.key,
       isChecked,
     );
   }

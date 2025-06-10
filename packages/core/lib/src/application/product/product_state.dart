@@ -4,12 +4,14 @@ part of 'product_bloc.dart';
 abstract class ProductState with _$ProductState {
   const factory ProductState({
     required ProductTourStep currentStep,
+    required List<TabsDTO>? tabs,
     required bool isLoading,
     required String? errorMessage,
   }) = _ProductState;
 
   factory ProductState.initial() => ProductState(
         currentStep: ProductTourStep.noneCompleted,
+        tabs: null,
         isLoading: false,
         errorMessage: null,
       );

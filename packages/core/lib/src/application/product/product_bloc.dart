@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:core/src/controllers/i_product_tour_controller.dart';
+import 'package:core/core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
@@ -12,6 +12,7 @@ part 'product_state.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(
     this._productTourController,
+    this._tutorialRepository,
   ) : super(ProductState.initial()) {
     on<ProductEvent>((event, emit) async {
       switch (event) {
@@ -75,10 +76,28 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             ),
           );
           break;
+        case OnLoadData():
+          final tabs = await _tutorialRepository.loadTutorialData();
+
+          emit(state.copyWith(
+            tabs: tabs,
+            isLoading: false,
+          ));
+          break;
+        case OnClearData():
+          emit(
+            state.copyWith(
+              tabs: null,
+              isLoading: true,
+            ),
+          );
+
+          break;
         default:
       }
     });
   }
 
   final IProductTourController _productTourController;
+  final ITutorialRepository _tutorialRepository;
 }

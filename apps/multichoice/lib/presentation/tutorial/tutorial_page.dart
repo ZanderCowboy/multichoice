@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/presentation/tutorial/widgets/tutorial_banner.dart';
-import 'package:multichoice/presentation/tutorial/widgets/tutorial_body.dart';
-import 'package:multichoice/presentation/tutorial/widgets/tutorial_drawer.dart';
+import 'package:multichoice/presentation/tutorial/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 import 'package:provider/provider.dart';
@@ -31,11 +29,13 @@ class TutorialPage extends StatelessWidget {
         /// using BlocProvider.value to avoid the issue where it tries
         /// to add events that is already closed.
         BlocProvider<ProductBloc>.value(
-          value: coreSl<ProductBloc>(),
+          value: coreSl<ProductBloc>()
+            ..add(
+              const ProductEvent.onLoadData(),
+            ),
         ),
-        BlocProvider<HomeBloc>(
-          create: (context) =>
-              coreSl<HomeBloc>()..add(const HomeEvent.onLoadDemoData()),
+        BlocProvider.value(
+          value: coreSl<HomeBloc>(),
         ),
       ],
       child: ProductTour(

@@ -4,15 +4,19 @@ import 'package:isar/isar.dart';
 import 'package:mockito/annotations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @GenerateNiceMocks([
   MockSpec<ITabsRepository>(as: #MockTabsRepository),
   MockSpec<IEntryRepository>(as: #MockEntryRepository),
-  MockSpec<IDemoRepository>(as: #MockDemoRepository),
+  MockSpec<ITutorialRepository>(as: #MockTutorialRepository),
   MockSpec<Isar>(as: #MockIsar),
   MockSpec<IFilePickerWrapper>(as: #MockFilePickerWrapper),
   MockSpec<FilePicker>(as: #MockFilePicker),
   MockSpec<PathProviderPlatform>(as: #MockPathProviderPlatform),
   MockSpec<PackageInfo>(as: #MockPackageInfo),
+  MockSpec<IProductTourController>(as: #MockProductTourController),
+  MockSpec<SharedPreferences>(as: #MockSharedPreferences),
+  MockSpec<IAppStorageService>(as: #MockAppStorageService),
 ])
 void main() {}

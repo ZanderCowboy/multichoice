@@ -304,40 +304,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isLoading: false,
             ));
             break;
-          case OnLoadDemoData():
-            emit(state.copyWith(
-              isLoading: true,
-              tab: TabsDTO.empty(),
-              tabs: null,
-              entry: EntryDTO.empty(),
-              entryCards: null,
-              isValid: false,
-            ));
 
-            final tabs = await _demoRepository.loadDemoTabs();
-
-            emit(state.copyWith(
-              tabs: tabs,
-              isLoading: false,
-            ));
-            break;
-          case OnResetDemoData():
-            emit(
-              state.copyWith(
-                tabs: null,
-                isLoading: true,
-              ),
-            );
-
-            final tabs = await _tabsRepository.readTabs();
-
-            emit(
-              state.copyWith(
-                tabs: tabs,
-                isLoading: false,
-              ),
-            );
-            break;
           default:
         }
       },
