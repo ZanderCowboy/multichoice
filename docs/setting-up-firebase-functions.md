@@ -4,12 +4,12 @@ This document details the setup and implementation of Firebase Functions for the
 
 ## Prerequisites
 
-1. Install Node.js
-2. Install Firebase CLI:
+- Install Node.js
+- Install Firebase CLI:
 ```bash
 npm install -g firebase-tools
 ```
-3. Install Google Cloud SDK (for environment variables)
+- Install Google Cloud SDK (for environment variables)
 
 ## Project Structure
 

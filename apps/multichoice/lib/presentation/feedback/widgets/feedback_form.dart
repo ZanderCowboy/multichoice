@@ -5,8 +5,8 @@ import 'dart:io';
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:models/models.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({super.key});
@@ -51,8 +51,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
         rating: _rating,
         deviceInfo:
             '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
-        appVersion: '0.3.0', // Replace with actual app version
-        timestamp: DateTime.now(),
+        appVersion: await coreSl<IAppInfoService>().getAppVersion(),
+        timestamp: DateTime.now().toLocal(),
         category: _category,
       );
 
@@ -83,7 +83,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: allPadding16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -109,7 +109,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 return null;
               },
             ),
-            const Gap(16),
+            gap16,
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -126,7 +126,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 return null;
               },
             ),
-            const Gap(16),
+            gap16,
             TextFormField(
               controller: _messageController,
               decoration: const InputDecoration(
@@ -141,7 +141,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 return null;
               },
             ),
-            const Gap(16),
+            gap16,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(5, (index) {
@@ -157,7 +157,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 );
               }),
             ),
-            const Gap(24),
+            gap24,
             ElevatedButton(
               onPressed: _isSubmitting ? null : _submitFeedback,
               child: _isSubmitting

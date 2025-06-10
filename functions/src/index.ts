@@ -1,5 +1,5 @@
-import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {defineString} from "firebase-functions/params";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { defineString } from "firebase-functions/params";
 import * as admin from "firebase-admin";
 import * as nodemailer from "nodemailer";
 
@@ -41,7 +41,7 @@ export const onNewFeedback = onDocumentCreated({
         ${feedback.userEmail}</p>` : ""}
       <p><strong>Timestamp:</strong> 
       ${feedback.timestamp ?
-    feedback.timestamp.toDate().toLocaleString() : "N/A"}</p>
+        feedback.timestamp.toDate().toLocaleString() : "N/A"}</p>
     `,
   };
 

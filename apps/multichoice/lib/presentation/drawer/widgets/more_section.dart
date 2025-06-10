@@ -63,11 +63,15 @@ class MoreSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.info_outline),
           title: const Text('About'),
-          onTap: () {
+          onTap: () async {
+            final appVersion = await coreSl<IAppInfoService>().getAppVersion();
+
+            if (!context.mounted) return;
+
             showAboutDialog(
               context: context,
               applicationName: 'Multichoice',
-              applicationVersion: '0.3.0',
+              applicationVersion: appVersion,
               applicationIcon: const FlutterLogo(size: 64),
               children: [
                 const Text(

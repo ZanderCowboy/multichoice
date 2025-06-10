@@ -16,7 +16,7 @@ class HomeDrawer extends StatelessWidget {
           const DrawerHeaderSection(),
           Expanded(
             child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.zero,
               children: const [
                 AppearanceSection(),

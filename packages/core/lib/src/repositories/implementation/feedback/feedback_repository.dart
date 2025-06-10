@@ -8,8 +8,7 @@ class FeedbackRepository implements IFeedbackRepository {
   final FirebaseFirestore _firestore;
   final String _collection = 'feedback';
 
-  FeedbackRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  FeedbackRepository(this._firestore);
 
   @override
   Future<void> submitFeedback(FeedbackModel feedback) async {
