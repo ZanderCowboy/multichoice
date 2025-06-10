@@ -43,13 +43,10 @@ class TutorialDrawer extends StatelessWidget {
                         ),
                       ),
                       gap4,
-                      TourWidgetWrapper(
-                        step: ProductTourStep.showDetails,
-                        child: Text(
-                          'Welcome back!',
-                          style: AppTypography.subtitleMedium.copyWith(
-                            color: Colors.white70,
-                          ),
+                      Text(
+                        'Welcome back!',
+                        style: AppTypography.subtitleMedium.copyWith(
+                          color: Colors.white70,
                         ),
                       ),
                     ],
@@ -76,11 +73,20 @@ class TutorialDrawer extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               children: const [
-                AppearanceSection(),
+                TourWidgetWrapper(
+                  step: ProductTourStep.showAppearanceSection,
+                  child: AppearanceSection(),
+                ),
                 Divider(height: 32),
-                DataSection(),
+                TourWidgetWrapper(
+                  step: ProductTourStep.showDataSection,
+                  child: DataSection(),
+                ),
                 Divider(height: 32),
-                MoreSection(),
+                TourWidgetWrapper(
+                  step: ProductTourStep.showMoreSection,
+                  child: MoreSection(),
+                ),
               ],
             ),
           ),

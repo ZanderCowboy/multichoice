@@ -29,11 +29,13 @@ class TutorialPage extends StatelessWidget {
         /// using BlocProvider.value to avoid the issue where it tries
         /// to add events that is already closed.
         BlocProvider<ProductBloc>.value(
-          value: coreSl<ProductBloc>(),
+          value: coreSl<ProductBloc>()
+            ..add(
+              const ProductEvent.onLoadData(),
+            ),
         ),
-        BlocProvider<HomeBloc>(
-          create: (context) =>
-              coreSl<HomeBloc>()..add(const HomeEvent.onLoadDemoData()),
+        BlocProvider.value(
+          value: coreSl<HomeBloc>(),
         ),
       ],
       child: ProductTour(

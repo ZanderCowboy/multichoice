@@ -11,7 +11,7 @@ class TutorialRepository implements ITutorialRepository {
   TutorialRepository();
 
   @override
-  Future<List<TabsDTO>> loadDemoTabs() async {
+  Future<List<TabsDTO>> loadTutorialData() async {
     try {
       final movieEntries = [
         EntryDTO(

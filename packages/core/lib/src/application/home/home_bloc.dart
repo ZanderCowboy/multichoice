@@ -13,7 +13,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(
     this._tabsRepository,
     this._entryRepository,
-    this._demoRepository,
   ) : super(HomeState.initial()) {
     on<HomeEvent>(
       (event, emit) async {
@@ -304,47 +303,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isLoading: false,
             ));
             break;
-          case OnLoadDemoData():
-            emit(state.copyWith(
-              isLoading: true,
-              tab: TabsDTO.empty(),
-              tabs: null,
-              entry: EntryDTO.empty(),
-              entryCards: null,
-              isValid: false,
-            ));
 
-            final tabs = await _demoRepository.loadDemoTabs();
-
-            emit(state.copyWith(
-              tabs: tabs,
-              isLoading: false,
-            ));
-            break;
-          case OnResetDemoData():
-            emit(
-              state.copyWith(
-                tabs: null,
-                isLoading: true,
-              ),
-            );
-
-            final tabs = await _tabsRepository.readTabs();
-
-            emit(
-              state.copyWith(
-                tabs: tabs,
-                isLoading: false,
-              ),
-            );
-            break;
           default:
         }
       },
     );
   }
 
-  final ITutorialRepository _demoRepository;
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
 }

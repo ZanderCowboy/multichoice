@@ -38,7 +38,7 @@ class _ProductTourState extends State<ProductTour> {
         return BlocListener<ProductBloc, ProductState>(
           listener: (context, state) {
             if (state.currentStep == ProductTourStep.reset) {
-              context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
+              context.read<ProductBloc>().add(const ProductEvent.onLoadData());
               handleProductTour(context, shouldRestart: true);
               return;
             } else if (state.currentStep == ProductTourStep.thanksPopup) {
@@ -70,7 +70,7 @@ class _ProductTourState extends State<ProductTour> {
       // Only show welcome modal if we have data
       if (currentStep == ProductTourStep.welcomePopup &&
           !_isShowingDialog &&
-          (context.read<HomeBloc>().state.tabs?.isNotEmpty ?? false)) {
+          (context.read<ProductBloc>().state.tabs?.isNotEmpty ?? false)) {
         _showWelcomeModal(context);
       } else if (currentStep == ProductTourStep.thanksPopup &&
           !_isShowingDialog) {

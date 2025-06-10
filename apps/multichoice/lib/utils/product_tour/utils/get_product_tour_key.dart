@@ -22,8 +22,12 @@ GlobalKey? getProductTourKey(dynamic step, {int? tabId}) {
       return ProductTourKeys.showCollectionMenu;
     case ProductTourStep.showSettings:
       return ProductTourKeys.showSettings;
-    case ProductTourStep.showDetails:
-      return ProductTourKeys.showDetails;
+    case ProductTourStep.showAppearanceSection:
+      return ProductTourKeys.showAppearanceSection;
+    case ProductTourStep.showDataSection:
+      return ProductTourKeys.showDataSection;
+    case ProductTourStep.showMoreSection:
+      return ProductTourKeys.showMoreSection;
     case ProductTourStep.closeSettings:
       return ProductTourKeys.closeSettings;
     case ProductTourStep.thanksPopup:

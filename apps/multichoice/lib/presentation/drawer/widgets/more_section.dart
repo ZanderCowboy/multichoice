@@ -19,7 +19,7 @@ class MoreSection extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Text('Reset Tutorial'),
+          title: const Text('Restart Tutorial'),
           subtitle: const Text(
             'Temporarily switches to demo data to show app features, then restores your original data',
             style: TextStyle(fontSize: 12),

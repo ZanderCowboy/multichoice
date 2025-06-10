@@ -8,11 +8,12 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 @GenerateNiceMocks([
   MockSpec<ITabsRepository>(as: #MockTabsRepository),
   MockSpec<IEntryRepository>(as: #MockEntryRepository),
-  MockSpec<ITutorialRepository>(as: #MockDemoRepository),
+  MockSpec<ITutorialRepository>(as: #MockTutorialRepository),
   MockSpec<Isar>(as: #MockIsar),
   MockSpec<IFilePickerWrapper>(as: #MockFilePickerWrapper),
   MockSpec<FilePicker>(as: #MockFilePicker),
   MockSpec<PathProviderPlatform>(as: #MockPathProviderPlatform),
   MockSpec<PackageInfo>(as: #MockPackageInfo),
+  MockSpec<IProductTourController>(as: #MockProductTourController),
 ])
 void main() {}

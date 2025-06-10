@@ -12,6 +12,7 @@ part 'product_state.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(
     this._productTourController,
+    this._tutorialRepository,
   ) : super(ProductState.initial()) {
     on<ProductEvent>((event, emit) async {
       switch (event) {
@@ -75,10 +76,28 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             ),
           );
           break;
+        case OnLoadData():
+          final tabs = await _tutorialRepository.loadTutorialData();
+
+          emit(state.copyWith(
+            tabs: tabs,
+            isLoading: false,
+          ));
+          break;
+        case OnClearData():
+          emit(
+            state.copyWith(
+              tabs: null,
+              isLoading: true,
+            ),
+          );
+
+          break;
         default:
       }
     });
   }
 
   final IProductTourController _productTourController;
+  final ITutorialRepository _tutorialRepository;
 }
