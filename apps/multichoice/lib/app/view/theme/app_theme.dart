@@ -2,9 +2,9 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
 import 'package:multichoice/app/view/theme/app_typography.dart';
-import 'package:multichoice/constants/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'theme_extension/_dark_app_colors.dart';
 part 'theme_extension/_dark_text_theme.dart';
@@ -157,6 +157,27 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(
+            AppPalette.paletteTwo.sanJuan,
+          ),
+          backgroundColor: WidgetStatePropertyAll(
+            AppPalette.grey.geyserLight,
+          ),
+          textStyle: WidgetStatePropertyAll(
+            AppTypography.bodyLarge.copyWith(
+              color: AppPalette.paletteTwo.sanJuan,
+            ),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: borderCircular12),
+          ),
+          minimumSize: const WidgetStatePropertyAll(
+            elevatedButtonMinimumSize,
+          ),
+        ),
+      ),
       dialogTheme: DialogTheme(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
@@ -224,13 +245,6 @@ class AppTheme with ChangeNotifier {
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: Colors.white,
         selectionHandleColor: Colors.grey,
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            AppPalette.grey.geyserLight,
-          ),
-        ),
       ),
       extensions: [
         _darkAppColors,

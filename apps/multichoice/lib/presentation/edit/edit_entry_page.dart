@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
 class EditEntryPage extends StatelessWidget {

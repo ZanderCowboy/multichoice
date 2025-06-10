@@ -1,16 +1,26 @@
-part of '../home_drawer.dart';
+part of 'export.dart';
 
-class _LightDarkModeButton extends HookWidget {
-  const _LightDarkModeButton();
+class LightDarkModeButton extends HookWidget {
+  const LightDarkModeButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final sharedPref = coreSl<SharedPreferences>();
+    final appStorageService = coreSl<IAppStorageService>();
 
-    final isDarkMode =
-        sharedPref.getBool('isDarkMode') ?? ThemeMode.system == ThemeMode.dark;
+    final isDark = useState<bool>(false);
 
-    final isDark = useState<bool>(isDarkMode);
+    useEffect(
+      () {
+        Future<void> loadDarkModePreference() async {
+          final isDarkMode = await appStorageService.isDarkMode;
+          isDark.value = isDarkMode;
+        }
+
+        loadDarkModePreference();
+        return null;
+      },
+      [],
+    );
 
     return SwitchListTile(
       key: context.keys.lightDarkModeSwitch,
@@ -22,11 +32,11 @@ class _LightDarkModeButton extends HookWidget {
       ),
       inactiveThumbColor: Colors.black,
       inactiveThumbImage: AssetImage(Assets.images.sun.path),
-      onChanged: (value) {
+      onChanged: (value) async {
         isDark.value = !isDark.value;
         context.read<AppTheme>().themeMode =
             isDark.value == true ? ThemeMode.dark : ThemeMode.light;
-        sharedPref.setBool('isDarkMode', isDark.value);
+        await appStorageService.setIsDarkMode(isDark.value);
       },
     );
   }

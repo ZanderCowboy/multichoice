@@ -7,3 +7,5 @@ dependency_overrides:
     path: ../../packages/models
   theme:
     path: ../../packages/theme
+  ui_kit:
+    path: ../../packages/ui_kit

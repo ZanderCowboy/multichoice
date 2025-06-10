@@ -12,3 +12,4 @@ analyzer:
     - lib/firebase_options.dart
     - "**/*.gr.dart"
     - "**/*.gen.dart"
+    - /dummy/

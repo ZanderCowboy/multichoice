@@ -1,20 +1,33 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class AppLayout with ChangeNotifier {
-  final _prefs = coreSl<SharedPreferences>();
+class AppLayout extends ChangeNotifier {
+  AppLayout() {
+    _initialize();
+  }
 
-  bool _appLayout = true;
-  bool get appLayout => isLayoutVertical();
+  final _appStorageService = coreSl<IAppStorageService>();
+  bool _isLayoutVertical = false;
+  bool _isInitialized = false;
 
-  set appLayout(bool isLayoutVertical) {
-    _appLayout = isLayoutVertical;
+  bool get isLayoutVertical => _isLayoutVertical;
+  bool get isInitialized => _isInitialized;
 
-    _prefs.setBool('isLayoutVertical', isLayoutVertical);
-
+  Future<void> _initialize() async {
+    await _loadLayoutPreference();
+    _isInitialized = true;
     notifyListeners();
   }
 
-  bool isLayoutVertical() => _prefs.getBool('isLayoutVertical') ?? _appLayout;
+  Future<void> _loadLayoutPreference() async {
+    _isLayoutVertical = await _appStorageService.isLayoutVertical;
+  }
+
+  Future<void> setLayoutVertical({required bool isVertical}) async {
+    if (_isLayoutVertical == isVertical) return;
+
+    _isLayoutVertical = isVertical;
+    await _appStorageService.setIsLayoutVertical(isVertical);
+    notifyListeners();
+  }
 }

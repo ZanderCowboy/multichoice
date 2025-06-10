@@ -1,0 +1,65 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Code Organization Guide
+
+## Package Structure
+Each package should follow this structure:
+```
+package_name/
+├── lib/
+│   ├── src/           # Implementation files
+│   ├── package_name.dart  # Public API
+│   └── models/        # Data models
+├── test/              # Test files
+└── pubspec.yaml       # Package configuration
+```
+
+## App Structure
+Each Flutter app should follow this structure:
+```
+app_name/
+├── lib/
+│   ├── main.dart      # Entry point
+│   ├── app.dart       # App configuration
+│   ├── features/      # Feature modules
+│   ├── shared/        # Shared components
+│   └── utils/         # Utility functions
+├── test/              # Test files
+└── pubspec.yaml       # App configuration
+```
+
+## Feature Organization
+Features should be organized as follows:
+```
+feature_name/
+├── data/             # Data layer
+│   ├── repositories/
+│   └── datasources/
+├── domain/           # Business logic
+│   ├── entities/
+│   └── usecases/
+└── presentation/     # UI layer
+    ├── pages/
+    ├── widgets/
+    └── controllers/
+```
+
+## Best Practices
+1. Keep files focused and single-responsibility. Multiple files is prefered with part/part-of instead of large files. 
+2. Use barrel files (index.dart) for clean exports, named export.dart
+3. Follow the dependency rule: presentation → domain → data
+4. Keep business logic in the domain layer
+5. Use dependency injection for better testability
+
+## Linting
+1. Avoid missing commas
+
+## Testing
+- Unit tests for business logic
+- Widget tests for UI components
+- Integration tests for feature flows
+- Place tests next to the code they test
+

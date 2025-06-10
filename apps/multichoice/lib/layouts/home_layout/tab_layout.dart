@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/layout/app_layout.dart';
-import 'package:multichoice/constants/export.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
-import 'package:multichoice/utils/custom_scroll_behaviour.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/tab/horizontal_tab.dart';
 part 'widgets/tab/vertical_tab.dart';
@@ -20,7 +18,15 @@ class TabLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<AppLayout>().appLayout
+    final appLayout = context.watch<AppLayout>();
+
+    if (!appLayout.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return appLayout.isLayoutVertical
         ? _VerticalTab(tab: tab)
         : _HorizontalTab(tab: tab);
   }
