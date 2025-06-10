@@ -11,14 +11,6 @@ class _VerticalEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isFirstTab = context
-            .watch<HomeBloc>()
-            .state
-            .tabs
-            ?.firstWhere((tab) => tab.id == id)
-            .isFirst ??
-        false;
-
     return Expanded(
       child: CustomScrollView(
         controller: ScrollController(),
@@ -29,36 +21,13 @@ class _VerticalEntry extends StatelessWidget {
             itemBuilder: (context, index) {
               final entry = entries[index];
 
-              if (entries.isNotEmpty && index == 0 && isFirstTab) {
-                final step = context.watch<ProductBloc>().state.currentStep;
-
-                if (step == ProductTourStep.showItemsInCollection) {
-                  return TourWidgetWrapper(
-                    step: ProductTourStep.showItemsInCollection,
-                    child: EntryCard(entry: entry),
-                  );
-                } else if (step == ProductTourStep.showItemActions) {
-                  return TourWidgetWrapper(
-                    step: ProductTourStep.showItemActions,
-                    child: EntryCard(entry: entry),
-                  );
-                }
-
-                return EntryCard(entry: entry);
-              }
-
               return EntryCard(entry: entry);
             },
           ),
           SliverToBoxAdapter(
-            child: isFirstTab
-                ? TourWidgetWrapper(
-                    step: ProductTourStep.addNewItem,
-                    child: NewEntry(
-                      tabId: id,
-                    ),
-                  )
-                : NewEntry(tabId: id),
+            child: NewEntry(
+              tabId: id,
+            ),
           ),
         ],
       ),

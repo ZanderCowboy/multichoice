@@ -38,12 +38,12 @@ jobs:
       - name: melos coverage:core
         run: melos coverage:core
 
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: packages/core/coverage/lcov.info
-      #     fail_ci_if_error: true
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
 
       - run: echo "Starting analyze"
 
@@ -105,13 +105,13 @@ jobs:
           name: ${{ inputs.build_artifact }}
           path: ./apps/multichoice/build/app/outputs/bundle/${{ inputs.environment_flag }}/app-${{ inputs.environment_flag }}.aab
 
-      # - name: Upload artifact to Firebase App Distribution
-      #   if: success()
-      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
-      #   with:
-      #     appId: ${{secrets.APP_ID}}
-      #     serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
-      #     groups: testers
-      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
-      #     releaseNotesFile: ./CHANGELOG.md
-      #     debug: true
+      - name: Upload artifact to Firebase App Distribution
+        if: success()
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          groups: testers
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-${{ inputs.environment_flag }}.apk
+          releaseNotesFile: ./CHANGELOG.md
+          debug: true

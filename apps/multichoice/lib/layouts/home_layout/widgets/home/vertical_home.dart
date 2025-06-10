@@ -25,24 +25,6 @@ class _VerticalHome extends StatelessWidget {
                 itemBuilder: (_, index) {
                   final tab = tabs[index];
 
-                  if (tabs.isNotEmpty && index == 0) {
-                    final step = context.watch<ProductBloc>().state.currentStep;
-
-                    if (step == ProductTourStep.showCollection) {
-                      return TourWidgetWrapper(
-                        step: ProductTourStep.showCollection,
-                        child: CollectionTab(tab: tab),
-                      );
-                    } else if (step == ProductTourStep.showCollectionActions) {
-                      return TourWidgetWrapper(
-                        step: ProductTourStep.showCollectionActions,
-                        child: CollectionTab(tab: tab),
-                      );
-                    }
-
-                    return CollectionTab(tab: tab);
-                  }
-
                   return CollectionTab(tab: tab);
                 },
               ),
@@ -50,10 +32,7 @@ class _VerticalHome extends StatelessWidget {
             const SliverPadding(
               padding: right12,
               sliver: SliverToBoxAdapter(
-                child: TourWidgetWrapper(
-                  step: ProductTourStep.addNewCollection,
-                  child: NewTab(),
-                ),
+                child: NewTab(),
               ),
             ),
           ],
