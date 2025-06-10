@@ -18,3 +18,4 @@
 
 - NOTE!!! On the app version in debug mode, long-press to clear app app-state data
 - Add new dedicated Tutorial page
+- Trigger
