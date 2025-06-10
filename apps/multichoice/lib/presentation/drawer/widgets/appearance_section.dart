@@ -5,6 +5,8 @@ class AppearanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -19,16 +21,22 @@ class AppearanceSection extends StatelessWidget {
           ),
         ),
         const LightDarkModeButton(),
-        SwitchListTile(
-          key: context.keys.layoutSwitch,
-          title: const Text('Horizontal / Vertical Layout'),
-          value: context.watch<AppLayout>().isLayoutVertical,
-          onChanged: (value) async {
-            await context
-                .read<AppLayout>()
-                .setLayoutVertical(isVertical: value);
-          },
-        ),
+        if (!appLayout.isInitialized)
+          const Center(
+            child: Padding(
+              padding: allPadding16,
+              child: CircularProgressIndicator(),
+            ),
+          )
+        else
+          SwitchListTile(
+            key: context.keys.layoutSwitch,
+            title: const Text('Horizontal / Vertical Layout'),
+            value: appLayout.isLayoutVertical,
+            onChanged: (value) async {
+              await appLayout.setLayoutVertical(isVertical: value);
+            },
+          ),
       ],
     );
   }

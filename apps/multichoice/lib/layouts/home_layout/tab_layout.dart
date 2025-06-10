@@ -18,7 +18,15 @@ class TabLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<AppLayout>().isLayoutVertical
+    final appLayout = context.watch<AppLayout>();
+
+    if (!appLayout.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return appLayout.isLayoutVertical
         ? _VerticalTab(tab: tab)
         : _HorizontalTab(tab: tab);
   }

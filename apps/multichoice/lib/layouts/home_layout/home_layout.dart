@@ -18,8 +18,16 @@ class HomeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
+
+    if (!appLayout.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Center(
-      child: context.watch<AppLayout>().isLayoutVertical
+      child: appLayout.isLayoutVertical
           ? _VerticalHome(tabs: tabs)
           : _HorizontalHome(tabs: tabs),
     );
