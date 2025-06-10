@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - "develop"
-    # types:
-    #   - "closed"
+    types:
+      - "closed"
 
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Bump build number
-    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -67,7 +67,7 @@ jobs:
 
   build:
     name: Build Apps
-    # if: github.event.pull_request.draft == false && success()
+    if: github.event.pull_request.draft == false && success()
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [preBuild]
     secrets: inherit
