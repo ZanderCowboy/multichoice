@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -24,6 +25,7 @@ class HomeDrawer extends StatelessWidget {
                 DataSection(),
                 Divider(height: 32),
                 MoreSection(),
+                gap56,
               ],
             ),
           ),

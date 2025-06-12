@@ -1,6 +1,6 @@
 import 'package:models/models.dart';
 
 abstract class IFeedbackRepository {
-  Future<void> submitFeedback(FeedbackModel feedback);
-  Stream<List<FeedbackModel>> getFeedback();
+  Future<void> submitFeedback(FeedbackDTO feedback);
+  Stream<List<FeedbackDTO>> getFeedback();
 }

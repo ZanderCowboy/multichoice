@@ -7,20 +7,22 @@ import 'package:models/models.dart';
 class FeedbackRepository implements IFeedbackRepository {
   final FirebaseFirestore _firestore;
   final String _collection = 'feedback';
+  final FeedbackMapper _mapper = FeedbackMapper();
 
   FeedbackRepository(this._firestore);
 
   @override
-  Future<void> submitFeedback(FeedbackModel feedback) async {
+  Future<void> submitFeedback(FeedbackDTO feedback) async {
     try {
-      await _firestore.collection(_collection).add(feedback.toFirestore());
+      final model = _mapper.convert<FeedbackDTO, FeedbackModel>(feedback);
+      await _firestore.collection(_collection).add(model.toFirestore());
     } catch (e) {
       throw Exception('Failed to submit feedback: $e');
     }
   }
 
   @override
-  Stream<List<FeedbackModel>> getFeedback() {
+  Stream<List<FeedbackDTO>> getFeedback() {
     return _firestore
         .collection(_collection)
         .orderBy('timestamp', descending: true)
@@ -28,6 +30,7 @@ class FeedbackRepository implements IFeedbackRepository {
         .map((snapshot) {
       return snapshot.docs
           .map((doc) => FeedbackModelFirestoreX.fromFirestore(doc))
+          .map((model) => _mapper.convert<FeedbackModel, FeedbackDTO>(model))
           .toList();
     });
   }
