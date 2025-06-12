@@ -17,6 +17,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       await event.map(
         submit: (e) async {
           emit(state.copyWith(
+            feedback: e.feedback,
             isLoading: true,
             isSuccess: false,
             isError: false,
@@ -26,6 +27,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           try {
             await repository.submitFeedback(e.feedback);
             emit(state.copyWith(
+              feedback: e.feedback,
               isLoading: false,
               isSuccess: true,
               isError: false,
@@ -33,6 +35,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             ));
           } catch (err) {
             emit(state.copyWith(
+              feedback: e.feedback,
               isLoading: false,
               isSuccess: false,
               isError: true,
