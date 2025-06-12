@@ -48,19 +48,24 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   Future<void> _submitFeedback(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
-    final feedback = FeedbackDTO(
+    final feedbackState = context.read<FeedbackBloc>().state.feedback;
+    final appVersion = await coreSl<IAppInfoService>().getAppVersion();
+
+    final feedbackDTO = FeedbackDTO(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       message: _messageController.text,
       userEmail: _emailController.text,
-      rating: context.read<FeedbackBloc>().state.feedback.rating,
+      rating: feedbackState.rating,
       deviceInfo:
           '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
-      appVersion: await coreSl<IAppInfoService>().getAppVersion(),
+      appVersion: appVersion,
       timestamp: DateTime.now().toLocal(),
-      category: context.read<FeedbackBloc>().state.feedback.category,
+      category: feedbackState.category,
     );
 
-    context.read<FeedbackBloc>().add(FeedbackEvent.submit(feedback));
+    //
+    // ignore: use_build_context_synchronously
+    context.read<FeedbackBloc>().add(FeedbackEvent.submit(feedbackDTO));
   }
 
   @override
