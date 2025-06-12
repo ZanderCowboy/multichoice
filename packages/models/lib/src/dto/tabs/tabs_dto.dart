@@ -12,6 +12,7 @@ class TabsDTO with _$TabsDTO {
     required String subtitle,
     required DateTime timestamp,
     required List<EntryDTO> entries,
+    bool? isFirst,
   }) = _TabsDTO;
 
   factory TabsDTO.empty() => TabsDTO(

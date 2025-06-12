@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/view/layout/app_layout.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
-import 'package:multichoice/utils/custom_scroll_behaviour.dart';
 import 'package:provider/provider.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/entry/horizontal_entry.dart';
 part 'widgets/entry/vertical_entry.dart';
@@ -20,7 +20,15 @@ class EntryLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<AppLayout>().appLayout
+    final appLayout = context.watch<AppLayout>();
+
+    if (!appLayout.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return appLayout.isLayoutVertical
         ? _VerticalEntry(
             id: id,
             entries: entries,

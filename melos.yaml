@@ -29,12 +29,42 @@ scripts:
       concurrency: 1
       orderDependents: true
 
-  clean-build:
+  rebuild:all:
     run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
     exec:
       failFast: true
       concurrency: 1
       orderDependents: true
+
+  rebuild:apps:
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["multichoice"]
+
+  rebuild:core:
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["core"]
+
+  rebuild:models:
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["core"]
 
   upgrade:
     run: flutter pub upgrade --major-versions

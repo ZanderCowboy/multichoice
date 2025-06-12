@@ -28,9 +28,9 @@ runs:
       shell: bash
       run: melos bootstrap
 
-    - name: melos clean-build
+    - name: melos rebuild:all
       shell: bash
-      run: melos clean-build
+      run: melos rebuild:all
 
     - name: melos bootstrap
       shell: bash

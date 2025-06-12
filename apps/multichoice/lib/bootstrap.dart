@@ -45,5 +45,4 @@ Future<void> bootstrap() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Bloc.observer = const SimpleBlocObserver();
 }
