@@ -16,4 +16,4 @@ clean:
 
 # Plain Rebuild
 mr:
-	melos clean-build
+	melos rebuild:all
