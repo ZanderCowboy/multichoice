@@ -7,3 +7,5 @@
 - Update feedback_page and feedback_form to use bloc
 - From HomeDrawer, access the new Send Feedback button
 - Update melos for individual rebuilding
+- Update Makefile, actions to use new melos changes
+- Update analysis_options.yaml
