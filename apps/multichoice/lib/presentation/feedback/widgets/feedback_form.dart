@@ -184,7 +184,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   onPressed:
                       state.isLoading ? null : () => _submitFeedback(context),
                   child: state.isLoading
-                      ? const CircularProgressIndicator()
+                      ? CircularLoader.small()
                       : const Text('Submit Feedback'),
                 ),
               ],
