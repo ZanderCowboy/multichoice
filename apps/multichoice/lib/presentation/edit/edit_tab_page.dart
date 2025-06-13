@@ -47,9 +47,7 @@ class _EditPage extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+          return CircularLoader.small();
         }
 
         return Padding(

@@ -49,7 +49,7 @@ class DataTransferScreen extends HookWidget {
       ),
       body: Center(
         child: !isDBEmpty.hasData
-            ? const CircularProgressIndicator()
+            ? CircularLoader.small()
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

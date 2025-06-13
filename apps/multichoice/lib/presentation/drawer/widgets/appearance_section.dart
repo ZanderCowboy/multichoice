@@ -22,12 +22,7 @@ class AppearanceSection extends StatelessWidget {
         ),
         const LightDarkModeButton(),
         if (!appLayout.isInitialized)
-          const Center(
-            child: Padding(
-              padding: allPadding16,
-              child: CircularProgressIndicator(),
-            ),
-          )
+          CircularLoader.small()
         else
           SwitchListTile(
             key: context.keys.layoutSwitch,
