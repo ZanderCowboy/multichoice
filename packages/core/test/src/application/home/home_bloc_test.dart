@@ -10,8 +10,8 @@ import 'package:models/models.dart';
 import 'package:clock/clock.dart';
 import '../../helpers/fake_path_provider_platform.dart';
 
-import '../../injection.dart';
-import '../../mocks.mocks.dart';
+import '../../../injection.dart';
+import '../../../mocks.mocks.dart';
 
 final getit = GetIt.instance;
 
