@@ -29,6 +29,8 @@ const allPadding4 = EdgeInsets.all(4);
 
 const allPadding6 = EdgeInsets.all(6);
 
+const allPadding8 = EdgeInsets.all(8);
+
 const allPadding12 = EdgeInsets.all(12);
 
 const allPadding16 = EdgeInsets.all(16);
