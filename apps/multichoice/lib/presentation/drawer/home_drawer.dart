@@ -11,26 +11,28 @@ class HomeDrawer extends StatelessWidget {
     return Drawer(
       width: MediaQuery.sizeOf(context).width,
       backgroundColor: context.theme.appColors.background,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const DrawerHeaderSection(),
-          Expanded(
-            child: ListView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              children: const [
-                AppearanceSection(),
-                Divider(height: 32),
-                DataSection(),
-                Divider(height: 32),
-                MoreSection(),
-                gap56,
-              ],
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const DrawerHeaderSection(),
+            Expanded(
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: const [
+                  AppearanceSection(),
+                  Divider(height: 32),
+                  DataSection(),
+                  Divider(height: 32),
+                  MoreSection(),
+                  gap56,
+                ],
+              ),
             ),
-          ),
-          const AppVersion(),
-        ],
+            const AppVersion(),
+          ],
+        ),
       ),
     );
   }
