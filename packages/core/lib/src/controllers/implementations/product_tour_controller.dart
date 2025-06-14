@@ -16,18 +16,18 @@ class ProductTourController implements IProductTourController {
 
   @override
   Future<ProductTourStep> get currentStep async {
-    final _currentStep = await _appStorageService.currentStep;
-    final _isCompleted = await _appStorageService.isCompleted;
+    final currentStep = await _appStorageService.currentStep;
+    final isCompleted = await _appStorageService.isCompleted;
 
-    if (_isCompleted) {
+    if (isCompleted) {
       return ProductTourStep.noneCompleted;
     }
 
-    if (_currentStep < 0) {
+    if (currentStep < 0) {
       return ProductTourStep.welcomePopup;
     }
 
-    return ProductTourStep.values[_currentStep];
+    return ProductTourStep.values[currentStep];
   }
 
   @override

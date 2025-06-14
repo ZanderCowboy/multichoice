@@ -49,6 +49,25 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         clear: (e) async {
           emit(SearchState.initial());
         },
+        refresh: (e) async {
+          if (state.query.isEmpty) return;
+
+          emit(state.copyWith(isLoading: true));
+
+          try {
+            final results = await _searchRepository.search(state.query);
+            emit(state.copyWith(
+              results: results,
+              isLoading: false,
+              errorMessage: null,
+            ));
+          } catch (e) {
+            emit(state.copyWith(
+              isLoading: false,
+              errorMessage: e.toString(),
+            ));
+          }
+        },
       );
     });
   }

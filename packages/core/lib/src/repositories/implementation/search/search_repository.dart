@@ -18,52 +18,54 @@ class SearchRepository implements ISearchRepository {
 
       final normalizedQuery = query.toLowerCase();
 
-      // Search in tabs
-      final tabs = await db.tabs
-          .where()
-          .filter()
-          .titleContains(normalizedQuery, caseSensitive: false)
-          .or()
-          .subtitleContains(normalizedQuery, caseSensitive: false)
-          .findAll();
+      return await db.writeTxn(() async {
+        // Search in tabs
+        final tabs = await db.tabs
+            .where()
+            .filter()
+            .titleContains(normalizedQuery, caseSensitive: false)
+            .or()
+            .subtitleContains(normalizedQuery, caseSensitive: false)
+            .findAll();
 
-      // Search in entries
-      final entries = await db.entrys
-          .where()
-          .filter()
-          .titleContains(normalizedQuery, caseSensitive: false)
-          .or()
-          .subtitleContains(normalizedQuery, caseSensitive: false)
-          .findAll();
+        // Search in entries
+        final entries = await db.entrys
+            .where()
+            .filter()
+            .titleContains(normalizedQuery, caseSensitive: false)
+            .or()
+            .subtitleContains(normalizedQuery, caseSensitive: false)
+            .findAll();
 
-      // Convert to DTOs and create search results
-      final tabResults = tabs.map((tab) {
-        final dto = TabsMapper().convert<Tabs, TabsDTO>(tab);
-        final score =
-            _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
-        return SearchResult(
-          isTab: true,
-          item: dto,
-          matchScore: score,
-        );
-      }).toList();
+        // Convert to DTOs and create search results
+        final tabResults = tabs.map((tab) {
+          final dto = TabsMapper().convert<Tabs, TabsDTO>(tab);
+          final score =
+              _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
+          return SearchResult(
+            isTab: true,
+            item: dto,
+            matchScore: score,
+          );
+        }).toList();
 
-      final entryResults = entries.map((entry) {
-        final dto = EntryMapper().convert<Entry, EntryDTO>(entry);
-        final score =
-            _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
-        return SearchResult(
-          isTab: false,
-          item: dto,
-          matchScore: score,
-        );
-      }).toList();
+        final entryResults = entries.map((entry) {
+          final dto = EntryMapper().convert<Entry, EntryDTO>(entry);
+          final score =
+              _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
+          return SearchResult(
+            isTab: false,
+            item: dto,
+            matchScore: score,
+          );
+        }).toList();
 
-      // Combine and sort by match score
-      final allResults = [...tabResults, ...entryResults];
-      allResults.sort((a, b) => b.matchScore.compareTo(a.matchScore));
+        // Combine and sort by match score
+        final allResults = [...tabResults, ...entryResults];
+        allResults.sort((a, b) => b.matchScore.compareTo(a.matchScore));
 
-      return allResults;
+        return allResults;
+      });
     } catch (e, s) {
       log('Error searching: $e', error: e, stackTrace: s);
       return [];
