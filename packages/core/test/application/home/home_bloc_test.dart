@@ -100,6 +100,7 @@ void main() {
       isAdded: false,
       isValid: false,
       errorMessage: 'errorMessage',
+      highlightedItemId: 0,
     );
 
     setUp(() async {
@@ -145,25 +146,27 @@ void main() {
 
   group('HomeBloc Add Events', () {
     final initialState = HomeState(
-        tab: TabsDTO(
-            id: 456,
-            title: 'title',
-            subtitle: 'subtitle',
-            timestamp: timestamp,
-            entries: []),
-        tabs: [],
-        entry: EntryDTO(
-            id: 123,
-            tabId: 456,
-            title: 'title',
-            subtitle: 'subtitle',
-            timestamp: timestamp),
-        entryCards: [],
-        isLoading: false,
-        isDeleted: false,
-        isAdded: false,
-        isValid: false,
-        errorMessage: 'errorMessage');
+      tab: TabsDTO(
+          id: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp,
+          entries: []),
+      tabs: [],
+      entry: EntryDTO(
+          id: 123,
+          tabId: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp),
+      entryCards: [],
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: 'errorMessage',
+      highlightedItemId: 0,
+    );
 
     blocTest<HomeBloc, HomeState>(
       'emits [isLoading: true, isAdded: true, tab: TabsDTO, tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddTab is added',
