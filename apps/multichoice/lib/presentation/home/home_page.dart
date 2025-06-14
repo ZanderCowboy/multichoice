@@ -12,6 +12,7 @@ import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
+import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,6 @@ import 'package:ui_kit/ui_kit.dart';
 part 'utils/_check_and_request_permissions.dart';
 part 'widgets/collection_tab.dart';
 part 'widgets/entry_card.dart';
-part 'widgets/items.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
@@ -45,6 +45,9 @@ class HomePageWrapper extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => coreSl<ProductBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => coreSl<SearchBloc>(),
         ),
       ],
       child: const HomePage(),
@@ -90,15 +93,62 @@ class _HomePage extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                ScaffoldMessenger.of(context)
-                  ..clearSnackBars()
-                  ..showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Search has not been implemented yet.',
-                      ),
-                    ),
-                  );
+                context.router.push(
+                  SearchPageRoute(
+                    onTap: (result) {
+                      if (result == null) return;
+
+                      if (result.isTab) {
+                        final tab = result.item as TabsDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.highlightItem(tab.id));
+                      } else {
+                        final entry = result.item as EntryDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.highlightItem(entry.id));
+                      }
+                    },
+                    onEdit: (result) async {
+                      if (result == null) return;
+
+                      if (result.isTab) {
+                        final tab = result.item as TabsDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.onUpdateTabId(tab.id));
+                        await context.router
+                            .push(EditTabPageRoute(ctx: context));
+                      } else {
+                        final entry = result.item as EntryDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.onUpdateEntry(entry.id));
+                        await context.router
+                            .push(EditEntryPageRoute(ctx: context));
+                      }
+                    },
+                    onDelete: (result) async {
+                      if (result == null) return;
+
+                      if (result.isTab) {
+                        final tab = result.item as TabsDTO;
+                        context.read<HomeBloc>().add(
+                              HomeEvent.onLongPressedDeleteTab(tab.id),
+                            );
+                      } else {
+                        final entry = result.item as EntryDTO;
+                        context.read<HomeBloc>().add(
+                              HomeEvent.onLongPressedDeleteEntry(
+                                entry.tabId,
+                                entry.id,
+                              ),
+                            );
+                      }
+                    },
+                  ),
+                );
               },
               tooltip: TooltipEnums.search.tooltip,
               icon: const Icon(Icons.search_outlined),
@@ -113,19 +163,7 @@ class _HomePage extends StatelessWidget {
           ),
         ),
         drawer: const HomeDrawer(),
-        body: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            final tabs = state.tabs ?? [];
-
-            if (state.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-
-            return HomeLayout(tabs: tabs);
-          },
-        ),
+        body: const HomeLayout(),
       ),
     );
   }
