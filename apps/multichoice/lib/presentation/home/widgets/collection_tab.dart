@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class CollectionTab extends StatelessWidget {
+class CollectionTab extends HookWidget {
   const CollectionTab({
     required this.tab,
     super.key,
@@ -11,6 +11,17 @@ class CollectionTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        context.router.push(
+          DetailsPageRoute(
+            result: SearchResult(isTab: true, item: tab, matchScore: 0),
+            onBack: () {
+              context.read<HomeBloc>().add(const HomeEvent.refresh());
+              context.router.pop();
+            },
+          ),
+        );
+      },
       onLongPress: () => _onDeleteTab(context),
       child: TabLayout(tab: tab),
     );

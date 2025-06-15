@@ -16,29 +16,29 @@ class ProductTourController implements IProductTourController {
 
   @override
   Future<ProductTourStep> get currentStep async {
-    final _currentStep = await _appStorageService.currentStep;
-    final _isCompleted = await _appStorageService.isCompleted;
+    final currentStep = await _appStorageService.currentStep;
+    final isCompleted = await _appStorageService.isCompleted;
 
-    if (_isCompleted) {
+    if (isCompleted) {
       return ProductTourStep.noneCompleted;
     }
 
-    if (_currentStep < 0) {
+    if (currentStep < 0) {
       return ProductTourStep.welcomePopup;
     }
 
-    return ProductTourStep.values[_currentStep];
+    return ProductTourStep.values[currentStep];
   }
 
   @override
   Future<void> nextStep() async {
-    final _current = await currentStep;
-    final _nextStepIndex = _current.index + 1;
+    final current = await currentStep;
+    final nextStepIndex = current.index + 1;
 
-    if (_nextStepIndex < ProductTourStep.values.length - 2) {
-      await _appStorageService.setCurrentStep(_nextStepIndex);
+    if (nextStepIndex < ProductTourStep.values.length - 2) {
+      await _appStorageService.setCurrentStep(nextStepIndex);
     } else {
-      if (_nextStepIndex == ProductTourStep.values.length - 2) {
+      if (nextStepIndex == ProductTourStep.values.length - 2) {
         await completeTour();
       } else {
         throw Exception('No more steps available in the product tour.');
@@ -48,11 +48,11 @@ class ProductTourController implements IProductTourController {
 
   @override
   Future<void> previousStep({BuildContext? context}) async {
-    final _current = await currentStep;
-    final _previousStepIndex = _current.index - 1;
+    final current = await currentStep;
+    final previousStepIndex = current.index - 1;
 
-    if (_previousStepIndex >= 0) {
-      await _appStorageService.setCurrentStep(_previousStepIndex);
+    if (previousStepIndex >= 0) {
+      await _appStorageService.setCurrentStep(previousStepIndex);
     } else {
       throw Exception('No previous step available in the product tour.');
     }

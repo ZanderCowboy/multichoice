@@ -1,6 +1,6 @@
 part of '../../tab_layout.dart';
 
-class _HorizontalTab extends StatelessWidget {
+class _HorizontalTab extends HookWidget {
   const _HorizontalTab({
     required this.tab,
   });
@@ -10,6 +10,25 @@ class _HorizontalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
+    final scrollController = useScrollController();
+    final previousEntriesLength = useState(entries.length);
+
+    useEffect(
+      () {
+        if (entries.length > previousEntriesLength.value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          });
+        }
+        previousEntriesLength.value = entries.length;
+        return null;
+      },
+      [entries.length],
+    );
 
     return Card(
       margin: allPadding4,
@@ -20,7 +39,7 @@ class _HorizontalTab extends StatelessWidget {
           height: UIConstants.horiTabHeight(context),
           child: CustomScrollView(
             scrollDirection: Axis.horizontal,
-            controller: ScrollController(),
+            controller: scrollController,
             scrollBehavior: CustomScrollBehaviour(),
             slivers: [
               SliverToBoxAdapter(
@@ -80,7 +99,15 @@ class _HorizontalTab extends StatelessWidget {
 
                   final entry = entries[index];
 
-                  return EntryCard(entry: entry);
+                  return EntryCard(
+                    entry: entry,
+                    onDoubleTap: () {
+                      context
+                          .read<HomeBloc>()
+                          .add(HomeEvent.onUpdateEntry(entry.id));
+                      context.router.push(EditEntryPageRoute(ctx: context));
+                    },
+                  );
                 },
               ),
             ],

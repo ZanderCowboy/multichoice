@@ -42,7 +42,8 @@ void main() {
         final mockDocRef = MockDocumentReference();
         when(mockCollection.add(any)).thenAnswer((_) async => mockDocRef);
 
-        await repository.submitFeedback(testFeedback);
+        final result = await repository.submitFeedback(testFeedback);
+        expect(result.isRight(), true);
 
         final captured = verify(mockCollection.add(captureAny)).captured;
         expect(captured.length, 1);
@@ -59,12 +60,14 @@ void main() {
         expect(capturedData['userId'], equals(testFeedback.userId));
       });
 
-      test('throws exception on error', () async {
+      test('returns Left with FeedbackException on error', () async {
         when(mockCollection.add(any)).thenThrow(Exception('Firestore error'));
 
-        expect(
-          () => repository.submitFeedback(testFeedback),
-          throwsException,
+        final result = await repository.submitFeedback(testFeedback);
+        expect(result.isLeft(), true);
+        result.fold(
+          (error) => expect(error, isA<FeedbackException>()),
+          (_) => fail('Expected Left but got Right'),
         );
       });
 
@@ -81,7 +84,8 @@ void main() {
           timestamp: DateTime.now(),
         );
 
-        await repository.submitFeedback(feedbackWithEmptyFields);
+        final result = await repository.submitFeedback(feedbackWithEmptyFields);
+        expect(result.isRight(), true);
 
         final capturedData =
             verify(mockCollection.add(captureAny)).captured.first;

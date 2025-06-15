@@ -1,6 +1,6 @@
 part of '../../tab_layout.dart';
 
-class _VerticalTab extends StatelessWidget {
+class _VerticalTab extends HookWidget {
   const _VerticalTab({
     required this.tab,
   });
@@ -10,6 +10,25 @@ class _VerticalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
+    final scrollController = useScrollController();
+    final previousEntriesLength = useState(entries.length);
+
+    useEffect(
+      () {
+        if (entries.length > previousEntriesLength.value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          });
+        }
+        previousEntriesLength.value = entries.length;
+        return null;
+      },
+      [entries.length],
+    );
 
     return Card(
       margin: allPadding4,
@@ -53,7 +72,40 @@ class _VerticalTab extends StatelessWidget {
                 endIndent: 4,
               ),
               gap4,
-              Items(id: tab.id, entries: entries),
+              Expanded(
+                child: CustomScrollView(
+                  controller: scrollController,
+                  scrollBehavior: CustomScrollBehaviour(),
+                  slivers: [
+                    SliverList.builder(
+                      itemCount: entries.length,
+                      itemBuilder: (_, index) {
+                        final entry = entries[index];
+
+                        return BlocBuilder<HomeBloc, HomeState>(
+                          builder: (context, _) {
+                            return EntryCard(
+                              entry: entry,
+                              onDoubleTap: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(HomeEvent.onUpdateEntry(entry.id));
+                                context.router
+                                    .push(EditEntryPageRoute(ctx: context));
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    SliverToBoxAdapter(
+                      child: NewEntry(
+                        tabId: tab.id,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

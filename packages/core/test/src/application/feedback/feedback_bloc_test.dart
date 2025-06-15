@@ -3,6 +3,8 @@ import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
+import 'package:dartz/dartz.dart';
+import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
 
 import '../../../mocks.mocks.dart';
 
@@ -54,7 +56,7 @@ void main() {
       'emits [loading, success] when feedback is submitted successfully',
       build: () {
         when(mockRepository.submitFeedback(testFeedback))
-            .thenAnswer((_) async => {});
+            .thenAnswer((_) async => const Right(null));
         return feedbackBloc;
       },
       act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),
@@ -95,8 +97,8 @@ void main() {
     blocTest<FeedbackBloc, FeedbackState>(
       'emits [loading, error] when feedback submission fails',
       build: () {
-        when(mockRepository.submitFeedback(testFeedback))
-            .thenThrow(Exception('Failed to submit'));
+        when(mockRepository.submitFeedback(testFeedback)).thenAnswer(
+            (_) async => Left(FeedbackException('Failed to submit')));
         return feedbackBloc;
       },
       act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),
@@ -126,7 +128,7 @@ void main() {
             .having(
               (state) => state.errorMessage,
               'errorMessage',
-              'Exception: Failed to submit',
+              'Failed to submit',
             )
             .having(
               (state) => state.feedback,

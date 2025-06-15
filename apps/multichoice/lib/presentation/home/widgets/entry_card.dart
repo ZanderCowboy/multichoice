@@ -3,10 +3,12 @@ part of '../home_page.dart';
 class EntryCard extends HookWidget {
   const EntryCard({
     required this.entry,
+    required this.onDoubleTap,
     super.key,
   });
 
   final EntryDTO entry;
+  final VoidCallback onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +16,7 @@ class EntryCard extends HookWidget {
     final appLayout = context.watch<AppLayout>();
 
     if (!appLayout.isInitialized) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return CircularLoader.small();
     }
 
     final isLayoutVertical = appLayout.isLayoutVertical;
@@ -46,21 +46,22 @@ class EntryCard extends HookWidget {
           ],
           child: GestureDetector(
             onTap: () {
-              CustomDialog<AlertDialog>.show(
-                context: context,
-                title: SizedBox(
-                  width: 150,
-                  child: Text(
-                    entry.title,
+              context.router.push(
+                DetailsPageRoute(
+                  // TODO: Change type to be dynamic
+                  result: SearchResult(
+                    isTab: false,
+                    item: entry,
+                    matchScore: 0,
                   ),
+                  onBack: () {
+                    context.read<HomeBloc>().add(const HomeEvent.refresh());
+                    context.router.pop();
+                  },
                 ),
-                content: Text(entry.subtitle),
               );
             },
-            onDoubleTap: () {
-              context.read<HomeBloc>().add(HomeEvent.onUpdateEntry(entry.id));
-              context.router.push(EditEntryPageRoute(ctx: context));
-            },
+            onDoubleTap: onDoubleTap,
             onLongPress: () {
               if (menuController.isOpen) {
                 menuController.close();

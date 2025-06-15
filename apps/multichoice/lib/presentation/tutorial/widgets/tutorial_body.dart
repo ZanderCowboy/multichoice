@@ -17,7 +17,7 @@ class TutorialBody extends StatelessWidget {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return CircularLoader.small();
         }
 
         final tabs = state.tabs ?? [];
@@ -174,19 +174,19 @@ class _HorizontalTab extends StatelessWidget {
                     if (step == ProductTourStep.showItemsInCollection) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemsInCollection,
-                        child: EntryCard(entry: entry),
+                        child: EntryCard(entry: entry, onDoubleTap: () {}),
                       );
                     } else if (step == ProductTourStep.showItemActions) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemActions,
-                        child: EntryCard(entry: entry),
+                        child: EntryCard(entry: entry, onDoubleTap: () {}),
                       );
                     }
 
-                    return EntryCard(entry: entry);
+                    return EntryCard(entry: entry, onDoubleTap: () {});
                   }
 
-                  return EntryCard(entry: entry);
+                  return EntryCard(entry: entry, onDoubleTap: () {});
                 },
               ),
             ],

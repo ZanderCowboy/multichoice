@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
@@ -42,25 +43,27 @@ class FeedbackPage extends StatelessWidget {
           appBar: AppBar(
             title: BlocBuilder<FeedbackBloc, FeedbackState>(
               builder: (context, _) {
-                return GestureDetector(
-                  onDoubleTap: () {
-                    context.read<FeedbackBloc>().add(
-                          FeedbackEvent.submit(
-                            FeedbackDTO(
-                              id: 'test',
-                              message: 'Test feedback',
-                              userEmail: 'test@test.com',
-                              rating: 5,
-                              deviceInfo: 'Test device',
-                              appVersion: '1.0.0',
-                              timestamp: DateTime.now(),
-                              category: 'Test',
-                            ),
-                          ),
-                        );
-                  },
-                  child: const Text('Send Feedback'),
-                );
+                return kDebugMode
+                    ? GestureDetector(
+                        onDoubleTap: () {
+                          context.read<FeedbackBloc>().add(
+                                FeedbackEvent.submit(
+                                  FeedbackDTO(
+                                    id: 'test',
+                                    message: 'Test feedback',
+                                    userEmail: 'test@test.com',
+                                    rating: 5,
+                                    deviceInfo: 'Test device',
+                                    appVersion: '1.0.0',
+                                    timestamp: DateTime.now(),
+                                    category: 'Test',
+                                  ),
+                                ),
+                              );
+                        },
+                        child: const Text('Send Feedback'),
+                      )
+                    : const Text('Send Feedback');
               },
             ),
             leading: IconButton(

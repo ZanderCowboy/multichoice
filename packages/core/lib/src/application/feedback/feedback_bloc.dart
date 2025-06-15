@@ -16,52 +16,41 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     on<FeedbackEvent>((event, emit) async {
       await event.map(
         submit: (e) async {
-          emit(state.copyWith(
-            feedback: e.feedback,
-            isLoading: true,
-            isSuccess: false,
-            isError: false,
-            errorMessage: null,
-          ));
+          emit(
+            state.copyWith(
+              feedback: e.feedback,
+              isLoading: true,
+              isSuccess: false,
+              isError: false,
+              errorMessage: null,
+            ),
+          );
 
-          try {
-            await repository.submitFeedback(e.feedback);
-            emit(state.copyWith(
+          final result = await repository.submitFeedback(e.feedback);
+
+          result.fold(
+            (error) => emit(state.copyWith(
+              feedback: e.feedback,
+              isLoading: false,
+              isSuccess: false,
+              isError: true,
+              errorMessage: error.message,
+            )),
+            (_) => emit(state.copyWith(
               feedback: e.feedback,
               isLoading: false,
               isSuccess: true,
               isError: false,
               errorMessage: null,
-            ));
-          } catch (err) {
-            emit(state.copyWith(
-              feedback: e.feedback,
-              isLoading: false,
-              isSuccess: false,
-              isError: true,
-              errorMessage: err.toString(),
-            ));
-          }
+            )),
+          );
         },
         reset: (e) async {
           emit(FeedbackState.initial());
         },
         fieldChanged: (e) async {
           if (e.value != null) {
-            final updatedFeedback = state.feedback.copyWith(
-              category: e.field == FeedbackField.category
-                  ? e.value as String?
-                  : state.feedback.category,
-              userEmail: e.field == FeedbackField.email
-                  ? e.value as String?
-                  : state.feedback.userEmail,
-              message: e.field == FeedbackField.message
-                  ? e.value as String
-                  : state.feedback.message,
-              rating: e.field == FeedbackField.rating
-                  ? e.value as int
-                  : state.feedback.rating,
-            );
+            final updatedFeedback = _updateFeedbackField(e.field, e.value);
 
             emit(state.copyWith(
               feedback: updatedFeedback,
@@ -75,11 +64,20 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
       );
     });
   }
-}
 
-enum FeedbackField {
-  category,
-  email,
-  message,
-  rating,
+  FeedbackDTO _updateFeedbackField(FeedbackField field, Object? value) {
+    return state.feedback.copyWith(
+      category: field == FeedbackField.category
+          ? value as String?
+          : state.feedback.category,
+      userEmail: field == FeedbackField.email
+          ? value as String?
+          : state.feedback.userEmail,
+      message: field == FeedbackField.message
+          ? value as String
+          : state.feedback.message,
+      rating:
+          field == FeedbackField.rating ? value as int : state.feedback.rating,
+    );
+  }
 }

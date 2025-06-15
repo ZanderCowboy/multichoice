@@ -1,35 +1,43 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:models/models.dart';
-import 'package:multichoice/app/view/layout/app_layout.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
-import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/home/horizontal_home.dart';
 part 'widgets/home/vertical_home.dart';
 
-class HomeLayout extends StatelessWidget {
-  const HomeLayout({
-    required this.tabs,
-    super.key,
-  });
-
-  final List<TabsDTO> tabs;
+class HomeLayout extends HookWidget {
+  const HomeLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
     final appLayout = context.watch<AppLayout>();
+    final state = context.watch<HomeBloc>().state;
+    final tabs = state.tabs ?? [];
 
-    if (!appLayout.isInitialized) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+    if (!appLayout.isInitialized || (tabs.isEmpty && state.isLoading)) {
+      return CircularLoader.medium();
     }
 
-    return Center(
-      child: appLayout.isLayoutVertical
-          ? _VerticalHome(tabs: tabs)
-          : _HorizontalHome(tabs: tabs),
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state.errorMessage?.isNotEmpty ?? false) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Error'),
+              backgroundColor: context.theme.appColors.error,
+            ),
+          );
+        }
+      },
+      child: Center(
+        child: appLayout.isLayoutVertical
+            ? const _VerticalHome()
+            : const _HorizontalHome(),
+      ),
     );
   }
 }
