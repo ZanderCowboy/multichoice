@@ -83,6 +83,7 @@ runs:
           git config --global user.email 'bot@versionbumpingbot.com'
           git add ${{ inputs.pubspec-path }}
           git commit -m "Bump version to $new_version+$new_build_number [skip ci]"
+          git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/${{ github.repository }}.git
           git push origin HEAD:${{ inputs.branch-name }}
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
         fi 
