@@ -8,14 +8,22 @@ class _DetailsSection extends HookWidget {
     final titleController = useTextEditingController();
     final subtitleController = useTextEditingController();
 
+    useEffect(
+      () {
+        final subscription = context.read<DetailsBloc>().stream.listen((state) {
+          titleController.text = state.title;
+          subtitleController.text = state.subtitle;
+        });
+        return subscription.cancel;
+      },
+      [context.read<DetailsBloc>()],
+    );
+
     return BlocBuilder<DetailsBloc, DetailsState>(
       builder: (context, state) {
         if (state.isLoading) {
           return Center(child: CircularLoader.medium());
         }
-
-        titleController.text = state.title;
-        subtitleController.text = state.subtitle;
 
         final isEditing = state.isEditingMode;
 
