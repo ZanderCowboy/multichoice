@@ -40,19 +40,24 @@ jobs:
       - name: Check Version Labels
         id: check_labels
         run: |
-          LABELS="${{ toJson(github.event.pull_request.labels) }}"
-          if [[ "$LABELS" == *'"name":"no-build"'* ]]; then
-            echo "bump_type=none" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *'"name":"major"'* ]]; then
-            echo "bump_type=major" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *'"name":"minor"'* ]]; then
-            echo "bump_type=minor" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *'"name":"patch"'* ]]; then
-            echo "bump_type=patch" >> $GITHUB_OUTPUT
-          else
-            echo "No version label found. Please add one of: major, minor, patch, or no-build"
+          LABELS='${{ toJson(github.event.pull_request.labels) }}'
+          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
+          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+          if [[ $LABEL_COUNT -gt 1 ]]; then
+            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
             exit 1
           fi
+          if [[ $LABEL_COUNT -eq 0 ]]; then
+            echo "::error::No version label found. Please add one of: major, minor, patch, or no-build"
+            exit 1
+          fi
+          case "$VALID_LABELS" in
+            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
+            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
+            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+          esac
+        shell: bash
 
       - name: Version Management
         id: version_management
@@ -156,5 +161,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           new_tag=${{ needs.preBuild.outputs.version_number }}
+          if [[ -z "$new_tag" ]]; then
+            echo "Error: version_number is empty"
+            exit 1
+          fi
           git tag $new_tag
           git push origin $new_tag
