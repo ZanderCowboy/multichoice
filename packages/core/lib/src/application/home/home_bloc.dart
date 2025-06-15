@@ -30,7 +30,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             );
             break;
           case OnGetTab(:final tabId):
-            final tab = await _tabsRepository.getTab(tabId);
+            final tab = await _tabsRepository.getTab(tabId: tabId);
 
             emit(
               state.copyWith(
@@ -52,7 +52,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             final updatedSubtitle = Validator.trimWhitespace(tab.subtitle);
 
             if (updatedTitle.isNotEmpty) {
-              await _tabsRepository.addTab(updatedTitle, updatedSubtitle);
+              await _tabsRepository.addTab(
+                title: updatedTitle,
+                subtitle: updatedSubtitle,
+              );
             } else {
               emit(
                 state.copyWith(
@@ -88,9 +91,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
             if (updatedTitle.isNotEmpty) {
               await _entryRepository.addEntry(
-                tab.id,
-                updatedTitle,
-                updatedSubtitle,
+                tabId: tab.id,
+                title: updatedTitle,
+                subtitle: updatedSubtitle,
               );
             } else {
               emit(
@@ -120,7 +123,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               ),
             );
 
-            await _tabsRepository.deleteTab(tabId);
+            await _tabsRepository.deleteTab(tabId: tabId);
             final tabs = await _tabsRepository.readTabs();
 
             emit(
@@ -141,11 +144,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             );
 
             await _entryRepository.deleteEntry(
-              tabId,
-              entryId,
+              tabId: tabId,
+              entryId: entryId,
             );
 
-            final entryCards = await _entryRepository.readEntries(tabId);
+            final entryCards = await _entryRepository.readEntries(tabId: tabId);
             final tabs = await _tabsRepository.readTabs();
 
             emit(
@@ -160,7 +163,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           case OnPressedDeleteAllEntries(:final tabId):
             emit(state.copyWith(isLoading: true));
 
-            final result = await _entryRepository.deleteEntries(tabId);
+            final result = await _entryRepository.deleteEntries(tabId: tabId);
             final tabs = await _tabsRepository.readTabs();
 
             if (result) {
@@ -248,7 +251,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             final updatedSubtitle = Validator.trimWhitespace(tab.subtitle);
 
             await _tabsRepository.updateTab(
-                tab.id, updatedTitle, updatedSubtitle);
+              id: tab.id,
+              title: updatedTitle,
+              subtitle: updatedSubtitle,
+            );
 
             final tabs = await _tabsRepository.readTabs();
 
@@ -270,14 +276,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             final updatedSubtitle = Validator.trimWhitespace(entry.subtitle);
 
             await _entryRepository.updateEntry(
-              entry.id,
-              entry.tabId,
-              updatedTitle,
-              updatedSubtitle,
+              id: entry.id,
+              tabId: entry.tabId,
+              title: updatedTitle,
+              subtitle: updatedSubtitle,
             );
 
             final tabs = await _tabsRepository.readTabs();
-            final entryCards = await _entryRepository.readEntries(entry.tabId);
+            final entryCards =
+                await _entryRepository.readEntries(tabId: entry.tabId);
 
             emit(
               state.copyWith(
@@ -301,7 +308,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           case OnUpdateTabId(:final id):
             emit(state.copyWith(isLoading: true));
 
-            final tab = await _tabsRepository.getTab(id);
+            final tab = await _tabsRepository.getTab(tabId: id);
 
             emit(state.copyWith(
               tab: tab,
@@ -310,7 +317,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ));
             break;
           case OnUpdateEntry(:final id):
-            final entry = await _entryRepository.getEntry(id);
+            final entry = await _entryRepository.getEntry(entryId: id);
 
             emit(
               state.copyWith(
@@ -329,6 +336,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               (_) => emit(state.copyWith(highlightedItemId: null)),
             );
 
+            break;
+          case OnRefresh():
+            emit(state.copyWith(isLoading: true));
+
+            final tabs = await _tabsRepository.readTabs();
+
+            // If we have a current tab, refresh its entries too
+            if (state.tab.id != 0) {
+              final entryCards =
+                  await _entryRepository.readEntries(tabId: state.tab.id);
+
+              emit(
+                state.copyWith(
+                  tabs: tabs,
+                  entryCards: entryCards,
+                  isLoading: false,
+                ),
+              );
+            } else {
+              emit(
+                state.copyWith(
+                  tabs: tabs,
+                  isLoading: false,
+                ),
+              );
+            }
             break;
           default:
         }

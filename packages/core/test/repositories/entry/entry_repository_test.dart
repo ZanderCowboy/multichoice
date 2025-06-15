@@ -36,8 +36,11 @@ void main() {
       await db.writeTxn(() => db.clear());
 
       // Act
-      final result =
-          await entryRepository.addEntry(0, 'slayer', 'you go queen');
+      final result = await entryRepository.addEntry(
+        tabId: 0,
+        title: 'slayer',
+        subtitle: 'you go queen',
+      );
 
       // Assert
       final entries = await db.entrys.where().findAll();
@@ -49,12 +52,19 @@ void main() {
         () async {
       // Arrange
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('not a title', 'not a subtitle');
+      await tabsRepository.addTab(
+        title: 'not a title',
+        subtitle: 'not a subtitle',
+      );
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'not a title');
 
       // Act
-      await entryRepository.addEntry(tab.id, 'slayer', 'you go queen');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'slayer',
+        subtitle: 'you go queen',
+      );
 
       // Assert
       final entries = await db.entrys.where().findAll();
@@ -69,8 +79,11 @@ void main() {
       await db.close();
 
       // Act
-      final result =
-          await entryRepository.addEntry(0, 'slayer', 'you go queen');
+      final result = await entryRepository.addEntry(
+        tabId: 0,
+        title: 'slayer',
+        subtitle: 'you go queen',
+      );
 
       // Assert
       expect(result, -1);
@@ -83,13 +96,28 @@ void main() {
       tabsRepository = TabsRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('another t', 'another sub');
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'another t');
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
-      await entryRepository.addEntry(tab.id, 'apple', 'pineapple');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'apple',
+        subtitle: 'pineapple',
+      );
     });
 
     test('should return EntryDTO when getEntry is called', () async {
@@ -98,7 +126,7 @@ void main() {
       final entry = entries.firstWhere((e) => e.title == 'apple');
 
       // Act
-      final result = await entryRepository.getEntry(entry.id);
+      final result = await entryRepository.getEntry(entryId: entry.id);
 
       // Assert
       expect(
@@ -120,12 +148,23 @@ void main() {
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('another t', 'another sub');
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.first;
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
     });
 
     test(
@@ -159,7 +198,7 @@ void main() {
       ];
 
       // Act
-      final result = await entryRepository.readEntries(tab.id);
+      final result = await entryRepository.readEntries(tabId: tab.id);
 
       // Assert
       expect(result, entriesDTO);
@@ -172,14 +211,31 @@ void main() {
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('title', 'subtitle');
-      await tabsRepository.addTab('not a title', 'not a subtitle');
-      await tabsRepository.addTab('another t', 'another sub');
+      await tabsRepository.addTab(
+        title: 'title',
+        subtitle: 'subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'not a title',
+        subtitle: 'not a subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'another t');
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
     });
 
     test('should return List<EntryDTO> when readAllEntries is called',
@@ -187,7 +243,11 @@ void main() {
       // Arrange
       final tabs = await db.tabs.where().findAll();
       final tempTab = tabs.firstWhere((e) => e.title == 'title');
-      await entryRepository.addEntry(tempTab.id, 'fernando', 'say my name');
+      await entryRepository.addEntry(
+        tabId: tempTab.id,
+        title: 'fernando',
+        subtitle: 'say my name',
+      );
 
       final tab = tabs.firstWhere((e) => e.title == 'another t');
       final entries = await db.entrys.where().findAll();
@@ -236,14 +296,31 @@ void main() {
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('title', 'subtitle');
-      await tabsRepository.addTab('not a title', 'not a subtitle');
-      await tabsRepository.addTab('another t', 'another sub');
+      await tabsRepository.addTab(
+        title: 'title',
+        subtitle: 'subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'not a title',
+        subtitle: 'not a subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'another t');
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
     });
 
     test('should return int when updateEntry is called', () async {
@@ -253,10 +330,10 @@ void main() {
 
       // Act
       final result = await entryRepository.updateEntry(
-        entry.id,
-        0,
-        'sunshine',
-        'under the day sky',
+        id: entry.id,
+        tabId: 0,
+        title: 'sunshine',
+        subtitle: 'under the day sky',
       );
 
       // Assert
@@ -289,10 +366,10 @@ void main() {
 
       // Act
       await entryRepository.updateEntry(
-        entryTwo.id,
-        0,
-        'moonshine',
-        'under the night sky',
+        id: entryTwo.id,
+        tabId: 0,
+        title: 'moonshine',
+        subtitle: 'under the night sky',
       );
 
       // Assert
@@ -307,14 +384,31 @@ void main() {
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('title', 'subtitle');
-      await tabsRepository.addTab('not a title', 'not a subtitle');
-      await tabsRepository.addTab('another t', 'another sub');
+      await tabsRepository.addTab(
+        title: 'title',
+        subtitle: 'subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'not a title',
+        subtitle: 'not a subtitle',
+      );
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'another t');
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
     });
 
     test('should return bool when deleteEntry is called', () async {
@@ -323,7 +417,10 @@ void main() {
       final entry = entries.firstWhere((e) => e.title == 'entry title');
 
       // Act
-      final result = await entryRepository.deleteEntry(0, entry.id);
+      final result = await entryRepository.deleteEntry(
+        tabId: 0,
+        entryId: entry.id,
+      );
 
       // Assert
       expect(result, true);
@@ -346,10 +443,13 @@ void main() {
       ];
 
       // Act
-      await entryRepository.deleteEntry(entry.tabId, entry.id);
+      await entryRepository.deleteEntry(
+        tabId: entry.tabId,
+        entryId: entry.id,
+      );
 
       // Assert
-      final tab = await tabsRepository.getTab(entryTwo.tabId);
+      final tab = await tabsRepository.getTab(tabId: entryTwo.tabId);
       final tabResult = tab.entries.length;
       expect(await entryRepository.readAllEntries(), entriesDTO);
       expect(tabResult, 1);
@@ -362,15 +462,33 @@ void main() {
       entryRepository = EntryRepository(db);
 
       await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab('another t', 'another sub');
-      await tabsRepository.addTab('test', 'sub test');
+      await tabsRepository.addTab(
+        title: 'another t',
+        subtitle: 'another sub',
+      );
+      await tabsRepository.addTab(
+        title: 'test',
+        subtitle: 'sub test',
+      );
 
       final tabs = await db.tabs.where().findAll();
       final tab = tabs.firstWhere((e) => e.title == 'another t');
-      await entryRepository.addEntry(tab.id, 'entry title', 'entry subtitle');
-      await entryRepository.addEntry(tab.id, 'wonderful day', 'have a laugh');
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+      await entryRepository.addEntry(
+        tabId: tab.id,
+        title: 'wonderful day',
+        subtitle: 'have a laugh',
+      );
       final tabTwo = tabs.firstWhere((e) => e.title == 'test');
-      await entryRepository.addEntry(tabTwo.id, 'neon', 'moon');
+      await entryRepository.addEntry(
+        tabId: tabTwo.id,
+        title: 'neon',
+        subtitle: 'moon',
+      );
     });
 
     test('should return bool when deleteEntries is called', () async {
@@ -379,7 +497,7 @@ void main() {
       final tab = tabs.firstWhere((e) => e.title == 'another t');
 
       // Act
-      final result = await entryRepository.deleteEntries(tab.id);
+      final result = await entryRepository.deleteEntries(tabId: tab.id);
 
       // Assert
       expect(result, true);
@@ -393,7 +511,7 @@ void main() {
       final tab = tabs.firstWhere((e) => e.title == 'test');
 
       // Act
-      await entryRepository.deleteEntries(tab.id);
+      await entryRepository.deleteEntries(tabId: tab.id);
 
       // Assert
       final newTabs = await db.tabs.where().findAll();

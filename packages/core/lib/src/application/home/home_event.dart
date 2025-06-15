@@ -37,4 +37,6 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
 
   const factory HomeEvent.highlightItem(int itemId) = HighlightItem;
+
+  const factory HomeEvent.refresh() = OnRefresh;
 }
