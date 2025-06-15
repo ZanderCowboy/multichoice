@@ -13,14 +13,14 @@ inputs:
     description: 'Branch name to push changes to'
     required: true
     default: 'develop'
+  bump-type:
+    description: 'Type of version bump (major, minor, patch, none)'
+    required: true
 
 outputs:
   version_number:
     description: 'The new version number'
     value: ${{ steps.version_update.outputs.version_number }}
-  has_version_label:
-    description: 'Whether a valid version label was found'
-    value: ${{ steps.check_labels.outputs.has_version_label }}
 
 runs:
   using: "composite"
@@ -40,42 +40,9 @@ runs:
         current_version=$(grep 'version:' ${{ inputs.pubspec-path }} | sed 's/version: //')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
 
-    - name: Check Version Labels
-      id: check_labels
-      shell: bash
-      run: |
-        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          echo "Workflow manually triggered, skipping label check"
-          echo "has_version_label=true" >> $GITHUB_OUTPUT
-          exit 0
-        fi
-
-        # Check for no-build label first
-        if [[ "${{ contains(github.event.pull_request.labels.*.name, 'no-build') }}" == "true" ]]; then
-          echo "Found 'no-build' label, skipping version bump"
-          echo "has_version_label=true" >> $GITHUB_OUTPUT
-          exit 0
-        fi
-
-        # Check for version labels
-        if [[ "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" == "true" ]]; then
-          echo "version_bump_type=major" >> $GITHUB_OUTPUT
-          echo "has_version_label=true" >> $GITHUB_OUTPUT
-        elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" == "true" ]]; then
-          echo "version_bump_type=minor" >> $GITHUB_OUTPUT
-          echo "has_version_label=true" >> $GITHUB_OUTPUT
-        elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" == "true" ]]; then
-          echo "version_bump_type=patch" >> $GITHUB_OUTPUT
-          echo "has_version_label=true" >> $GITHUB_OUTPUT
-        else
-          echo "No version label found. Please add one of: major, minor, patch, or no-build"
-          echo "has_version_label=false" >> $GITHUB_OUTPUT
-          exit 1
-        fi
-
     - name: Update Version
       id: version_update
-      if: steps.check_labels.outputs.has_version_label == 'true'
+      if: ${{ inputs.bump-type != 'none' }}
       shell: bash
       run: |
         latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
@@ -93,8 +60,8 @@ runs:
           # Split version into major, minor, patch
           IFS='.' read -r major minor patch <<< "$version_part"
           
-          # Increment version based on label
-          bump_type=${{ steps.check_labels.outputs.version_bump_type }}
+          # Increment version based on bump-type
+          bump_type="${{ inputs.bump-type }}"
           if [ "$bump_type" = "major" ]; then
             major=$((major + 1))
             minor=0

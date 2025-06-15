@@ -37,6 +37,23 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
+      - name: Check Version Labels
+        id: check_labels
+        run: |
+          LABELS="${{ toJson(github.event.pull_request.labels) }}"
+          if [[ "$LABELS" == *'"name":"no-build"'* ]]; then
+            echo "bump_type=none" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *'"name":"major"'* ]]; then
+            echo "bump_type=major" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *'"name":"minor"'* ]]; then
+            echo "bump_type=minor" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *'"name":"patch"'* ]]; then
+            echo "bump_type=patch" >> $GITHUB_OUTPUT
+          else
+            echo "No version label found. Please add one of: major, minor, patch, or no-build"
+            exit 1
+          fi
+
       - name: Version Management
         id: version_management
         uses: ./.github/actions/version-management
@@ -44,6 +61,7 @@ jobs:
           github-token: ${{ steps.generate_token.outputs.token }}
           pubspec-path: apps/multichoice/pubspec.yaml
           branch-name: develop
+          bump-type: ${{ steps.check_labels.outputs.bump_type }}
 
       - id: id_out
         run: |
