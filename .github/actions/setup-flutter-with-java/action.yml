@@ -29,7 +29,7 @@ runs:
         cache: true
 
     - name: Set up Java 21
-      if: ${{ inputs.setup_java == "true" }}
+      if: ${{ inputs.setup_java == 'true' }}
       uses: actions/setup-java@v4
       with:
         distribution: "zulu"
