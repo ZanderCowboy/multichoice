@@ -290,7 +290,7 @@ void main() {
       // Arrange
       const tabId = 5;
 
-      when(mockTabsRepository.deleteTab(tabId: any))
+      when(mockTabsRepository.deleteTab(tabId: anyNamed('tabId')))
           .thenAnswer((_) => Future.value(true));
 
       // Act

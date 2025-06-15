@@ -82,24 +82,17 @@ void main() {
       timestamp: timestamp,
       entries: [],
     );
-    final entryDTO = EntryDTO(
-      id: 123,
-      tabId: 123,
-      title: 'title',
-      subtitle: 'subtitle',
-      timestamp: timestamp,
-    );
 
     final initial = HomeState(
-      tab: tabsDTO,
+      tab: TabsDTO.empty(),
       tabs: null,
-      entry: entryDTO,
+      entry: EntryDTO.empty(),
       entryCards: null,
       isLoading: false,
       isDeleted: false,
       isAdded: false,
       isValid: false,
-      errorMessage: 'errorMessage',
+      errorMessage: '',
     );
 
     setUp(() async {
@@ -122,24 +115,22 @@ void main() {
       }),
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
-        isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.isLoading, 'isLoading', false),
+        isA<HomeState>().having((s) => s.tabs, 'tabs', [tabsDTO]).having(
+            (s) => s.isLoading, 'isLoading', false),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, tab: TabsDTO, isLoading: false] when onGetTab is added',
+      'emits [tab: TabsDTO] when onGetTab is added',
+      seed: () => initial,
       build: () {
-        when(mockTabsRepository.getTab(tabId: any))
+        when(mockTabsRepository.getTab(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => tabsDTO);
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onGetTab(123)),
       expect: () => [
-        isA<HomeState>()
-            .having((s) => s.tab, 'tab', isA<TabsDTO>())
-            .having((s) => s.isLoading, 'isLoading', false),
+        isA<HomeState>().having((s) => s.tab, 'tab', tabsDTO),
       ],
     );
   });
@@ -164,14 +155,15 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
-      errorMessage: 'errorMessage',
+      errorMessage: '',
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, isAdded: true, tab: TabsDTO, tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddTab is added',
+      'emits [isLoading: true, isAdded: true, tab: TabsDTO.empty(), tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddTab is added',
       seed: () => initialState,
       build: () {
-        when(mockTabsRepository.addTab(title: any, subtitle: any))
+        when(mockTabsRepository.addTab(
+                title: anyNamed('title'), subtitle: anyNamed('subtitle')))
             .thenAnswer((_) async => 0);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -184,22 +176,29 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', true)
             .having((s) => s.isAdded, 'isAdded', true),
         isA<HomeState>()
-            .having((s) => s.tab, 'tab', isA<TabsDTO>())
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isAdded, 'isAdded', false),
       ],
       verify: (bloc) {
-        verify(mockTabsRepository.addTab(title: any, subtitle: any)).called(1);
+        verify(mockTabsRepository.addTab(
+                title: anyNamed('title'), subtitle: anyNamed('subtitle')))
+            .called(1);
         verify(mockTabsRepository.readTabs()).called(1);
       },
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, isAdded: true, entry: EntryDTO, tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddEntry is added',
+      'emits [isLoading: true, isAdded: true, entry: EntryDTO.empty(), tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddEntry is added',
+      seed: () => initialState,
       build: () {
         when(mockEntryRepository.addEntry(
-                tabId: any, title: any, subtitle: any))
+                tabId: anyNamed('tabId'),
+                title: anyNamed('title'),
+                subtitle: anyNamed('subtitle')))
             .thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -212,14 +211,19 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', true)
             .having((s) => s.isAdded, 'isAdded', true),
         isA<HomeState>()
-            .having((s) => s.entry, 'entry', isA<EntryDTO>())
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', '')
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isAdded, 'isAdded', false),
       ],
       verify: (bloc) {
         verify(mockEntryRepository.addEntry(
-                tabId: any, title: any, subtitle: any))
+                tabId: anyNamed('tabId'),
+                title: anyNamed('title'),
+                subtitle: anyNamed('subtitle')))
             .called(1);
         verify(mockTabsRepository.readTabs()).called(1);
       },
@@ -227,10 +231,23 @@ void main() {
   });
 
   group('HomeBloc Delete Events', () {
+    final initialState = HomeState(
+      tab: TabsDTO.empty(),
+      tabs: [],
+      entry: EntryDTO.empty(),
+      entryCards: [],
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: '',
+    );
+
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, isDeleted: true, tabs: tabs, entryCards: [], isLoading: false, isDeleted: false] when onLongPressedDeleteTab is added',
+      'emits [isLoading: true, isDeleted: true, tabs: [], entryCards: [], isLoading: false, isDeleted: false] when onLongPressedDeleteTab is added',
+      seed: () => initialState,
       build: () {
-        when(mockTabsRepository.deleteTab(tabId: any))
+        when(mockTabsRepository.deleteTab(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => true);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -241,19 +258,21 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', true)
             .having((s) => s.isDeleted, 'isDeleted', true),
         isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.entryCards, 'entryCards', isA<List<EntryDTO>>())
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
+            .having((s) => s.entryCards, 'entryCards', <EntryDTO>[])
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isDeleted, 'isDeleted', false),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, isDeleted: true, tabs: tabs, entryCards: entryCards, isLoading: false, isDeleted: false] when onLongPressedDeleteEntry is added',
+      'emits [isLoading: true, isDeleted: true, tabs: [], entryCards: [], isLoading: false, isDeleted: false] when onLongPressedDeleteEntry is added',
+      seed: () => initialState,
       build: () {
-        when(mockEntryRepository.deleteEntry(tabId: any, entryId: any))
+        when(mockEntryRepository.deleteEntry(
+                tabId: anyNamed('tabId'), entryId: anyNamed('entryId')))
             .thenAnswer((_) async => true);
-        when(mockEntryRepository.readEntries(tabId: any))
+        when(mockEntryRepository.readEntries(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => []);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -264,17 +283,18 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', true)
             .having((s) => s.isDeleted, 'isDeleted', true),
         isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.entryCards, 'entryCards', isA<List<EntryDTO>>())
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
+            .having((s) => s.entryCards, 'entryCards', <EntryDTO>[])
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isDeleted, 'isDeleted', false),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, tabs: tabs, entryCards: [], isLoading: false] when onPressedDeleteAllEntries is added',
+      'emits [isLoading: true, tabs: [], entryCards: [], isLoading: false] when onPressedDeleteAllEntries is added',
+      seed: () => initialState,
       build: () {
-        when(mockEntryRepository.deleteEntries(tabId: any))
+        when(mockEntryRepository.deleteEntries(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => true);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -282,15 +302,16 @@ void main() {
       act: (bloc) => bloc.add(HomeEvent.onPressedDeleteAllEntries(1)),
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
-        isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.entryCards, 'entryCards', isA<List<EntryDTO>>())
-            .having((s) => s.isLoading, 'isLoading', false),
+        isA<HomeState>().having((s) => s.tabs, 'tabs', <TabsDTO>[]).having(
+            (s) => s.entryCards,
+            'entryCards',
+            <EntryDTO>[]).having((s) => s.isLoading, 'isLoading', false),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
       'emits [isLoading: true, tab: TabsDTO.empty(), tabs: null, entry: EntryDTO.empty(), entryCards: null, isLoading: false, isValid: false] when onPressedDeleteAll is added',
+      seed: () => initialState,
       build: () {
         when(mockTabsRepository.deleteTabs()).thenAnswer((_) async => true);
         return homeBloc;
@@ -298,41 +319,69 @@ void main() {
       act: (bloc) => bloc.add(HomeEvent.onPressedDeleteAll()),
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
-        isA<HomeState>(),
+        isA<HomeState>()
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.tabs, 'tabs', null)
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', '')
+            .having((s) => s.entryCards, 'entryCards', null)
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.isValid, 'isValid', false),
       ],
     );
   });
 
   group('HomeBloc Change Events', () {
+    final initialState = HomeState(
+      tab: TabsDTO.empty(),
+      tabs: null,
+      entry: EntryDTO.empty(),
+      entryCards: null,
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: '',
+    );
+
     blocTest<HomeBloc, HomeState>(
       'emits [tab: updatedTab, isValid: isValid] when onChangedTabTitle is added',
+      seed: () => initialState,
       build: () => homeBloc,
       act: (bloc) => bloc.add(HomeEvent.onChangedTabTitle('New Title')),
       expect: () => [
-        isA<HomeState>().having((s) => s.tab, 'tab', isA<TabsDTO>()).having(
-            (s) => s.isValid, 'isValid', Validator.isValidInput('New Title')),
+        isA<HomeState>()
+            .having((s) => s.tab.title, 'tab.title', 'New Title')
+            .having((s) => s.isValid, 'isValid',
+                Validator.isValidInput('New Title')),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
       'emits [tab: updatedTab, isValid: isValid] when onChangedTabSubtitle is added',
+      seed: () => initialState,
       build: () => homeBloc,
       act: (bloc) => bloc.add(HomeEvent.onChangedTabSubtitle('New Subtitle')),
       expect: () => [
-        isA<HomeState>().having((s) => s.tab, 'tab', isA<TabsDTO>()).having(
-            (s) => s.isValid,
-            'isValid',
-            Validator.isValidSubtitle('New Subtitle')),
+        isA<HomeState>()
+            .having((s) => s.tab.subtitle, 'tab.subtitle', 'New Subtitle')
+            .having((s) => s.isValid, 'isValid',
+                Validator.isValidSubtitle('New Subtitle')),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
       'emits [entry: updatedEntry, isValid: isValid] when onChangedEntryTitle is added',
+      seed: () => initialState,
       build: () => homeBloc,
       act: (bloc) => bloc.add(HomeEvent.onChangedEntryTitle('New Entry Title')),
       expect: () => [
         isA<HomeState>()
-            .having((s) => s.entry, 'entry', isA<EntryDTO>())
+            .having((s) => s.entry.title, 'entry.title', 'New Entry Title')
             .having((s) => s.isValid, 'isValid',
                 Validator.isValidInput('New Entry Title')),
       ],
@@ -340,12 +389,14 @@ void main() {
 
     blocTest<HomeBloc, HomeState>(
       'emits [entry: updatedEntry, isValid: isValid] when onChangedEntrySubtitle is added',
+      seed: () => initialState,
       build: () => homeBloc,
       act: (bloc) =>
           bloc.add(HomeEvent.onChangedEntrySubtitle('New Entry Subtitle')),
       expect: () => [
         isA<HomeState>()
-            .having((s) => s.entry, 'entry', isA<EntryDTO>())
+            .having(
+                (s) => s.entry.subtitle, 'entry.subtitle', 'New Entry Subtitle')
             .having((s) => s.isValid, 'isValid',
                 Validator.isValidSubtitle('New Entry Subtitle')),
       ],
@@ -353,10 +404,36 @@ void main() {
   });
 
   group('HomeBloc Submit Events', () {
+    final initialState = HomeState(
+      tab: TabsDTO(
+          id: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp,
+          entries: []),
+      tabs: [],
+      entry: EntryDTO(
+          id: 123,
+          tabId: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp),
+      entryCards: [],
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: '',
+    );
+
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, tab: TabsDTO.empty(), tabs: tabs, isLoading: false, isValid: false] when onSubmitEditTab is added',
+      'emits [isLoading: true, tab: TabsDTO.empty(), tabs: [], isLoading: false, isValid: false] when onSubmitEditTab is added',
+      seed: () => initialState,
       build: () {
-        when(mockTabsRepository.updateTab(id: any, title: any, subtitle: any))
+        when(mockTabsRepository.updateTab(
+                id: anyNamed('id'),
+                title: anyNamed('title'),
+                subtitle: anyNamed('subtitle')))
             .thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
@@ -365,20 +442,27 @@ void main() {
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
         isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isValid, 'isValid', false),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, entry: EntryDTO.empty(), tabs: tabs, entryCards: entryCards, isLoading: false, isValid: false] when onSubmitEditEntry is added',
+      'emits [isLoading: true, entry: EntryDTO.empty(), tabs: [], entryCards: [], isLoading: false, isValid: false] when onSubmitEditEntry is added',
+      seed: () => initialState,
       build: () {
         when(mockEntryRepository.updateEntry(
-                id: any, tabId: any, title: any, subtitle: any))
+                id: anyNamed('id'),
+                tabId: anyNamed('tabId'),
+                title: anyNamed('title'),
+                subtitle: anyNamed('subtitle')))
             .thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
-        when(mockEntryRepository.readEntries(tabId: any))
+        when(mockEntryRepository.readEntries(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -386,55 +470,127 @@ void main() {
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
         isA<HomeState>()
-            .having((s) => s.tabs, 'tabs', isA<List<TabsDTO>>())
-            .having((s) => s.entryCards, 'entryCards', isA<List<EntryDTO>>())
-            .having((s) => s.isLoading, 'isLoading', false)
-            .having((s) => s.isValid, 'isValid', false),
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', ''),
       ],
     );
   });
 
   group('HomeBloc Cancel Events', () {
+    final initialState = HomeState(
+      tab: TabsDTO(
+          id: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp,
+          entries: []),
+      tabs: [],
+      entry: EntryDTO(
+          id: 123,
+          tabId: 456,
+          title: 'title',
+          subtitle: 'subtitle',
+          timestamp: timestamp),
+      entryCards: [],
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: '',
+    );
+
     blocTest<HomeBloc, HomeState>(
       'emits [tab: TabsDTO.empty(), entry: EntryDTO.empty(), isValid: false] when onPressedCancel is added',
+      seed: () => initialState,
       build: () => homeBloc,
       act: (bloc) => bloc.add(HomeEvent.onPressedCancel()),
       expect: () => [
-        isA<HomeState>().having((s) => s.isValid, 'isValid', false),
+        isA<HomeState>()
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', '')
+            .having((s) => s.isValid, 'isValid', false),
       ],
     );
   });
 
   group('HomeBloc Update Events', () {
+    final initialState = HomeState(
+      tab: TabsDTO.empty(),
+      tabs: null,
+      entry: EntryDTO.empty(),
+      entryCards: null,
+      isLoading: false,
+      isDeleted: false,
+      isAdded: false,
+      isValid: false,
+      errorMessage: '',
+    );
+
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, tab: tab, isValid: false, isLoading: false] when onUpdateTabId is added',
+      'emits [isLoading: true, tab: TabsDTO.empty(), isValid: false, isLoading: false] when onUpdateTabId is added',
+      seed: () => initialState,
       build: () {
-        when(mockTabsRepository.getTab(tabId: any))
+        when(mockTabsRepository.getTab(tabId: anyNamed('tabId')))
             .thenAnswer((_) async => TabsDTO.empty());
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onUpdateTabId(1)),
       expect: () => [
-        isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
         isA<HomeState>()
+            .having((s) => s.isLoading, 'isLoading', true)
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.tabs, 'tabs', null)
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', '')
+            .having((s) => s.entryCards, 'entryCards', null)
+            .having((s) => s.isDeleted, 'isDeleted', false)
+            .having((s) => s.isAdded, 'isAdded', false)
             .having((s) => s.isValid, 'isValid', false)
-            .having((s) => s.isLoading, 'isLoading', false),
+            .having((s) => s.errorMessage, 'errorMessage', ''),
+        isA<HomeState>()
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.tab.id, 'tab.id', 0)
+            .having((s) => s.tab.title, 'tab.title', '')
+            .having((s) => s.tab.subtitle, 'tab.subtitle', '')
+            .having((s) => s.tabs, 'tabs', null)
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', '')
+            .having((s) => s.entryCards, 'entryCards', null)
+            .having((s) => s.isDeleted, 'isDeleted', false)
+            .having((s) => s.isAdded, 'isAdded', false)
+            .having((s) => s.isValid, 'isValid', false)
+            .having((s) => s.errorMessage, 'errorMessage', ''),
       ],
     );
 
     blocTest<HomeBloc, HomeState>(
-      'emits [isLoading: true, entry: entry, isValid: false, isLoading: false] when onUpdateEntry is added',
+      'emits [entry: EntryDTO.empty()] when onUpdateEntry is added',
+      seed: () => initialState,
       build: () {
-        when(mockEntryRepository.getEntry(entryId: any))
+        when(mockEntryRepository.getEntry(entryId: anyNamed('entryId')))
             .thenAnswer((_) async => EntryDTO.empty());
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onUpdateEntry(1)),
       expect: () => [
-        isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
         isA<HomeState>()
-            .having((s) => s.isValid, 'isValid', false)
-            .having((s) => s.isLoading, 'isLoading', false),
+            .having((s) => s.entry.id, 'entry.id', 0)
+            .having((s) => s.entry.tabId, 'entry.tabId', 0)
+            .having((s) => s.entry.title, 'entry.title', '')
+            .having((s) => s.entry.subtitle, 'entry.subtitle', ''),
       ],
     );
   });

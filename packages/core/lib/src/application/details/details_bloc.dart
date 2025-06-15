@@ -106,6 +106,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
           onDeleteChild: (e) async {
             final current = List<int>.from(state.deleteChildren ?? []);
             final currentChildren = List<EntryDTO>.from(state.children ?? []);
+            final originalChildren = List<EntryDTO>.from(state.children ?? []);
 
             if (!current.contains(e.id)) {
               current.add(e.id);
@@ -114,11 +115,12 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             } else {
               current.remove(e.id);
               // Add back to children list when unmarked for deletion
-              final entryToRestore = state.children?.firstWhere(
+              final entryToRestore = originalChildren.firstWhere(
                 (entry) => entry.id == e.id,
                 orElse: () => throw Exception('Entry not found'),
               );
-              if (entryToRestore != null) {
+              // Only add if not already in the list
+              if (!currentChildren.any((entry) => entry.id == e.id)) {
                 currentChildren.add(entryToRestore);
               }
             }

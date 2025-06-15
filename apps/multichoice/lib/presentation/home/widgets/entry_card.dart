@@ -22,7 +22,7 @@ class EntryCard extends HookWidget {
     final isLayoutVertical = appLayout.isLayoutVertical;
 
     return BlocBuilder<HomeBloc, HomeState>(
-      builder: (_, state) {
+      builder: (context, state) {
         return MenuAnchor(
           controller: menuController,
           consumeOutsideTap: true,
