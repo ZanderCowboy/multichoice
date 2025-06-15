@@ -23,13 +23,8 @@ jobs:
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.id_out.outputs.version }}
-      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
-      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
-
-      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
-      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,13 +46,10 @@ jobs:
       - id: id_out
         run: |
           echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
+          # Returns a bool to determine if a build shoulbd be performed
           echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
-
-          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
+          # "Release"
           echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
         uses: actions/download-artifact@v4
@@ -66,26 +58,85 @@ jobs:
           path: ${{ github.workspace }}/apps/multichoice/
 
   build:
-    name: Build Apps
-    if: github.event.pull_request.draft == false && success()
-    uses: ./.github/workflows/_build-env-apps.yml
+    name: Builds Android App
     needs: [preBuild]
-    secrets: inherit
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
       statuses: write
-    with:
-      pubspec_filename: "pubspec-file"
-      web_build_flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
-      web_environment_flag: ${{ needs.preBuild.outputs.web_environment_flag }}
-      android_build_flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
-      android_environment_flag: ${{ needs.preBuild.outputs.android_environment_flag }}
-      android_versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      android_build_artifact: "android-release"
-      android_build_appbundle: ${{ 'false' == 'true' }}
-      windows_build_flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
-      windows_environment_flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-java-flutter
+
+      - name: melos coverage:core
+        run: melos coverage:core
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+      - name: Dart analysis
+        uses: zgosalvez/github-actions-analyze-dart@v3
+        with:
+          working-directory: "${{github.workspace}}/"
+
+      - name: Get pubspec.yaml
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.pubspec_filename }}
+          path: ${{ github.workspace }}/apps/multichoice/
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
+
+      - name: Start appbundle release build
+        run: flutter build appbundle --release
+        working-directory: apps/multichoice/
+      - name: Start apk release build
+        run: flutter build apk --release
+        working-directory: apps/multichoice/
+
+      - name: Upload Android release appbundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotesFile: ./CHANGELOG.md
+          debug: true
 
   post-build:
     name: Post Build
