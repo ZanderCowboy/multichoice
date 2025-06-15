@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 import 'package:core/src/controllers/implementations/product_tour_controller.dart';
 
-import '../mocks.mocks.dart';
+import '../../mocks.mocks.dart';
 
 void main() {
   late ProductTourController controller;

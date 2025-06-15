@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
-import '../../mocks.mocks.dart';
+import '../../../mocks.mocks.dart';
 
 void main() {
   late ProductBloc productBloc;

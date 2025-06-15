@@ -19,6 +19,13 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }) : super(DetailsState.initial()) {
     on<DetailsEvent>(
       (event, emit) async {
+        final isTab = state.parent == null &&
+            state.children != null &&
+            state.tabId != null;
+        final isEntry = state.parent != null &&
+            state.children == null &&
+            state.entryId != null;
+
         await event.map(
           onPopulate: (e) async {
             emit(state.copyWith(isLoading: true));
@@ -29,27 +36,22 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               final tab = result.item as TabsDTO;
               final children = await entryRepository.readEntries(tabId: tab.id);
 
-              emit(state.copyWith(
+              emit(DetailsState.initial().copyWith(
                 title: tab.title,
                 subtitle: tab.subtitle,
                 timestamp: tab.timestamp,
-                parent: null,
                 children: children,
                 tabId: tab.id,
-                entryId: null,
-                isLoading: false,
               ));
             } else {
               final entry = result.item as EntryDTO;
               final parentTab = await tabsRepository.getTab(tabId: entry.tabId);
 
-              emit(state.copyWith(
+              emit(DetailsState.initial().copyWith(
                 title: entry.title,
                 subtitle: entry.subtitle,
                 timestamp: entry.timestamp,
                 parent: parentTab,
-                children: null,
-                isLoading: false,
                 entryId: entry.id,
                 tabId: parentTab.id,
               ));
@@ -69,36 +71,37 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             ));
           },
           onToggleEditMode: (e) async {
-            if (state.isEditingMode) {
-              /// We're exiting edit mode, need to revert changes
-              if (state.parent == null && state.children != null) {
-                final tab = await tabsRepository.getTab(tabId: state.tabId!);
-                final children =
-                    await entryRepository.readEntries(tabId: state.tabId!);
-                emit(
-                  state.copyWith(
-                    title: tab.title,
-                    subtitle: tab.subtitle,
-                    children: children,
-                    deleteChildren: <int>[],
-                    isEditingMode: false,
-                  ),
-                );
-              } else if (state.parent != null && state.children == null) {
-                final entry =
-                    await entryRepository.getEntry(entryId: state.entryId!);
-                emit(
-                  state.copyWith(
-                    title: entry.title,
-                    subtitle: entry.subtitle,
-                    isEditingMode: false,
-                  ),
-                );
-              }
-            } else {
+            if (!state.isEditingMode) {
               emit(
                 state.copyWith(
                   isEditingMode: true,
+                ),
+              );
+              return;
+            }
+
+            /// We're exiting edit mode, need to revert changes
+            if (isTab) {
+              final tab = await tabsRepository.getTab(tabId: state.tabId!);
+              final children =
+                  await entryRepository.readEntries(tabId: state.tabId!);
+              emit(
+                state.copyWith(
+                  title: tab.title,
+                  subtitle: tab.subtitle,
+                  children: children,
+                  deleteChildren: <int>[],
+                  isEditingMode: false,
+                ),
+              );
+            } else if (isEntry) {
+              final entry =
+                  await entryRepository.getEntry(entryId: state.entryId!);
+              emit(
+                state.copyWith(
+                  title: entry.title,
+                  subtitle: entry.subtitle,
+                  isEditingMode: false,
                 ),
               );
             }
@@ -108,19 +111,26 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             final currentChildren = List<EntryDTO>.from(state.children ?? []);
             final originalChildren = List<EntryDTO>.from(state.children ?? []);
 
-            if (!current.contains(e.id)) {
+            final isAlreadyMarked = current.contains(e.id);
+
+            if (!isAlreadyMarked) {
               current.add(e.id);
               // Remove from children list when marked for deletion
               currentChildren.removeWhere((entry) => entry.id == e.id);
             } else {
               current.remove(e.id);
+
               // Add back to children list when unmarked for deletion
               final entryToRestore = originalChildren.firstWhere(
                 (entry) => entry.id == e.id,
                 orElse: () => throw Exception('Entry not found'),
               );
+
               // Only add if not already in the list
-              if (!currentChildren.any((entry) => entry.id == e.id)) {
+              final isAlreadyRestored = currentChildren.any(
+                (entry) => entry.id == e.id,
+              );
+              if (!isAlreadyRestored) {
                 currentChildren.add(entryToRestore);
               }
             }
@@ -136,29 +146,26 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               isEditingMode: false,
             ));
 
-            if (state.parent == null && state.children != null) {
-              if (state.tabId != null) {
-                await tabsRepository.updateTab(
-                  id: state.tabId!,
-                  title: state.title,
-                  subtitle: state.subtitle,
-                );
-              }
+            if (isTab) {
+              await tabsRepository.updateTab(
+                id: state.tabId!,
+                title: state.title,
+                subtitle: state.subtitle,
+              );
+
               for (final id in state.deleteChildren ?? <int>[]) {
                 await entryRepository.deleteEntry(
                   tabId: state.tabId!,
                   entryId: id,
                 );
               }
-            } else if (state.parent != null && state.children == null) {
-              if (state.entryId != null) {
-                await entryRepository.updateEntry(
-                  id: state.entryId!,
-                  tabId: state.parent!.id,
-                  title: state.title,
-                  subtitle: state.subtitle,
-                );
-              }
+            } else if (isEntry) {
+              await entryRepository.updateEntry(
+                id: state.entryId!,
+                tabId: state.parent!.id,
+                title: state.title,
+                subtitle: state.subtitle,
+              );
             }
 
             emit(state.copyWith(isLoading: false));

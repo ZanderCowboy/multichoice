@@ -9,7 +9,7 @@ abstract class ProductState with _$ProductState {
     required String? errorMessage,
   }) = _ProductState;
 
-  factory ProductState.initial() => ProductState(
+  factory ProductState.initial() => const ProductState(
         currentStep: ProductTourStep.noneCompleted,
         tabs: null,
         isLoading: false,

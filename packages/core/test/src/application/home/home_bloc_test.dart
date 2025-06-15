@@ -10,8 +10,8 @@ import 'package:models/models.dart';
 import 'package:clock/clock.dart';
 import '../../helpers/fake_path_provider_platform.dart';
 
-import '../../injection.dart';
-import '../../mocks.mocks.dart';
+import '../../../injection.dart';
+import '../../../mocks.mocks.dart';
 
 final getit = GetIt.instance;
 
@@ -593,5 +593,101 @@ void main() {
             .having((s) => s.entry.subtitle, 'entry.subtitle', ''),
       ],
     );
+  });
+
+  group('HomeBloc', () {
+    group('OnRefresh', () {
+      final mockTabs = [
+        TabsDTO(
+          id: 1,
+          title: 'Tab 1',
+          subtitle: 'Subtitle 1',
+          timestamp: DateTime.now(),
+          entries: [],
+        ),
+        TabsDTO(
+          id: 2,
+          title: 'Tab 2',
+          subtitle: 'Subtitle 2',
+          timestamp: DateTime.now(),
+          entries: [],
+        ),
+      ];
+
+      final mockEntries = [
+        EntryDTO(
+          id: 1,
+          tabId: 1,
+          title: 'Entry 1',
+          subtitle: 'Subtitle 1',
+          timestamp: DateTime.now(),
+        ),
+        EntryDTO(
+          id: 2,
+          tabId: 1,
+          title: 'Entry 2',
+          subtitle: 'Subtitle 2',
+          timestamp: DateTime.now(),
+        ),
+      ];
+
+      blocTest<HomeBloc, HomeState>(
+        'emits [loading, loaded with tabs and entries] when OnRefresh is added and tab is selected',
+        build: () {
+          when(mockTabsRepository.readTabs()).thenAnswer((_) async => mockTabs);
+          when(mockEntryRepository.readEntries(tabId: 1))
+              .thenAnswer((_) async => mockEntries);
+
+          // Set initial state with a selected tab
+          homeBloc.emit(homeBloc.state.copyWith(
+              tab: TabsDTO(
+            id: 1,
+            title: 'Tab 1',
+            subtitle: 'Subtitle 1',
+            timestamp: DateTime.now(),
+            entries: [],
+          )));
+
+          return homeBloc;
+        },
+        act: (bloc) => bloc.add(const OnRefresh()),
+        expect: () => [
+          isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
+          isA<HomeState>()
+              .having((s) => s.isLoading, 'isLoading', false)
+              .having((s) => s.tabs, 'tabs', mockTabs)
+              .having((s) => s.entryCards, 'entryCards', mockEntries),
+        ],
+        verify: (_) {
+          verify(mockTabsRepository.readTabs()).called(1);
+          verify(mockEntryRepository.readEntries(tabId: 1)).called(1);
+        },
+      );
+
+      blocTest<HomeBloc, HomeState>(
+        'emits [loading, loaded with tabs only] when OnRefresh is added and no tab is selected',
+        build: () {
+          when(mockTabsRepository.readTabs()).thenAnswer((_) async => mockTabs);
+
+          // Set initial state with no selected tab
+          homeBloc.emit(homeBloc.state.copyWith(tab: TabsDTO.empty()));
+
+          return homeBloc;
+        },
+        act: (bloc) => bloc.add(const OnRefresh()),
+        expect: () => [
+          isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
+          isA<HomeState>()
+              .having((s) => s.isLoading, 'isLoading', false)
+              .having((s) => s.tabs, 'tabs', mockTabs)
+              .having((s) => s.entryCards, 'entryCards', null),
+        ],
+        verify: (_) {
+          verify(mockTabsRepository.readTabs()).called(1);
+          verifyNever(
+              mockEntryRepository.readEntries(tabId: anyNamed('tabId')));
+        },
+      );
+    });
   });
 }

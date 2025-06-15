@@ -5,7 +5,7 @@ import 'package:isar/isar.dart';
 import 'package:models/models.dart';
 import 'package:clock/clock.dart';
 
-import '../../injection.dart';
+import '../../../../injection.dart';
 
 void main() {
   late TabsRepository tabsRepository;

@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'
+    show DocumentSnapshot, Timestamp;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feedback_model.freezed.dart';

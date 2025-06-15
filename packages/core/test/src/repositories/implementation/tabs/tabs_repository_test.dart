@@ -5,8 +5,8 @@ import 'package:isar/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
-import '../../injection.dart';
-import '../../mocks.mocks.dart';
+import '../../../../injection.dart';
+import '../../../../mocks.mocks.dart';
 
 void main() {
   late TabsRepository tabsRepository;

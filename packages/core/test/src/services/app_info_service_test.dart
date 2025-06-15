@@ -5,7 +5,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:isar/isar.dart';
 
 import '../helpers/fake_path_provider_platform.dart';
-import '../injection.dart';
+import '../../injection.dart';
 
 void main() {
   late AppInfoService appInfoService;
