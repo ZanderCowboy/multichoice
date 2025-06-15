@@ -80,6 +80,7 @@ class _DetailsView extends StatelessWidget {
                   ),
                   // TODO: Add logic to switch between grid and list view
                   const _ChildrenListView(),
+                  // const _ChildrenGridList(),
                 ],
                 if (state.parent != null) ...[
                   SliverToBoxAdapter(

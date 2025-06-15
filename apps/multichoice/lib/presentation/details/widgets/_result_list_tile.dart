@@ -4,10 +4,14 @@ class _ResultListTile extends StatelessWidget {
   const _ResultListTile({
     required this.title,
     required this.subtitle,
+    this.margin = horizontal12,
+    this.internalPadding = allPadding12,
   });
 
   final String title;
   final String subtitle;
+  final EdgeInsets margin;
+  final EdgeInsets internalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +21,10 @@ class _ResultListTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular8,
       ),
-      margin: zeroPadding,
+      margin: margin,
       color: context.theme.appColors.secondary,
       child: Padding(
-        padding: allPadding12,
+        padding: internalPadding,
         child: Row(
           children: [
             Expanded(

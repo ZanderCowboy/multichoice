@@ -42,7 +42,7 @@ class _ChildrenListView extends StatelessWidget {
               final child = children[index];
 
               return Padding(
-                padding: horizontal12 + vertical8,
+                padding: vertical8,
                 child: Stack(
                   children: [
                     _ResultListTile(
@@ -51,8 +51,8 @@ class _ChildrenListView extends StatelessWidget {
                     ),
                     if (state.isEditingMode)
                       Positioned(
-                        top: 0,
-                        right: 0,
+                        top: -8,
+                        right: 2,
                         child: IconButton(
                           icon: const Icon(
                             Icons.delete_outline,

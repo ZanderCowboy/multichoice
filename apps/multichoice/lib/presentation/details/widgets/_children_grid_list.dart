@@ -11,49 +11,45 @@ class _ChildrenGridList extends StatelessWidget {
       builder: (context, state) {
         final children = state.children;
 
-        return Expanded(
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 1,
-            ),
-            itemCount: children?.length ?? 0,
-            padding: const EdgeInsets.all(8),
-            itemBuilder: (context, index) {
-              final child = children?[index];
+        return SliverGrid.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 200,
+          ),
+          itemCount: children?.length ?? 0,
+          itemBuilder: (context, index) {
+            final child = children?[index];
 
-              return Card(
-                color: Colors.blue,
-                child: GridTile(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          child?.title ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        if (child?.subtitle != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            child!.subtitle,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ],
+            if (child == null) {
+              return const SizedBox.shrink();
+            }
+
+            return Stack(
+              children: [
+                _ResultListTile(
+                  title: child.title,
+                  subtitle: child.subtitle,
+                  margin: allPadding12,
+                  internalPadding: allPadding8,
+                ),
+                if (state.isEditingMode)
+                  Positioned(
+                    top: 4,
+                    right: 2,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        context.read<DetailsBloc>().add(
+                              DetailsEvent.onDeleteChild(child.id),
+                            );
+                      },
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+              ],
+            );
+          },
         );
       },
     );
