@@ -21,7 +21,7 @@ jobs:
       group: build-group
       cancel-in-progress: false
     outputs:
-      version_number: ${{ steps.id_out.outputs.version_number }}
+      version_number: ${{ steps.version_management.outputs.version_number }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
     steps:
@@ -30,48 +30,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get Latest Tag
-        id: get_latest_tag
-        run: |
-          git fetch --tags
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
-          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
-      - name: Get Current Version From pubspec.yaml
-        id: get_current_version
-        run: |
-          current_version=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: //')
-          echo "current_version=$current_version" >> $GITHUB_OUTPUT
       - name: Generate GitHub App Token
         id: generate_token
         uses: peter-murray/workflow-application-token-action@v4
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
-      - name: Update Version in pubspec.yaml if Needed
-        id: update_version
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-        run: |
-          latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
-          current_version=${{ steps.get_current_version.outputs.current_version }}
-          if [[ "$current_version" > "$latest_tag" ]]; then
-            echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
-            echo "version=$current_version" >> $GITHUB_OUTPUT
-          else
-            echo "Updating version in pubspec.yaml."
-            new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-            sed -i "s/version: .*/version: $new_version/" apps/multichoice/pubspec.yaml
-            git config --global user.name 'VersionBumpingBot'
-            git config --global user.email 'bot@versionbumpingbot.com'
-            git add apps/multichoice/pubspec.yaml
-            git commit -m "Bump version to $new_version [skip ci]"
-            git push
-            echo "version_number=$new_version" >> $GITHUB_OUTPUT
-          fi
+
+      - name: Version Management
+        id: version_management
+        uses: ./.github/actions/version-management
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          pubspec-path: apps/multichoice/pubspec.yaml
+          branch-name: develop
 
       - id: id_out
         run: |
-          echo "version_number=${{ steps.update_version.outputs.version }}" >> $GITHUB_OUTPUT
+          echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
 
   build:
     name: Builds Android App

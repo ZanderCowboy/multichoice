@@ -1,0 +1,121 @@
+name: 'Version Management'
+description: 'Manages version bumping based on PR labels'
+
+inputs:
+  github-token:
+    description: 'GitHub token for authentication'
+    required: true
+  pubspec-path:
+    description: 'Path to the pubspec.yaml file'
+    required: true
+    default: 'apps/multichoice/pubspec.yaml'
+  branch-name:
+    description: 'Branch name to push changes to'
+    required: true
+    default: 'develop'
+
+outputs:
+  version_number:
+    description: 'The new version number'
+    value: ${{ steps.version_update.outputs.version_number }}
+  has_version_label:
+    description: 'Whether a valid version label was found'
+    value: ${{ steps.check_labels.outputs.has_version_label }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Latest Tag
+      id: get_latest_tag
+      shell: bash
+      run: |
+        git fetch --tags
+        latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
+        echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+    - name: Get Current Version From pubspec.yaml
+      id: get_current_version
+      shell: bash
+      run: |
+        current_version=$(grep 'version:' ${{ inputs.pubspec-path }} | sed 's/version: //')
+        echo "current_version=$current_version" >> $GITHUB_OUTPUT
+
+    - name: Check Version Labels
+      id: check_labels
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "Workflow manually triggered, skipping label check"
+          echo "has_version_label=true" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Check for no-build label first
+        if [[ "${{ contains(github.event.pull_request.labels.*.name, 'no-build') }}" == "true" ]]; then
+          echo "Found 'no-build' label, skipping version bump"
+          echo "has_version_label=true" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Check for version labels
+        if [[ "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" == "true" ]]; then
+          echo "version_bump_type=major" >> $GITHUB_OUTPUT
+          echo "has_version_label=true" >> $GITHUB_OUTPUT
+        elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" == "true" ]]; then
+          echo "version_bump_type=minor" >> $GITHUB_OUTPUT
+          echo "has_version_label=true" >> $GITHUB_OUTPUT
+        elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" == "true" ]]; then
+          echo "version_bump_type=patch" >> $GITHUB_OUTPUT
+          echo "has_version_label=true" >> $GITHUB_OUTPUT
+        else
+          echo "No version label found. Please add one of: major, minor, patch, or no-build"
+          echo "has_version_label=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+    - name: Update Version
+      id: version_update
+      if: steps.check_labels.outputs.has_version_label == 'true'
+      shell: bash
+      run: |
+        latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
+        current_version=${{ steps.get_current_version.outputs.current_version }}
+        
+        if [[ "$current_version" > "$latest_tag" ]]; then
+          echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
+          echo "version_number=$current_version" >> $GITHUB_OUTPUT
+        else
+          echo "Updating version in pubspec.yaml."
+          # Extract version and build number
+          version_part=$(echo $current_version | cut -d'+' -f1)
+          build_number=$(echo $current_version | cut -d'+' -f2)
+          
+          # Split version into major, minor, patch
+          IFS='.' read -r major minor patch <<< "$version_part"
+          
+          # Increment version based on label
+          bump_type=${{ steps.check_labels.outputs.version_bump_type }}
+          if [ "$bump_type" = "major" ]; then
+            major=$((major + 1))
+            minor=0
+            patch=0
+          elif [ "$bump_type" = "minor" ]; then
+            minor=$((minor + 1))
+            patch=0
+          elif [ "$bump_type" = "patch" ]; then
+            patch=$((patch + 1))
+          fi
+          
+          new_version="$major.$minor.$patch"
+          new_build_number=$((build_number + 1))
+          
+          # Update pubspec.yaml with new version and build number
+          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec-path }}
+          
+          git config --global user.name 'VersionBumpingBot'
+          git config --global user.email 'bot@versionbumpingbot.com'
+          git add ${{ inputs.pubspec-path }}
+          git commit -m "Bump version to $new_version+$new_build_number [skip ci]"
+          git push origin HEAD:${{ inputs.branch-name }}
+          echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
+        fi 
