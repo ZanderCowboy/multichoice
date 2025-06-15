@@ -44,6 +44,9 @@ runs:
       id: version_update
       if: ${{ inputs.bump-type != 'none' }}
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ github.repository }}
       run: |
         latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
         current_version=${{ steps.get_current_version.outputs.current_version }}
@@ -83,7 +86,7 @@ runs:
           git config --global user.email 'bot@versionbumpingbot.com'
           git add ${{ inputs.pubspec-path }}
           git commit -m "Bump version to $new_version+$new_build_number [skip ci]"
-          git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
           git push origin HEAD:${{ inputs.branch-name }}
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
         fi 
