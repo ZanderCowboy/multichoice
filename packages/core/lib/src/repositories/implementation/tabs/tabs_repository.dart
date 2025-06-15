@@ -20,7 +20,10 @@ class TabsRepository implements ITabsRepository {
   ///
   /// Returns the [int] ID of the newly added tab, or `0` if an error occurs.
   @override
-  Future<int> addTab(String? title, String? subtitle) async {
+  Future<int> addTab({
+    required String? title,
+    required String? subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final result = db.tabs.put(
@@ -81,7 +84,7 @@ class TabsRepository implements ITabsRepository {
   ///
   /// Returns a [TabsDTO] representing the tab, or an empty [TabsDTO] if an error occurs.
   @override
-  Future<TabsDTO> getTab(int tabId) async {
+  Future<TabsDTO> getTab({required int tabId}) async {
     try {
       final tabs = await db.tabs.where().findAll();
       final result = tabs.firstWhere((element) => element.id == tabId);
@@ -113,7 +116,11 @@ class TabsRepository implements ITabsRepository {
   ///
   /// Returns the [int] ID of the updated tab, or `-1` if an error occurs.
   @override
-  Future<int> updateTab(int id, String title, String subtitle) async {
+  Future<int> updateTab({
+    required int id,
+    required String title,
+    required String subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final tab = await db.tabs.get(id);
@@ -144,7 +151,7 @@ class TabsRepository implements ITabsRepository {
   ///
   /// [tabId]: The ID of the tab to be deleted. If `null`, the method will return `false`.
   @override
-  Future<bool> deleteTab(int? tabId) async {
+  Future<bool> deleteTab({required int? tabId}) async {
     try {
       return await db.writeTxn(() async {
         final entries = await db.entrys.where().findAll();

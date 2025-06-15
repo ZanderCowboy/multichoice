@@ -1,15 +1,22 @@
 import 'package:models/models.dart';
 
 abstract class ITabsRepository {
-  Future<int> addTab(String title, String subtitle);
+  Future<int> addTab({
+    required String? title,
+    required String? subtitle,
+  });
 
-  Future<TabsDTO> getTab(int tabId);
+  Future<TabsDTO> getTab({required int tabId});
 
   Future<List<TabsDTO>> readTabs();
 
-  Future<int> updateTab(int id, String title, String subtitle);
+  Future<int> updateTab({
+    required int id,
+    required String title,
+    required String subtitle,
+  });
 
-  Future<bool> deleteTab(int? tabId);
+  Future<bool> deleteTab({required int? tabId});
 
   Future<bool> deleteTabs();
 }
