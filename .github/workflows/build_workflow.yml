@@ -4,9 +4,8 @@ on:
   pull_request:
     branches:
       - "develop"
-    types:
-      - "closed"
-
+    # types:
+    #   - "closed"
   workflow_dispatch:
 
 concurrency:
@@ -16,7 +15,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -122,21 +121,36 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
+      ###############################################
+      # Build APK
+      ###############################################
       - name: Build APK
         run: flutter build apk --release
         working-directory: apps/multichoice/
-      - name: Upload APK to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
-          releaseNotesFile: ./CHANGELOG.md
-          debug: true
+
+      ###############################################
+      # Upload APK to Firebase App Distribution
+      ###############################################
+      # - name: Upload APK to Firebase App Distribution
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
+      #   with:
+      #     appId: ${{ secrets.APP_ID }}
+      #     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+      #     groups: testers
+      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+      #     releaseNotesFile: ./CHANGELOG.md
+      #     debug: true
+
+      ###############################################
+      # Build App Bundle
+      ###############################################
       - name: Build App Bundle
         run: flutter build appbundle --release
         working-directory: apps/multichoice/
+
+      ###############################################
+      # Upload App Bundle as Artifact
+      ###############################################
       - name: Upload Android App Bundle
         uses: actions/upload-artifact@v4
         with:
