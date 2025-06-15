@@ -63,7 +63,7 @@ class FeedbackPage extends StatelessWidget {
                         },
                         child: const Text('Send Feedback'),
                       )
-                    : const SizedBox.shrink();
+                    : const Text('Send Feedback');
               },
             ),
             leading: IconButton(

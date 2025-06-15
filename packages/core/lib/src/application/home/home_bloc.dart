@@ -325,18 +325,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               ),
             );
             break;
-          case HighlightItem(:final itemId):
-            emit(
-              state.copyWith(highlightedItemId: itemId),
-            );
-
-            await Future<void>.delayed(
-              const Duration(seconds: 5),
-            ).then(
-              (_) => emit(state.copyWith(highlightedItemId: null)),
-            );
-
-            break;
           case OnRefresh():
             emit(state.copyWith(isLoading: true));
 

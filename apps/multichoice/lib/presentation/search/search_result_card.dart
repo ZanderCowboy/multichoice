@@ -20,6 +20,7 @@ class SearchResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Create a reusable card widget for search results and details.
     return Card(
       elevation: 3,
       shadowColor: Colors.grey[400],

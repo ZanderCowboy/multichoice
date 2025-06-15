@@ -100,7 +100,6 @@ void main() {
       isAdded: false,
       isValid: false,
       errorMessage: 'errorMessage',
-      highlightedItemId: 0,
     );
 
     setUp(() async {
@@ -166,7 +165,6 @@ void main() {
       isAdded: false,
       isValid: false,
       errorMessage: 'errorMessage',
-      highlightedItemId: 0,
     );
 
     blocTest<HomeBloc, HomeState>(

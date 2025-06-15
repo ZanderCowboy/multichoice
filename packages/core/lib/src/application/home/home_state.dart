@@ -12,7 +12,6 @@ abstract class HomeState with _$HomeState {
     required bool isAdded,
     required bool isValid,
     required String? errorMessage,
-    required int? highlightedItemId,
   }) = _HomeState;
 
   factory HomeState.initial() => HomeState(
@@ -25,6 +24,5 @@ abstract class HomeState with _$HomeState {
         isAdded: false,
         isValid: false,
         errorMessage: '',
-        highlightedItemId: null,
       );
 }

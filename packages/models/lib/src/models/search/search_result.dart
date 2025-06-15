@@ -7,7 +7,7 @@ part 'search_result.g.dart';
 class SearchResult with _$SearchResult {
   const factory SearchResult({
     required bool isTab,
-    required dynamic item, // Either TabDTO or EntryDTO
+    required dynamic item,
     required double matchScore,
   }) = _SearchResult;
 

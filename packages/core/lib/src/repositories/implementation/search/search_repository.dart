@@ -19,7 +19,6 @@ class SearchRepository implements ISearchRepository {
       final normalizedQuery = query.toLowerCase();
 
       return await db.writeTxn(() async {
-        // Search in tabs
         final tabs = await db.tabs
             .where()
             .filter()
@@ -28,7 +27,6 @@ class SearchRepository implements ISearchRepository {
             .subtitleContains(normalizedQuery, caseSensitive: false)
             .findAll();
 
-        // Search in entries
         final entries = await db.entrys
             .where()
             .filter()
@@ -37,7 +35,6 @@ class SearchRepository implements ISearchRepository {
             .subtitleContains(normalizedQuery, caseSensitive: false)
             .findAll();
 
-        // Convert to DTOs and create search results
         final tabResults = tabs.map((tab) {
           final dto = TabsMapper().convert<Tabs, TabsDTO>(tab);
           final score =
@@ -60,7 +57,6 @@ class SearchRepository implements ISearchRepository {
           );
         }).toList();
 
-        // Combine and sort by match score
         final allResults = [...tabResults, ...entryResults];
         allResults.sort((a, b) => b.matchScore.compareTo(a.matchScore));
 
@@ -75,22 +71,16 @@ class SearchRepository implements ISearchRepository {
   double _calculateMatchScore(String title, String? subtitle, String query) {
     double score = 0.0;
 
-    // Exact match in title gets highest score
     if (title.toLowerCase() == query.toLowerCase()) {
       score += 1.0;
-    }
-    // Title contains query
-    else if (title.toLowerCase().contains(query.toLowerCase())) {
+    } else if (title.toLowerCase().contains(query.toLowerCase())) {
       score += 0.8;
     }
 
-    // Subtitle exact match
     if (subtitle != null) {
       if (subtitle.toLowerCase() == query.toLowerCase()) {
         score += 0.6;
-      }
-      // Subtitle contains query
-      else if (subtitle.toLowerCase().contains(query.toLowerCase())) {
+      } else if (subtitle.toLowerCase().contains(query.toLowerCase())) {
         score += 0.4;
       }
     }
