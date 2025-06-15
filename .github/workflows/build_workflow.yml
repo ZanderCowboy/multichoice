@@ -37,6 +37,12 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
+      - name: Debug Token
+        run: |
+          curl -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/ZanderCowboy/multichoice
+
       - name: Check Version Labels
         id: check_labels
         run: |
