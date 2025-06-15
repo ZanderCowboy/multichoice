@@ -30,6 +30,10 @@ build
 - Runs melos coverage:core
 - Uploads coverage
 - Runs dart analysis
+<- Get latest tag
+<- Get current version from pubspec.yaml
+<- Generate GitHub App Token
+<- Update version in pubspec.yaml
 - Downloads pubspec file
 - Downloads Android Keystore.jks file
 - Create key.properties
@@ -38,6 +42,7 @@ build
 - Builds APK
 - Uploads AAB artifact
 - Uploads APK to Firebase
+<- Create new tag
 
 postBuild
 - Runs on ubuntu-latest

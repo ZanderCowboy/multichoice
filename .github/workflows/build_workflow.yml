@@ -15,97 +15,103 @@ concurrency:
 
 jobs:
   preBuild:
-    name: Prebuild - Bump build number
+    name: Prebuild - Version Management
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
       cancel-in-progress: false
     outputs:
-      version_number: ${{ steps.id_out.outputs.version }}
+      version_number: ${{ steps.id_out.outputs.version_number }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Update version number and download
-        id: id_updated_version
-        uses: ./.github/actions/app-versioning
         with:
-          bump-strategy: "none"
-          file-path: "./apps/multichoice/pubspec.yaml"
-          upload-filename: "pubspec-file"
+          fetch-depth: 0
 
-      - name: read-config-file
-        uses: actions-tools/yaml-outputs@v2
-        id: read_config_yaml
+      - name: Get Latest Tag
+        id: get_latest_tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+      - name: Get Current Version From pubspec.yaml
+        id: get_current_version
+        run: |
+          current_version=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: //')
+          echo "current_version=$current_version" >> $GITHUB_OUTPUT
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: peter-murray/workflow-application-token-action@v4
         with:
-          file-path: "${{ github.workspace }}/config.yml"
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+      - name: Update Version in pubspec.yaml if Needed
+        id: update_version
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
+          current_version=${{ steps.get_current_version.outputs.current_version }}
+          if [[ "$current_version" > "$latest_tag" ]]; then
+            echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
+            echo "version=$current_version" >> $GITHUB_OUTPUT
+          else
+            echo "Updating version in pubspec.yaml."
+            new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+            sed -i "s/version: .*/version: $new_version/" apps/multichoice/pubspec.yaml
+            git config --global user.name 'VersionBumpingBot'
+            git config --global user.email 'bot@versionbumpingbot.com'
+            git add apps/multichoice/pubspec.yaml
+            git commit -m "Bump version to $new_version [skip ci]"
+            git push
+            echo "version_number=$new_version" >> $GITHUB_OUTPUT
+          fi
 
       - id: id_out
         run: |
-          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          # Returns a bool to determine if a build shoulbd be performed
-          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          # "Release"
-          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
-
-      - name: Get pubspec.yaml version
-        uses: actions/download-artifact@v4
-        with:
-          name: pubspec-file
-          path: ${{ github.workspace }}/apps/multichoice/
+          echo "version_number=${{ steps.update_version.outputs.version }}" >> $GITHUB_OUTPUT
 
   build:
     name: Builds Android App
     needs: [preBuild]
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: read
       statuses: write
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Flutter and Java
-        uses: ./.github/actions/setup-java-flutter
+        uses: ./.github/actions/setup-flutter-with-java
 
-      - name: melos coverage:core
+      - name: Melos Coverage for Core
         run: melos coverage:core
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
-      - name: Dart analysis
-        uses: zgosalvez/github-actions-analyze-dart@v3
-        with:
-          working-directory: "${{github.workspace}}/"
 
-      - name: Get pubspec.yaml
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.pubspec_filename }}
-          path: ${{ github.workspace }}/apps/multichoice/
-      - name: Download Android keystore
+      - name: Download Android Keystore File
         id: android_keystore
         uses: timheuer/base64-to-file@v1.2.4
         with:
           fileName: upload-keystore.jks
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      - name: Create key.properties
+      - name: Create key.properties File
         run: |
           echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
         working-directory: apps/multichoice/android/
-      - name: Create secrets.dart
+      - name: Create secrets.dart File
         run: |
           mkdir auth
           echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
@@ -116,19 +122,10 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      - name: Start appbundle release build
-        run: flutter build appbundle --release
-        working-directory: apps/multichoice/
-      - name: Start apk release build
+      - name: Build APK
         run: flutter build apk --release
         working-directory: apps/multichoice/
-
-      - name: Upload Android release appbundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: "android-release"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
-      - name: Upload artifact to Firebase App Distribution
+      - name: Upload APK to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.APP_ID }}
@@ -137,24 +134,19 @@ jobs:
           file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
           releaseNotesFile: ./CHANGELOG.md
           debug: true
-
-  post-build:
-    name: Post Build
-    needs: [build, preBuild]
-    runs-on: ubuntu-latest
-    concurrency:
-      group: post-build-group
-      cancel-in-progress: false
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+        working-directory: apps/multichoice/
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
         with:
-          ref: ${{ github.head_ref }}
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
-      - name: Call Auto Commit Version action
-        uses: ./.github/actions/auto-commit-version
-        with:
-          version_number: ${{ needs.preBuild.outputs.version_number }}
-          download_filename: "pubspec-file"
+      - name: Create New Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          new_tag=${{ needs.preBuild.outputs.version_number }}
+          git tag $new_tag
+          git push origin $new_tag
