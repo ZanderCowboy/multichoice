@@ -5,16 +5,19 @@ class _HorizontalHome extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useMemoized(ScrollController.new, const []);
+    final scrollController = useScrollController();
 
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
-        final oldLength = previous.tabs?.length ?? 0;
-        final newLength = current.tabs?.length ?? 0;
-        final isLoading = !previous.isLoading || current.isLoading;
+        // Only proceed if we have both previous and current tabs
+        if (previous.tabs == null || current.tabs == null) return false;
 
-        /// Only scroll if the number of tabs has increased
-        return oldLength < newLength && !isLoading && previous.tabs != null;
+        // Check if we're adding a new tab at the end
+        final oldLength = previous.tabs!.length;
+        final newLength = current.tabs!.length;
+
+        // Only trigger if we added exactly one tab and it's at the end
+        return newLength == oldLength + 1;
       },
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {

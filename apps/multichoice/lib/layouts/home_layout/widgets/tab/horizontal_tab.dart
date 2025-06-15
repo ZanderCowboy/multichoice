@@ -10,7 +10,7 @@ class _HorizontalTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final entries = tab.entries;
-    final scrollController = useMemoized(ScrollController.new, const []);
+    final scrollController = useScrollController();
     final previousEntriesLength = useState(entries.length);
 
     useEffect(

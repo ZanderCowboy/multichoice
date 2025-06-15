@@ -3,7 +3,7 @@
 ## New Features
 
 - Access the SearchPage on the HomePage.
-- Create unified CircularLoader used accross app.
+- Create unified CircularLoader used across app.
 - Update backend: Create new SearchResult model, repository, and bloc.
 - BUGGY: From SearchPage, tapping on search results, should navigate back to HomePage and highlight item/collection. Some items that too deep in the list (not the first few items/collections) is has difficulty finding.
 - Adding new items or collections ensures that it's in view.
