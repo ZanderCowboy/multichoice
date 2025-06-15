@@ -70,15 +70,19 @@ class EntryCard extends HookWidget {
           ],
           child: GestureDetector(
             onTap: () {
-              CustomDialog<AlertDialog>.show(
-                context: context,
-                title: SizedBox(
-                  width: 150,
-                  child: Text(
-                    entry.title,
+              context.router.push(
+                DetailsPageRoute(
+                  // TODO: Change type to be dynamic
+                  result: SearchResult(
+                    isTab: false,
+                    item: entry,
+                    matchScore: 0,
                   ),
+                  onBack: () {
+                    context.read<HomeBloc>().add(const HomeEvent.refresh());
+                    context.router.pop();
+                  },
                 ),
-                content: Text(entry.subtitle),
               );
             },
             onDoubleTap: onDoubleTap,

@@ -38,6 +38,17 @@ class CollectionTab extends HookWidget {
         }
 
         return GestureDetector(
+          onTap: () {
+            context.router.push(
+              DetailsPageRoute(
+                result: SearchResult(isTab: true, item: tab, matchScore: 0),
+                onBack: () {
+                  context.read<HomeBloc>().add(const HomeEvent.refresh());
+                  context.router.pop();
+                },
+              ),
+            );
+          },
           onLongPress: () => _onDeleteTab(context),
           child: AnimatedBuilder(
             animation: animationController,

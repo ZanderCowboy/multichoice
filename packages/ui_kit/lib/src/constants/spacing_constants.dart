@@ -20,6 +20,8 @@ const gap24 = Gap(24);
 
 const gap56 = Gap(56);
 
+const gap80 = Gap(80);
+
 // Padding
 const zeroPadding = EdgeInsets.zero;
 
