@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/search/search_result_card.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -13,24 +14,24 @@ part 'widgets/_search_bar.dart';
 @RoutePage()
 class SearchPage extends StatelessWidget {
   const SearchPage({
-    required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    required this.onBack,
     super.key,
   });
 
-  final void Function(SearchResult? result) onTap;
   final Future<void> Function(SearchResult? result) onEdit;
   final Future<void> Function(SearchResult? result) onDelete;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => coreSl<SearchBloc>(),
       child: _SearchView(
-        onTap: onTap,
         onEdit: onEdit,
         onDelete: onDelete,
+        onBack: onBack,
       ),
     );
   }
@@ -38,14 +39,14 @@ class SearchPage extends StatelessWidget {
 
 class _SearchView extends StatelessWidget {
   const _SearchView({
-    required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    required this.onBack,
   });
 
-  final void Function(SearchResult? result) onTap;
   final Future<void> Function(SearchResult? result) onEdit;
   final Future<void> Function(SearchResult? result) onDelete;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class _SearchView extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.router.pop(),
+          onPressed: onBack,
         ),
         title: const _SearchBar(),
       ),
@@ -94,11 +95,17 @@ class _SearchView extends StatelessWidget {
                 title: title,
                 subtitle: subtitle,
                 onTap: () {
-                  onTap(result);
-                  Future.delayed(const Duration(milliseconds: 100), () {})
-                      .whenComplete(() {
-                    if (context.mounted) context.router.pop();
-                  });
+                  context.router.push(
+                    DetailsPageRoute(
+                      result: result,
+                      onBack: () {
+                        context.read<SearchBloc>().add(
+                              const SearchEvent.refresh(),
+                            );
+                        context.router.pop();
+                      },
+                    ),
+                  );
                 },
                 onEdit: () async {
                   await onEdit(result);

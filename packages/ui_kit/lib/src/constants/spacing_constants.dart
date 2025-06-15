@@ -43,6 +43,8 @@ const vertical8 = EdgeInsets.symmetric(vertical: 8);
 
 const vertical12 = EdgeInsets.symmetric(vertical: 12);
 
+const horizontal4 = EdgeInsets.symmetric(horizontal: 4);
+
 const horizontal8 = EdgeInsets.symmetric(horizontal: 8);
 
 const horizontal12 = EdgeInsets.symmetric(horizontal: 12);
@@ -68,6 +70,8 @@ const right18 = EdgeInsets.only(right: 18);
 const top4 = EdgeInsets.only(top: 4);
 
 const top12 = EdgeInsets.only(top: 12);
+
+const bottom6 = EdgeInsets.only(bottom: 6);
 
 const bottom12 = EdgeInsets.only(bottom: 12);
 

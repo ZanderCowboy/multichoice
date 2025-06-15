@@ -49,6 +49,9 @@ class HomePageWrapper extends StatelessWidget {
         BlocProvider(
           create: (_) => coreSl<SearchBloc>(),
         ),
+        BlocProvider(
+          create: (_) => coreSl<DetailsBloc>(),
+        ),
       ],
       child: const HomePage(),
     );
@@ -95,20 +98,9 @@ class _HomePage extends StatelessWidget {
               onPressed: () {
                 context.router.push(
                   SearchPageRoute(
-                    onTap: (result) {
-                      if (result == null) return;
-
-                      if (result.isTab) {
-                        final tab = result.item as TabsDTO;
-                        context
-                            .read<HomeBloc>()
-                            .add(HomeEvent.highlightItem(tab.id));
-                      } else {
-                        final entry = result.item as EntryDTO;
-                        context
-                            .read<HomeBloc>()
-                            .add(HomeEvent.highlightItem(entry.id));
-                      }
+                    onBack: () {
+                      context.read<HomeBloc>().add(const HomeEvent.refresh());
+                      context.router.pop();
                     },
                     onEdit: (result) async {
                       if (result == null) return;

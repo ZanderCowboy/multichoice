@@ -22,21 +22,22 @@ class HomeLayout extends HookWidget {
       return CircularLoader.medium();
     }
 
-    if (state.errorMessage?.isNotEmpty ?? false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.errorMessage ?? 'Error'),
-            backgroundColor: context.theme.appColors.error,
-          ),
-        );
-      });
-    }
-
-    return Center(
-      child: appLayout.isLayoutVertical
-          ? const _VerticalHome()
-          : const _HorizontalHome(),
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state.errorMessage?.isNotEmpty ?? false) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? 'Error'),
+              backgroundColor: context.theme.appColors.error,
+            ),
+          );
+        }
+      },
+      child: Center(
+        child: appLayout.isLayoutVertical
+            ? const _VerticalHome()
+            : const _HorizontalHome(),
+      ),
     );
   }
 }
