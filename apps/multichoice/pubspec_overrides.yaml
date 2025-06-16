@@ -1,8 +1,13 @@
+# melos_managed_dependency_overrides: isar,isar_flutter_libs
 # melos_managed_dependency_overrides: theme
 # melos_managed_dependency_overrides: core,models
 dependency_overrides:
   core:
     path: ../../packages/core
+  isar:
+    path: ..\\..\\packages_external\\isar-3.1.0-1\\packages\\isar
+  isar_flutter_libs:
+    path: ..\\..\\packages_external\\isar-3.1.0-1\\packages\\isar_flutter_libs
   models:
     path: ../../packages/models
   theme:
