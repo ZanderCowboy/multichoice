@@ -92,18 +92,28 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
           REPO: ${{ github.repository }}
+          VERSION_NUMBER: ${{ steps.version_update.outputs.version_number }}
+          BRANCH: "tmp-main"
         run: |
+          # new_version=${{ steps.get_current_version.outputs.current_version }}
+          # # Get current build number from pubspec.yaml
+          # build_number=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: .*+//')
+          # # Update pubspec.yaml with new version
+          # sed -i "s/version: .*/version: $new_version+$build_number/" apps/multichoice/pubspec.yaml
+          # echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
+          # echo "version_number=$new_version+$build_number"
+
           git config --global user.name 'VersionBumpingBot'
           git config --global user.email 'bot@versionbumpingbot.com'
 
-          git add ${{ inputs.pubspec_path }}
-          git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
+          git add apps/multichoice/pubspec.yaml
+          git commit -m "Bump version to ${VERSION_NUMBER} [skip ci]" || {
             echo "::error::Failed to commit version bump"
             exit 1
           }
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          git push origin HEAD:${{ inputs.branch_name }} || {
-            echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
+          git push origin HEAD:${BRANCH} || {
+            echo "::error::Failed to push version bump to ${BRANCH}"
             exit 1
           }
 
