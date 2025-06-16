@@ -57,10 +57,11 @@ jobs:
             echo "::error::No tags found in repository"
             exit 1
           fi
+          echo "latest_tag=$latest_tag"
 
           # Remove 'v' prefix if present
           version_without_v=${latest_tag#v}
-          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "latest_version=$version_without_v"
 
           # Check if version has RC suffix
           if [[ ! "$version_without_v" =~ -RC ]]; then
