@@ -15,7 +15,8 @@ on:
   pull_request:
     branches:
       # - "develop"
-      - "tmp-main"
+      # - "tmp-main"
+      - "tmp-dev"
     # types:
     #   - "closed"
 

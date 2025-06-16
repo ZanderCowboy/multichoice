@@ -25,31 +25,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # - name: Checkout Branch
-    #   uses: actions/checkout@v4
-    #   with:
-    #     ref: ${{ inputs.branch_name }}
-    #     fetch-depth: 0
-    #     token: ${{ inputs.github_token }}
-
-    - name: Configure Git
-      shell: bash
-      run: |
-        git config --global user.name "VersionBumpingBot"
-        git config --global user.email "bot@versionbumpingbot.com"
-
-    - name: Commit Changes
-      shell: bash
-      env:
-        GH_TOKEN: ${{ inputs.github_token }}
-        REPO: ${{ inputs.repository }}
-      run: |
-        git add ${{ inputs.file_path }}
-        git commit -m "${{ inputs.commit_message }}" || {
-          echo "::error::Failed to commit changes"
-          exit 1
-        }
-        echo "Git status: $(git status)"
+    - name: Checkout Branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.branch_name }}
+        fetch-depth: 0
+        token: ${{ inputs.github_token }}
 
     - name: Push Changes
       shell: bash
@@ -57,6 +38,16 @@ runs:
         GH_TOKEN: ${{ inputs.github_token }}
         REPO: ${{ inputs.repository }}
       run: |
+        git config --global user.name 'VersionBumpingBot'
+        git config --global user.email 'bot@versionbumpingbot.com'
+
+        git add ${{ inputs.file_path }}
+        git commit -m "${{ inputs.commit_message }}" || {
+          echo "::error::Failed to commit changes"
+          exit 1
+        }
+        echo "Git status: $(git status)"
+
         git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
         git push origin HEAD:${{ inputs.branch_name }} || {
           echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"

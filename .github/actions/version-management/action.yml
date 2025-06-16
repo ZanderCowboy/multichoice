@@ -141,6 +141,7 @@ runs:
           
           git config --global user.name 'VersionBumpingBot'
           git config --global user.email 'bot@versionbumpingbot.com'
+          
           git add ${{ inputs.pubspec_path }}
           git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
             echo "::error::Failed to commit version bump"
