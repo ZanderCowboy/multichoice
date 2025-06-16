@@ -6,3 +6,6 @@
 
 rc-workflow
 - trigger - test major label - expected v1.0.0-RC+184 from v0.7.0+183
+
+production-workflow
+- trigger - test RC flag being removed
