@@ -60,15 +60,16 @@ jobs:
 
           # Remove 'v' prefix if present
           version_without_v=${latest_tag#v}
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
 
           # Check if version has RC suffix
-          if [[ ! "$version_without_v" =~ -RC$ ]]; then
+          if [[ ! "$version_without_v" =~ -RC ]]; then
             echo "::error::Latest tag does not have RC suffix"
             exit 1
           fi
 
-          # Remove RC suffix
-          new_version=${version_without_v%-RC}
+          # Remove RC suffix and build number
+          new_version=${version_without_v%-RC*}
 
           echo "current_version=$new_version" >> $GITHUB_OUTPUT
           echo "Current version: $new_version"
@@ -96,7 +97,7 @@ jobs:
             exit 1
           }
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          
+
           # TODO: remove this once we have a proper branch name
           git push origin HEAD:tmp-main || {
             echo "::error::Failed to push version update to main"
