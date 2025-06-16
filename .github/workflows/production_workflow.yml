@@ -33,7 +33,7 @@ jobs:
       group: build-group
       cancel-in-progress: false
     outputs:
-      version_number: ${{ steps.version_management.outputs.version_number }}
+      version_number: ${{ steps.get_current_version.outputs.version_with_build }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           repository: ${{ github.repository }}
           file_path: apps/multichoice/pubspec.yaml
-          commit_message: "Remove RC suffix from version ${{ steps.get_current_version.outputs.version_without_rc }} [skip ci]"
+          commit_message: "Remove RC suffix from version ${{ steps.get_current_version.outputs.version_with_build }} [skip ci]"
           branch_name: tmp-main
           version_with_build: ${{ steps.get_current_version.outputs.version_with_build }}
 
