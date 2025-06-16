@@ -18,3 +18,4 @@ Final Run Through
 - trigger dev-workflow
 - trigger blank
 - trigger rc-workflow
+- trigger main-workflow
