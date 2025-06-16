@@ -100,7 +100,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
 
           # TODO: remove this once we have a proper branch name
-          git push origin HEAD:tmp-main || {
+          git push origin HEAD:"tmp-main" || {
             echo "::error::Failed to push version update to main"
             exit 1
           }
