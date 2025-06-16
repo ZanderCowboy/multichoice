@@ -37,13 +37,6 @@ runs:
         application_id: ${{ inputs.application_id }}
         application_private_key: ${{ inputs.application_private_key }}
 
-    # Test - thinking it might be this
-    - name: Checkout Branch
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.branch_name }}
-        token: ${{ steps.generate_token.outputs.token }}
-
     - name: Commit and Push Changes
       shell: bash
       env:
