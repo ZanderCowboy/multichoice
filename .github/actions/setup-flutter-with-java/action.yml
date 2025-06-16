@@ -1,0 +1,49 @@
+---
+name: "Setup Flutter With Java"
+description: "Sets up Flutter environment with Melos and code generation. Optionally sets up Java 21, which may override Flutter's Java configuration."
+inputs:
+  flutter_version:
+    description: "Flutter version to use"
+    required: false
+    default: "3.27.x"
+  channel:
+    description: "Flutter channel to use"
+    required: false
+    default: "stable"
+  setup_java:
+    description: "Whether to set up Java 21 (may override Flutter's Java)"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ inputs.flutter_version }}
+        channel: ${{ inputs.channel }}
+        cache: true
+
+    - name: Set up Java 21
+      if: ${{ inputs.setup_java == 'true' }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: "zulu"
+        java-version: "21"
+        cache: gradle
+
+    - name: Install Melos
+      run: dart pub global activate melos
+      shell: bash
+
+    - name: Melos Bootstrap
+      run: melos bootstrap
+      shell: bash
+
+    - name: Melos Rebuild All
+      shell: bash
+      run: melos rebuild:all

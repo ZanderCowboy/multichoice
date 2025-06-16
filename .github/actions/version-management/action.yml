@@ -2,20 +2,24 @@ name: "Version Management"
 description: "Manages version bumping based on PR labels"
 
 inputs:
-  github-token:
+  github_token:
     description: "GitHub token for authentication"
     required: true
-  pubspec-path:
+  pubspec_path:
     description: "Path to the pubspec.yaml file"
     required: true
     default: "apps/multichoice/pubspec.yaml"
-  branch-name:
+  branch_name:
     description: "Branch name to push changes to"
     required: true
     default: "develop"
-  bump-type:
+  bump_type:
     description: "Type of version bump (major, minor, patch, none)"
     required: true
+  version_suffix:
+    description: "Optional suffix to add to the version (e.g. -RC)"
+    required: false
+    default: ""
 
 outputs:
   version_number:
@@ -28,9 +32,9 @@ runs:
     - name: Checkout Branch
       uses: actions/checkout@v4
       with:
-        ref: ${{ inputs.branch-name }}
+        ref: ${{ inputs.branch_name }}
         fetch-depth: 0
-        token: ${{ inputs.github-token }}
+        token: ${{ inputs.github_token }}
 
     - name: Get Latest Tag
       id: get_latest_tag
@@ -45,46 +49,63 @@ runs:
       id: get_current_version
       shell: bash
       run: |
-        if ! grep -q '^version: [0-9]\+\.[0-9]\+\.[0-9]\++[0-9]\+$' ${{ inputs.pubspec-path }}; then
-          echo "::error::Invalid or missing version in ${{ inputs.pubspec-path }}. Expected format: x.y.z+build"
+        echo "Checking version in ${{ inputs.pubspec_path }}:"
+        cat ${{ inputs.pubspec_path }} | grep '^version:'
+        if ! grep -qE '^version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' "${{ inputs.pubspec_path }}"; then
+          echo "::error::Invalid or missing version in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
           exit 1
         fi
-        current_version=$(grep 'version:' ${{ inputs.pubspec-path }} | sed 's/version: //')
+        current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
         echo "Current version: $current_version"
 
     - name: Update Version
       id: version_update
-      if: ${{ inputs.bump-type != 'none' }}
       shell: bash
       env:
-        GH_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github_token }}
         REPO: ${{ github.repository }}
       run: |
         latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
         current_version=${{ steps.get_current_version.outputs.current_version }}
+        version_suffix="${{ inputs.version_suffix }}"
 
         echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
         if [[ "$current_version" > "$latest_tag" ]]; then
           echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
+          if [[ -n "$version_suffix" ]]; then
+            # Add suffix to the version if it doesn't already have it
+            if [[ "$current_version" != *"$version_suffix"* ]]; then
+              version_part=$(echo "$current_version" | cut -d'+' -f1)
+              build_number=$(echo "$current_version" | cut -d'+' -f2)
+              current_version="${version_part}${version_suffix}+${build_number}"
+              # Update pubspec.yaml with suffixed version
+              sed -i "s/version: .*/version: $current_version/" ${{ inputs.pubspec_path }}
+              git add ${{ inputs.pubspec_path }}
+              git commit -m "Add $version_suffix suffix to version $current_version [skip ci]"
+              git push origin HEAD:${{ inputs.branch_name }}
+            fi
+          fi
           echo "version_number=$current_version" >> $GITHUB_OUTPUT
         else
           echo "Updating version in pubspec.yaml."
           # Extract version and build number
           version_part=$(echo "$current_version" | cut -d'+' -f1)
           build_number=$(echo "$current_version" | cut -d'+' -f2)
+          echo "Version part: $version_part + Build number: $build_number"
           
           # Validate version format
-          if ! echo "$version_part" | grep -q '^[0-9]\+\.[0-9]\+\.[0-9]\+$'; then
-            echo "::error::Invalid version format in pubspec.yaml: $version_part. Expected: x.y.z"
+          if ! echo "$version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
+            echo "::error::Invalid version format in pubspec.yaml: $version_part. Expected: x.y.z or x.y.z-RC"
             exit 1
           fi
           
           # Split version into major, minor, patch
           IFS='.' read -r major minor patch <<< "$version_part"
           
-          # Increment version based on bump-type
-          bump_type="${{ inputs.bump-type }}"
+          # Increment version based on bump_type
+          bump_type="${{ inputs.bump_type }}"
+          echo "Debug: bump_type value is: $bump_type"
           case "$bump_type" in
             "major")
               major=$((major + 1))
@@ -98,8 +119,11 @@ runs:
             "patch")
               patch=$((patch + 1))
               ;;
+            "none")
+              # For none, we only increment the build number
+              ;;
             *)
-              echo "::error::Invalid bump-type: $bump_type. Expected: major, minor, patch"
+              echo "::error::Invalid bump_type: $bump_type. Expected: major, minor, patch, none"
               exit 1
               ;;
           esac
@@ -107,19 +131,25 @@ runs:
           new_version="$major.$minor.$patch"
           new_build_number=$((build_number + 1))
           
+          # Add suffix if provided
+          if [[ -n "$version_suffix" ]]; then
+            new_version="${new_version}${version_suffix}"
+          fi
+          
           # Update pubspec.yaml with new version and build number
-          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec-path }}
+          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}
           
           git config --global user.name 'VersionBumpingBot'
           git config --global user.email 'bot@versionbumpingbot.com'
-          git add ${{ inputs.pubspec-path }}
+          
+          git add ${{ inputs.pubspec_path }}
           git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
             echo "::error::Failed to commit version bump"
             exit 1
           }
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          git push origin HEAD:${{ inputs.branch-name }} || {
-            echo "::error::Failed to push version bump to ${{ inputs.branch-name }}"
+          git push origin HEAD:${{ inputs.branch_name }} || {
+            echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
             exit 1
           }
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT

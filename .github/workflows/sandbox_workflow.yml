@@ -1,0 +1,107 @@
+name: Sandbox Build Verification
+on:
+  workflow_dispatch:
+    inputs:
+      verify_only:
+        description: 'Run in verify-only mode (no version bumping)'
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preBuild:
+    name: Prebuild - Version Check
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: false
+    outputs:
+      version_number: ${{ steps.id_out.outputs.version_number }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Latest Tag
+        id: get_latest_tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "Latest tag: $latest_tag"
+
+      - name: Get Current Version From pubspec.yaml
+        id: get_current_version
+        run: |
+          current_version=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: //')
+          echo "current_version=$current_version" >> $GITHUB_OUTPUT
+          echo "Current version: $current_version"
+
+      - id: id_out
+        run: |
+          echo "version_number=${{ steps.get_current_version.outputs.current_version }}" >> $GITHUB_OUTPUT
+
+  build:
+    name: Builds Android App
+    needs: [preBuild]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      statuses: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
+
+      - name: Build APK
+        run: flutter build apk --release
+        working-directory: apps/multichoice/
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+        working-directory: apps/multichoice/
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-appbundle-sandbox"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab 

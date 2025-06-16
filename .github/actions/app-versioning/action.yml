@@ -1,5 +1,35 @@
 name: App Versioning
 description: "Create new version number and upload"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Update pubspec.yml version action
+      id: update_pubspec
+      uses: stikkyapp/update-pubspec-version@v1
+      with:
+        strategy: ${{ inputs.bump-strategy }}
+        bump-build: ${{ inputs.bump-build }}
+        path: ${{ inputs.file-path }}
+
+    - name: Update version in pubspec.yaml
+      shell: bash
+      run: |
+        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update_pubspec.outputs.new-version }}/g" apps/multichoice/pubspec.yaml
+
+    - name: Upload pubspec.yaml
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.upload-filename }}
+        path: apps/multichoice/pubspec.yaml
+
+    - name: Echo version number
+      id: id_out
+      shell: bash
+      run: echo "version-number=${{ steps.update_pubspec.outputs.new-version }}" >> $GITHUB_OUTPUT
+
 inputs:
   bump-strategy:
     required: false
@@ -19,32 +49,3 @@ outputs:
   version-number:
     description: "New version number"
     value: ${{ steps.id_out.outputs.version-number }}
-runs:
-  using: "composite"
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Update pubspec.yml version action
-      id: update-pubspec
-      uses: stikkyapp/update-pubspec-version@v1
-      with:
-        strategy: ${{ inputs.bump-strategy }}
-        bump-build: ${{ inputs.bump-build }}
-        path: ${{ inputs.file-path }}
-
-    - name: Update version in pubspec.yaml
-      shell: bash
-      run: |
-        sed -Ei "s/^version: 99.99.99+999/version: ${{ steps.update-pubspec.outputs.new-version }}/g" apps/multichoice/pubspec.yaml
-
-    - name: Upload pubspec.yaml
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.upload-filename }}
-        path: apps/multichoice/pubspec.yaml
-
-    - name: Echo version number
-      id: id_out
-      shell: bash
-      run: echo "version-number=${{ steps.update-pubspec.outputs.new-version }}" >> $GITHUB_OUTPUT

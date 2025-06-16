@@ -1,19 +1,19 @@
-# 183 - Implement Search Functionality
+# 161 - Rework Workflows
 
-## New Features
+- trigger - test patch and minor label - should fail (only one label can be present)
+- trigger - workflow failed - expected only one label - removed patch - testing minor
+- trigger - test minor
 
-- Access the SearchPage on the HomePage.
-- Create unified CircularLoader used across app.
-- Update backend: Create new SearchResult model, repository, and bloc.
-- BUGGY: From SearchPage, tapping on search results, should navigate back to HomePage and highlight item/collection. Some items that too deep in the list (not the first few items/collections) is has difficulty finding.
-- Adding new items or collections ensures that it's in view.
-- Tapping on Item or Collection, navigates to the DetailsPage
+rc-workflow
+- trigger - test major label - expected v1.0.0-RC+184 from v0.7.0+183
 
-## Bug Fixes
+production-workflow
+- trigger - test RC flag being removed
+- git fetch --prune --prune-tags <- Removes local tags
 
-- Avoid HomePage rebuilding when new collections/items are added.
-- Fix AppVersion being cut-off by the device navigation buttons.
-- Add check to make the user can not double tap the FeedbackPage title for dev logging.
-- Remove duplicate/unused Items class.
-- In light mode, adding a new entry, add button text is vague.
-- Add failsafe to ensure no blank collections/items can be stored in database.
+- trigger
+- trigger
+
+Final Run Through
+- trigger dev-workflow
+- trigger blank

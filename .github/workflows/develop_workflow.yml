@@ -1,15 +1,22 @@
 ---
-# This workflow is triggered on pull request closure for branches 'develop' and 'rc'.
+# This workflow is triggered on pull request closure for the 'develop' branch.
 # It is responsible for building the Android app, running tests, and uploading artifacts.
 # It also manages versioning based on labels applied to the pull request.
-name: Test, Analyze, Build
+#
+# The versioning works as follows:
+# - If the pull request is merged and has labels 'minor' or 'patch', it will bump the version accordingly with build number.
+#   For example, if the current version is 1.0.0+5 and the label is 'patch', it will become 1.0.1+6.
+# - If the pull request is merged and has no labels, it will bump the build number only.
+#   For example, if the current version is 1.0.0+5, it will become 1.0.0+6.
+# - If the pull request is merged and has the label 'no-build', it will skip the build process.
+#
+name: develop-workflow
 on:
-  # pull_request:
-  #   branches:
-  #     - "develop"
-  #     - "rc"
-  #   types:
-  #     - "closed"
+  pull_request:
+    branches:
+      - "develop"
+    types:
+      - "closed"
 
   workflow_dispatch:
 
@@ -46,23 +53,30 @@ jobs:
         id: check_labels
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
-          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
-          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
-            exit 1
+          echo "Debug: Raw LABELS value: $LABELS"
+          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
+          if [[ -z "$VALID_LABELS" ]]; then
+            echo "BUMP_TYPE=none" >> $GITHUB_ENV
+            echo "********** Bumping build number only **********"
+          else
+            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+            # If multiple labels are found, error out
+            if [[ $LABEL_COUNT -gt 1 ]]; then
+              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
+              exit 1
+            fi
+
+            # Set the bump type based on the single valid label
+            case "$VALID_LABELS" in
+              "minor") echo "BUMP_TYPE=minor" >> $GITHUB_ENV ;;
+              "patch") echo "BUMP_TYPE=patch" >> $GITHUB_ENV ;;
+            esac
           fi
-          if [[ $LABEL_COUNT -eq 0 ]]; then
-            echo "::error::No version label found. Please add one of: major, minor, patch, or no-build"
-            exit 1
-          fi
-          case "$VALID_LABELS" in
-            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
-            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
-            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-          esac
         shell: bash
+
+      - name: Debug Output
+        run: |
+          echo "Debug: bump_type value is: ${{ env.BUMP_TYPE }}"
 
       - name: Version Management
         id: version_management
@@ -71,7 +85,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: develop
-          bump_type: ${{ steps.check_labels.outputs.bump_type }}
+          bump_type: ${{ env.BUMP_TYPE }}
 
       - id: id_out
         run: |
@@ -125,16 +139,16 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      ###############################################
+      ##############################################
       # Build APK
-      ###############################################
+      ##############################################
       - name: Build APK
         run: flutter build apk --release
         working-directory: apps/multichoice/
 
-      ###############################################
+      ##############################################
       # Upload APK to Firebase App Distribution
-      ###############################################
+      ##############################################
       - name: Upload APK to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -145,16 +159,16 @@ jobs:
           releaseNotesFile: ./CHANGELOG.md
           debug: true
 
-      ###############################################
+      ##############################################
       # Build App Bundle
-      ###############################################
+      ##############################################
       - name: Build App Bundle
         run: flutter build appbundle --release
         working-directory: apps/multichoice/
 
-      ###############################################
+      ##############################################
       # Upload App Bundle as Artifact
-      ###############################################
+      ##############################################
       - name: Upload Android App Bundle
         uses: actions/upload-artifact@v4
         with:
@@ -170,5 +184,5 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
-          git tag $new_tag
-          git push origin $new_tag
+          git tag v$new_tag
+          git push origin v$new_tag

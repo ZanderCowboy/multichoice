@@ -1,15 +1,22 @@
 ---
-# This workflow is triggered on pull request closure for branches 'develop' and 'rc'.
+# This workflow is triggered on pull request closure for branch 'rc'.
 # It is responsible for building the Android app, running tests, and uploading artifacts.
 # It also manages versioning based on labels applied to the pull request.
-name: Test, Analyze, Build
+#
+# The versioning works as follows:
+# - If the pull request is merged and has labels 'major', 'minor', or 'patch', it will bump the version accordingly with -RC suffix.
+#   For example, 1.0.0+5, and the label is 'minor', it will become 1.1.0-RC+6.
+# - If the pull request is merged and has no labels, it will bump the build number only.
+#   For example, if the current version is 1.0.0+5, it will become 1.0.0-RC+6.
+# - If the pull request is merged and has the label 'no-build', it will skip the build process.
+#
+name: rc-workflow
 on:
-  # pull_request:
-  #   branches:
-  #     - "develop"
-  #     - "rc"
-  #   types:
-  #     - "closed"
+  pull_request:
+    branches:
+      - "rc"
+    types:
+      - "closed"
 
   workflow_dispatch:
 
@@ -47,21 +54,24 @@ jobs:
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
-          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
-            exit 1
+          if [[ -z "$VALID_LABELS" ]]; then
+            echo "bump_type=none" >> $GITHUB_OUTPUT
+            echo "********** Bumping build number only **********"
+          else
+            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+            # If multiple labels are found, error out
+            if [[ $LABEL_COUNT -gt 1 ]]; then
+              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or neither"
+              exit 1
+            fi
+
+            # Set the bump type based on the single valid label
+            case "$VALID_LABELS" in
+              "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
+              "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+              "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+            esac
           fi
-          if [[ $LABEL_COUNT -eq 0 ]]; then
-            echo "::error::No version label found. Please add one of: major, minor, patch, or no-build"
-            exit 1
-          fi
-          case "$VALID_LABELS" in
-            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
-            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
-            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-          esac
         shell: bash
 
       - name: Version Management
@@ -70,8 +80,9 @@ jobs:
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
-          branch_name: develop
+          branch_name: rc
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
+          version_suffix: "-RC"
 
       - id: id_out
         run: |
@@ -125,36 +136,16 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      ###############################################
-      # Build APK
-      ###############################################
-      - name: Build APK
-        run: flutter build apk --release
-        working-directory: apps/multichoice/
-
-      ###############################################
-      # Upload APK to Firebase App Distribution
-      ###############################################
-      - name: Upload APK to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
-          releaseNotesFile: ./CHANGELOG.md
-          debug: true
-
-      ###############################################
+      ##############################################
       # Build App Bundle
-      ###############################################
+      ##############################################
       - name: Build App Bundle
         run: flutter build appbundle --release
         working-directory: apps/multichoice/
 
-      ###############################################
+      ##############################################
       # Upload App Bundle as Artifact
-      ###############################################
+      ##############################################
       - name: Upload Android App Bundle
         uses: actions/upload-artifact@v4
         with:
@@ -165,10 +156,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          new_tag=${{ needs.preBuild.outputs.version_number }}
-          if [[ -z "$new_tag" ]]; then
+          version_number=${{ needs.preBuild.outputs.version_number }}
+          if [[ -z "$version_number" ]]; then
             echo "Error: version_number is empty"
             exit 1
           fi
-          git tag $new_tag
-          git push origin $new_tag
+          git tag v$version_number
+          git push origin v$version_number
+
+      ###############################################
+      # Release to Google Play Internal Track
+      ###############################################
+      - name: Release Build to internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          releaseFiles: app-release.aab
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: "co.za.zanderkotze.multichoice"
+          track: "internal"
+          releaseName: ${{ needs.preBuild.outputs.version_number }}
+          status: "completed"
