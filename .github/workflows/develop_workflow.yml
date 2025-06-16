@@ -87,7 +87,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           # TODO: remove this once we have a proper branch name
-          branch_name: tmp-main
+          branch_name: tmp-dev
           bump_type: ${{ env.BUMP_TYPE }}
 
       - id: id_out
