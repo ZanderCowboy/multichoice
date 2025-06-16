@@ -2,18 +2,18 @@ name: "Version Management"
 description: "Manages version bumping based on PR labels"
 
 inputs:
-  github-token:
+  github_token:
     description: "GitHub token for authentication"
     required: true
-  pubspec-path:
+  pubspec_path:
     description: "Path to the pubspec.yaml file"
     required: true
     default: "apps/multichoice/pubspec.yaml"
-  branch-name:
+  branch_name:
     description: "Branch name to push changes to"
     required: true
     default: "develop"
-  bump-type:
+  bump_type:
     description: "Type of version bump (major, minor, patch, none)"
     required: true
 
@@ -28,9 +28,9 @@ runs:
     - name: Checkout Branch
       uses: actions/checkout@v4
       with:
-        ref: ${{ inputs.branch-name }}
+        ref: ${{ inputs.branch_name }}
         fetch-depth: 0
-        token: ${{ inputs.github-token }}
+        token: ${{ inputs.github_token }}
 
     - name: Get Latest Tag
       id: get_latest_tag
@@ -45,20 +45,19 @@ runs:
       id: get_current_version
       shell: bash
       run: |
-        if ! grep -q '^version: [0-9]\+\.[0-9]\+\.[0-9]\++[0-9]\+$' ${{ inputs.pubspec-path }}; then
-          echo "::error::Invalid or missing version in ${{ inputs.pubspec-path }}. Expected format: x.y.z+build"
+        if ! grep -q '^version: [0-9]\+\.[0-9]\+\.[0-9]\++[0-9]\+$' ${{ inputs.pubspec_path }}; then
+          echo "::error::Invalid or missing version in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build"
           exit 1
         fi
-        current_version=$(grep 'version:' ${{ inputs.pubspec-path }} | sed 's/version: //')
+        current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version: //')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
         echo "Current version: $current_version"
 
     - name: Update Version
       id: version_update
-      if: ${{ inputs.bump-type != 'none' }}
       shell: bash
       env:
-        GH_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github_token }}
         REPO: ${{ github.repository }}
       run: |
         latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
@@ -83,8 +82,8 @@ runs:
           # Split version into major, minor, patch
           IFS='.' read -r major minor patch <<< "$version_part"
           
-          # Increment version based on bump-type
-          bump_type="${{ inputs.bump-type }}"
+          # Increment version based on bump_type
+          bump_type="${{ inputs.bump_type }}"
           case "$bump_type" in
             "major")
               major=$((major + 1))
@@ -98,8 +97,11 @@ runs:
             "patch")
               patch=$((patch + 1))
               ;;
+            "none")
+              # For none, we only increment the build number
+              ;;
             *)
-              echo "::error::Invalid bump-type: $bump_type. Expected: major, minor, patch"
+              echo "::error::Invalid bump_type: $bump_type. Expected: major, minor, patch, none"
               exit 1
               ;;
           esac
@@ -108,18 +110,18 @@ runs:
           new_build_number=$((build_number + 1))
           
           # Update pubspec.yaml with new version and build number
-          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec-path }}
+          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}
           
           git config --global user.name 'VersionBumpingBot'
           git config --global user.email 'bot@versionbumpingbot.com'
-          git add ${{ inputs.pubspec-path }}
+          git add ${{ inputs.pubspec_path }}
           git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
             echo "::error::Failed to commit version bump"
             exit 1
           }
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          git push origin HEAD:${{ inputs.branch-name }} || {
-            echo "::error::Failed to push version bump to ${{ inputs.branch-name }}"
+          git push origin HEAD:${{ inputs.branch_name }} || {
+            echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
             exit 1
           }
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT

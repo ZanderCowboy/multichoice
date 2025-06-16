@@ -1,4 +1,6 @@
 ---
+# This workflow is triggered on pull request closure from branch 'rc' to 'main'.
+# It is responsible for creating a new PROD tag (vX.Y.Z).
 name: Tag and Release
 on:
   pull_request:

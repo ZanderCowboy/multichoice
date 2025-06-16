@@ -15,10 +15,7 @@ jobs:
     name: Setting up for Deploy
     runs-on: ubuntu-latest
     outputs:
-      web_deploy_flag: ${{ steps.id_out.outputs.web_deploy_flag }}
       android_deploy_flag: ${{ steps.id_out.outputs.android_deploy_flag }}
-      windows_deploy_flag: ${{ steps.id_out.outputs.windows_deploy_flag }}
-
       android_package_name: ${{ steps.id_out.outputs.android_package_name }}
       android_environment_url: ${{ steps.id_out.outputs.android_environment_url }}
       android_track: ${{ steps.id_out.outputs.android_track }}
@@ -36,10 +33,7 @@ jobs:
 
       - id: id_out
         run: |
-          echo "web_deploy_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
           echo "android_deploy_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_deploy_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
-
           echo "android_package_name=${{ steps.read_config_yaml.outputs.android_deploy__android_package_name }}" >> $GITHUB_OUTPUT
           echo "android_environment_url=${{ steps.read_config_yaml.outputs.android_deploy__android_environment_url }}" >> $GITHUB_OUTPUT
           echo "android_track=${{ steps.read_config_yaml.outputs.android_deploy__android_track }}" >> $GITHUB_OUTPUT
@@ -47,24 +41,30 @@ jobs:
           echo "android_deploy_status=${{ steps.read_config_yaml.outputs.android_deploy__android_deploy_status }}" >> $GITHUB_OUTPUT
 
   deploy:
-    name: Deploy Apps
-    if: success()
-    uses: ./.github/workflows/_deploy-env-apps.yml
+    name: Deploy Android Build
     needs: preDeploy
     permissions:
       contents: write
-    secrets: inherit
-    with:
-      web_deploy_flag: ${{ needs.preDeploy.outputs.web_deploy_flag == 'true' }}
-      web_environment_flag: "Web Prod"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      android_deploy_flag: ${{ needs.preDeploy.outputs.android_deploy_flag == 'true' }}
-      android_environment_flag: "Android Prod"
-      android_package_name: ${{ needs.preDeploy.outputs.android_package_name }}
-      android_environment_url: ${{ needs.preDeploy.outputs.android_environment_url }}
-      android_track: ${{ needs.preDeploy.outputs.android_track }}
-      android_release_name: ${{ needs.preDeploy.outputs.android_release_name }}
-      android_deploy_status: ${{ needs.preDeploy.outputs.android_deploy_status }}
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v10
+        with:
+          workflow: release_workflow.yml
+          workflow_conclusion: success
+          search_artifacts: true
+          name: android-release
 
-      windows_deploy_flag: ${{ needs.preDeploy.outputs.windows_deploy_flag == 'true' }}
-      windows_environment_flag: "Windows Prod"
+      - name: Release Build to internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          releaseFiles: app-release.aab
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: "co.za.zanderkotze.multichoice"
+          track: "internal"
+          releaseName: "v1.0.0"
+          status: "draft"
