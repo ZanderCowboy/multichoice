@@ -4,8 +4,9 @@ on:
   pull_request:
     branches:
       - "develop"
-    # types:
-    #   - "closed"
+    types:
+      - "closed"
+
   workflow_dispatch:
 
 concurrency:
@@ -15,7 +16,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -36,12 +37,6 @@ jobs:
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
-
-      - name: Debug Token
-        run: |
-          curl -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/ZanderCowboy/multichoice
 
       - name: Check Version Labels
         id: check_labels
@@ -136,15 +131,15 @@ jobs:
       ###############################################
       # Upload APK to Firebase App Distribution
       ###############################################
-      # - name: Upload APK to Firebase App Distribution
-      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
-      #   with:
-      #     appId: ${{ secrets.APP_ID }}
-      #     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-      #     groups: testers
-      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
-      #     releaseNotesFile: ./CHANGELOG.md
-      #     debug: true
+      - name: Upload APK to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotesFile: ./CHANGELOG.md
+          debug: true
 
       ###############################################
       # Build App Bundle
