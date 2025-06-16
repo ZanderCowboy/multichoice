@@ -15,7 +15,7 @@ on:
   pull_request:
     branches:
       # - "develop"
-      - "tmp-dev"
+      - "tmp-main"
     # types:
     #   - "closed"
 
@@ -86,7 +86,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           # TODO: remove this once we have a proper branch name
-          branch_name: tmp-dev
+          branch_name: tmp-main
           bump_type: ${{ env.BUMP_TYPE }}
 
       - id: id_out
