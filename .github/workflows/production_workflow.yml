@@ -88,13 +88,33 @@ jobs:
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
       - name: Commit Version Update
-        uses: ./.github/actions/tokenized-commit
-        with:
-          github_token: ${{ steps.generate_token.outputs.token }}
-          repository: ${{ github.repository }}
-          file_path: apps/multichoice/pubspec.yaml
-          commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
-          branch_name: tmp-main
+        id: commit_version_update
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          git config --global user.name 'VersionBumpingBot'
+          git config --global user.email 'bot@versionbumpingbot.com'
+
+          git add ${{ inputs.pubspec_path }}
+          git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
+            echo "::error::Failed to commit version bump"
+            exit 1
+          }
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
+          git push origin HEAD:${{ inputs.branch_name }} || {
+            echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
+            exit 1
+          }
+
+      # - name: Commit Version Update
+      #   uses: ./.github/actions/tokenized-commit
+      #   with:
+      #     github_token: ${{ steps.generate_token.outputs.token }}
+      #     repository: ${{ github.repository }}
+      #     file_path: apps/multichoice/pubspec.yaml
+      #     commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
+      #     branch_name: tmp-main
 
   build:
     name: Builds Android App
