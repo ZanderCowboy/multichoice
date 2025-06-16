@@ -25,12 +25,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout Branch
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.branch_name }}
-        fetch-depth: 0
-        token: ${{ inputs.github_token }}
+    # - name: Checkout Branch
+    #   uses: actions/checkout@v4
+    #   with:
+    #     ref: ${{ inputs.branch_name }}
+    #     fetch-depth: 0
+    #     token: ${{ inputs.github_token }}
 
     - name: Configure Git
       shell: bash
