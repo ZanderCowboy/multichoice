@@ -42,9 +42,9 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github_token }}
-        REPO: ${{ inputs.repo }}
+        REPO: ${{ inputs.repository }}
       run: |
-        git add ${{ inputs.pubspec_path }}
+        git add ${{ inputs.file_path }}
         git commit -m "${{ inputs.commit_message }}" || {
           echo "::error::Failed to commit changes"
           exit 1
