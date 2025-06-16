@@ -1,6 +1,96 @@
 # Workflows
 
-To be updated.
+This repository contains GitHub Actions workflows for managing the build and deployment process across different environments: develop, staging (RC), and production.
+
+## Version Management
+
+The versioning system follows semantic versioning (MAJOR.MINOR.PATCH+BUILD) with support for release candidates (RC).
+
+### Version Bumping
+
+Version bumps are controlled through PR labels:
+- `major`: Increments the major version (1.0.0 -> 2.0.0)
+- `minor`: Increments the minor version (1.0.0 -> 1.1.0)
+- `patch`: Increments the patch version (1.0.0 -> 1.0.1)
+- `no-build`: Skips version bumping
+
+### Version Suffixes
+
+- RC (Release Candidate) suffix is automatically added in the staging workflow
+- RC suffix is removed when promoting to production
+
+## Workflow Overview
+
+### Develop Workflow
+
+- Triggered on PR closure to `develop` branch
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
+- Uploads APK to Firebase App Distribution
+- Creates AAB artifact
+- Version bumping based on PR labels (patch, minor)
+
+### Staging (RC) Workflow
+
+- Triggered on PR closure to `rc` branch
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
+- Creates AAB artifact
+- Uploads to Google Play internal track
+- Adds RC suffix to version
+- Version bumping based on PR labels (major, minor, patch)
+
+### Production Workflow
+
+- Triggered on PR closure to `main` branch from `rc`
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
+- Creates both APK and AAB artifacts
+- Removes RC suffix from version
+- Uploads to Google Play production track (currently commented out)
+
+## Common Features Across Workflows
+
+### Pre-build Steps
+
+- Version management
+- GitHub App token generation
+- Label validation
+- Version bumping based on PR labels
+
+### Build Steps
+
+- Flutter and Java setup
+- Core package coverage testing
+- Codecov integration
+- Android keystore setup
+- Secrets file generation
+- APK/AAB building
+- Artifact uploads
+
+### Post-build Steps
+
+- Tag creation
+- Version updates in pubspec.yaml
+- Google Play Store deployment (where applicable)
+
+## Concurrency Control
+
+- All workflows implement concurrency control
+- Prevents multiple builds from running simultaneously
+- Cancels in-progress builds when new ones are triggered
+
+## Security
+
+- Uses GitHub App tokens for authentication
+- Securely handles Android keystore and secrets
+- Implements proper permission scopes for GitHub Actions
+
+## Artifacts
+
+- APK files for direct installation
+- AAB files for Google Play Store submission
+- Coverage reports for code quality monitoring
 
 ## Linting Workflow
 

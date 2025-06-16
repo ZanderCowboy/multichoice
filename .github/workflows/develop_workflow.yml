@@ -1,15 +1,23 @@
 ---
-# This workflow is triggered on pull request closure for branches 'develop' and 'rc'.
+# This workflow is triggered on pull request closure for the 'develop' branch.
 # It is responsible for building the Android app, running tests, and uploading artifacts.
 # It also manages versioning based on labels applied to the pull request.
-name: Test, Analyze, Build
+#
+# The versioning works as follows:
+# - If the pull request is merged and has labels 'minor' or 'patch', it will bump the version accordingly with build number.
+#   For example, if the current version is 1.0.0+5 and the label is 'patch', it will become 1.0.1+6.
+# - If the pull request is merged and has no labels, it will bump the build number only.
+#   For example, if the current version is 1.0.0+5, it will become 1.0.0+6.
+# - If the pull request is merged and has the label 'no-build', it will skip the build process.
+#
+name: develop-workflow
 on:
-  # pull_request:
-  #   branches:
-  #     - "develop"
-  #     - "rc"
-  #   types:
-  #     - "closed"
+  pull_request:
+    branches:
+      # - "develop"
+      - "tmp-dev"
+    # types:
+    #   - "closed"
 
   workflow_dispatch:
 
@@ -20,7 +28,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -46,19 +54,24 @@ jobs:
         id: check_labels
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
-          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
+          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
           LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
-            exit 1
-          fi
+
+          # If no labels are found, default to build number bump (none)
           if [[ $LABEL_COUNT -eq 0 ]]; then
-            echo "::error::No version label found. Please add one of: major, minor, patch, or no-build"
+            echo "bump_type=none" >> $GITHUB_OUTPUT
+            echo "********** Bumping build number only **********"
+            exit 0
+          fi
+
+          # If multiple labels are found, error out
+          if [[ $LABEL_COUNT -gt 1 ]]; then
+            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
             exit 1
           fi
+
+          # Set the bump type based on the single valid label
           case "$VALID_LABELS" in
-            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
-            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
             "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
             "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
           esac
@@ -128,38 +141,38 @@ jobs:
       ###############################################
       # Build APK
       ###############################################
-      - name: Build APK
-        run: flutter build apk --release
-        working-directory: apps/multichoice/
+      # - name: Build APK
+      #   run: flutter build apk --release
+      #   working-directory: apps/multichoice/
 
       ###############################################
       # Upload APK to Firebase App Distribution
       ###############################################
-      - name: Upload APK to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
-          releaseNotesFile: ./CHANGELOG.md
-          debug: true
+      # - name: Upload APK to Firebase App Distribution
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
+      #   with:
+      #     appId: ${{ secrets.APP_ID }}
+      #     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+      #     groups: testers
+      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+      #     releaseNotesFile: ./CHANGELOG.md
+      #     debug: true
 
       ###############################################
       # Build App Bundle
       ###############################################
-      - name: Build App Bundle
-        run: flutter build appbundle --release
-        working-directory: apps/multichoice/
+      # - name: Build App Bundle
+      #   run: flutter build appbundle --release
+      #   working-directory: apps/multichoice/
 
       ###############################################
       # Upload App Bundle as Artifact
       ###############################################
-      - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: "android-release-appbundle"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+      # - name: Upload Android App Bundle
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: "android-release-appbundle"
+      #     path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
       - name: Create New Tag
         env:

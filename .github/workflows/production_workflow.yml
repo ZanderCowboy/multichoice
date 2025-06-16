@@ -1,0 +1,210 @@
+---
+# This workflow is triggered on pull request closure for the 'main' branch from 'rc'.
+# It is responsible for building the Android app, running tests, and uploading artifacts.
+# It also manages versioning by removing RC suffix from tags and versions.
+#
+# The versioning works as follows:
+# - If the pull request is merged and has an RC suffix, it will remove the RC suffix from the version.
+#   For example, if the current version is 1.0.0-RC+5, it will become 1.0.0+6.
+#   and a new tag will be created without RC suffix and build number.
+#   For example, if the current tag is v2.4.1-RC+125, it will become v2.4.1.
+#
+name: main-workflow
+on:
+  pull_request:
+    branches:
+      # - "main"
+      - "tmp-main"
+    # types:
+    #   - "closed"
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preBuild:
+    name: Prebuild - Version Management
+    # if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && (github.event.pull_request.head.ref == 'rc' || contains(github.event.pull_request.labels.*.name, 'prod'))
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: false
+    outputs:
+      version_number: ${{ steps.version_management.outputs.version_number }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Get Current Version From Latest Tag
+        id: get_current_version
+        shell: bash
+        run: |
+          # Get the latest tag
+          latest_tag=$(git describe --tags --abbrev=0)
+          if [[ -z "$latest_tag" ]]; then
+            echo "::error::No tags found in repository"
+            exit 1
+          fi
+
+          # Remove 'v' prefix if present
+          version_without_v=${latest_tag#v}
+
+          # Check if version has RC suffix
+          if [[ ! "$version_without_v" =~ -RC$ ]]; then
+            echo "::error::Latest tag does not have RC suffix"
+            exit 1
+          fi
+
+          # Remove RC suffix
+          new_version=${version_without_v%-RC}
+
+          echo "current_version=$new_version" >> $GITHUB_OUTPUT
+          echo "Current version: $new_version"
+
+      - name: Update Version in pubspec.yaml
+        id: version_update
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          new_version=${{ steps.get_current_version.outputs.current_version }}
+
+          # Get current build number from pubspec.yaml
+          build_number=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: .*+//')
+
+          # Update pubspec.yaml with new version
+          sed -i "s/version: .*/version: $new_version+$build_number/" apps/multichoice/pubspec.yaml
+
+          git config --global user.name 'VersionBumpingBot'
+          git config --global user.email 'bot@versionbumpingbot.com'
+          git add apps/multichoice/pubspec.yaml
+          git commit -m "Remove RC suffix from version $new_version+$build_number [skip ci]" || {
+            echo "::error::Failed to commit version update"
+            exit 1
+          }
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
+          git push origin HEAD:main || {
+            echo "::error::Failed to push version update to main"
+            exit 1
+          }
+          echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
+
+  build:
+    name: Builds Android App
+    needs: [preBuild]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      statuses: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
+
+      ###############################################
+      # Build APK
+      ###############################################
+      # - name: Build APK
+      #   run: flutter build apk --release
+      #   working-directory: apps/multichoice/
+
+      ###############################################
+      # Upload APK as Artifact
+      ###############################################
+      # - name: Upload Android APK
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: "android-release-apk"
+      #     path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+
+      ###############################################
+      # Build App Bundle
+      ###############################################
+      # - name: Build App Bundle
+      #   run: flutter build appbundle --release
+      #   working-directory: apps/multichoice/
+
+      ###############################################
+      # Upload App Bundle as Artifact
+      ###############################################
+      # - name: Upload Android App Bundle
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: "android-release-appbundle"
+      #     path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+
+      - name: Create New Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version_number=${{ needs.preBuild.outputs.version_number }}
+          if [[ -z "$version_number" ]]; then
+            echo "Error: version_number is empty"
+            exit 1
+          fi
+          # Extract version without build number for tag
+          tag_version=$(echo "$version_number" | cut -d'+' -f1)
+          git tag "v$tag_version"
+          git push origin "v$tag_version"
+
+      ###############################################
+      # Release to Google Play Production Track
+      ###############################################
+      # - name: Release Build to production track
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     releaseFiles: app-release.aab
+      #     serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+      #     packageName: "co.za.zanderkotze.multichoice"
+      #     track: "production"
+      #     releaseName: ${{ needs.preBuild.outputs.version_number }}
+      #     status: "completed"

@@ -16,6 +16,10 @@ inputs:
   bump_type:
     description: "Type of version bump (major, minor, patch, none)"
     required: true
+  version_suffix:
+    description: "Optional suffix to add to the version (e.g. -RC)"
+    required: false
+    default: ""
 
 outputs:
   version_number:
@@ -62,10 +66,24 @@ runs:
       run: |
         latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
         current_version=${{ steps.get_current_version.outputs.current_version }}
+        version_suffix="${{ inputs.version_suffix }}"
 
         echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
         if [[ "$current_version" > "$latest_tag" ]]; then
           echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
+          if [[ -n "$version_suffix" ]]; then
+            # Add suffix to the version if it doesn't already have it
+            if [[ "$current_version" != *"$version_suffix"* ]]; then
+              version_part=$(echo "$current_version" | cut -d'+' -f1)
+              build_number=$(echo "$current_version" | cut -d'+' -f2)
+              current_version="${version_part}${version_suffix}+${build_number}"
+              # Update pubspec.yaml with suffixed version
+              sed -i "s/version: .*/version: $current_version/" ${{ inputs.pubspec_path }}
+              git add ${{ inputs.pubspec_path }}
+              git commit -m "Add $version_suffix suffix to version $current_version [skip ci]"
+              git push origin HEAD:${{ inputs.branch_name }}
+            fi
+          fi
           echo "version_number=$current_version" >> $GITHUB_OUTPUT
         else
           echo "Updating version in pubspec.yaml."
@@ -108,6 +126,11 @@ runs:
           
           new_version="$major.$minor.$patch"
           new_build_number=$((build_number + 1))
+          
+          # Add suffix if provided
+          if [[ -n "$version_suffix" ]]; then
+            new_version="${new_version}${version_suffix}"
+          fi
           
           # Update pubspec.yaml with new version and build number
           sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}

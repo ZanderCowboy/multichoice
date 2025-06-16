@@ -3,15 +3,15 @@
 # It is responsible for creating a new PROD tag (vX.Y.Z).
 name: Tag and Release
 on:
-  pull_request:
-    branches:
-      - "main"
-    types:
-      - "opened"
-      - "synchronize"
-      - "reopened"
-      - "ready_for_review"
-      - "labeled"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #   types:
+  #     - "opened"
+  #     - "synchronize"
+  #     - "reopened"
+  #     - "ready_for_review"
+  #     - "labeled"
 
   workflow_dispatch:
 
