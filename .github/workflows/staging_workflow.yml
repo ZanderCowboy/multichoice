@@ -14,10 +14,9 @@ name: rc-workflow
 on:
   pull_request:
     branches:
-      # - "rc"
-      - "tmp-rc"
-    # types:
-    #   - "closed"
+      - "rc"
+    types:
+      - "closed"
 
   workflow_dispatch:
 
@@ -28,7 +27,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -81,8 +80,7 @@ jobs:
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
-          # TODO: remove this once we have a proper branch name
-          branch_name: tmp-rc
+          branch_name: rc
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
 
@@ -102,57 +100,57 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # - name: Set up Flutter and Java
-      #   uses: ./.github/actions/setup-flutter-with-java
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
 
-      # - name: Melos Coverage for Core
-      #   run: melos coverage:core
-      # - name: Upload Coverage to Codecov
-      #   uses: codecov/codecov-action@v4
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: packages/core/coverage/lcov.info
-      #     fail_ci_if_error: true
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
 
-      # - name: Download Android Keystore File
-      #   id: android_keystore
-      #   uses: timheuer/base64-to-file@v1.2.4
-      #   with:
-      #     fileName: upload-keystore.jks
-      #     encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      # - name: Create key.properties File
-      #   run: |
-      #     echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
-      #     echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
-      #     echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
-      #     echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
-      #   working-directory: apps/multichoice/android/
-      # - name: Create secrets.dart File
-      #   run: |
-      #     mkdir auth
-      #     echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
-      #     echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
-      #     echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
-      #     echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
-      #     echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
-      #     echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
-      #   working-directory: apps/multichoice/lib/
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
 
-      ###############################################
+      ##############################################
       # Build App Bundle
-      ###############################################
-      # - name: Build App Bundle
-      #   run: flutter build appbundle --release
-      #   working-directory: apps/multichoice/
+      ##############################################
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+        working-directory: apps/multichoice/
 
-      ###############################################
+      ##############################################
       # Upload App Bundle as Artifact
-      ###############################################
-      # - name: Upload Android App Bundle
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: "android-release-appbundle"
-      #     path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
       - name: Create New Tag
         env:
@@ -169,12 +167,12 @@ jobs:
       ###############################################
       # Release to Google Play Internal Track
       ###############################################
-      # - name: Release Build to internal track
-      #   uses: r0adkll/upload-google-play@v1
-      #   with:
-      #     releaseFiles: app-release.aab
-      #     serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-      #     packageName: "co.za.zanderkotze.multichoice"
-      #     track: "internal"
-      #     releaseName: ${{ needs.preBuild.outputs.version_number }}
-      #     status: "draft"
+      - name: Release Build to internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          releaseFiles: app-release.aab
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: "co.za.zanderkotze.multichoice"
+          track: "internal"
+          releaseName: ${{ needs.preBuild.outputs.version_number }}
+          status: "completed"

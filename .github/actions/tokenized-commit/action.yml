@@ -20,7 +20,6 @@ inputs:
   branch_name:
     description: "Branch name to push changes to"
     required: true
-    default: "tmp-main"
   version_with_build:
     description: "Version to set in the pubspec.yaml file"
     required: true
