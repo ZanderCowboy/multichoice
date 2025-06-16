@@ -10,3 +10,5 @@ rc-workflow
 production-workflow
 - trigger - test RC flag being removed
 - git fetch --prune --prune-tags <- Removes local tags
+
+- trigger
