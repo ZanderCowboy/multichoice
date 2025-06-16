@@ -92,9 +92,10 @@ runs:
           # Extract version and build number
           version_part=$(echo "$current_version" | cut -d'+' -f1)
           build_number=$(echo "$current_version" | cut -d'+' -f2)
+          echo "Version part: $version_part + Build number: $build_number"
           
           # Validate version format
-          if ! echo "$version_part" | grep -q '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
+          if ! echo "$version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
             echo "::error::Invalid version format in pubspec.yaml: $version_part. Expected: x.y.z or x.y.z-RC"
             exit 1
           fi
