@@ -21,16 +21,31 @@ inputs:
     description: "Branch name to push changes to"
     required: true
     default: "tmp-main"
+  version:
+    description: "Version to set in the pubspec.yaml file"
+    required: true
 
 runs:
   using: "composite"
   steps:
-    # - name: Checkout Branch
-    #   uses: actions/checkout@v4
-    #   with:
-    #     ref: ${{ inputs.branch_name }}
-    #     fetch-depth: 0
-    #     token: ${{ inputs.github_token }}
+    - name: Checkout Branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.branch_name }}
+        fetch-depth: 0
+        token: ${{ inputs.github_token }}
+
+    - name: Update Version in pubspec.yaml
+      id: version_update
+      shell: bash
+      run: |
+        new_version=${{ inputs.version }}
+        # Get current build number from pubspec.yaml
+        build_number=$(grep 'version:' ${{ inputs.file_path }} | sed 's/version: .*+//')
+        # Update pubspec.yaml with new version
+        sed -i "s/version: .*/version: $new_version+$build_number/" ${{ inputs.file_path }}
+        echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
+        echo "version_number=$new_version+$build_number"
 
     - name: Push Changes
       shell: bash

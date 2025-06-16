@@ -38,7 +38,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: tmp-main
           fetch-depth: 0
 
       - name: Get Current Version From Latest Tag
@@ -69,18 +68,6 @@ jobs:
           echo "current_version=$new_version" >> $GITHUB_OUTPUT
           echo "Current version: $new_version"
 
-      - name: Update Version in pubspec.yaml
-        id: version_update
-        shell: bash
-        run: |
-          new_version=${{ steps.get_current_version.outputs.current_version }}
-          # Get current build number from pubspec.yaml
-          build_number=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: .*+//')
-          # Update pubspec.yaml with new version
-          sed -i "s/version: .*/version: $new_version+$build_number/" apps/multichoice/pubspec.yaml
-          echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
-          echo "version_number=$new_version+$build_number"
-
       - name: Generate GitHub App Token
         id: generate_token
         uses: peter-murray/workflow-application-token-action@v4
@@ -88,94 +75,95 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
-      - name: Commit Version Update
-        id: commit_version_update
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-          REPO: ${{ github.repository }}
-          VERSION_NUMBER: ${{ steps.version_update.outputs.version_number }}
-          BRANCH: "tmp-main"
-        run: |
-          # Print environment details for debugging
-          echo "Repository: $REPO"
-          echo "Branch: $BRANCH"
-          echo "Version Number: $VERSION_NUMBER"
-          echo "GitHub Actor: ${{ github.actor }}"
-          echo "GitHub Event Name: ${{ github.event_name }}"
-          echo "GitHub Ref: ${{ github.ref }}"
-
-          # Verify token is not empty
-          if [[ -z "$GH_TOKEN" ]]; then
-            echo "::error::GH_TOKEN is empty. Check GitHub App token generation step."
-            exit 1
-          fi
-          echo "GH_TOKEN is set (length: ${#GH_TOKEN} characters)"
-
-          # Test token permissions by querying GitHub API
-          echo "Checking token permissions via GitHub API..."
-          api_response=$(curl -s -o response.json -w "%{http_code}" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/$REPO)
-          cat response.json
-          if [[ "$api_response" != "200" ]]; then
-            echo "::error::GitHub API request failed with status $api_response. Check token permissions or app installation."
-            exit 1
-          fi
-          echo "GitHub API request succeeded (status: $api_response)"
-
-          # Check repository permissions for the token
-          echo "Checking repository permissions..."
-          perms_response=$(curl -s -o perms.json -w "%{http_code}" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/$REPO/collaborators/${{ github.actor }}/permission)
-          cat perms.json
-          if [[ "$perms_response" != "200" ]]; then
-            echo "::error::Failed to check repository permissions (status: $perms_response)."
-            exit 1
-          fi
-          permission_level=$(jq -r '.permission' perms.json)
-          echo "Token permission level: $permission_level"
-          if [[ "$permission_level" != "admin" && "$permission_level" != "write" ]]; then
-            echo "::error::Insufficient permissions ($permission_level). Token needs 'write' or 'admin' access."
-            exit 1
-          fi
-
-          # Configure git
-          git config --global user.name 'VersionBumpingBot'
-          git config --global user.email 'bot@versionbumpingbot.com'
-
-          # Verify git status
-          echo "Git status before commit:"
-          git status
-
-          # Add and commit changes
-          git add apps/multichoice/pubspec.yaml
-          git commit -m "Bump version to ${VERSION_NUMBER} [skip ci]" || {
-            echo "::error::Failed to commit version bump"
-            exit 1
-          }
-
-          # Set remote URL with token and attempt push
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          echo "Attempting to push to $BRANCH..."
-          git push origin HEAD:${BRANCH} --verbose || {
-            echo "::error::Failed to push to $BRANCH. Capturing detailed error..."
-            git push origin HEAD:${BRANCH} 2> push_error.log
-            cat push_error.log
-            exit 1
-          }
-          echo "Push to $BRANCH succeeded"
-
       # - name: Commit Version Update
-      #   uses: ./.github/actions/tokenized-commit
-      #   with:
-      #     github_token: ${{ steps.generate_token.outputs.token }}
-      #     repository: ${{ github.repository }}
-      #     file_path: apps/multichoice/pubspec.yaml
-      #     commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
-      #     branch_name: tmp-main
+      #   id: commit_version_update
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      #     REPO: ${{ github.repository }}
+      #     VERSION_NUMBER: ${{ steps.version_update.outputs.version_number }}
+      #     BRANCH: "tmp-main"
+      #   run: |
+      #     # Print environment details for debugging
+      #     echo "Repository: $REPO"
+      #     echo "Branch: $BRANCH"
+      #     echo "Version Number: $VERSION_NUMBER"
+      #     echo "GitHub Actor: ${{ github.actor }}"
+      #     echo "GitHub Event Name: ${{ github.event_name }}"
+      #     echo "GitHub Ref: ${{ github.ref }}"
+
+      #     # Verify token is not empty
+      #     if [[ -z "$GH_TOKEN" ]]; then
+      #       echo "::error::GH_TOKEN is empty. Check GitHub App token generation step."
+      #       exit 1
+      #     fi
+      #     echo "GH_TOKEN is set (length: ${#GH_TOKEN} characters)"
+
+      #     # Test token permissions by querying GitHub API
+      #     echo "Checking token permissions via GitHub API..."
+      #     api_response=$(curl -s -o response.json -w "%{http_code}" \
+      #       -H "Authorization: Bearer $GH_TOKEN" \
+      #       -H "Accept: application/vnd.github+json" \
+      #       https://api.github.com/repos/$REPO)
+      #     cat response.json
+      #     if [[ "$api_response" != "200" ]]; then
+      #       echo "::error::GitHub API request failed with status $api_response. Check token permissions or app installation."
+      #       exit 1
+      #     fi
+      #     echo "GitHub API request succeeded (status: $api_response)"
+
+      #     # Check repository permissions for the token
+      #     echo "Checking repository permissions..."
+      #     perms_response=$(curl -s -o perms.json -w "%{http_code}" \
+      #       -H "Authorization: Bearer $GH_TOKEN" \
+      #       -H "Accept: application/vnd.github+json" \
+      #       https://api.github.com/repos/$REPO/collaborators/${{ github.actor }}/permission)
+      #     cat perms.json
+      #     if [[ "$perms_response" != "200" ]]; then
+      #       echo "::error::Failed to check repository permissions (status: $perms_response)."
+      #       exit 1
+      #     fi
+      #     permission_level=$(jq -r '.permission' perms.json)
+      #     echo "Token permission level: $permission_level"
+      #     if [[ "$permission_level" != "admin" && "$permission_level" != "write" ]]; then
+      #       echo "::error::Insufficient permissions ($permission_level). Token needs 'write' or 'admin' access."
+      #       exit 1
+      #     fi
+
+      #     # Configure git
+      #     git config --global user.name 'VersionBumpingBot'
+      #     git config --global user.email 'bot@versionbumpingbot.com'
+
+      #     # Verify git status
+      #     echo "Git status before commit:"
+      #     git status
+
+      #     # Add and commit changes
+      #     git add apps/multichoice/pubspec.yaml
+      #     git commit -m "Bump version to ${VERSION_NUMBER} [skip ci]" || {
+      #       echo "::error::Failed to commit version bump"
+      #       exit 1
+      #     }
+
+      #     # Set remote URL with token and attempt push
+      #     git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
+      #     echo "Attempting to push to $BRANCH..."
+      #     git push origin HEAD:${BRANCH} --verbose || {
+      #       echo "::error::Failed to push to $BRANCH. Capturing detailed error..."
+      #       git push origin HEAD:${BRANCH} 2> push_error.log
+      #       cat push_error.log
+      #       exit 1
+      #     }
+      #     echo "Push to $BRANCH succeeded"
+
+      - name: Commit Version Update
+        uses: ./.github/actions/tokenized-commit
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+          repository: ${{ github.repository }}
+          file_path: apps/multichoice/pubspec.yaml
+          commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
+          branch_name: tmp-main
+          version: ${{ steps.get_current_version.outputs.current_version }}
 
   build:
     name: Builds Android App
