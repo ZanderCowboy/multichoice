@@ -55,27 +55,24 @@ jobs:
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
-          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-
-          # If no labels are found, default to build number bump (none)
-          if [[ $LABEL_COUNT -eq 0 ]]; then
+          if [[ -z "$VALID_LABELS" ]]; then
             echo "bump_type=none" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+            echo "********** Bumping build number only **********"
+          else
+            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+            # If multiple labels are found, error out
+            if [[ $LABEL_COUNT -gt 1 ]]; then
+              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or neither"
+              exit 1
+            fi
 
-          # If multiple labels are found, error out
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
-            exit 1
+            # Set the bump type based on the single valid label
+            case "$VALID_LABELS" in
+              "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
+              "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+              "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+            esac
           fi
-
-          # Set the bump type based on the single valid label
-          case "$VALID_LABELS" in
-            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
-            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
-            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-          esac
         shell: bash
 
       - name: Version Management
