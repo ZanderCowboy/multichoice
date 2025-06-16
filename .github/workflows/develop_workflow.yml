@@ -61,20 +61,19 @@ jobs:
           if [[ $LABEL_COUNT -eq 0 ]]; then
             echo "bump_type=none" >> $GITHUB_OUTPUT
             echo "********** Bumping build number only **********"
-            exit 0
-          fi
+          else
+            # If multiple labels are found, error out
+            if [[ $LABEL_COUNT -gt 1 ]]; then
+              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
+              exit 1
+            fi
 
-          # If multiple labels are found, error out
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
-            exit 1
+            # Set the bump type based on the single valid label
+            case "$VALID_LABELS" in
+              "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+              "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+            esac
           fi
-
-          # Set the bump type based on the single valid label
-          case "$VALID_LABELS" in
-            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-          esac
         shell: bash
 
       - name: Version Management
