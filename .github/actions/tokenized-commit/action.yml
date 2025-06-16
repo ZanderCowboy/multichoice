@@ -40,8 +40,8 @@ runs:
     - name: Commit and Push Changes
       shell: bash
       env:
-        GH_TOKEN: ${{ inputs.github_token }}
-        REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        REPO: ${{ inputs.repo }}
       run: |
         git config --global user.name 'VersionBumpingBot'
         git config --global user.email 'bot@versionbumpingbot.com'
