@@ -1,56 +1,62 @@
 name: "Tokenized Commit"
-description: "Generates a GitHub App token and commits changes to a file"
+description: "Commits and pushes changes with a GitHub App token"
 
 inputs:
-  application_id:
-    description: "GitHub App ID for token generation"
+  github_token:
+    description: "GitHub token for authentication"
     required: true
-  application_private_key:
-    description: "GitHub App private key for token generation"
+  repository:
+    description: "Repository name in the format 'owner/repo'"
     required: true
+    default: "${{ github.repository }}"
   file_path:
-    description: "Path to the file to commit"
+    description: "Path to the pubspec.yaml file"
     required: true
+    default: "apps/multichoice/pubspec.yaml"
   commit_message:
-    description: "Message for the commit"
+    description: "Commit message for the changes"
     required: true
+    default: "Bump to $new_version [skip ci]"
   branch_name:
     description: "Branch name to push changes to"
     required: true
-  repo:
-    description: "Repository name (owner/repo)"
-    required: true
-    default: ${{ github.repository }}
-
-outputs:
-  token:
-    description: "The generated GitHub App token"
-    value: ${{ steps.generate_token.outputs.token }}
+    default: "tmp-main"
 
 runs:
   using: "composite"
   steps:
-    - name: Generate GitHub App Token
-      id: generate_token
-      uses: peter-murray/workflow-application-token-action@v4
+    - name: Checkout Branch
+      uses: actions/checkout@v4
       with:
-        application_id: ${{ inputs.application_id }}
-        application_private_key: ${{ inputs.application_private_key }}
+        ref: ${{ inputs.branch_name }}
+        fetch-depth: 0
+        token: ${{ inputs.github_token }}
 
-    - name: Commit and Push Changes
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config --global user.name "VersionBumpingBot"
+        git config --global user.email "bot@versionbumpingbot.com"
+
+    - name: Commit Changes
       shell: bash
       env:
-        GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        GH_TOKEN: ${{ inputs.github_token }}
         REPO: ${{ inputs.repo }}
       run: |
-        git config --global user.name 'VersionBumpingBot'
-        git config --global user.email 'bot@versionbumpingbot.com'
-        git add ${{ inputs.file_path }}
+        git add ${{ inputs.pubspec_path }}
         git commit -m "${{ inputs.commit_message }}" || {
           echo "::error::Failed to commit changes"
           exit 1
         }
-        git status
+        echo "Git status: $(git status)"
+
+    - name: Push Changes
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        REPO: ${{ inputs.repository }}
+      run: |
         git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
         git push origin HEAD:${{ inputs.branch_name }} || {
           echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"

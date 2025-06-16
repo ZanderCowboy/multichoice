@@ -80,11 +80,18 @@ jobs:
           echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
           echo "version_number=$new_version+$build_number"
 
-      - name: Commit Version Update
-        uses: ./.github/actions/tokenized-commit
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: peter-murray/workflow-application-token-action@v4
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        uses: ./.github/actions/tokenized-commit
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+          repository: ${{ github.repository }}
           file_path: apps/multichoice/pubspec.yaml
           commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
           branch_name: tmp-main
