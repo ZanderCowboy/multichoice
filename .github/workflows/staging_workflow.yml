@@ -163,8 +163,8 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
-          git tag $version_number
-          git push origin $version_number
+          git tag v$version_number
+          git push origin v$version_number
 
       ###############################################
       # Release to Google Play Internal Track

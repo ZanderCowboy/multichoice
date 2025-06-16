@@ -186,5 +186,5 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
-          git tag $new_tag
-          git push origin $new_tag
+          git tag v$new_tag
+          git push origin v$new_tag
