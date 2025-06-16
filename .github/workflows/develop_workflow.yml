@@ -56,15 +56,11 @@ jobs:
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
           echo "Debug: Raw LABELS value: $LABELS"
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
-          echo "Debug: VALID_LABELS value: $VALID_LABELS"
-          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-          echo "Debug: LABEL_COUNT value: $LABEL_COUNT"
-
-          # If no labels are found, default to build number bump (none)
-          if [[ $LABEL_COUNT -eq 0 ]]; then
+          if [[ -z "$VALID_LABELS" ]]; then
             echo "BUMP_TYPE=none" >> $GITHUB_ENV
             echo "********** Bumping build number only **********"
           else
+            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
             # If multiple labels are found, error out
             if [[ $LABEL_COUNT -gt 1 ]]; then
               echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
