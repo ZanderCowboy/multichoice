@@ -1,11 +1,11 @@
 name: Linting and Analysis
 
 on:
-  # pull_request:
-  #   branches:
-  #     - "develop"
-  #     - "rc"
-  #     - "main"
+  pull_request:
+    branches:
+      - "develop"
+      - "rc"
+      - "main"
   workflow_dispatch:
 
 concurrency:
