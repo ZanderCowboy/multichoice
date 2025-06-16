@@ -102,6 +102,7 @@ runs:
           
           # Increment version based on bump_type
           bump_type="${{ inputs.bump_type }}"
+          echo "Debug: bump_type value is: $bump_type"
           case "$bump_type" in
             "major")
               major=$((major + 1))

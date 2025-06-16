@@ -54,8 +54,11 @@ jobs:
         id: check_labels
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
+          echo "Debug: Raw LABELS value: $LABELS"
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
+          echo "Debug: VALID_LABELS value: $VALID_LABELS"
           LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+          echo "Debug: LABEL_COUNT value: $LABEL_COUNT"
 
           # If no labels are found, default to build number bump (none)
           if [[ $LABEL_COUNT -eq 0 ]]; then
@@ -75,6 +78,10 @@ jobs:
             esac
           fi
         shell: bash
+
+      - name: Debug Output
+        run: |
+          echo "Debug: bump_type value is: ${{ env.BUMP_TYPE }}"
 
       - name: Version Management
         id: version_management
