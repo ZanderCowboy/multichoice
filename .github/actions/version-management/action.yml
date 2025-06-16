@@ -51,11 +51,11 @@ runs:
       run: |
         echo "Checking version in ${{ inputs.pubspec_path }}:"
         cat ${{ inputs.pubspec_path }} | grep '^version:'
-        if ! grep -q '^version: [0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' ${{ inputs.pubspec_path }}; then
+        if ! grep -q '^version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' ${{ inputs.pubspec_path }}; then
           echo "::error::Invalid or missing version in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
           exit 1
         fi
-        current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version: //')
+        current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
         echo "Current version: $current_version"
 
