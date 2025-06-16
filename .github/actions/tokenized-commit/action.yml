@@ -21,7 +21,7 @@ inputs:
     description: "Branch name to push changes to"
     required: true
     default: "tmp-main"
-  version:
+  version_with_build:
     description: "Version to set in the pubspec.yaml file"
     required: true
 
@@ -39,13 +39,12 @@ runs:
       id: version_update
       shell: bash
       run: |
-        new_version=${{ inputs.version }}
-        # Get current build number from pubspec.yaml
-        build_number=$(grep 'version:' ${{ inputs.file_path }} | sed 's/version: .*+//')
+        new_version=${{ inputs.version_with_build }}
+
         # Update pubspec.yaml with new version
-        sed -i "s/version: .*/version: $new_version+$build_number/" ${{ inputs.file_path }}
-        echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
-        echo "version_number=$new_version+$build_number"
+        sed -i "s/version: .*/version: $new_version/" ${{ inputs.file_path }}
+        echo "version_number=$new_version" >> $GITHUB_OUTPUT
+        echo "version_number=$new_version"
 
     - name: Push Changes
       shell: bash
