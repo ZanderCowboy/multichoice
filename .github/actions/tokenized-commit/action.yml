@@ -1,0 +1,57 @@
+name: "Tokenized Commit"
+description: "Generates a GitHub App token and commits changes to a file"
+
+inputs:
+  application_id:
+    description: "GitHub App ID for token generation"
+    required: true
+  application_private_key:
+    description: "GitHub App private key for token generation"
+    required: true
+  file_path:
+    description: "Path to the file to commit"
+    required: true
+  commit_message:
+    description: "Message for the commit"
+    required: true
+  branch_name:
+    description: "Branch name to push changes to"
+    required: true
+  repo:
+    description: "Repository name (owner/repo)"
+    required: true
+    default: ${{ github.repository }}
+
+outputs:
+  token:
+    description: "The generated GitHub App token"
+    value: ${{ steps.generate_token.outputs.token }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate GitHub App Token
+      id: generate_token
+      uses: peter-murray/workflow-application-token-action@v4
+      with:
+        application_id: ${{ inputs.application_id }}
+        application_private_key: ${{ inputs.application_private_key }}
+
+    - name: Commit and Push Changes
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        REPO: ${{ github.repository }}
+      run: |
+        git config --global user.name 'VersionBumpingBot'
+        git config --global user.email 'bot@versionbumpingbot.com'
+        git add ${{ inputs.file_path }}
+        git commit -m "${{ inputs.commit_message }}" || {
+          echo "::error::Failed to commit changes"
+          exit 1
+        }
+        git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
+        git push origin HEAD:${{ inputs.branch_name }} || {
+          echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
+          exit 1
+        }

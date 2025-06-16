@@ -40,13 +40,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate GitHub App Token
-        id: generate_token
-        uses: peter-murray/workflow-application-token-action@v4
-        with:
-          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
-          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
-
       - name: Get Current Version From Latest Tag
         id: get_current_version
         shell: bash
@@ -78,33 +71,23 @@ jobs:
       - name: Update Version in pubspec.yaml
         id: version_update
         shell: bash
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-          REPO: ${{ github.repository }}
         run: |
           new_version=${{ steps.get_current_version.outputs.current_version }}
-
           # Get current build number from pubspec.yaml
           build_number=$(grep 'version:' apps/multichoice/pubspec.yaml | sed 's/version: .*+//')
-
           # Update pubspec.yaml with new version
           sed -i "s/version: .*/version: $new_version+$build_number/" apps/multichoice/pubspec.yaml
-
-          git config --global user.name 'VersionBumpingBot'
-          git config --global user.email 'bot@versionbumpingbot.com'
-          git add apps/multichoice/pubspec.yaml
-          git commit -m "Remove RC suffix from version $new_version+$build_number [skip ci]" || {
-            echo "::error::Failed to commit version update"
-            exit 1
-          }
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-
-          # TODO: remove this once we have a proper branch name
-          git push origin HEAD:"tmp-main" || {
-            echo "::error::Failed to push version update to main"
-            exit 1
-          }
           echo "version_number=$new_version+$build_number" >> $GITHUB_OUTPUT
+          echo "version_number=$new_version+$build_number"
+
+      - name: Commit Version Update
+        uses: ./.github/actions/tokenized-commit
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+          file_path: apps/multichoice/pubspec.yaml
+          commit_message: "Remove RC suffix from version ${{ steps.version_update.outputs.version_number }} [skip ci]"
+          branch_name: tmp-main
 
   build:
     name: Builds Android App
