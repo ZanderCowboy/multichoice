@@ -12,3 +12,4 @@ production-workflow
 - git fetch --prune --prune-tags <- Removes local tags
 
 - trigger
+- trigger
