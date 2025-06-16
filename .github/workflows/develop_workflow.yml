@@ -59,7 +59,7 @@ jobs:
 
           # If no labels are found, default to build number bump (none)
           if [[ $LABEL_COUNT -eq 0 ]]; then
-            echo "bump_type=none" >> $GITHUB_OUTPUT
+            echo "BUMP_TYPE=none" >> $GITHUB_ENV
             echo "********** Bumping build number only **********"
           else
             # If multiple labels are found, error out
@@ -70,8 +70,8 @@ jobs:
 
             # Set the bump type based on the single valid label
             case "$VALID_LABELS" in
-              "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-              "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+              "minor") echo "BUMP_TYPE=minor" >> $GITHUB_ENV ;;
+              "patch") echo "BUMP_TYPE=patch" >> $GITHUB_ENV ;;
             esac
           fi
         shell: bash
@@ -83,7 +83,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: develop
-          bump_type: ${{ steps.check_labels.outputs.bump_type }}
+          bump_type: ${{ env.BUMP_TYPE }}
 
       - id: id_out
         run: |
