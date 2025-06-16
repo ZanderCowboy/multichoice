@@ -49,7 +49,7 @@ runs:
       id: get_current_version
       shell: bash
       run: |
-        if ! grep -q '^version: [0-9]\+\.[0-9]\+\.[0-9]\+\(-RC\)\?\+[0-9]\+$' ${{ inputs.pubspec_path }}; then
+        if ! grep -q '^version: [0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' ${{ inputs.pubspec_path }}; then
           echo "::error::Invalid or missing version in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
           exit 1
         fi
@@ -92,7 +92,7 @@ runs:
           build_number=$(echo "$current_version" | cut -d'+' -f2)
           
           # Validate version format
-          if ! echo "$version_part" | grep -q '^[0-9]\+\.[0-9]\+\.[0-9]\+\(-RC\)\?$'; then
+          if ! echo "$version_part" | grep -q '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
             echo "::error::Invalid version format in pubspec.yaml: $version_part. Expected: x.y.z or x.y.z-RC"
             exit 1
           fi
