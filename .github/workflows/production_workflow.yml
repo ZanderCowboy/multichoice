@@ -63,8 +63,14 @@ jobs:
           fi
 
           # Remove RC suffix if present
-          version_without_rc=${version_without_v%-RC}
+          version_part_RC=$(echo "$version_without_v" | cut -d'+' -f1)
+          build_number=$(echo "$version_without_v" | cut -d'+' -f2)
+          version_without_rc=${version_part_RC%-RC*}
           echo "version_without_rc=$version_without_rc" >> $GITHUB_OUTPUT
+          echo "build_number=$build_number" >> $GITHUB_OUTPUT
+          echo "Version without RC suffix: $version_without_rc+$build_number"
+          echo "version_with_build=$version_without_rc+$build_number" >> $GITHUB_OUTPUT
+          echo "version_with_build=$version_with_build"
 
           # Remove RC suffix and build number
           main_new_version=${version_without_v%-RC*}
@@ -87,7 +93,7 @@ jobs:
           file_path: apps/multichoice/pubspec.yaml
           commit_message: "Remove RC suffix from version ${{ steps.get_current_version.outputs.version_without_rc }} [skip ci]"
           branch_name: tmp-main
-          version_with_build: ${{ steps.get_current_version.outputs.version_without_rc }}
+          version_with_build: ${{ steps.get_current_version.outputs.version_with_build }}
 
   build:
     name: Builds Android App
