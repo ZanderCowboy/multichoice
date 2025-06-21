@@ -276,17 +276,17 @@ jobs:
           release_name: Release v${{ env.VERSION }}
           body: |
             ## What's New in v${{ env.VERSION }}
-            
+
             This release includes the latest features and improvements for MultiChoice.
-            
+
             ### 📱 Download
             - **APK**: Available for direct download below
             - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
-            
+
             ### 🔧 Technical Details
             - Build Number: ${{ needs.preBuild.outputs.build_number }}
             - Platform: Android
-            
+
             ### 📋 Release Notes
             For detailed release notes, please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) file.
           draft: false
