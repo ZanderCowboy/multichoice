@@ -1,26 +1,31 @@
 import 'package:models/models.dart';
 
 abstract class IEntryRepository {
-  Future<int> addEntry(
-    int tabId,
-    String title,
-    String subtitle,
-  );
+  Future<int> addEntry({
+    required int tabId,
+    required String title,
+    required String subtitle,
+  });
 
-  Future<List<EntryDTO>?> readEntries(
-    int tabId,
-  );
+  Future<List<EntryDTO>> readEntries({
+    required int tabId,
+  });
 
-  Future<List<EntryDTO>?> readAllEntries();
+  Future<List<EntryDTO>> readAllEntries();
 
-  Future<EntryDTO> getEntry(int entryId);
+  Future<EntryDTO> getEntry({required int entryId});
 
-  Future<int> updateEntry(int id, int tabId, String title, String subtitle);
+  Future<int> updateEntry({
+    required int id,
+    required int tabId,
+    required String title,
+    required String subtitle,
+  });
 
-  Future<bool> deleteEntry(
-    int tabId,
-    int entryId,
-  );
+  Future<bool> deleteEntry({
+    required int tabId,
+    required int entryId,
+  });
 
-  Future<bool> deleteEntries(int tabId);
+  Future<bool> deleteEntries({required int tabId});
 }

@@ -2,9 +2,14 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
 import 'package:multichoice/app/view/theme/app_typography.dart';
-import 'package:multichoice/constants/export_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
+import 'package:ui_kit/ui_kit.dart';
+
+part 'theme_extension/_dark_app_colors.dart';
+part 'theme_extension/_dark_text_theme.dart';
+part 'theme_extension/_light_app_colors.dart';
+part 'theme_extension/_light_text_theme.dart';
 
 class AppTheme with ChangeNotifier {
   final _prefs = coreSl<SharedPreferences>();
@@ -42,6 +47,14 @@ class AppTheme with ChangeNotifier {
         cursorColor: Colors.white,
         selectionHandleColor: Colors.grey,
       ),
+      listTileTheme: ListTileThemeData(
+        tileColor: _lightAppColors.background,
+        textColor: _lightAppColors.primary,
+        leadingAndTrailingTextStyle: TextStyle(
+          color: _lightAppColors.primary,
+        ),
+        iconColor: _lightAppColors.primary,
+      ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStatePropertyAll(
@@ -59,13 +72,13 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _lightAppColors.background,
       dialogTheme: DialogTheme(
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
         titleTextStyle: AppTypography.titleMedium,
         contentTextStyle: AppTypography.bodyMedium,
         actionsPadding: allPadding12,
+        backgroundColor: _lightAppColors.secondary,
       ),
       scaffoldBackgroundColor: _lightAppColors.background,
       appBarTheme: AppBarTheme(
@@ -120,43 +133,6 @@ class AppTheme with ChangeNotifier {
     );
   }();
 
-  static final _lightAppColors = AppColorsExtension(
-    primary: AppPalette.grey.geyser,
-    primaryLight: AppPalette.grey.geyserLight,
-    secondary: AppPalette.grey.sanJuan,
-    secondaryLight: AppPalette.grey.sanJuanLight,
-    ternary: AppPalette.grey.bigStone,
-    foreground: AppPalette.grey.bigStone,
-    background: AppPalette.grey.slateGray,
-    white: null,
-    black: AppPalette.black,
-  );
-
-  static final _lightTextTheme = AppTextExtension(
-    body1: AppTypography.body1.copyWith(color: _lightAppColors.background),
-    body2: AppTypography.body2,
-    h1: null,
-    titleLarge: null,
-    titleMedium: AppTypography.titleMedium.copyWith(
-      color: AppPalette.grey.bigStone,
-    ),
-    titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    subtitleLarge: null,
-    subtitleMedium: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.grey.bigStone,
-    ),
-    subtitleSmall: AppTypography.subtitleSmall.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    bodyLarge: AppTypography.bodyLarge,
-    bodyMedium: AppTypography.bodyMedium.copyWith(
-      color: AppPalette.grey.geyser,
-    ),
-    bodySmall: null,
-  );
-
   static final dark = () {
     final defaultTheme = ThemeData.dark();
 
@@ -181,7 +157,27 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogBackgroundColor: _darkAppColors.background,
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(
+            AppPalette.paletteTwo.sanJuan,
+          ),
+          backgroundColor: WidgetStatePropertyAll(
+            AppPalette.grey.geyserLight,
+          ),
+          textStyle: WidgetStatePropertyAll(
+            AppTypography.bodyLarge.copyWith(
+              color: AppPalette.paletteTwo.sanJuan,
+            ),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: borderCircular12),
+          ),
+          minimumSize: const WidgetStatePropertyAll(
+            elevatedButtonMinimumSize,
+          ),
+        ),
+      ),
       dialogTheme: DialogTheme(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
@@ -202,11 +198,21 @@ class AppTheme with ChangeNotifier {
         margin: vertical12horizontal4,
         elevation: 7,
         shadowColor: _darkAppColors.black,
-        shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+        shape: RoundedRectangleBorder(
+          borderRadius: borderCircular12,
+        ),
       ),
       textTheme: defaultTheme.textTheme.copyWith(
         titleMedium: _darkTextTheme.titleMedium,
         bodyMedium: _darkTextTheme.bodyMedium,
+      ),
+      listTileTheme: ListTileThemeData(
+        tileColor: _darkAppColors.background,
+        textColor: _darkAppColors.white,
+        leadingAndTrailingTextStyle: TextStyle(
+          color: _darkAppColors.white,
+        ),
+        iconColor: _darkAppColors.white,
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
@@ -240,59 +246,12 @@ class AppTheme with ChangeNotifier {
         cursorColor: Colors.white,
         selectionHandleColor: Colors.grey,
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            AppPalette.grey.geyserLight,
-          ),
-        ),
-      ),
       extensions: [
         _darkAppColors,
         _darkTextTheme,
       ],
     );
   }();
-
-  static final _darkAppColors = AppColorsExtension(
-    // primary: AppPalette.paletteTwo.geyser,
-    primary: AppPalette.paletteTwo.primary5,
-    primaryLight: AppPalette.grey.geyserLight.withOpacity(0.2),
-    secondary: AppPalette.paletteTwo.primary10,
-    secondaryLight: AppPalette.paletteTwo.slateGrayLight,
-    ternary: AppPalette.paletteTwo.sanJuan,
-    foreground: AppPalette.paletteTwo.primary15,
-    background: AppPalette.paletteTwo.primary0,
-    white: AppPalette.white,
-    black: AppPalette.black,
-  );
-
-  static final _darkTextTheme = AppTextExtension(
-    body1: AppTypography.body1.copyWith(color: _darkAppColors.background),
-    body2: AppTypography.body2,
-    h1: null,
-    titleLarge: null,
-    titleMedium: AppTypography.titleMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    titleSmall: AppTypography.titleSmall.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    subtitleLarge: null,
-    subtitleMedium: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    subtitleSmall: AppTypography.subtitleMedium.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    bodyLarge: AppTypography.bodyLarge.copyWith(
-      color: AppPalette.paletteTwo.primary5,
-    ),
-    bodyMedium: AppTypography.bodyMedium.copyWith(
-      color: AppPalette.paletteTwo.geyser,
-    ),
-    bodySmall: null,
-  );
 
   static AppColorsExtension get lightAppColors => _lightAppColors;
 

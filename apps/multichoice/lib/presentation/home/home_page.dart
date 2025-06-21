@@ -1,63 +1,82 @@
+// The context is used synchronously in this file, and the asynchronous usage is safe here.
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
-import 'package:multichoice/app/engine/app_router.gr.dart';
-import 'package:multichoice/app/extensions/extension_getters.dart';
-import 'package:multichoice/app/view/theme/app_theme.dart';
-import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/layouts/export.dart';
+import 'package:multichoice/presentation/drawer/home_drawer.dart';
+import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
-import 'package:multichoice/utils/custom_dialog.dart';
-import 'package:multichoice/utils/custom_scroll_behaviour.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
+import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:ui_kit/ui_kit.dart';
 
-part 'widgets/cards.dart';
+part 'utils/_check_and_request_permissions.dart';
+part 'widgets/collection_tab.dart';
 part 'widgets/entry_card.dart';
-part 'widgets/drawer.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
-part 'widgets/vertical_tab.dart';
 
 @RoutePage()
+class HomePageWrapper extends StatelessWidget {
+  const HomePageWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => AppLayout(),
+        ),
+        BlocProvider(
+          create: (_) => coreSl<HomeBloc>()
+            ..add(
+              const HomeEvent.onGetTabs(),
+            ),
+        ),
+        BlocProvider(
+          create: (_) => coreSl<ProductBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => coreSl<SearchBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => coreSl<DetailsBloc>(),
+        ),
+      ],
+      child: const HomePage(),
+    );
+  }
+}
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => coreSl<HomeBloc>()
-        ..add(
-          const HomeEvent.onGetTabs(),
-        ),
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context)
-                      ..clearSnackBars()
-                      ..showSnackBar(
-                        const SnackBar(
-                          content: Text('Search has not been implemented yet.'),
-                        ),
-                      );
-                  },
-                  icon: const Icon(Icons.search_outlined),
-                ),
-              ],
-            ),
-            drawer: const _HomeDrawer(),
-            body: const _HomePage(),
-          );
-        },
-      ),
+    return WelcomeModalHandler(
+      builder: (_) => const _HomePage(),
+      onSkipTour: () async {
+        context.read<ProductBloc>().add(const ProductEvent.skipTour());
+      },
+      onFollowTutorial: () async {
+        await context.router.push(
+          TutorialPageRoute(
+            onCallback: () {
+              context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -67,49 +86,77 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        final tabs = state.tabs ?? [];
+    // this ShowCaseWidget is here to fix an issue where it complains
+    // about ShowCaseView context not being available
+    return ShowCaseWidget(
+      builder: (context) => Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: const Text('Multichoice'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.router.push(
+                  SearchPageRoute(
+                    onBack: () {
+                      context.read<HomeBloc>().add(const HomeEvent.refresh());
+                      context.router.pop();
+                    },
+                    onEdit: (result) async {
+                      if (result == null) return;
 
-        if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
+                      if (result.isTab) {
+                        final tab = result.item as TabsDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.onUpdateTabId(tab.id));
+                        await context.router
+                            .push(EditTabPageRoute(ctx: context));
+                      } else {
+                        final entry = result.item as EntryDTO;
+                        context
+                            .read<HomeBloc>()
+                            .add(HomeEvent.onUpdateEntry(entry.id));
+                        await context.router
+                            .push(EditEntryPageRoute(ctx: context));
+                      }
+                    },
+                    onDelete: (result) async {
+                      if (result == null) return;
 
-        return Center(
-          child: Padding(
-            padding: vertical12,
-            child: SizedBox(
-              height: UIConstants.tabHeight(context),
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: ScrollController(),
-                scrollBehavior: CustomScrollBehaviour(),
-                slivers: [
-                  SliverPadding(
-                    padding: left12,
-                    sliver: SliverList.builder(
-                      itemCount: tabs.length,
-                      itemBuilder: (_, index) {
-                        final tab = tabs[index];
-
-                        return _VerticalTab(tab: tab);
-                      },
-                    ),
+                      if (result.isTab) {
+                        final tab = result.item as TabsDTO;
+                        context.read<HomeBloc>().add(
+                              HomeEvent.onLongPressedDeleteTab(tab.id),
+                            );
+                      } else {
+                        final entry = result.item as EntryDTO;
+                        context.read<HomeBloc>().add(
+                              HomeEvent.onLongPressedDeleteEntry(
+                                entry.tabId,
+                                entry.id,
+                              ),
+                            );
+                      }
+                    },
                   ),
-                  const SliverPadding(
-                    padding: right12,
-                    sliver: SliverToBoxAdapter(
-                      child: _NewTab(),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
+              tooltip: TooltipEnums.search.tooltip,
+              icon: const Icon(Icons.search_outlined),
             ),
+          ],
+          leading: IconButton(
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+            tooltip: TooltipEnums.settings.tooltip,
+            icon: const Icon(Icons.settings_outlined),
           ),
-        );
-      },
+        ),
+        drawer: const HomeDrawer(),
+        body: const HomeLayout(),
+      ),
     );
   }
 }

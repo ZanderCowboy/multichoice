@@ -16,6 +16,10 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>
     required this.background,
     required this.white,
     required this.black,
+    required this.error,
+    required this.success,
+    required this.enabled,
+    required this.disabled,
   });
   @override
   final Color? primary;
@@ -35,4 +39,12 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension>
   final Color? white;
   @override
   final Color? black;
+  @override
+  final Color? error;
+  @override
+  final Color? success;
+  @override
+  final Color? enabled;
+  @override
+  final Color? disabled;
 }

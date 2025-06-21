@@ -1,0 +1,12 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow anyone to submit feedback
+    match /feedback/{feedbackId} {
+      allow create: if true;  // Anyone can create feedback
+      allow read: if request.auth != null;  // Only authenticated users can read
+      allow update, delete: if false;  // No one can modify or delete feedback
+    }
+  }
+} 

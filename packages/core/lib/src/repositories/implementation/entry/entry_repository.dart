@@ -13,7 +13,11 @@ class EntryRepository implements IEntryRepository {
   final isar.Isar db;
 
   @override
-  Future<int> addEntry(int tabId, String title, String subtitle) async {
+  Future<int> addEntry({
+    required int tabId,
+    required String title,
+    required String subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final entry = Entry(
@@ -33,14 +37,17 @@ class EntryRepository implements IEntryRepository {
 
         return result;
       });
-    } catch (e) {
-      log(e.toString());
-      return 0;
+    } on isar.IsarError catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+      return -1;
+    } on Exception catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+      return -1;
     }
   }
 
   @override
-  Future<EntryDTO> getEntry(int entryId) async {
+  Future<EntryDTO> getEntry({required int entryId}) async {
     try {
       final entry = await db.entrys.get(entryId) ?? Entry.empty();
 
@@ -54,7 +61,7 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
-  Future<List<EntryDTO>> readEntries(int tabId) async {
+  Future<List<EntryDTO>> readEntries({required int tabId}) async {
     try {
       final entries = await db.entrys.where().sortByTimestamp().findAll();
 
@@ -91,12 +98,12 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
-  Future<int> updateEntry(
-    int id,
-    int tabId,
-    String title,
-    String subtitle,
-  ) async {
+  Future<int> updateEntry({
+    required int id,
+    required int tabId,
+    required String title,
+    required String subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final entry = await db.entrys.get(id);
@@ -114,7 +121,10 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
-  Future<bool> deleteEntry(int tabId, int entryId) async {
+  Future<bool> deleteEntry({
+    required int tabId,
+    required int entryId,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final result = await db.entrys.delete(entryId);
@@ -137,7 +147,7 @@ class EntryRepository implements IEntryRepository {
   }
 
   @override
-  Future<bool> deleteEntries(int tabId) async {
+  Future<bool> deleteEntries({required int tabId}) async {
     try {
       return await db.writeTxn(() async {
         final tab = await db.tabs.get(tabId) ?? Tabs.empty();

@@ -1,0 +1,121 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Development Workflow Guide
+
+## Project Structure
+- `apps/` - Contains the main applications
+  - `multichoice/` - Main application
+  - `showcase/` - Showcase application (ignored in melos)
+- `packages/` - Shared packages
+  - `core/` - Core functionality and business logic
+  - `models/` - Data models and entities
+  - `theme/` - App theming and styling
+  - `ui_kit/` - Reusable UI components
+- `functions/` - Firebase Cloud Functions
+- `designs/` - Design assets and resources
+- `docs/` - Project documentation
+
+## Getting Started
+1. Ensure you have Flutter installed and configured with FVM
+2. Run `make setup` to initialize the project
+3. Use `melos bootstrap` to install dependencies
+4. Run `melos get` to ensure all packages are up to date
+
+## Common Commands
+
+### Build and Development
+- `melos test:all` - Run all tests across packages
+- `melos rebuild:all` - Clean build artifacts and regenerate everything
+- `make db` - Run build_runner for code generation
+- `make fb` - Flutter build with code generation
+- `make frb` - Full Flutter rebuild (clean + code generation)
+- `make clean` - Clean all generated files
+- `make mr` - Melos rebuild all packages
+
+### Testing
+- `melos test:core` - Run tests for core packages
+- `melos test:multichoice` - Run tests for main app
+- `melos test:integration` - Run integration tests
+- `melos coverage:all` - Generate coverage reports for all packages
+- `melos coverage:core` - Generate coverage for core packages
+- `melos coverage:multichoice` - Generate coverage for main app
+
+### Package Management
+- `melos upgrade` - Upgrade package dependencies
+- `melos upgrade:global` - Clean and upgrade all dependencies
+- `melos analyze` - Run static analysis on all packages
+
+## Package Development
+When working on shared packages:
+1. Make changes in the relevant package under `packages/`
+2. Run `melos test:core` to verify changes
+3. Run `melos analyze` to check for issues
+4. Update version in package's `pubspec.yaml`
+5. Run `melos publish` to publish changes
+
+## App Development
+When working on applications:
+1. Navigate to the specific app directory under `apps/`
+2. Use `flutter run` to start the development server
+3. Make changes and test locally
+4. Run `melos test:multichoice` to verify changes
+5. Use `make db` to regenerate code when needed
+
+## Code Generation
+The project uses several code generation tools:
+- `build_runner` for general code generation
+- `freezed` for immutable models
+- `auto_mappr` for object mapping
+- `mockito` for test mocks
+
+Generated files include:
+- `*.g.dart` - General generated code
+- `*.gr.dart` - GraphQL generated code
+- `*.freezed.dart` - Freezed model code
+- `*.config.dart` - Configuration code
+- `*.auto_mappr.dart` - Object mapping code
+- `*.mocks.dart` - Test mock code
+
+## Code Style
+- Follow the Dart style guide
+- Use the provided `analysis_options.yaml`
+- Run `make format` before committing changes
+- Ensure all tests pass before committing
+- Maintain test coverage above 80%
+
+## Version Control
+- Use feature branches for new development
+- Follow conventional commits format
+- Create pull requests for code review
+- Ensure CI passes before merging
+- Keep commits atomic and focused
+
+## Common Issues and Solutions
+1. Code Generation Issues
+   - Run `make frb` to clean and regenerate all code
+   - Check for circular dependencies
+   - Verify all imports are correct
+
+2. Test Failures
+   - Run `melos test:all` to identify failing tests
+   - Check mock implementations in `mocks.dart` files
+   - Verify test data is properly set up
+
+3. Build Issues
+   - Run `melos rebuild:all` to clean and rebuild
+   - Check for version conflicts in `pubspec.yaml`
+   - Verify all dependencies are properly declared
+
+## Best Practices
+1. Always write tests for new features
+2. Keep packages modular and focused
+3. Use dependency injection for better testability
+4. Document public APIs and complex logic
+5. Keep UI components in `ui_kit` package
+6. Use the theme package for consistent styling
+7. Follow the established project structure
+8. Run analysis before committing changes
+

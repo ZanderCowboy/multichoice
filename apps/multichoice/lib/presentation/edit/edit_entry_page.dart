@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/constants/spacing_constants.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
 class EditEntryPage extends StatelessWidget {
@@ -17,25 +17,21 @@ class EditEntryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: ctx.read<HomeBloc>(),
-      child: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Edit entry'),
-              centerTitle: false,
-              leading: IconButton(
-                onPressed: () {
-                  ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
-                  context.router.popUntilRoot();
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_outlined,
-                ),
-              ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Edit entry'),
+          centerTitle: false,
+          leading: IconButton(
+            onPressed: () {
+              ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+              context.router.popUntilRoot();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new_outlined,
             ),
-            body: const _EditEntryPage(),
-          );
-        },
+          ),
+        ),
+        body: const _EditEntryPage(),
       ),
     );
   }
@@ -50,10 +46,8 @@ class _EditEntryPage extends StatelessWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+        if (state.isLoading || state.entry.id == 0) {
+          return CircularLoader.small();
         }
 
         return Padding(
