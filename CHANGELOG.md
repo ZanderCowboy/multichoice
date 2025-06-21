@@ -17,3 +17,4 @@ production-workflow
 Final Run Through
 - trigger dev-workflow
 - trigger blank
+- trigger Main Workflow
