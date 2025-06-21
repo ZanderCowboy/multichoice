@@ -75,12 +75,12 @@ runs:
           echo "::error::File not found: ${{ inputs.pubspec_path }}"
           exit 1
         fi
-        
+
         cat ${{ inputs.pubspec_path }} | grep '^version:' || {
           echo "::error::No version field found in ${{ inputs.pubspec_path }}"
           exit 1
         }
-        
+
         if ! grep -qE '^version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' "${{ inputs.pubspec_path }}"; then
           echo "::error::Invalid version format in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
           exit 1
@@ -105,22 +105,22 @@ runs:
         version_suffix="${{ inputs.version_suffix }}"
 
         echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
-        
+
         # Extract version parts for comparison
         current_version_part=$(echo "$current_version" | cut -d'+' -f1)
         current_build_number=$(echo "$current_version" | cut -d'+' -f2)
-        
+
         # Validate current version format
         if ! echo "$current_version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
           echo "::error::Invalid version format: $current_version_part"
           exit 1
         fi
-        
+
         if ! echo "$current_build_number" | grep -qE '^[0-9]+$'; then
           echo "::error::Invalid build number: $current_build_number"
           exit 1
         fi
-        
+
         # Compare versions (handle case where latest_tag might be 0.0.0)
         if [[ "$latest_tag" == "0.0.0" ]] || [[ "$current_version" > "$latest_tag" ]]; then
           echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."

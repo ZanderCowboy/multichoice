@@ -61,13 +61,13 @@ jobs:
         id: check_labels
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
-          
+
           # Validate JSON format
           if ! echo "$LABELS" | jq empty 2>/dev/null; then
             echo "::error::Invalid JSON format in labels"
             exit 1
           fi
-          
+
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
           if [[ -z "$VALID_LABELS" ]]; then
             echo "bump_type=none" >> $GITHUB_ENV
@@ -196,19 +196,19 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
-          
+
           # Validate version format
           if ! echo "$version_number" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-RC\+[0-9]+$'; then
             echo "::error::Invalid version format: $version_number. Expected format: x.y.z-RC+build"
             exit 1
           fi
-          
+
           # Check if tag already exists
           if git tag -l "v$version_number" | grep -q "v$version_number"; then
             echo "::error::Tag v$version_number already exists"
             exit 1
           fi
-          
+
           git tag v$version_number
           git push origin v$version_number
 
