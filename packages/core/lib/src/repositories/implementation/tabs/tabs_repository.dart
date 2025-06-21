@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:isar/isar.dart' as isar;
 import 'package:models/models.dart';
 import 'package:uuid/uuid.dart';
+import 'package:clock/clock.dart';
 
 @LazySingleton(as: ITabsRepository)
 class TabsRepository implements ITabsRepository {
@@ -12,8 +13,17 @@ class TabsRepository implements ITabsRepository {
 
   final isar.Isar db;
 
+  /// Adds a new tab to the database.
+  ///
+  /// [title]: The title of the tab. If `null`, an empty string is used.
+  /// [subtitle]: The subtitle of the tab.
+  ///
+  /// Returns the [int] ID of the newly added tab, or `0` if an error occurs.
   @override
-  Future<int> addTab(String? title, String? subtitle) async {
+  Future<int> addTab({
+    required String? title,
+    required String? subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final result = db.tabs.put(
@@ -21,7 +31,7 @@ class TabsRepository implements ITabsRepository {
             uuid: const Uuid().v4(),
             title: title ?? '',
             subtitle: subtitle,
-            timestamp: DateTime.now(),
+            timestamp: clock.now(),
             entryIds: [],
           ),
         );
@@ -34,6 +44,9 @@ class TabsRepository implements ITabsRepository {
     }
   }
 
+  /// Reads all tabs from the database.
+  ///
+  /// Returns a [List] of [TabsDTO] representing all tabs, or an empty list if an error occurs.
   @override
   Future<List<TabsDTO>> readTabs() async {
     try {
@@ -65,8 +78,13 @@ class TabsRepository implements ITabsRepository {
     }
   }
 
+  /// Retrieves a specific tab by its [int] ID.
+  ///
+  /// [tabId]: The ID of the tab to retrieve.
+  ///
+  /// Returns a [TabsDTO] representing the tab, or an empty [TabsDTO] if an error occurs.
   @override
-  Future<TabsDTO> getTab(int tabId) async {
+  Future<TabsDTO> getTab({required int tabId}) async {
     try {
       final tabs = await db.tabs.where().findAll();
       final result = tabs.firstWhere((element) => element.id == tabId);
@@ -90,8 +108,19 @@ class TabsRepository implements ITabsRepository {
     }
   }
 
+  /// Updates the title and subtitle of a specific tab given its [int] ID.
+  ///
+  /// [id]: The ID of the tab to update.
+  /// [title]: The new title of the tab.
+  /// [subtitle]: The new subtitle of the tab.
+  ///
+  /// Returns the [int] ID of the updated tab, or `-1` if an error occurs.
   @override
-  Future<int> updateTab(int id, String title, String subtitle) async {
+  Future<int> updateTab({
+    required int id,
+    required String title,
+    required String subtitle,
+  }) async {
     try {
       return await db.writeTxn(() async {
         final tab = await db.tabs.get(id);
@@ -108,8 +137,21 @@ class TabsRepository implements ITabsRepository {
     }
   }
 
+  /// Deletes a tab and its associated entries from the database.
+  ///
+  /// This method performs the following steps:
+  /// 1. Retrieves all entries from the database.
+  /// 2. Filters the entries to find those associated with the given [tabId].
+  /// 3. Deletes each of the filtered entries.
+  /// 4. Deletes the tab with the given [tabId].
+  ///
+  /// If an error occurs during the process, it logs the error and returns `false`.
+  ///
+  /// Returns `true` if the tab and its entries were successfully deleted, otherwise `false`.
+  ///
+  /// [tabId]: The ID of the tab to be deleted. If `null`, the method will return `false`.
   @override
-  Future<bool> deleteTab(int? tabId) async {
+  Future<bool> deleteTab({required int? tabId}) async {
     try {
       return await db.writeTxn(() async {
         final entries = await db.entrys.where().findAll();
@@ -131,6 +173,9 @@ class TabsRepository implements ITabsRepository {
     }
   }
 
+  /// Deletes all tabs and their associated entries from the database.
+  ///
+  /// Returns `true` if all tabs and entries were successfully deleted, otherwise `false`.
   @override
   Future<bool> deleteTabs() async {
     try {

@@ -20,6 +20,7 @@ pubspec.lock
 **/libisar.dylib
 **/coverage
 **/firebase_options.dart
+**/generated/
 
 # Keys and Secrets
 password.txt
@@ -27,6 +28,7 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/lib/auth/
 **/lib/auth/secrets.dart
 
 # dotenv environment variables file
@@ -55,6 +57,7 @@ upload-keystore.*
 .svn/
 migrate_working_dir/
 devtools_options.yaml
+**/dummy/
 
 # IntelliJ related
 *.iml

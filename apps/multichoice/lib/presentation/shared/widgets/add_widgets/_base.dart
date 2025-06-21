@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/extensions/extension_getters.dart';
-import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
-import 'package:multichoice/constants/export_constants.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 part 'entry.dart';
 part 'tab.dart';
@@ -15,6 +14,7 @@ class _BaseCard extends StatelessWidget {
     this.child,
     this.icon,
     this.padding,
+    this.margin,
     this.iconSize,
     this.onPressed,
   }) : assert(
@@ -28,6 +28,7 @@ class _BaseCard extends StatelessWidget {
   final ShapeBorder? shape;
   final Widget? child;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final double? iconSize;
   final VoidCallback? onPressed;
   final Widget? icon;
@@ -38,6 +39,7 @@ class _BaseCard extends StatelessWidget {
       label: semanticLabel,
       child: Card(
         elevation: elevation,
+        margin: margin,
         color: color,
         shape: shape,
         child: child ??

@@ -1,41 +1,31 @@
----
-name: Linting
+name: Linting and Analysis
+
 on:
-  push:
-    branches:
-      - "main"
-      - "develop"
   pull_request:
-    branches:
-      - "main"
-      - "develop"
+    types: 
+      - opened
+      - synchronize
+      - reopened
+    branches: 
+      - '**'
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: linting-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  run-lint:
-    name: Flutter Lint
+  analyze:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter-with-java
         with:
-          fetch-depth: 0
+          setup_java: "false"
 
-      - name: Set up Flutter
-        uses: ./.github/actions/setup-flutter
-
-      - name: melos analyze
+      - name: Run Melos Analyze
         run: melos analyze
-
-      - name: Analyzing code with Dart analyzer
-        run: dart analyze --fatal-infos
+        shell: bash

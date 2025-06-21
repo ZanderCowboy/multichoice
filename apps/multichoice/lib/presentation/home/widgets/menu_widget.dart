@@ -1,8 +1,9 @@
 part of '../home_page.dart';
 
-class _MenuWidget extends StatelessWidget {
-  const _MenuWidget({
+class MenuWidget extends StatelessWidget {
+  const MenuWidget({
     required this.tab,
+    super.key,
   });
 
   final TabsDTO tab;
@@ -22,11 +23,11 @@ class _MenuWidget extends StatelessWidget {
                   menuController.open();
                 }
               },
-              // visualDensity: VisualDensity.adaptivePlatformDensity,
               icon: const Icon(Icons.more_vert_outlined),
-              iconSize: 20,
+              iconSize: 18,
               color: context.theme.appColors.ternary,
               padding: zeroPadding,
+              visualDensity: VisualDensity.compact,
             );
           },
           menuChildren: [
@@ -89,50 +90,20 @@ class _MenuWidget extends StatelessWidget {
             ),
             MenuItemButton(
               onPressed: () {
-                CustomDialog<AlertDialog>.show(
+                deleteModal(
                   context: context,
-                  title: RichText(
-                    text: TextSpan(
-                      text: 'Delete ',
-                      style: DefaultTextStyle.of(context)
-                          .style
-                          .copyWith(fontSize: 24),
-                      children: [
-                        TextSpan(
-                          text: tab.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '?',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontSize: 24),
-                        ),
-                      ],
-                    ),
-                  ),
+                  title: tab.title,
                   content: Text(
                     "Are you sure you want to delete ${tab.title} and all it's entries?",
                   ),
-                  actions: [
-                    OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                              HomeEvent.onLongPressedDeleteTab(
-                                tab.id,
-                              ),
-                            );
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Delete'),
-                    ),
-                  ],
+                  onConfirm: () {
+                    context.read<HomeBloc>().add(
+                          HomeEvent.onLongPressedDeleteTab(
+                            tab.id,
+                          ),
+                        );
+                    Navigator.of(context).pop();
+                  },
                 );
               },
               child: Text(MenuItems.delete.name),
