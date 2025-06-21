@@ -1,0 +1,70 @@
+name: "Check Version Labels"
+description: "Checks PR labels and determines version bump type"
+
+inputs:
+  labels:
+    description: "JSON string of PR labels"
+    required: true
+  allowed_labels:
+    description: "Comma-separated list of allowed version labels"
+    required: true
+    default: "major,minor,patch"
+  no_build_label:
+    description: "Label that indicates no build should be performed"
+    required: false
+    default: "no-build"
+
+outputs:
+  bump_type:
+    description: "Type of version bump (major, minor, patch, none)"
+    value: ${{ steps.check_labels.outputs.bump_type }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check Version Labels
+      id: check_labels
+      shell: bash
+      run: |
+        LABELS=${{ inputs.labels }}
+        echo "LABELS: $LABELS"
+
+        ALLOWED_LABELS=${{ inputs.allowed_labels }}
+        echo "ALLOWED_LABELS: $ALLOWED_LABELS"
+
+        NO_BUILD_LABEL=${{ inputs.no_build_label }}
+        echo "NO_BUILD_LABEL: $NO_BUILD_LABEL"
+        
+        # Validate JSON format
+        if ! echo "$LABELS" | jq empty 2>/dev/null; then
+          echo "::error::Invalid JSON format in labels"
+          exit 1
+        fi
+
+        # Convert allowed labels to jq filter
+        ALLOWED_LABELS_FILTER=$(echo "$ALLOWED_LABELS" | tr ',' '|')
+        
+        # Check for valid version labels (excluding no-build)
+        VALID_LABELS=$(echo "$LABELS" | jq -r ".[] | select(.name | IN(\"$ALLOWED_LABELS_FILTER\")) | .name")
+        
+        if [[ -z "$VALID_LABELS" ]]; then
+          echo "bump_type=none" >> $GITHUB_OUTPUT
+          echo "********** Bumping build number only **********"
+        else
+          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+          # If multiple labels are found, error out
+          if [[ $LABEL_COUNT -gt 1 ]]; then
+            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: $ALLOWED_LABELS, or neither"
+            exit 1
+          fi
+
+          # Set the bump type based on the single valid label
+          case "$VALID_LABELS" in
+            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
+            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+            *) echo "::error::Unexpected label: $VALID_LABELS" && exit 1 ;;
+          esac
+
+          echo "********** Bumping version with label: $VALID_LABELS **********"
+        fi 
