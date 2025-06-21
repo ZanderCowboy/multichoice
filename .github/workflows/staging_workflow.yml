@@ -13,11 +13,9 @@
 name: rc-workflow
 on:
   pull_request:
-    branches:
-      - "rc"
+    branches: [ "rc" ]
     types:
-      - "closed"
-
+      - closed
   workflow_dispatch:
 
 concurrency:

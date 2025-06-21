@@ -13,10 +13,9 @@
 name: develop-workflow
 on:
   pull_request:
-    branches:
-      - "develop"
+    branches: [ "develop" ]
     types:
-      - "closed"
+      - closed
 
   workflow_dispatch:
 

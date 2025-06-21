@@ -2,15 +2,12 @@ name: SonarCloud analysis
 
 on:
   pull_request:
-    branches:
-      - "develop"
-      - "rc"
-      - "main"
+    branches: [ "develop", "rc",  "main" ]
     types:
-      - "opened"
-      - "synchronize"
-      - "reopened"
-      - "ready_for_review"
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
   workflow_dispatch:
 
 permissions:

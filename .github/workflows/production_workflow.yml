@@ -12,10 +12,9 @@
 name: main-workflow
 on:
   pull_request:
-    branches:
-      - "main"
+    branches: [ "main" ]
     types:
-      - "closed"
+      - closed
 
   workflow_dispatch:
 
