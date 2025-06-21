@@ -53,7 +53,7 @@ jobs:
           # Get the latest tag
           latest_tag=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' | head -n1)
           if [[ -z "$latest_tag" ]]; then
-            echo "::error::No tags found in repository"
+            echo "::error::No valid tags found in repository"
             exit 1
           fi
           echo "latest_tag=$latest_tag"
@@ -64,25 +64,35 @@ jobs:
 
           # Check if version has RC suffix
           if [[ ! "$version_without_v" =~ -RC ]]; then
-            echo "::error::Latest tag does not have RC suffix"
+            echo "::error::Latest tag does not have RC suffix: $version_without_v"
             exit 1
           fi
 
-          # Remove RC suffix if present
+          # Extract version parts
           version_part_RC=$(echo "$version_without_v" | cut -d'+' -f1)
           build_number=$(echo "$version_without_v" | cut -d'+' -f2)
+          
+          # Remove RC suffix to get clean version
           version_without_rc=${version_part_RC%-RC*}
+          
+          # Validate the extracted version
+          if ! echo "$version_without_rc" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid version format after removing RC: $version_without_rc"
+            exit 1
+          fi
+          
+          if ! echo "$build_number" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid build number: $build_number"
+            exit 1
+          fi
+          
           echo "version_without_rc=$version_without_rc" >> $GITHUB_OUTPUT
           echo "build_number=$build_number" >> $GITHUB_OUTPUT
-          echo "Version without RC suffix: $version_without_rc+$build_number"
           echo "version_with_build=$version_without_rc+$build_number" >> $GITHUB_OUTPUT
-          echo "version_with_build=$version_with_build"
-
-          # Remove RC suffix and build number
-          main_new_version=${version_without_v%-RC*}
-
-          echo "current_version=$main_new_version" >> $GITHUB_OUTPUT
-          echo "Current version: $main_new_version"
+          echo "current_version=$version_without_rc" >> $GITHUB_OUTPUT
+          
+          echo "Version without RC suffix: $version_without_rc+$build_number"
+          echo "Current version: $version_without_rc"
 
       ##############################################
       # Generate GitHub App Token
@@ -220,9 +230,29 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
+          
+          # Validate version format
+          if ! echo "$version_number" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$'; then
+            echo "::error::Invalid version format: $version_number. Expected format: x.y.z+build"
+            exit 1
+          fi
+          
           # Extract version without build number for tag
           tag_version=$(echo "$version_number" | cut -d'+' -f1)
           echo "tag_version=$tag_version" >> $GITHUB_OUTPUT
+          
+          # Validate tag version format
+          if ! echo "$tag_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid tag version format: $tag_version"
+            exit 1
+          fi
+          
+          # Check if tag already exists
+          if git tag -l "v$tag_version" | grep -q "v$tag_version"; then
+            echo "::error::Tag v$tag_version already exists"
+            exit 1
+          fi
+          
           git tag "v$tag_version"
           git push origin "v$tag_version"
 

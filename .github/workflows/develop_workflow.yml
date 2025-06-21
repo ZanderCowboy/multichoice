@@ -32,8 +32,9 @@ jobs:
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.version_management.outputs.version_number }}
-      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
-      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      version_part: ${{ steps.version_management.outputs.version_part }}
+      build_number: ${{ steps.version_management.outputs.build_number }}
+
     steps:
       ##############################################
       # Checkout Repository
@@ -61,6 +62,13 @@ jobs:
         run: |
           LABELS='${{ toJson(github.event.pull_request.labels) }}'
           echo "Debug: Raw LABELS value: $LABELS"
+          
+          # Validate JSON format
+          if ! echo "$LABELS" | jq empty 2>/dev/null; then
+            echo "::error::Invalid JSON format in labels"
+            exit 1
+          fi
+          
           VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
           if [[ -z "$VALID_LABELS" ]]; then
             echo "BUMP_TYPE=none" >> $GITHUB_ENV
@@ -77,6 +85,7 @@ jobs:
             case "$VALID_LABELS" in
               "minor") echo "BUMP_TYPE=minor" >> $GITHUB_ENV ;;
               "patch") echo "BUMP_TYPE=patch" >> $GITHUB_ENV ;;
+              *) echo "::error::Unexpected label: $VALID_LABELS" && exit 1 ;;
             esac
 
             echo "********** Bumping version with label: ${{ env.BUMP_TYPE }} **********"
@@ -94,15 +103,6 @@ jobs:
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: develop
           bump_type: ${{ env.BUMP_TYPE }}
-
-      ##############################################
-      # Echo Version Number
-      ##############################################
-      - id: id_out
-        run: |
-          echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
-          echo "version_part=${{ steps.version_management.outputs.version_part }}" >> $GITHUB_OUTPUT
-          echo "build_number=${{ steps.version_management.outputs.build_number }}" >> $GITHUB_OUTPUT
 
   build:
     name: Builds Android App
@@ -227,5 +227,18 @@ jobs:
             echo "Error: version_number is empty"
             exit 1
           fi
+          
+          # Validate version format
+          if ! echo "$new_tag" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'; then
+            echo "::error::Invalid version format: $new_tag. Expected format: x.y.z+build or x.y.z-RC+build"
+            exit 1
+          fi
+          
+          # Check if tag already exists
+          if git tag -l "v$new_tag" | grep -q "v$new_tag"; then
+            echo "::error::Tag v$new_tag already exists"
+            exit 1
+          fi
+          
           git tag v$new_tag
           git push origin v$new_tag
