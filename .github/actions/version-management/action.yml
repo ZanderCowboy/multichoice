@@ -23,12 +23,21 @@ inputs:
 
 outputs:
   version_number:
-    description: "The new version number"
+    description: "The new version number, e.g. 1.2.3+456"
     value: ${{ steps.version_update.outputs.version_number }}
+  version_part:
+    description: "The version part without the build number, e.g. 1.2.3 or 1.2.3-RC"
+    value: ${{ steps.version_update.outputs.version_part }}
+  build_number:
+    description: "The build number extracted from the version, e.g. 456"
+    value: ${{ steps.version_update.outputs.build_number }}
 
 runs:
   using: "composite"
   steps:
+    ##############################################
+    # Checkout Branch
+    ##############################################
     - name: Checkout Branch
       uses: actions/checkout@v4
       with:
@@ -36,6 +45,9 @@ runs:
         fetch-depth: 0
         token: ${{ inputs.github_token }}
 
+    ##############################################
+    # Get Latest Tag
+    ##############################################
     - name: Get Latest Tag
       id: get_latest_tag
       shell: bash
@@ -44,7 +56,11 @@ runs:
         latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
         echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
         echo "Latest tag: $latest_tag"
+        echo "***********************************"
 
+    ##############################################
+    # Get Current Version From pubspec.yaml
+    ##############################################
     - name: Get Current Version From pubspec.yaml
       id: get_current_version
       shell: bash
@@ -58,7 +74,11 @@ runs:
         current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
         echo "Current version: $current_version"
+        echo "***********************************"
 
+    ##############################################
+    # Update Version
+    ##############################################
     - name: Update Version
       id: version_update
       shell: bash
@@ -86,9 +106,12 @@ runs:
               git push origin HEAD:${{ inputs.branch_name }}
             fi
           fi
+          echo "version_part=${version_part}${version_suffix}" >> $GITHUB_OUTPUT
+          echo "build_number=${build_number}" >> $GITHUB_OUTPUT
           echo "version_number=$current_version" >> $GITHUB_OUTPUT
         else
-          echo "Updating version in pubspec.yaml."
+          echo "********** Updating version in pubspec.yaml. **********"
+
           # Extract version and build number
           version_part=$(echo "$current_version" | cut -d'+' -f1)
           build_number=$(echo "$current_version" | cut -d'+' -f2)
@@ -105,7 +128,7 @@ runs:
           
           # Increment version based on bump_type
           bump_type="${{ inputs.bump_type }}"
-          echo "Debug: bump_type value is: $bump_type"
+          echo "bump_type value is: $bump_type"
           case "$bump_type" in
             "major")
               major=$((major + 1))
@@ -135,6 +158,9 @@ runs:
           if [[ -n "$version_suffix" ]]; then
             new_version="${new_version}${version_suffix}"
           fi
+
+          # Echo new version and build number
+          echo "New version part: $new_version + New build number: $new_build_number"
           
           # Update pubspec.yaml with new version and build number
           sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}
@@ -152,5 +178,9 @@ runs:
             echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
             exit 1
           }
+
+          echo "version_part=$new_version" >> $GITHUB_OUTPUT
+          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
+
         fi

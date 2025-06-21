@@ -13,10 +13,9 @@
 name: develop-workflow
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop"]
     types:
       - closed
-
   workflow_dispatch:
 
 concurrency:
@@ -36,11 +35,17 @@ jobs:
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      ##############################################
+      # Generate GitHub App Token
+      ##############################################
       - name: Generate GitHub App Token
         id: generate_token
         uses: peter-murray/workflow-application-token-action@v4
@@ -48,6 +53,9 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
+      ##############################################
+      # Check Version Labels
+      ##############################################
       - name: Check Version Labels
         id: check_labels
         run: |
@@ -70,13 +78,14 @@ jobs:
               "minor") echo "BUMP_TYPE=minor" >> $GITHUB_ENV ;;
               "patch") echo "BUMP_TYPE=patch" >> $GITHUB_ENV ;;
             esac
+
+            echo "********** Bumping version with label: ${{ env.BUMP_TYPE }} **********"
           fi
         shell: bash
 
-      - name: Debug Output
-        run: |
-          echo "Debug: bump_type value is: ${{ env.BUMP_TYPE }}"
-
+      ##############################################
+      # Version Management
+      ##############################################
       - name: Version Management
         id: version_management
         uses: ./.github/actions/version-management
@@ -86,9 +95,14 @@ jobs:
           branch_name: develop
           bump_type: ${{ env.BUMP_TYPE }}
 
+      ##############################################
+      # Echo Version Number
+      ##############################################
       - id: id_out
         run: |
           echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
+          echo "version_part=${{ steps.version_management.outputs.version_part }}" >> $GITHUB_OUTPUT
+          echo "build_number=${{ steps.version_management.outputs.build_number }}" >> $GITHUB_OUTPUT
 
   build:
     name: Builds Android App
@@ -99,12 +113,21 @@ jobs:
       packages: read
       statuses: write
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
 
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
@@ -114,6 +137,9 @@ jobs:
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
+      ##############################################
+      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      ##############################################
       - name: Download Android Keystore File
         id: android_keystore
         uses: timheuer/base64-to-file@v1.2.4
@@ -142,8 +168,39 @@ jobs:
       # Build APK
       ##############################################
       - name: Build APK
-        run: flutter build apk --release
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload APK as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-apk"
+          path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+
+      ##############################################
+      # Build App Bundle
+      ##############################################
+      - name: Build App Bundle
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload App Bundle as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
       ##############################################
       # Upload APK to Firebase App Distribution
@@ -159,21 +216,8 @@ jobs:
           debug: true
 
       ##############################################
-      # Build App Bundle
+      # Create New Tag
       ##############################################
-      - name: Build App Bundle
-        run: flutter build appbundle --release
-        working-directory: apps/multichoice/
-
-      ##############################################
-      # Upload App Bundle as Artifact
-      ##############################################
-      - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: "android-release-appbundle"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
-
       - name: Create New Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
