@@ -72,6 +72,8 @@ jobs:
           version_part_RC=$(echo "$version_without_v" | cut -d'+' -f1)
           build_number=$(echo "$version_without_v" | cut -d'+' -f2)
 
+          new_build_number=$((build_number + 1))
+
           # Remove RC suffix to get clean version
           version_without_rc=${version_part_RC%-RC*}
 
@@ -81,17 +83,20 @@ jobs:
             exit 1
           fi
 
-          if ! echo "$build_number" | grep -qE '^[0-9]+$'; then
-            echo "::error::Invalid build number: $build_number"
+          if ! echo "$new_build_number" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid build number: $new_build_number"
             exit 1
           fi
 
           echo "version_without_rc=$version_without_rc" >> $GITHUB_OUTPUT
-          echo "build_number=$build_number" >> $GITHUB_OUTPUT
-          echo "version_with_build=$version_without_rc+$build_number" >> $GITHUB_OUTPUT
+          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
+          echo "updated build number: $new_build_number"
+          echo "version_with_build=$version_without_rc+$new_build_number" >> $GITHUB_OUTPUT
+          echo "full version: $version_without_rc+$new_build_number"
           echo "current_version=$version_without_rc" >> $GITHUB_OUTPUT
+          echo "Current version name: $version_without_rc"
 
-          echo "Version without RC suffix: $version_without_rc+$build_number"
+          echo "Version without RC suffix: $version_without_rc+$new_build_number"
           echo "Current version: $version_without_rc"
 
       ##############################################
@@ -217,45 +222,6 @@ jobs:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
-      ##############################################
-      # Create New Tag
-      ##############################################
-      - name: Create New Tag
-        id: create_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          version_number=${{ needs.preBuild.outputs.version_number }}
-          if [[ -z "$version_number" ]]; then
-            echo "Error: version_number is empty"
-            exit 1
-          fi
-
-          # Validate version format
-          if ! echo "$version_number" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$'; then
-            echo "::error::Invalid version format: $version_number. Expected format: x.y.z+build"
-            exit 1
-          fi
-
-          # Extract version without build number for tag
-          tag_version=$(echo "$version_number" | cut -d'+' -f1)
-          echo "tag_version=$tag_version" >> $GITHUB_OUTPUT
-
-          # Validate tag version format
-          if ! echo "$tag_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "::error::Invalid tag version format: $tag_version"
-            exit 1
-          fi
-
-          # Check if tag already exists
-          if git tag -l "v$tag_version" | grep -q "v$tag_version"; then
-            echo "::error::Tag v$tag_version already exists"
-            exit 1
-          fi
-
-          git tag "v$tag_version"
-          git push origin "v$tag_version"
-
       ###############################################
       # Release to Google Play Production Track
       ###############################################.
@@ -268,6 +234,17 @@ jobs:
           track: "production"
           releaseName: ${{ steps.create_tag.outputs.tag_version }}
           status: "completed"
+
+      ##############################################
+      # Create New Tag
+      ##############################################
+      - name: Create New Tag
+        id: create_tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "version-only"
+          allowed_formats: "standard"
 
   create-release:
     name: Create GitHub Release

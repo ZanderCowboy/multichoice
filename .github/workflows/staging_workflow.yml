@@ -59,38 +59,11 @@ jobs:
       ##############################################
       - name: Check Version Labels
         id: check_labels
-        run: |
-          LABELS='${{ toJson(github.event.pull_request.labels) }}'
-
-          # Validate JSON format
-          if ! echo "$LABELS" | jq empty 2>/dev/null; then
-            echo "::error::Invalid JSON format in labels"
-            exit 1
-          fi
-
-          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
-          if [[ -z "$VALID_LABELS" ]]; then
-            echo "bump_type=none" >> $GITHUB_ENV
-            echo "********** Bumping build number only **********"
-          else
-            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-            # If multiple labels are found, error out
-            if [[ $LABEL_COUNT -gt 1 ]]; then
-              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or neither"
-              exit 1
-            fi
-
-            # Set the bump type based on the single valid label
-            case "$VALID_LABELS" in
-              "major") echo "bump_type=major" >> $GITHUB_ENV ;;
-              "minor") echo "bump_type=minor" >> $GITHUB_ENV ;;
-              "patch") echo "bump_type=patch" >> $GITHUB_ENV ;;
-              *) echo "::error::Unexpected label: $VALID_LABELS" && exit 1 ;;
-            esac
-
-            echo "********** Bumping version with label: ${{ env.bump_type }} **********"
-          fi
-        shell: bash
+        uses: ./.github/actions/check-version-labels
+        with:
+          labels: ${{ toJson(github.event.pull_request.labels) }}
+          allowed_labels: "major,minor,patch"
+          no_build_label: "no-build"
 
       ##############################################
       # Version Management
@@ -102,7 +75,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: rc
-          bump_type: ${{ env.bump_type }}
+          bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
 
   build:
@@ -184,34 +157,6 @@ jobs:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
-      ##############################################
-      # Create New Tag
-      ##############################################
-      - name: Create New Tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          version_number=${{ needs.preBuild.outputs.version_number }}
-          if [[ -z "$version_number" ]]; then
-            echo "Error: version_number is empty"
-            exit 1
-          fi
-
-          # Validate version format
-          if ! echo "$version_number" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-RC\+[0-9]+$'; then
-            echo "::error::Invalid version format: $version_number. Expected format: x.y.z-RC+build"
-            exit 1
-          fi
-
-          # Check if tag already exists
-          if git tag -l "v$version_number" | grep -q "v$version_number"; then
-            echo "::error::Tag v$version_number already exists"
-            exit 1
-          fi
-
-          git tag v$version_number
-          git push origin v$version_number
-
       ###############################################
       # Release to Google Play Internal Track
       ###############################################
@@ -224,3 +169,13 @@ jobs:
           track: "internal"
           releaseName: ${{ needs.preBuild.outputs.version_number }}
           status: "completed"
+
+      ##############################################
+      # Create New Tag
+      ##############################################
+      - name: Create New Tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "full"
+          allowed_formats: "rc"
