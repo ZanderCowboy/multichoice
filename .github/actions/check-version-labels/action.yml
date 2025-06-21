@@ -26,13 +26,15 @@ runs:
       id: check_labels
       shell: bash
       run: |
-        LABELS=${{ inputs.labels }}
+        set -e
+        
+        # Set input variables
+        LABELS='${{ inputs.labels }}'
+        ALLOWED_LABELS='${{ inputs.allowed_labels }}'
+        NO_BUILD_LABEL='${{ inputs.no_build_label }}'
+        
         echo "LABELS: $LABELS"
-
-        ALLOWED_LABELS=${{ inputs.allowed_labels }}
         echo "ALLOWED_LABELS: $ALLOWED_LABELS"
-
-        NO_BUILD_LABEL=${{ inputs.no_build_label }}
         echo "NO_BUILD_LABEL: $NO_BUILD_LABEL"
         
         # Validate JSON format
@@ -43,15 +45,18 @@ runs:
 
         # Convert allowed labels to jq filter
         ALLOWED_LABELS_FILTER=$(echo "$ALLOWED_LABELS" | tr ',' '|')
+        echo "ALLOWED_LABELS_FILTER: $ALLOWED_LABELS_FILTER"
         
         # Check for valid version labels (excluding no-build)
-        VALID_LABELS=$(echo "$LABELS" | jq -r ".[] | select(.name | IN(\"$ALLOWED_LABELS_FILTER\")) | .name")
+        VALID_LABELS=$(echo "$LABELS" | jq -r ".[] | select(.name | IN(\"$ALLOWED_LABELS_FILTER\")) | .name" 2>/dev/null || echo "")
         
         if [[ -z "$VALID_LABELS" ]]; then
           echo "bump_type=none" >> $GITHUB_OUTPUT
           echo "********** Bumping build number only **********"
         else
           LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+          echo "Found $LABEL_COUNT valid labels: $VALID_LABELS"
+          
           # If multiple labels are found, error out
           if [[ $LABEL_COUNT -gt 1 ]]; then
             echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: $ALLOWED_LABELS, or neither"
@@ -60,11 +65,21 @@ runs:
 
           # Set the bump type based on the single valid label
           case "$VALID_LABELS" in
-            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
-            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-            *) echo "::error::Unexpected label: $VALID_LABELS" && exit 1 ;;
+            "major") 
+              echo "bump_type=major" >> $GITHUB_OUTPUT
+              echo "********** Bumping version with label: major **********"
+              ;;
+            "minor") 
+              echo "bump_type=minor" >> $GITHUB_OUTPUT
+              echo "********** Bumping version with label: minor **********"
+              ;;
+            "patch") 
+              echo "bump_type=patch" >> $GITHUB_OUTPUT
+              echo "********** Bumping version with label: patch **********"
+              ;;
+            *) 
+              echo "::error::Unexpected label: $VALID_LABELS" 
+              exit 1 
+              ;;
           esac
-
-          echo "********** Bumping version with label: $VALID_LABELS **********"
         fi 
