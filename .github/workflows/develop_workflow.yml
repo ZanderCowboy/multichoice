@@ -13,11 +13,9 @@
 name: develop-workflow
 on:
   pull_request:
-    branches:
-      - "develop"
+    branches: ["develop"]
     types:
-      - "closed"
-
+      - closed
   workflow_dispatch:
 
 concurrency:
@@ -34,14 +32,21 @@ jobs:
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.version_management.outputs.version_number }}
-      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
-      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      version_part: ${{ steps.version_management.outputs.version_part }}
+      build_number: ${{ steps.version_management.outputs.build_number }}
+
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      ##############################################
+      # Generate GitHub App Token
+      ##############################################
       - name: Generate GitHub App Token
         id: generate_token
         uses: peter-murray/workflow-application-token-action@v4
@@ -49,35 +54,20 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
+      ##############################################
+      # Check Version Labels
+      ##############################################
       - name: Check Version Labels
         id: check_labels
-        run: |
-          LABELS='${{ toJson(github.event.pull_request.labels) }}'
-          echo "Debug: Raw LABELS value: $LABELS"
-          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("patch","minor")) | .name')
-          if [[ -z "$VALID_LABELS" ]]; then
-            echo "BUMP_TYPE=none" >> $GITHUB_ENV
-            echo "********** Bumping build number only **********"
-          else
-            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-            # If multiple labels are found, error out
-            if [[ $LABEL_COUNT -gt 1 ]]; then
-              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: minor, patch, or neither"
-              exit 1
-            fi
+        uses: ./.github/actions/check-version-labels
+        with:
+          labels: ${{ toJson(github.event.pull_request.labels) }}
+          allowed_labels: "minor,patch"
+          no_build_label: "no-build"
 
-            # Set the bump type based on the single valid label
-            case "$VALID_LABELS" in
-              "minor") echo "BUMP_TYPE=minor" >> $GITHUB_ENV ;;
-              "patch") echo "BUMP_TYPE=patch" >> $GITHUB_ENV ;;
-            esac
-          fi
-        shell: bash
-
-      - name: Debug Output
-        run: |
-          echo "Debug: bump_type value is: ${{ env.BUMP_TYPE }}"
-
+      ##############################################
+      # Version Management
+      ##############################################
       - name: Version Management
         id: version_management
         uses: ./.github/actions/version-management
@@ -85,11 +75,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: develop
-          bump_type: ${{ env.BUMP_TYPE }}
-
-      - id: id_out
-        run: |
-          echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
+          bump_type: ${{ steps.check_labels.outputs.bump_type }}
 
   build:
     name: Builds Android App
@@ -100,12 +86,21 @@ jobs:
       packages: read
       statuses: write
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
 
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
@@ -115,6 +110,9 @@ jobs:
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
+      ##############################################
+      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      ##############################################
       - name: Download Android Keystore File
         id: android_keystore
         uses: timheuer/base64-to-file@v1.2.4
@@ -143,8 +141,39 @@ jobs:
       # Build APK
       ##############################################
       - name: Build APK
-        run: flutter build apk --release
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload APK as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-apk"
+          path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+
+      ##############################################
+      # Build App Bundle
+      ##############################################
+      - name: Build App Bundle
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload App Bundle as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
       ##############################################
       # Upload APK to Firebase App Distribution
@@ -160,29 +189,11 @@ jobs:
           debug: true
 
       ##############################################
-      # Build App Bundle
+      # Create New Tag
       ##############################################
-      - name: Build App Bundle
-        run: flutter build appbundle --release
-        working-directory: apps/multichoice/
-
-      ##############################################
-      # Upload App Bundle as Artifact
-      ##############################################
-      - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: "android-release-appbundle"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
-
       - name: Create New Tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          new_tag=${{ needs.preBuild.outputs.version_number }}
-          if [[ -z "$new_tag" ]]; then
-            echo "Error: version_number is empty"
-            exit 1
-          fi
-          git tag v$new_tag
-          git push origin v$new_tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "full"
+          allowed_formats: "both"

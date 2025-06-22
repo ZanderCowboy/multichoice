@@ -23,12 +23,21 @@ inputs:
 
 outputs:
   version_number:
-    description: "The new version number"
+    description: "The new version number, e.g. 1.2.3+456"
     value: ${{ steps.version_update.outputs.version_number }}
+  version_part:
+    description: "The version part without the build number, e.g. 1.2.3 or 1.2.3-RC"
+    value: ${{ steps.version_update.outputs.version_part }}
+  build_number:
+    description: "The build number extracted from the version, e.g. 456"
+    value: ${{ steps.version_update.outputs.build_number }}
 
 runs:
   using: "composite"
   steps:
+    ##############################################
+    # Checkout Branch
+    ##############################################
     - name: Checkout Branch
       uses: actions/checkout@v4
       with:
@@ -36,29 +45,54 @@ runs:
         fetch-depth: 0
         token: ${{ inputs.github_token }}
 
+    ##############################################
+    # Get Latest Tag
+    ##############################################
     - name: Get Latest Tag
       id: get_latest_tag
       shell: bash
       run: |
         git fetch --tags
-        latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "0.0.0")
-        echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
-        echo "Latest tag: $latest_tag"
+        latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+        if [[ -z "$latest_tag" ]]; then
+          echo "latest_tag=0.0.0" >> $GITHUB_OUTPUT
+          echo "Latest tag: 0.0.0 (no tags found)"
+        else
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "Latest tag: $latest_tag"
+        fi
+        echo "***********************************"
 
+    ##############################################
+    # Get Current Version From pubspec.yaml
+    ##############################################
     - name: Get Current Version From pubspec.yaml
       id: get_current_version
       shell: bash
       run: |
         echo "Checking version in ${{ inputs.pubspec_path }}:"
-        cat ${{ inputs.pubspec_path }} | grep '^version:'
+        if [[ ! -f "${{ inputs.pubspec_path }}" ]]; then
+          echo "::error::File not found: ${{ inputs.pubspec_path }}"
+          exit 1
+        fi
+
+        cat ${{ inputs.pubspec_path }} | grep '^version:' || {
+          echo "::error::No version field found in ${{ inputs.pubspec_path }}"
+          exit 1
+        }
+
         if ! grep -qE '^version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' "${{ inputs.pubspec_path }}"; then
-          echo "::error::Invalid or missing version in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
+          echo "::error::Invalid version format in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
           exit 1
         fi
         current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
         echo "Current version: $current_version"
+        echo "***********************************"
 
+    ##############################################
+    # Update Version
+    ##############################################
     - name: Update Version
       id: version_update
       shell: bash
@@ -71,24 +105,45 @@ runs:
         version_suffix="${{ inputs.version_suffix }}"
 
         echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
-        if [[ "$current_version" > "$latest_tag" ]]; then
+
+        # Extract version parts for comparison
+        current_version_part=$(echo "$current_version" | cut -d'+' -f1)
+        current_build_number=$(echo "$current_version" | cut -d'+' -f2)
+
+        # Validate current version format
+        if ! echo "$current_version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
+          echo "::error::Invalid version format: $current_version_part"
+          exit 1
+        fi
+
+        if ! echo "$current_build_number" | grep -qE '^[0-9]+$'; then
+          echo "::error::Invalid build number: $current_build_number"
+          exit 1
+        fi
+
+        # Compare versions (handle case where latest_tag might be 0.0.0)
+        if [[ "$latest_tag" == "0.0.0" ]] || [[ "$current_version" > "$latest_tag" ]]; then
           echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
           if [[ -n "$version_suffix" ]]; then
             # Add suffix to the version if it doesn't already have it
-            if [[ "$current_version" != *"$version_suffix"* ]]; then
-              version_part=$(echo "$current_version" | cut -d'+' -f1)
-              build_number=$(echo "$current_version" | cut -d'+' -f2)
-              current_version="${version_part}${version_suffix}+${build_number}"
+            if [[ "$current_version_part" != *"$version_suffix"* ]]; then
+              new_version_part="${current_version_part}${version_suffix}"
+              new_version="${new_version_part}+${current_build_number}"
               # Update pubspec.yaml with suffixed version
-              sed -i "s/version: .*/version: $current_version/" ${{ inputs.pubspec_path }}
+              sed -i "s/version: .*/version: $new_version/" ${{ inputs.pubspec_path }}
               git add ${{ inputs.pubspec_path }}
-              git commit -m "Add $version_suffix suffix to version $current_version [skip ci]"
+              git commit -m "Add $version_suffix suffix to version $new_version [skip ci]"
               git push origin HEAD:${{ inputs.branch_name }}
+              current_version="$new_version"
+              current_version_part="$new_version_part"
             fi
           fi
+          echo "version_part=$current_version_part" >> $GITHUB_OUTPUT
+          echo "build_number=$current_build_number" >> $GITHUB_OUTPUT
           echo "version_number=$current_version" >> $GITHUB_OUTPUT
         else
-          echo "Updating version in pubspec.yaml."
+          echo "********** Updating version in pubspec.yaml. **********"
+
           # Extract version and build number
           version_part=$(echo "$current_version" | cut -d'+' -f1)
           build_number=$(echo "$current_version" | cut -d'+' -f2)
@@ -101,11 +156,24 @@ runs:
           fi
           
           # Split version into major, minor, patch
-          IFS='.' read -r major minor patch <<< "$version_part"
+          IFS='.' read -r major minor patch_with_suffix <<< "$version_part"
+          
+          # Handle RC suffix in patch
+          if [[ "$patch_with_suffix" == *"-RC"* ]]; then
+            patch=$(echo "$patch_with_suffix" | cut -d'-' -f1)
+          else
+            patch="$patch_with_suffix"
+          fi
+          
+          # Validate numeric parts
+          if ! [[ "$major" =~ ^[0-9]+$ ]] || ! [[ "$minor" =~ ^[0-9]+$ ]] || ! [[ "$patch" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid version components: major=$major, minor=$minor, patch=$patch"
+            exit 1
+          fi
           
           # Increment version based on bump_type
           bump_type="${{ inputs.bump_type }}"
-          echo "Debug: bump_type value is: $bump_type"
+          echo "bump_type value is: $bump_type"
           case "$bump_type" in
             "major")
               major=$((major + 1))
@@ -133,8 +201,14 @@ runs:
           
           # Add suffix if provided
           if [[ -n "$version_suffix" ]]; then
-            new_version="${new_version}${version_suffix}"
+            # Check if the version already contains the suffix to avoid duplication
+            if [[ "$new_version" != *"$version_suffix"* ]]; then
+              new_version="${new_version}${version_suffix}"
+            fi
           fi
+
+          # Echo new version and build number
+          echo "New version part: $new_version + New build number: $new_build_number"
           
           # Update pubspec.yaml with new version and build number
           sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}
@@ -152,5 +226,9 @@ runs:
             echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
             exit 1
           }
+
+          echo "version_part=$new_version" >> $GITHUB_OUTPUT
+          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
           echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
+
         fi

@@ -13,11 +13,9 @@
 name: rc-workflow
 on:
   pull_request:
-    branches:
-      - "rc"
+    branches: ["rc"]
     types:
-      - "closed"
-
+      - closed
   workflow_dispatch:
 
 concurrency:
@@ -34,14 +32,21 @@ jobs:
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.version_management.outputs.version_number }}
-      android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
-      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      version_part: ${{ steps.version_management.outputs.version_part }}
+      build_number: ${{ steps.version_management.outputs.build_number }}
+
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      ##############################################
+      # Generate GitHub App Token
+      ##############################################
       - name: Generate GitHub App Token
         id: generate_token
         uses: peter-murray/workflow-application-token-action@v4
@@ -49,31 +54,20 @@ jobs:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
 
+      ##############################################
+      # Check Version Labels
+      ##############################################
       - name: Check Version Labels
         id: check_labels
-        run: |
-          LABELS='${{ toJson(github.event.pull_request.labels) }}'
-          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
-          if [[ -z "$VALID_LABELS" ]]; then
-            echo "bump_type=none" >> $GITHUB_OUTPUT
-            echo "********** Bumping build number only **********"
-          else
-            LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-            # If multiple labels are found, error out
-            if [[ $LABEL_COUNT -gt 1 ]]; then
-              echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or neither"
-              exit 1
-            fi
+        uses: ./.github/actions/check-version-labels
+        with:
+          labels: ${{ toJson(github.event.pull_request.labels) }}
+          allowed_labels: "major,minor,patch"
+          no_build_label: "no-build"
 
-            # Set the bump type based on the single valid label
-            case "$VALID_LABELS" in
-              "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
-              "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
-              "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
-            esac
-          fi
-        shell: bash
-
+      ##############################################
+      # Version Management
+      ##############################################
       - name: Version Management
         id: version_management
         uses: ./.github/actions/version-management
@@ -84,10 +78,6 @@ jobs:
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
 
-      - id: id_out
-        run: |
-          echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
-
   build:
     name: Builds Android App
     needs: [preBuild]
@@ -97,12 +87,21 @@ jobs:
       packages: read
       statuses: write
     steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
 
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
@@ -112,6 +111,9 @@ jobs:
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
+      ##############################################
+      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      ##############################################
       - name: Download Android Keystore File
         id: android_keystore
         uses: timheuer/base64-to-file@v1.2.4
@@ -140,7 +142,10 @@ jobs:
       # Build App Bundle
       ##############################################
       - name: Build App Bundle
-        run: flutter build appbundle --release
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
 
       ##############################################
@@ -152,27 +157,25 @@ jobs:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
 
-      - name: Create New Tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          version_number=${{ needs.preBuild.outputs.version_number }}
-          if [[ -z "$version_number" ]]; then
-            echo "Error: version_number is empty"
-            exit 1
-          fi
-          git tag v$version_number
-          git push origin v$version_number
-
       ###############################################
       # Release to Google Play Internal Track
       ###############################################
       - name: Release Build to internal track
         uses: r0adkll/upload-google-play@v1
         with:
-          releaseFiles: app-release.aab
+          releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "co.za.zanderkotze.multichoice"
           track: "internal"
           releaseName: ${{ needs.preBuild.outputs.version_number }}
           status: "completed"
+
+      ##############################################
+      # Create New Tag
+      ##############################################
+      - name: Create New Tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "full"
+          allowed_formats: "rc"
