@@ -2,12 +2,12 @@ name: Linting and Analysis
 
 on:
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
-    branches: 
-      - '**'
+    branches:
+      - "**"
   workflow_dispatch:
 
 concurrency:
