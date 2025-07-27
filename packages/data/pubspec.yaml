@@ -1,0 +1,43 @@
+name: data
+description: "Data layer for the app."
+version: 0.0.1
+homepage:
+publish_to: none
+
+dependency_overrides: 
+  domain:
+    path: ../domain
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  auto_mappr: ^2.3.0
+  auto_mappr_annotation: ^2.1.0
+  build_runner: ^2.4.15
+  flutter:
+    sdk: flutter
+  domain: ^0.0.1
+  freezed_annotation: ^2.4.1
+  isar:
+    version: ^3.1.8
+    hosted: https://pub.isar-community.dev/
+  isar_flutter_libs:
+    version: ^3.1.8
+    hosted: https://pub.isar-community.dev/
+  json_annotation: ^4.8.1
+  path_provider: ^2.1.2
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  freezed: ^2.4.7
+  isar_generator:
+    version: ^3.1.8
+    hosted: https://pub.isar-community.dev/
+  json_serializable: ^6.7.1
+
+flutter:
