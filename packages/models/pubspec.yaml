@@ -11,6 +11,7 @@ environment:
 dependencies:
   auto_mappr: ^2.3.0
   auto_mappr_annotation: ^2.1.0
+  build_runner: ^2.4.15
   clock: ^1.1.1
   cloud_firestore: ^5.6.8
   flutter:
@@ -28,7 +29,6 @@ dependencies:
   uuid: ^4.3.3
 
 dev_dependencies:
-  build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
   freezed: ^2.4.7
