@@ -110,7 +110,7 @@ jobs:
           echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
