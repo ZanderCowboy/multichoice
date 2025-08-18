@@ -23,7 +23,7 @@ jobs:
       android_deploy_status: ${{ steps.id_out.outputs.android_deploy_status }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: read-config-file
         uses: actions-tools/yaml-outputs@v2
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download artifact
         id: download-artifact
