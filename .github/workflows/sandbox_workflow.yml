@@ -101,7 +101,7 @@ jobs:
         run: flutter build appbundle --release
         working-directory: apps/multichoice/
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: "android-release-appbundle-sandbox"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab 

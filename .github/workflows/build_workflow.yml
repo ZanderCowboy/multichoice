@@ -156,7 +156,7 @@ jobs:
       # Upload App Bundle as Artifact
       ###############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
