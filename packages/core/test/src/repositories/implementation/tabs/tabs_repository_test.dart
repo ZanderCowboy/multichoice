@@ -1,7 +1,7 @@
 import 'package:core/src/repositories/implementation/entry/entry_repository.dart';
 import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
