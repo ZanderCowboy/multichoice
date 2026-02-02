@@ -19,8 +19,8 @@ dependencies:
   freezed_annotation: ^2.4.1
   get_it: ^8.0.3
   injectable: ^2.3.2
-  isar_community: ^3.2.0
-  isar_community_flutter_libs: ^3.2.0
+  isar_community: ^3.3.0
+  isar_community_flutter_libs: ^3.3.0
   json_annotation: ^4.9.0
   models: ^0.0.1
   package_info_plus: ^8.0.0

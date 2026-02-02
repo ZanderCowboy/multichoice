@@ -16,9 +16,9 @@ dependencies:
   flutter:
     sdk: flutter
   freezed_annotation: ^2.4.1
-  isar_community: ^3.2.0
-  isar_community_flutter_libs: ^3.2.0
-  json_annotation: ^4.8.1
+  isar_community: ^3.3.0
+  isar_community_flutter_libs: ^3.3.0
+  json_annotation: ^4.9.0
   path_provider: ^2.1.2
   path_provider_platform_interface: ^2.1.2
   uuid: ^4.3.3
@@ -28,7 +28,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^2.4.7
-  isar_community_generator: ^3.2.0
+  isar_community_generator: ^3.3.0
   json_serializable: ^6.7.1
   very_good_analysis: ^7.0.0
 
