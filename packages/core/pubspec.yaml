@@ -4,29 +4,29 @@ version: 0.0.1
 publish_to: "none"
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.10.8 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   bloc: ^9.0.0
   clock: ^1.1.1
-  cloud_firestore: ^5.6.8
+  cloud_firestore: ^6.1.2
   dartz: ^0.10.1
   file_picker: ^10.1.9
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.1.0
   get_it: ^8.0.3
   injectable: ^2.3.2
   isar_community: ^3.3.0
   isar_community_flutter_libs: ^3.3.0
   json_annotation: ^4.9.0
   models: ^0.0.1
-  package_info_plus: ^8.0.0
+  package_info_plus: ^9.0.0
   path_provider: ^2.1.2
   shared_preferences: ^2.2.2
-  showcaseview: ^4.0.1
+  showcaseview: ^5.0.1
   uuid: ^4.3.3
   version: ^3.0.2
 
@@ -35,11 +35,11 @@ dev_dependencies:
   build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
-  freezed: ^2.4.5
+  freezed: ^3.2.3
   injectable_generator: ^2.4.1
   json_serializable: ^6.7.1
   mockito: ^5.4.4
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^10.0.0
   path_provider_platform_interface: ^2.1.2
 
 flutter:
