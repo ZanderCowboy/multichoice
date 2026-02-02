@@ -7,6 +7,15 @@
 /apps/showcase/
 /tools/
 
+# Multichoice V2
+**/gradle-wrapper.jar
+**/.gradle
+**/captures/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+**/GeneratedPluginRegistrant.java
+
 # Files and directories created by pub
 .dart_tool/
 .packages
