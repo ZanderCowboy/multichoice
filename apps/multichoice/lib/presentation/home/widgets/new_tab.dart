@@ -8,9 +8,9 @@ class NewTab extends HookWidget {
     final titleTextController = useTextEditingController();
     final subtitleTextController = useTextEditingController();
 
-    void onPressed() {
+    Future<void> onPressed() async {
       Navigator.of(context).pop();
-      Future.microtask(() {
+      await Future.microtask(() {
         titleTextController.clear();
         subtitleTextController.clear();
       });
@@ -30,23 +30,23 @@ class NewTab extends HookWidget {
                 return ReusableForm(
                   titleController: titleTextController,
                   subtitleController: subtitleTextController,
-                  onTitleChanged: (value) => context
-                      .read<HomeBloc>()
-                      .add(HomeEvent.onChangedTabTitle(value)),
-                  onSubtitleChanged: (value) => context
-                      .read<HomeBloc>()
-                      .add(HomeEvent.onChangedTabSubtitle(value)),
-                  onCancel: () {
+                  onTitleChanged: (value) => context.read<HomeBloc>().add(
+                    HomeEvent.onChangedTabTitle(value),
+                  ),
+                  onSubtitleChanged: (value) => context.read<HomeBloc>().add(
+                    HomeEvent.onChangedTabSubtitle(value),
+                  ),
+                  onCancel: () async {
                     context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedCancel(),
-                        );
-                    onPressed();
+                      const HomeEvent.onPressedCancel(),
+                    );
+                    await onPressed();
                   },
-                  onAdd: () {
+                  onAdd: () async {
                     context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedAddTab(),
-                        );
-                    onPressed();
+                      const HomeEvent.onPressedAddTab(),
+                    );
+                    await onPressed();
                   },
                   isValid: state.isValid,
                 );

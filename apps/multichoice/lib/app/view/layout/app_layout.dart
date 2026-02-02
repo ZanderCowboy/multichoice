@@ -6,7 +6,7 @@ class AppLayout extends ChangeNotifier {
     _initialize();
   }
 
-  final _appStorageService = coreSl<IAppStorageService>();
+  final IAppStorageService _appStorageService = coreSl<IAppStorageService>();
   bool _isLayoutVertical = false;
   bool _isInitialized = false;
 

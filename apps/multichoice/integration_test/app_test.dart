@@ -21,7 +21,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   final keys = WidgetKeys.instance;
 
-  testWidgets('Test User Journey', (WidgetTester tester) async {
+  testWidgets('Test User Journey', (tester) async {
     app.main();
     // Wait for the app to settle
     await tester.pumpAndSettle(const Duration(seconds: 2));

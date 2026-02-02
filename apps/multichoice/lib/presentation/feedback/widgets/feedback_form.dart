@@ -80,7 +80,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 DropdownButtonFormField<String>(
-                  value: state.feedback.category,
+                  initialValue: state.feedback.category,
                   decoration: const InputDecoration(
                     labelText: 'Category',
                     border: OutlineInputBorder(),
@@ -93,11 +93,11 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   }).toList(),
                   onChanged: (value) {
                     context.read<FeedbackBloc>().add(
-                          FeedbackEvent.fieldChanged(
-                            field: FeedbackField.category,
-                            value: value,
-                          ),
-                        );
+                      FeedbackEvent.fieldChanged(
+                        field: FeedbackField.category,
+                        value: value,
+                      ),
+                    );
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -116,11 +116,11 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
                     context.read<FeedbackBloc>().add(
-                          FeedbackEvent.fieldChanged(
-                            field: FeedbackField.email,
-                            value: value,
-                          ),
-                        );
+                      FeedbackEvent.fieldChanged(
+                        field: FeedbackField.email,
+                        value: value,
+                      ),
+                    );
                   },
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
@@ -141,11 +141,11 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   maxLines: 5,
                   onChanged: (value) {
                     context.read<FeedbackBloc>().add(
-                          FeedbackEvent.fieldChanged(
-                            field: FeedbackField.message,
-                            value: value,
-                          ),
-                        );
+                      FeedbackEvent.fieldChanged(
+                        field: FeedbackField.message,
+                        value: value,
+                      ),
+                    );
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -170,19 +170,20 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                       ),
                       onPressed: () {
                         context.read<FeedbackBloc>().add(
-                              FeedbackEvent.fieldChanged(
-                                field: FeedbackField.rating,
-                                value: index + 1,
-                              ),
-                            );
+                          FeedbackEvent.fieldChanged(
+                            field: FeedbackField.rating,
+                            value: index + 1,
+                          ),
+                        );
                       },
                     );
                   }),
                 ),
                 gap24,
                 ElevatedButton(
-                  onPressed:
-                      state.isLoading ? null : () => _submitFeedback(context),
+                  onPressed: state.isLoading
+                      ? null
+                      : () => _submitFeedback(context),
                   child: state.isLoading
                       ? CircularLoader.small()
                       : const Text('Submit Feedback'),
