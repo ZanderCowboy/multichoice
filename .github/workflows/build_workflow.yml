@@ -31,7 +31,7 @@ jobs:
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -87,7 +87,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
@@ -95,7 +95,7 @@ jobs:
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
@@ -156,7 +156,7 @@ jobs:
       # Upload App Bundle as Artifact
       ###############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab

@@ -37,7 +37,7 @@ jobs:
       windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Update version number and download
         id: id_unlabeled
@@ -110,7 +110,7 @@ jobs:
           echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
 
       - name: Get pubspec.yaml version
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
@@ -145,7 +145,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref }}
 
@@ -168,7 +168,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 

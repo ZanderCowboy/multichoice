@@ -21,8 +21,8 @@ class _HorizontalHome extends HookWidget {
       },
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await scrollController.animateTo(
               scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,

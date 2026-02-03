@@ -4,7 +4,7 @@ import 'package:core/src/services/implementations/data_exchange_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
@@ -22,8 +22,10 @@ void main() {
     db = await configureIsarInstance();
     mockFilePickerWrapper = MockFilePickerWrapper();
 
-    dataExchangeService =
-        DataExchangeService(db, filePickerWrapper: mockFilePickerWrapper);
+    dataExchangeService = DataExchangeService(
+      db,
+      filePickerWrapper: mockFilePickerWrapper,
+    );
 
     getIt.registerSingleton(dataExchangeService);
   });
@@ -37,8 +39,9 @@ void main() {
       test('should return file path when a file is selected', () async {
         final filePath = '/path/to/selected/file.txt';
 
-        when(mockFilePickerWrapper.pickFile())
-            .thenAnswer((_) async => filePath);
+        when(
+          mockFilePickerWrapper.pickFile(),
+        ).thenAnswer((_) async => filePath);
 
         final result = await dataExchangeService.pickFile();
 
@@ -62,57 +65,69 @@ void main() {
         final fileBytes = Uint8List.fromList([0, 1, 2, 3, 4, 5]);
         final filePath = '/path/to/save/testFile.json';
 
-        when(mockFilePickerWrapper.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: anyNamed('fileName'),
-          bytes: anyNamed('bytes'),
-        )).thenAnswer((_) async => filePath);
+        when(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: anyNamed('dialogTitle'),
+            fileName: anyNamed('fileName'),
+            bytes: anyNamed('bytes'),
+          ),
+        ).thenAnswer((_) async => filePath);
 
         await dataExchangeService.saveFile(fileName, fileBytes);
 
-        verify(mockFilePickerWrapper.saveFile(
-          dialogTitle: 'Save JSON File',
-          fileName: '$fileName.json',
-          bytes: fileBytes,
-        )).called(1);
+        verify(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: 'Save JSON File',
+            fileName: '$fileName.json',
+            bytes: fileBytes,
+          ),
+        ).called(1);
       });
 
       test('should handle user canceling file selection', () async {
         final fileName = 'testFile';
         final fileBytes = Uint8List.fromList([0, 1, 2, 3, 4, 5]);
 
-        when(mockFilePickerWrapper.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: anyNamed('fileName'),
-          bytes: anyNamed('bytes'),
-        )).thenAnswer((_) async => null);
+        when(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: anyNamed('dialogTitle'),
+            fileName: anyNamed('fileName'),
+            bytes: anyNamed('bytes'),
+          ),
+        ).thenAnswer((_) async => null);
 
         await dataExchangeService.saveFile(fileName, fileBytes);
 
-        verify(mockFilePickerWrapper.saveFile(
-          dialogTitle: 'Save JSON File',
-          fileName: '$fileName.json',
-          bytes: fileBytes,
-        )).called(1);
+        verify(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: 'Save JSON File',
+            fileName: '$fileName.json',
+            bytes: fileBytes,
+          ),
+        ).called(1);
       });
 
       test('should handle error during file saving', () async {
         final fileName = 'testFile';
         final fileBytes = Uint8List.fromList([0, 1, 2, 3, 4, 5]);
 
-        when(mockFilePickerWrapper.saveFile(
-          dialogTitle: anyNamed('dialogTitle'),
-          fileName: anyNamed('fileName'),
-          bytes: anyNamed('bytes'),
-        )).thenThrow(Exception('Error saving file'));
+        when(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: anyNamed('dialogTitle'),
+            fileName: anyNamed('fileName'),
+            bytes: anyNamed('bytes'),
+          ),
+        ).thenThrow(Exception('Error saving file'));
 
         await dataExchangeService.saveFile(fileName, fileBytes);
 
-        verify(mockFilePickerWrapper.saveFile(
-          dialogTitle: 'Save JSON File',
-          fileName: '$fileName.json',
-          bytes: fileBytes,
-        )).called(1);
+        verify(
+          mockFilePickerWrapper.saveFile(
+            dialogTitle: 'Save JSON File',
+            fileName: '$fileName.json',
+            bytes: fileBytes,
+          ),
+        ).called(1);
       });
     });
 
