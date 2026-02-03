@@ -11,8 +11,8 @@ class CollectionTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.router.push(
+      onTap: () async {
+        await context.router.push(
           DetailsPageRoute(
             result: SearchResult(isTab: true, item: tab, matchScore: 0),
             onBack: () {
