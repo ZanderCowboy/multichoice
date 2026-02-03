@@ -21,11 +21,12 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
   if (status.isDenied && context.mounted) {
     await showDialog<AlertDialog>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Permission Required'),
-          content:
-              const Text('Storage permission is required for import/export.'),
+          content: const Text(
+            'Storage permission is required for import/export.',
+          ),
           actions: [
             TextButton(
               onPressed: () async {

@@ -1,7 +1,7 @@
 part of 'feedback_bloc.dart';
 
 @freezed
-class FeedbackState with _$FeedbackState {
+abstract class FeedbackState with _$FeedbackState {
   const factory FeedbackState({
     required FeedbackDTO feedback,
     required bool isLoading,
@@ -11,10 +11,10 @@ class FeedbackState with _$FeedbackState {
   }) = _FeedbackState;
 
   factory FeedbackState.initial() => FeedbackState(
-        feedback: FeedbackDTO.empty(),
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-        errorMessage: null,
-      );
+    feedback: FeedbackDTO.empty(),
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
+    errorMessage: null,
+  );
 }
