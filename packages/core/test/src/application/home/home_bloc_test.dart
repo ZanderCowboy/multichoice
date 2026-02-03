@@ -3,7 +3,7 @@ import 'package:core/core.dart';
 import 'package:core/src/repositories/implementation/entry/entry_repository.dart';
 import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:models/models.dart';
@@ -115,8 +115,9 @@ void main() {
       }),
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
-        isA<HomeState>().having((s) => s.tabs, 'tabs', [tabsDTO]).having(
-            (s) => s.isLoading, 'isLoading', false),
+        isA<HomeState>()
+            .having((s) => s.tabs, 'tabs', [tabsDTO])
+            .having((s) => s.isLoading, 'isLoading', false),
       ],
     );
 
@@ -124,8 +125,9 @@ void main() {
       'emits [tab: TabsDTO] when onGetTab is added',
       seed: () => initial,
       build: () {
-        when(mockTabsRepository.getTab(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => tabsDTO);
+        when(
+          mockTabsRepository.getTab(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => tabsDTO);
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onGetTab(123)),
@@ -138,18 +140,20 @@ void main() {
   group('HomeBloc Add Events', () {
     final initialState = HomeState(
       tab: TabsDTO(
-          id: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp,
-          entries: []),
+        id: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+        entries: [],
+      ),
       tabs: [],
       entry: EntryDTO(
-          id: 123,
-          tabId: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp),
+        id: 123,
+        tabId: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+      ),
       entryCards: [],
       isLoading: false,
       isDeleted: false,
@@ -162,9 +166,12 @@ void main() {
       'emits [isLoading: true, isAdded: true, tab: TabsDTO.empty(), tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddTab is added',
       seed: () => initialState,
       build: () {
-        when(mockTabsRepository.addTab(
-                title: anyNamed('title'), subtitle: anyNamed('subtitle')))
-            .thenAnswer((_) async => 0);
+        when(
+          mockTabsRepository.addTab(
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).thenAnswer((_) async => 0);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -184,9 +191,12 @@ void main() {
             .having((s) => s.isAdded, 'isAdded', false),
       ],
       verify: (bloc) {
-        verify(mockTabsRepository.addTab(
-                title: anyNamed('title'), subtitle: anyNamed('subtitle')))
-            .called(1);
+        verify(
+          mockTabsRepository.addTab(
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).called(1);
         verify(mockTabsRepository.readTabs()).called(1);
       },
     );
@@ -195,11 +205,13 @@ void main() {
       'emits [isLoading: true, isAdded: true, entry: EntryDTO.empty(), tabs: List<TabsDTO>, isLoading: false, isAdded: false] when onPressedAddEntry is added',
       seed: () => initialState,
       build: () {
-        when(mockEntryRepository.addEntry(
-                tabId: anyNamed('tabId'),
-                title: anyNamed('title'),
-                subtitle: anyNamed('subtitle')))
-            .thenAnswer((_) async => 1);
+        when(
+          mockEntryRepository.addEntry(
+            tabId: anyNamed('tabId'),
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -220,11 +232,13 @@ void main() {
             .having((s) => s.isAdded, 'isAdded', false),
       ],
       verify: (bloc) {
-        verify(mockEntryRepository.addEntry(
-                tabId: anyNamed('tabId'),
-                title: anyNamed('title'),
-                subtitle: anyNamed('subtitle')))
-            .called(1);
+        verify(
+          mockEntryRepository.addEntry(
+            tabId: anyNamed('tabId'),
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).called(1);
         verify(mockTabsRepository.readTabs()).called(1);
       },
     );
@@ -247,8 +261,9 @@ void main() {
       'emits [isLoading: true, isDeleted: true, tabs: [], entryCards: [], isLoading: false, isDeleted: false] when onLongPressedDeleteTab is added',
       seed: () => initialState,
       build: () {
-        when(mockTabsRepository.deleteTab(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => true);
+        when(
+          mockTabsRepository.deleteTab(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => true);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -269,11 +284,15 @@ void main() {
       'emits [isLoading: true, isDeleted: true, tabs: [], entryCards: [], isLoading: false, isDeleted: false] when onLongPressedDeleteEntry is added',
       seed: () => initialState,
       build: () {
-        when(mockEntryRepository.deleteEntry(
-                tabId: anyNamed('tabId'), entryId: anyNamed('entryId')))
-            .thenAnswer((_) async => true);
-        when(mockEntryRepository.readEntries(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => []);
+        when(
+          mockEntryRepository.deleteEntry(
+            tabId: anyNamed('tabId'),
+            entryId: anyNamed('entryId'),
+          ),
+        ).thenAnswer((_) async => true);
+        when(
+          mockEntryRepository.readEntries(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => []);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -294,18 +313,19 @@ void main() {
       'emits [isLoading: true, tabs: [], entryCards: [], isLoading: false] when onPressedDeleteAllEntries is added',
       seed: () => initialState,
       build: () {
-        when(mockEntryRepository.deleteEntries(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => true);
+        when(
+          mockEntryRepository.deleteEntries(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => true);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onPressedDeleteAllEntries(1)),
       expect: () => [
         isA<HomeState>().having((s) => s.isLoading, 'isLoading', true),
-        isA<HomeState>().having((s) => s.tabs, 'tabs', <TabsDTO>[]).having(
-            (s) => s.entryCards,
-            'entryCards',
-            <EntryDTO>[]).having((s) => s.isLoading, 'isLoading', false),
+        isA<HomeState>()
+            .having((s) => s.tabs, 'tabs', <TabsDTO>[])
+            .having((s) => s.entryCards, 'entryCards', <EntryDTO>[])
+            .having((s) => s.isLoading, 'isLoading', false),
       ],
     );
 
@@ -356,8 +376,11 @@ void main() {
       expect: () => [
         isA<HomeState>()
             .having((s) => s.tab.title, 'tab.title', 'New Title')
-            .having((s) => s.isValid, 'isValid',
-                Validator.isValidInput('New Title')),
+            .having(
+              (s) => s.isValid,
+              'isValid',
+              Validator.isValidInput('New Title'),
+            ),
       ],
     );
 
@@ -369,8 +392,11 @@ void main() {
       expect: () => [
         isA<HomeState>()
             .having((s) => s.tab.subtitle, 'tab.subtitle', 'New Subtitle')
-            .having((s) => s.isValid, 'isValid',
-                Validator.isValidSubtitle('New Subtitle')),
+            .having(
+              (s) => s.isValid,
+              'isValid',
+              Validator.isValidSubtitle('New Subtitle'),
+            ),
       ],
     );
 
@@ -382,8 +408,11 @@ void main() {
       expect: () => [
         isA<HomeState>()
             .having((s) => s.entry.title, 'entry.title', 'New Entry Title')
-            .having((s) => s.isValid, 'isValid',
-                Validator.isValidInput('New Entry Title')),
+            .having(
+              (s) => s.isValid,
+              'isValid',
+              Validator.isValidInput('New Entry Title'),
+            ),
       ],
     );
 
@@ -396,9 +425,15 @@ void main() {
       expect: () => [
         isA<HomeState>()
             .having(
-                (s) => s.entry.subtitle, 'entry.subtitle', 'New Entry Subtitle')
-            .having((s) => s.isValid, 'isValid',
-                Validator.isValidSubtitle('New Entry Subtitle')),
+              (s) => s.entry.subtitle,
+              'entry.subtitle',
+              'New Entry Subtitle',
+            )
+            .having(
+              (s) => s.isValid,
+              'isValid',
+              Validator.isValidSubtitle('New Entry Subtitle'),
+            ),
       ],
     );
   });
@@ -406,18 +441,20 @@ void main() {
   group('HomeBloc Submit Events', () {
     final initialState = HomeState(
       tab: TabsDTO(
-          id: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp,
-          entries: []),
+        id: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+        entries: [],
+      ),
       tabs: [],
       entry: EntryDTO(
-          id: 123,
-          tabId: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp),
+        id: 123,
+        tabId: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+      ),
       entryCards: [],
       isLoading: false,
       isDeleted: false,
@@ -430,11 +467,13 @@ void main() {
       'emits [isLoading: true, tab: TabsDTO.empty(), tabs: [], isLoading: false, isValid: false] when onSubmitEditTab is added',
       seed: () => initialState,
       build: () {
-        when(mockTabsRepository.updateTab(
-                id: anyNamed('id'),
-                title: anyNamed('title'),
-                subtitle: anyNamed('subtitle')))
-            .thenAnswer((_) async => 1);
+        when(
+          mockTabsRepository.updateTab(
+            id: anyNamed('id'),
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
         return homeBloc;
       },
@@ -455,15 +494,18 @@ void main() {
       'emits [isLoading: true, entry: EntryDTO.empty(), tabs: [], entryCards: [], isLoading: false, isValid: false] when onSubmitEditEntry is added',
       seed: () => initialState,
       build: () {
-        when(mockEntryRepository.updateEntry(
-                id: anyNamed('id'),
-                tabId: anyNamed('tabId'),
-                title: anyNamed('title'),
-                subtitle: anyNamed('subtitle')))
-            .thenAnswer((_) async => 1);
+        when(
+          mockEntryRepository.updateEntry(
+            id: anyNamed('id'),
+            tabId: anyNamed('tabId'),
+            title: anyNamed('title'),
+            subtitle: anyNamed('subtitle'),
+          ),
+        ).thenAnswer((_) async => 1);
         when(mockTabsRepository.readTabs()).thenAnswer((_) async => []);
-        when(mockEntryRepository.readEntries(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => []);
+        when(
+          mockEntryRepository.readEntries(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => []);
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onSubmitEditEntry()),
@@ -481,18 +523,20 @@ void main() {
   group('HomeBloc Cancel Events', () {
     final initialState = HomeState(
       tab: TabsDTO(
-          id: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp,
-          entries: []),
+        id: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+        entries: [],
+      ),
       tabs: [],
       entry: EntryDTO(
-          id: 123,
-          tabId: 456,
-          title: 'title',
-          subtitle: 'subtitle',
-          timestamp: timestamp),
+        id: 123,
+        tabId: 456,
+        title: 'title',
+        subtitle: 'subtitle',
+        timestamp: timestamp,
+      ),
       entryCards: [],
       isLoading: false,
       isDeleted: false,
@@ -537,8 +581,9 @@ void main() {
       'emits [isLoading: true, tab: TabsDTO.empty(), isValid: false, isLoading: false] when onUpdateTabId is added',
       seed: () => initialState,
       build: () {
-        when(mockTabsRepository.getTab(tabId: anyNamed('tabId')))
-            .thenAnswer((_) async => TabsDTO.empty());
+        when(
+          mockTabsRepository.getTab(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) async => TabsDTO.empty());
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onUpdateTabId(1)),
@@ -580,8 +625,9 @@ void main() {
       'emits [entry: EntryDTO.empty()] when onUpdateEntry is added',
       seed: () => initialState,
       build: () {
-        when(mockEntryRepository.getEntry(entryId: anyNamed('entryId')))
-            .thenAnswer((_) async => EntryDTO.empty());
+        when(
+          mockEntryRepository.getEntry(entryId: anyNamed('entryId')),
+        ).thenAnswer((_) async => EntryDTO.empty());
         return homeBloc;
       },
       act: (bloc) => bloc.add(HomeEvent.onUpdateEntry(1)),
@@ -635,18 +681,22 @@ void main() {
         'emits [loading, loaded with tabs and entries] when OnRefresh is added and tab is selected',
         build: () {
           when(mockTabsRepository.readTabs()).thenAnswer((_) async => mockTabs);
-          when(mockEntryRepository.readEntries(tabId: 1))
-              .thenAnswer((_) async => mockEntries);
+          when(
+            mockEntryRepository.readEntries(tabId: 1),
+          ).thenAnswer((_) async => mockEntries);
 
           // Set initial state with a selected tab
-          homeBloc.emit(homeBloc.state.copyWith(
+          homeBloc.emit(
+            homeBloc.state.copyWith(
               tab: TabsDTO(
-            id: 1,
-            title: 'Tab 1',
-            subtitle: 'Subtitle 1',
-            timestamp: DateTime.now(),
-            entries: [],
-          )));
+                id: 1,
+                title: 'Tab 1',
+                subtitle: 'Subtitle 1',
+                timestamp: DateTime.now(),
+                entries: [],
+              ),
+            ),
+          );
 
           return homeBloc;
         },
@@ -685,7 +735,8 @@ void main() {
         verify: (_) {
           verify(mockTabsRepository.readTabs()).called(1);
           verifyNever(
-              mockEntryRepository.readEntries(tabId: anyNamed('tabId')));
+            mockEntryRepository.readEntries(tabId: anyNamed('tabId')),
+          );
         },
       );
     });

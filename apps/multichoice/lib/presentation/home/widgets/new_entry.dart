@@ -13,9 +13,9 @@ class NewEntry extends HookWidget {
     final titleTextController = useTextEditingController();
     final subtitleTextController = useTextEditingController();
 
-    void onPressed() {
+    Future<void> onPressed() async {
       Navigator.of(context).pop();
-      Future.microtask(() {
+      await Future.microtask(() {
         titleTextController.clear();
         subtitleTextController.clear();
       });
@@ -35,8 +35,8 @@ class NewEntry extends HookWidget {
                 text: TextSpan(
                   text: 'Add New Entry',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        fontSize: 24,
-                      ),
+                    fontSize: 24,
+                  ),
                 ),
               ),
               content: BlocProvider.value(
@@ -46,26 +46,26 @@ class NewEntry extends HookWidget {
                     return ReusableForm(
                       titleController: titleTextController,
                       subtitleController: subtitleTextController,
-                      onTitleChanged: (value) => context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onChangedEntryTitle(value)),
-                      onTitleTap: () => context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onGetTab(tabId)),
+                      onTitleChanged: (value) => context.read<HomeBloc>().add(
+                        HomeEvent.onChangedEntryTitle(value),
+                      ),
+                      onTitleTap: () => context.read<HomeBloc>().add(
+                        HomeEvent.onGetTab(tabId),
+                      ),
                       onSubtitleChanged: (value) => context
                           .read<HomeBloc>()
                           .add(HomeEvent.onChangedEntrySubtitle(value)),
-                      onCancel: () {
+                      onCancel: () async {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
-                        onPressed();
+                          const HomeEvent.onPressedCancel(),
+                        );
+                        await onPressed();
                       },
-                      onAdd: () {
+                      onAdd: () async {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedAddEntry(),
-                            );
-                        onPressed();
+                          const HomeEvent.onPressedAddEntry(),
+                        );
+                        await onPressed();
                       },
                       isValid: state.isValid,
                     );

@@ -2,7 +2,6 @@
   "java.compile.nullAnalysis.mode": "automatic",
   "java.configuration.updateBuildConfiguration": "automatic",
   "svg.preview.background": "editor",
-  "dart.flutterSdkPath": ".fvm/versions/3.27.1",
   "sonarlint.connectedMode.project": {
     "connectionId": "zandercowboy",
     "projectKey": "ZanderCowboy_multichoice"
