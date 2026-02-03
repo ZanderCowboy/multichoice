@@ -13,6 +13,7 @@ dependencies:
   core: ^0.0.1
   file_picker: ^10.1.9
   firebase_core: ^4.4.0
+  firebase_performance: ^0.11.1+4
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
