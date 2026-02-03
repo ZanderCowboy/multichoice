@@ -9,5 +9,4 @@ analyzer:
   exclude:
     - lib/generated/**
     - lib/**.g.dart
-    - lib/**.freezed.dart
     - lib/**.auto_mappr.dart
