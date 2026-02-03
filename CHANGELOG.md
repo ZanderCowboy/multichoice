@@ -1,20 +1,11 @@
-# 161 - Rework Workflows
+# 243 - Isar URL Changed
 
-- trigger - test patch and minor label - should fail (only one label can be present)
-- trigger - workflow failed - expected only one label - removed patch - testing minor
-- trigger - test minor
-
-rc-workflow
-- trigger - test major label - expected v1.0.0-RC+184 from v0.7.0+183
-
-production-workflow
-- trigger - test RC flag being removed
-- git fetch --prune --prune-tags <- Removes local tags
-
-- trigger
-- trigger
-
-Final Run Through
-- trigger dev-workflow
-- trigger blank
-- trigger Main Workflow
+- Update GitHub workflows from Flutter 3.27.x to 3.38.x
+- Remove dependency on FVM from settings.json
+- Multiple linting issues
+- Complete major upgrade on multiple packages
+- BREAKING: Change from `isar` to `isar_community` and `isar_flutter_libs` to `isar_community_flutter_libs`
+- Update imports after `isar` update
+- Update `tests` in `core`
+- Introduce `copy_with_extension` and remove `freezed_annotation` from `models`
+- Update `docs`
