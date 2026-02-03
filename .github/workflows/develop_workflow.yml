@@ -40,7 +40,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -90,7 +90,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       ##############################################
       # Set up Flutter and Java
@@ -104,7 +104,7 @@ jobs:
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info

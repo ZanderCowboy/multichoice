@@ -1,10 +1,10 @@
 name: ui_kit
 description: A collection of reusable UI widgets for the Multichoice app.
 version: 0.0.1
-homepage: https://github.com/yourusername/multichoice
+homepage: https://github.com/yourusername/multichoice 
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.10.8 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -16,7 +16,7 @@ dev_dependencies:
   build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
