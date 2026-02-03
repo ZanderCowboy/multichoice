@@ -23,7 +23,7 @@ jobs:
       version_number: ${{ steps.id_out.outputs.version_number }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -56,7 +56,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
