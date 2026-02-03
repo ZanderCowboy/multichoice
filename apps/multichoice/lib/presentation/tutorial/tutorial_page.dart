@@ -39,7 +39,7 @@ class TutorialPage extends StatelessWidget {
         ),
       ],
       child: ProductTour(
-        onTourComplete: ({required bool shouldRestoreData}) {
+        onTourComplete: ({required shouldRestoreData}) {
           if (shouldRestoreData) {
             onCallback.call();
             context.router.popUntilRoot();

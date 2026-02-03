@@ -7,6 +7,14 @@
 /apps/showcase/
 /tools/
 
+**/gradle-wrapper.jar
+**/.gradle
+**/captures/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+**/GeneratedPluginRegistrant.java
+
 # Files and directories created by pub
 .dart_tool/
 .packages
@@ -28,10 +36,9 @@ pubspec.lock
 **/*.gr.dart
 **/*.isar
 **/*.isar.lock
-**/libisar.dylib
 **/*.isar-lck
 **/isar.dll
-**/libisar.so
+**/libisar.**
 **/coverage
 **/*.mocks.dart
 **/functions/node_modules/

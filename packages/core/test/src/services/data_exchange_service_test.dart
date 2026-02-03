@@ -4,7 +4,7 @@ import 'package:core/src/services/implementations/data_exchange_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
