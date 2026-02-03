@@ -31,11 +31,11 @@ class EntryCard extends HookWidget {
           },
           menuChildren: [
             MenuItemButton(
-              onPressed: () {
+              onPressed: () async {
                 context.read<HomeBloc>().add(
-                      HomeEvent.onUpdateEntry(entry.id),
-                    );
-                context.router.push(EditEntryPageRoute(ctx: context));
+                  HomeEvent.onUpdateEntry(entry.id),
+                );
+                await context.router.push(EditEntryPageRoute(ctx: context));
               },
               child: Text(MenuItems.edit.name),
             ),
@@ -45,8 +45,8 @@ class EntryCard extends HookWidget {
             ),
           ],
           child: GestureDetector(
-            onTap: () {
-              context.router.push(
+            onTap: () async {
+              await context.router.push(
                 DetailsPageRoute(
                   // TODO: Change type to be dynamic
                   result: SearchResult(
@@ -88,12 +88,12 @@ class EntryCard extends HookWidget {
                       children: [
                         Text(
                           entry.title,
-                          style:
-                              context.theme.appTextTheme.titleSmall?.copyWith(
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                            height: 1,
-                          ),
+                          style: context.theme.appTextTheme.titleSmall
+                              ?.copyWith(
+                                fontSize: 16,
+                                letterSpacing: 0.3,
+                                height: 1,
+                              ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -102,10 +102,10 @@ class EntryCard extends HookWidget {
                           entry.subtitle,
                           style: context.theme.appTextTheme.subtitleSmall
                               ?.copyWith(
-                            fontSize: 12,
-                            letterSpacing: 0.5,
-                            height: 1.25,
-                          ),
+                                fontSize: 12,
+                                letterSpacing: 0.5,
+                                height: 1.25,
+                              ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                         ),
@@ -130,11 +130,11 @@ class EntryCard extends HookWidget {
       ),
       onConfirm: () {
         context.read<HomeBloc>().add(
-              HomeEvent.onLongPressedDeleteEntry(
-                entry.tabId,
-                entry.id,
-              ),
-            );
+          HomeEvent.onLongPressedDeleteEntry(
+            entry.tabId,
+            entry.id,
+          ),
+        );
         Navigator.of(context).pop();
       },
     );
