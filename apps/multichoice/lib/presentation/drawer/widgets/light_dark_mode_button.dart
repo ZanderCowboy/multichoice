@@ -16,7 +16,7 @@ class LightDarkModeButton extends HookWidget {
           isDark.value = isDarkMode;
         }
 
-        loadDarkModePreference();
+        unawaited(loadDarkModePreference());
         return null;
       },
       [],
@@ -34,8 +34,9 @@ class LightDarkModeButton extends HookWidget {
       inactiveThumbImage: AssetImage(Assets.images.sun.path),
       onChanged: (value) async {
         isDark.value = !isDark.value;
-        context.read<AppTheme>().themeMode =
-            isDark.value == true ? ThemeMode.dark : ThemeMode.light;
+        context.read<AppTheme>().themeMode = isDark.value
+            ? ThemeMode.dark
+            : ThemeMode.light;
         await appStorageService.setIsDarkMode(isDark.value);
       },
     );

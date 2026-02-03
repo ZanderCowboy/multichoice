@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/annotations.dart';
 import 'package:models/models.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,10 +25,12 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IFeedbackRepository>(as: #MockFeedbackRepository),
   MockSpec<FirebaseFirestore>(as: #MockFirebaseFirestore),
   MockSpec<CollectionReference<Map<String, dynamic>>>(
-      as: #MockCollectionReference),
+    as: #MockCollectionReference,
+  ),
   MockSpec<QuerySnapshot<Map<String, dynamic>>>(as: #MockQuerySnapshot),
   MockSpec<QueryDocumentSnapshot<Map<String, dynamic>>>(
-      as: #MockQueryDocumentSnapshot),
+    as: #MockQueryDocumentSnapshot,
+  ),
   MockSpec<DocumentReference<Map<String, dynamic>>>(as: #MockDocumentReference),
   MockSpec<ISearchRepository>(as: #MockSearchRepository),
 ])

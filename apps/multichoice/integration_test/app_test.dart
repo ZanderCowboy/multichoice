@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, document_ignores
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -21,7 +23,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   final keys = WidgetKeys.instance;
 
-  testWidgets('Test User Journey', (WidgetTester tester) async {
+  testWidgets('Test User Journey', (tester) async {
     app.main();
     // Wait for the app to settle
     await tester.pumpAndSettle(const Duration(seconds: 2));
