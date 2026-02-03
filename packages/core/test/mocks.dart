@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/annotations.dart';
 import 'package:models/models.dart';
 import 'package:package_info_plus/package_info_plus.dart';

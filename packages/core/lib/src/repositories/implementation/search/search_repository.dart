@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:models/models.dart';
 
 @LazySingleton(as: ISearchRepository)

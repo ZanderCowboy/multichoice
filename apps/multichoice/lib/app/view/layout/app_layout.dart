@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 class AppLayout extends ChangeNotifier {
   AppLayout() {
-    _initialize();
+    unawaited(_initialize());
   }
 
-  final _appStorageService = coreSl<IAppStorageService>();
+  final IAppStorageService _appStorageService = coreSl<IAppStorageService>();
   bool _isLayoutVertical = false;
   bool _isInitialized = false;
 

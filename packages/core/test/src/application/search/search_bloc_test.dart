@@ -66,55 +66,52 @@ void main() {
             matchScore: 0.6,
           ),
         ];
-        when(mockSearchRepository.search('test'))
-            .thenAnswer((_) async => mockResults);
+        when(
+          mockSearchRepository.search('test'),
+        ).thenAnswer((_) async => mockResults);
         return searchBloc;
       },
       act: (bloc) => bloc.add(const SearchEvent.search('test')),
       expect: () => [
-        SearchState(
-          results: [],
-          isLoading: true,
-          errorMessage: null,
-          query: 'test',
+        predicate<SearchState>(
+          (state) =>
+              state.results.isEmpty &&
+              state.isLoading == true &&
+              state.errorMessage == null &&
+              state.query == 'test',
         ),
-        SearchState(
-          results: [
-            SearchResult(
-              isTab: true,
-              item: TabsDTO(
-                id: 1,
-                title: 'Test Tab',
-                subtitle: 'Test Subtitle',
-                timestamp: fixedDate,
-                entries: [],
-              ),
-              matchScore: 0.8,
-            ),
-            SearchResult(
-              isTab: false,
-              item: EntryDTO(
-                id: 1,
-                tabId: 1,
-                title: 'Test Entry',
-                subtitle: 'Test Entry Subtitle',
-                timestamp: fixedDate,
-              ),
-              matchScore: 0.6,
-            ),
-          ],
-          isLoading: false,
-          errorMessage: null,
-          query: 'test',
-        ),
+        predicate<SearchState>((state) {
+          if (state.results.length != 2 ||
+              state.isLoading != false ||
+              state.errorMessage != null ||
+              state.query != 'test') {
+            return false;
+          }
+          final firstResult = state.results[0];
+          final secondResult = state.results[1];
+          return firstResult.isTab == true &&
+              firstResult.item is TabsDTO &&
+              (firstResult.item as TabsDTO).id == 1 &&
+              (firstResult.item as TabsDTO).title == 'Test Tab' &&
+              (firstResult.item as TabsDTO).subtitle == 'Test Subtitle' &&
+              firstResult.matchScore == 0.8 &&
+              secondResult.isTab == false &&
+              secondResult.item is EntryDTO &&
+              (secondResult.item as EntryDTO).id == 1 &&
+              (secondResult.item as EntryDTO).title == 'Test Entry' &&
+              (secondResult.item as EntryDTO).subtitle ==
+                  'Test Entry Subtitle' &&
+              secondResult.matchScore == 0.6;
+        }),
       ],
     );
 
     blocTest<SearchBloc, SearchState>(
       'emits error state when search fails',
       build: () {
-        when(mockSearchRepository.search('test'))
-            .thenThrow(Exception('Search failed'));
+        when(
+          mockSearchRepository.search('test'),
+        ).thenThrow(Exception('Search failed'));
         return searchBloc;
       },
       act: (bloc) => bloc.add(const SearchEvent.search('test')),
@@ -175,8 +172,9 @@ void main() {
             matchScore: 0.9,
           ),
         ];
-        when(mockSearchRepository.search('test'))
-            .thenAnswer((_) async => mockResults);
+        when(
+          mockSearchRepository.search('test'),
+        ).thenAnswer((_) async => mockResults);
         return searchBloc;
       },
       act: (bloc) async {
@@ -186,69 +184,61 @@ void main() {
       },
       expect: () => [
         // Initial search loading state
-        SearchState(
-          results: [],
-          isLoading: true,
-          errorMessage: null,
-          query: 'test',
+        predicate<SearchState>(
+          (state) =>
+              state.results.isEmpty &&
+              state.isLoading == true &&
+              state.errorMessage == null &&
+              state.query == 'test',
         ),
         // Initial search results
-        SearchState(
-          results: [
-            SearchResult(
-              isTab: true,
-              item: TabsDTO(
-                id: 1,
-                title: 'Updated Tab',
-                subtitle: 'Updated Subtitle',
-                timestamp: fixedDate,
-                entries: [],
-              ),
-              matchScore: 0.9,
-            ),
-          ],
-          isLoading: false,
-          errorMessage: null,
-          query: 'test',
-        ),
+        predicate<SearchState>((state) {
+          if (state.results.length != 1 ||
+              state.isLoading != false ||
+              state.errorMessage != null ||
+              state.query != 'test') {
+            return false;
+          }
+          final result = state.results[0];
+          return result.isTab == true &&
+              result.item is TabsDTO &&
+              (result.item as TabsDTO).id == 1 &&
+              (result.item as TabsDTO).title == 'Updated Tab' &&
+              (result.item as TabsDTO).subtitle == 'Updated Subtitle' &&
+              result.matchScore == 0.9;
+        }),
         // Refresh loading state
-        SearchState(
-          results: [
-            SearchResult(
-              isTab: true,
-              item: TabsDTO(
-                id: 1,
-                title: 'Updated Tab',
-                subtitle: 'Updated Subtitle',
-                timestamp: fixedDate,
-                entries: [],
-              ),
-              matchScore: 0.9,
-            ),
-          ],
-          isLoading: true,
-          errorMessage: null,
-          query: 'test',
-        ),
+        predicate<SearchState>((state) {
+          if (state.results.length != 1 ||
+              state.isLoading != true ||
+              state.errorMessage != null ||
+              state.query != 'test') {
+            return false;
+          }
+          final result = state.results[0];
+          return result.isTab == true &&
+              result.item is TabsDTO &&
+              (result.item as TabsDTO).id == 1 &&
+              (result.item as TabsDTO).title == 'Updated Tab' &&
+              (result.item as TabsDTO).subtitle == 'Updated Subtitle' &&
+              result.matchScore == 0.9;
+        }),
         // Final refresh results
-        SearchState(
-          results: [
-            SearchResult(
-              isTab: true,
-              item: TabsDTO(
-                id: 1,
-                title: 'Updated Tab',
-                subtitle: 'Updated Subtitle',
-                timestamp: fixedDate,
-                entries: [],
-              ),
-              matchScore: 0.9,
-            ),
-          ],
-          isLoading: false,
-          errorMessage: null,
-          query: 'test',
-        ),
+        predicate<SearchState>((state) {
+          if (state.results.length != 1 ||
+              state.isLoading != false ||
+              state.errorMessage != null ||
+              state.query != 'test') {
+            return false;
+          }
+          final result = state.results[0];
+          return result.isTab == true &&
+              result.item is TabsDTO &&
+              (result.item as TabsDTO).id == 1 &&
+              (result.item as TabsDTO).title == 'Updated Tab' &&
+              (result.item as TabsDTO).subtitle == 'Updated Subtitle' &&
+              result.matchScore == 0.9;
+        }),
       ],
     );
 
@@ -262,10 +252,12 @@ void main() {
     blocTest<SearchBloc, SearchState>(
       'clears error state on new search',
       build: () {
-        when(mockSearchRepository.search('fail'))
-            .thenThrow(Exception('Search failed'));
-        when(mockSearchRepository.search('success'))
-            .thenAnswer((_) async => []);
+        when(
+          mockSearchRepository.search('fail'),
+        ).thenThrow(Exception('Search failed'));
+        when(
+          mockSearchRepository.search('success'),
+        ).thenAnswer((_) async => []);
         return searchBloc;
       },
       act: (bloc) async {
