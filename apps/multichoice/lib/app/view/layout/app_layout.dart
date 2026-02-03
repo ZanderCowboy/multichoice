@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 class AppLayout extends ChangeNotifier {
   AppLayout() {
-    _initialize();
+    unawaited(_initialize());
   }
 
   final IAppStorageService _appStorageService = coreSl<IAppStorageService>();

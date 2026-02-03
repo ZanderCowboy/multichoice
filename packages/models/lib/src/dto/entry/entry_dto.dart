@@ -14,12 +14,6 @@ class EntryDTO {
     required this.timestamp,
   });
 
-  final int id;
-  final int tabId;
-  final String title;
-  final String subtitle;
-  final DateTime timestamp;
-
   factory EntryDTO.empty() => EntryDTO(
     id: 0,
     tabId: 0,
@@ -30,6 +24,12 @@ class EntryDTO {
 
   factory EntryDTO.fromJson(Map<String, dynamic> json) =>
       _$EntryDTOFromJson(json);
+
+  final int id;
+  final int tabId;
+  final String title;
+  final String subtitle;
+  final DateTime timestamp;
 
   Map<String, dynamic> toJson() => _$EntryDTOToJson(this);
 

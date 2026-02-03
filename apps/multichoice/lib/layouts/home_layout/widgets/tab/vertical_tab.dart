@@ -86,11 +86,11 @@ class _VerticalTab extends HookWidget {
                           builder: (context, _) {
                             return EntryCard(
                               entry: entry,
-                              onDoubleTap: () {
+                              onDoubleTap: () async {
                                 context.read<HomeBloc>().add(
                                   HomeEvent.onUpdateEntry(entry.id),
                                 );
-                                context.router.push(
+                                await context.router.push(
                                   EditEntryPageRoute(ctx: context),
                                 );
                               },

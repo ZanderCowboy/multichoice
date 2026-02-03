@@ -21,6 +21,9 @@ class FeedbackModel {
     this.status = 'pending',
   });
 
+  factory FeedbackModel.fromJson(Map<String, dynamic> json) =>
+      _$FeedbackModelFromJson(json);
+
   final String id;
   final String message;
   final int rating;
@@ -31,9 +34,6 @@ class FeedbackModel {
   final String? userEmail;
   final String? category;
   final String status;
-
-  factory FeedbackModel.fromJson(Map<String, dynamic> json) =>
-      _$FeedbackModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$FeedbackModelToJson(this);
 

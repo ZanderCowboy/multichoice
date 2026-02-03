@@ -12,12 +12,12 @@ class SearchResult {
     required this.matchScore,
   });
 
+  factory SearchResult.fromJson(Map<String, dynamic> json) =>
+      _$SearchResultFromJson(json);
+
   final bool isTab;
   final dynamic item;
   final double matchScore;
-
-  factory SearchResult.fromJson(Map<String, dynamic> json) =>
-      _$SearchResultFromJson(json);
 
   Map<String, dynamic> toJson() => _$SearchResultToJson(this);
 

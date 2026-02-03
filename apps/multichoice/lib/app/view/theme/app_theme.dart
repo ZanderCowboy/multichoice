@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
@@ -25,7 +27,7 @@ class AppTheme with ChangeNotifier {
     _themeMode = themeMode;
 
     final isDarkMode = themeMode == ThemeMode.dark;
-    _prefs.setBool('isDarkMode', isDarkMode);
+    unawaited(_prefs.setBool('isDarkMode', isDarkMode));
 
     notifyListeners();
   }
@@ -86,7 +88,7 @@ class AppTheme with ChangeNotifier {
           color: AppPalette.grey.geyser,
         ),
         centerTitle: true,
-        color: _lightAppColors.foreground,
+        backgroundColor: _lightAppColors.foreground,
       ),
       cardTheme: CardThemeData(
         margin: vertical12horizontal4,
@@ -192,7 +194,7 @@ class AppTheme with ChangeNotifier {
           color: AppPalette.paletteTwo.sanJuan,
         ),
         centerTitle: true,
-        color: _darkAppColors.foreground,
+        backgroundColor: _darkAppColors.foreground,
       ),
       cardTheme: CardThemeData(
         margin: vertical12horizontal4,

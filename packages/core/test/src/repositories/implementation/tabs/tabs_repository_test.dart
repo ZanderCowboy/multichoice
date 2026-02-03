@@ -108,7 +108,8 @@ void main() {
           id: tabs.firstWhere((e) => e.title == 'title').id,
           title: 'title',
           subtitle: 'subtitle',
-          timestamp: tabs.firstWhere((e) => e.title == 'title').timestamp ??
+          timestamp:
+              tabs.firstWhere((e) => e.title == 'title').timestamp ??
               DateTime.now(),
           entries: [],
         ),
@@ -118,14 +119,15 @@ void main() {
           subtitle: 'not a subtitle',
           timestamp:
               tabs.firstWhere((e) => e.title == 'not a title').timestamp ??
-                  DateTime.now(),
+              DateTime.now(),
           entries: [],
         ),
         TabsDTO.empty().copyWith(
           id: tabs.firstWhere((e) => e.title == 'another t').id,
           title: 'another t',
           subtitle: 'another sub',
-          timestamp: tabs.firstWhere((e) => e.title == 'another t').timestamp ??
+          timestamp:
+              tabs.firstWhere((e) => e.title == 'another t').timestamp ??
               DateTime.now(),
           entries: <EntryDTO>[
             EntryDTO.empty().copyWith(
@@ -133,7 +135,8 @@ void main() {
               tabId: tabs.firstWhere((e) => e.title == 'another t').id,
               title: 'entry title',
               subtitle: 'entry subtitle',
-              timestamp: entries
+              timestamp:
+                  entries
                       .firstWhere((e) => e.title == 'entry title')
                       .timestamp ??
                   DateTime.now(),
@@ -143,7 +146,8 @@ void main() {
               tabId: tabs.firstWhere((e) => e.title == 'another t').id,
               title: 'wonderful day',
               subtitle: 'have a laugh',
-              timestamp: entries
+              timestamp:
+                  entries
                       .firstWhere((e) => e.title == 'wonderful day')
                       .timestamp ??
                   DateTime.now(),
@@ -276,36 +280,41 @@ void main() {
     });
 
     test(
-        "should delete a tab and all it's entries and return a bool when deleteTab is called",
-        () async {
-      // Arrange
-      final tabs = await db.tabs.where().findAll();
-      final tabId =
-          tabs.firstWhere((element) => element.title == 'not a title').id;
+      "should delete a tab and all it's entries and return a bool when deleteTab is called",
+      () async {
+        // Arrange
+        final tabs = await db.tabs.where().findAll();
+        final tabId = tabs
+            .firstWhere((element) => element.title == 'not a title')
+            .id;
 
-      // Act
-      final result = await tabsRepository.deleteTab(tabId: tabId);
+        // Act
+        final result = await tabsRepository.deleteTab(tabId: tabId);
 
-      // Assert
-      final entries = await db.entrys.where().findAll();
-      expect(result, true);
-      expect(entries.length, 0);
-    });
+        // Assert
+        final entries = await db.entrys.where().findAll();
+        expect(result, true);
+        expect(entries.length, 0);
+      },
+    );
 
-    test('should return false when deleteTab is called on a tab not in the db',
-        () async {
-      // Arrange
-      const tabId = 5;
+    test(
+      'should return false when deleteTab is called on a tab not in the db',
+      () async {
+        // Arrange
+        const tabId = 5;
 
-      when(mockTabsRepository.deleteTab(tabId: anyNamed('tabId')))
-          .thenAnswer((_) => Future.value(true));
+        when(
+          mockTabsRepository.deleteTab(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) => Future.value(true));
 
-      // Act
-      final result = await tabsRepository.deleteTab(tabId: tabId);
+        // Act
+        final result = await tabsRepository.deleteTab(tabId: tabId);
 
-      // Assert
-      expect(result, false);
-    });
+        // Assert
+        expect(result, false);
+      },
+    );
   });
 
   group('TabsRepository - deleteTabs', () {

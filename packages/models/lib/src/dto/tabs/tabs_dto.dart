@@ -16,12 +16,8 @@ class TabsDTO {
     this.isFirst,
   });
 
-  final int id;
-  final String title;
-  final String subtitle;
-  final DateTime timestamp;
-  final List<EntryDTO> entries;
-  final bool? isFirst;
+  factory TabsDTO.fromJson(Map<String, dynamic> json) =>
+      _$TabsDTOFromJson(json);
 
   factory TabsDTO.empty() => TabsDTO(
     id: 0,
@@ -31,8 +27,12 @@ class TabsDTO {
     entries: [],
   );
 
-  factory TabsDTO.fromJson(Map<String, dynamic> json) =>
-      _$TabsDTOFromJson(json);
+  final int id;
+  final String title;
+  final String subtitle;
+  final DateTime timestamp;
+  final List<EntryDTO> entries;
+  final bool? isFirst;
 
   Map<String, dynamic> toJson() => _$TabsDTOToJson(this);
 

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, document_ignores
+// ignore_for_file: document_ignores, deprecated_member_use
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';

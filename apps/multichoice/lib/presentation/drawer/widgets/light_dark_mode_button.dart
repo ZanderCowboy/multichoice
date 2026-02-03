@@ -16,7 +16,7 @@ class LightDarkModeButton extends HookWidget {
           isDark.value = isDarkMode;
         }
 
-        loadDarkModePreference();
+        unawaited(loadDarkModePreference());
         return null;
       },
       [],

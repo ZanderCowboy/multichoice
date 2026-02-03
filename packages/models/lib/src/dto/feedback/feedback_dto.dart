@@ -19,6 +19,18 @@ class FeedbackDTO {
     this.status = 'pending',
   });
 
+  factory FeedbackDTO.empty() => FeedbackDTO(
+    id: '',
+    message: '',
+    rating: 0,
+    deviceInfo: '',
+    appVersion: '',
+    timestamp: DateTime.now(),
+  );
+
+  factory FeedbackDTO.fromJson(Map<String, dynamic> json) =>
+      _$FeedbackDTOFromJson(json);
+
   final String id;
   final String message;
   final int rating;
@@ -30,19 +42,7 @@ class FeedbackDTO {
   final String? category;
   final String status;
 
-  factory FeedbackDTO.fromJson(Map<String, dynamic> json) =>
-      _$FeedbackDTOFromJson(json);
-
   Map<String, dynamic> toJson() => _$FeedbackDTOToJson(this);
-
-  factory FeedbackDTO.empty() => FeedbackDTO(
-    id: '',
-    message: '',
-    rating: 0,
-    deviceInfo: '',
-    appVersion: '',
-    timestamp: DateTime.now(),
-  );
 
   @override
   bool operator ==(Object other) =>

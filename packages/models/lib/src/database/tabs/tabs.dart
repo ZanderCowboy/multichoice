@@ -17,12 +17,6 @@ class Tabs {
     required this.entryIds,
   });
 
-  final String uuid;
-  final String title;
-  final String? subtitle;
-  final DateTime? timestamp;
-  final List<int>? entryIds;
-
   factory Tabs.empty() => const Tabs(
     uuid: '',
     title: '',
@@ -32,6 +26,12 @@ class Tabs {
   );
 
   factory Tabs.fromJson(Map<String, dynamic> json) => _$TabsFromJson(json);
+
+  final String uuid;
+  final String title;
+  final String? subtitle;
+  final DateTime? timestamp;
+  final List<int>? entryIds;
 
   Map<String, dynamic> toJson() => _$TabsToJson(this);
 

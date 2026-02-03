@@ -6,6 +6,8 @@ linter:
     lines_longer_than_80_chars: false
 
 analyzer:
+  errors:
+    avoid_equals_and_hash_code_on_mutable_classes: ignore
   exclude:
     - lib/generated/**
     - lib/**.g.dart

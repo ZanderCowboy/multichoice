@@ -17,12 +17,6 @@ class Entry {
     required this.timestamp,
   });
 
-  final String uuid;
-  final int tabId;
-  final String title;
-  final String? subtitle;
-  final DateTime? timestamp;
-
   factory Entry.empty() => const Entry(
     uuid: '',
     tabId: 0,
@@ -32,6 +26,12 @@ class Entry {
   );
 
   factory Entry.fromJson(Map<String, dynamic> json) => _$EntryFromJson(json);
+
+  final String uuid;
+  final int tabId;
+  final String title;
+  final String? subtitle;
+  final DateTime? timestamp;
 
   Map<String, dynamic> toJson() => _$EntryToJson(this);
 
