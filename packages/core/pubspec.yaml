@@ -12,6 +12,7 @@ dependencies:
   clock: ^1.1.1
   cloud_firestore: ^6.1.2
   dartz: ^0.10.1
+  copy_with_extension: ^9.0.0
   file_picker: ^10.1.9
   flutter:
     sdk: flutter
@@ -33,6 +34,7 @@ dependencies:
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.4.8
+  copy_with_extension_gen: ^9.0.0
   flutter_test:
     sdk: flutter
   freezed: ^3.2.3
