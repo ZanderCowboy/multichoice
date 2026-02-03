@@ -11,7 +11,9 @@ import 'package:window_size/window_size.dart';
 void main() async {
   await bootstrap();
 
-  setupCrashlytics();
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    setupCrashlytics();
+  }
 
   try {
     if (!kIsWeb) {
