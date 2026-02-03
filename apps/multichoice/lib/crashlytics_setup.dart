@@ -10,8 +10,8 @@ import 'package:flutter/foundation.dart';
 /// and before runApp is called.
 void setupCrashlytics() {
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  FlutterError.onError = (errorDetails) async {
-    await FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
 
   // Pass all uncaught asynchronous errors that aren't handled by the
