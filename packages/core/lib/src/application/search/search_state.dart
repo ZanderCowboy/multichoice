@@ -1,7 +1,7 @@
 part of 'search_bloc.dart';
 
 @freezed
-class SearchState with _$SearchState {
+abstract class SearchState with _$SearchState {
   const factory SearchState({
     required List<SearchResult> results,
     required bool isLoading,
@@ -10,9 +10,9 @@ class SearchState with _$SearchState {
   }) = _SearchState;
 
   factory SearchState.initial() => const SearchState(
-        results: [],
-        isLoading: false,
-        errorMessage: null,
-        query: '',
-      );
+    results: [],
+    isLoading: false,
+    errorMessage: null,
+    query: '',
+  );
 }

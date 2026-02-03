@@ -5,8 +5,9 @@ import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import '../../../../helpers/export.dart';
 
 void main() {
-  testWidgets('AddEntryCard renders correctly and responds to tap',
-      (WidgetTester tester) async {
+  testWidgets('AddEntryCard renders correctly and responds to tap', (
+    tester,
+  ) async {
     const EdgeInsetsGeometry testPadding = EdgeInsets.all(10);
     const EdgeInsetsGeometry testMargin = EdgeInsets.all(5);
     const Color testColor = Colors.blue;
@@ -41,8 +42,9 @@ void main() {
     expect(pressed, isTrue);
   });
 
-  testWidgets('AddEntryCard uses default values when not provided',
-      (WidgetTester tester) async {
+  testWidgets('AddEntryCard uses default values when not provided', (
+    tester,
+  ) async {
     var pressed = false;
 
     await tester.pumpWidget(

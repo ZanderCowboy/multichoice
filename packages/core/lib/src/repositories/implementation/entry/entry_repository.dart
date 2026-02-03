@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:core/src/repositories/interfaces/entry/i_entry_repository.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart' as isar;
+import 'package:isar_community/isar.dart' as isar;
 import 'package:models/models.dart';
 import 'package:uuid/uuid.dart';
 

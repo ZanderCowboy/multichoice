@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, document_ignores
+// ignore_for_file: document_ignores, deprecated_member_use
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,8 @@ class ProductTour extends StatefulWidget {
 
 class _ProductTourState extends State<ProductTour> {
   bool _isShowingDialog = false;
-  final _productTourController = coreSl<IProductTourController>();
+  final IProductTourController _productTourController =
+      coreSl<IProductTourController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +37,13 @@ class _ProductTourState extends State<ProductTour> {
         );
 
         return BlocListener<ProductBloc, ProductState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.currentStep == ProductTourStep.reset) {
               context.read<ProductBloc>().add(const ProductEvent.onLoadData());
-              handleProductTour(context, shouldRestart: true);
+              await handleProductTour(context, shouldRestart: true);
               return;
             } else if (state.currentStep == ProductTourStep.thanksPopup) {
-              handleProductTour(context);
+              await handleProductTour(context);
               return;
             }
 
@@ -62,7 +63,7 @@ class _ProductTourState extends State<ProductTour> {
   }) async {
     if (_isShowingDialog && !shouldRestart) return;
 
-    await _productTourController.currentStep.then((currentStep) {
+    await _productTourController.currentStep.then((currentStep) async {
       if (!context.mounted || currentStep == ProductTourStep.noneCompleted) {
         return;
       }
@@ -71,18 +72,18 @@ class _ProductTourState extends State<ProductTour> {
       if (currentStep == ProductTourStep.welcomePopup &&
           !_isShowingDialog &&
           (context.read<ProductBloc>().state.tabs?.isNotEmpty ?? false)) {
-        _showWelcomeModal(context);
+        await _showWelcomeModal(context);
       } else if (currentStep == ProductTourStep.thanksPopup &&
           !_isShowingDialog) {
-        _showThanksModal(context);
+        await _showThanksModal(context);
       }
     });
   }
 
-  void _showWelcomeModal(BuildContext context) {
+  Future<void> _showWelcomeModal(BuildContext context) async {
     _isShowingDialog = true;
 
-    showDialog<void>(
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => TutorialWelcomeModal(
@@ -96,10 +97,10 @@ class _ProductTourState extends State<ProductTour> {
     });
   }
 
-  void _showThanksModal(BuildContext context) {
+  Future<void> _showThanksModal(BuildContext context) async {
     _isShowingDialog = true;
 
-    showDialog<void>(
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => ThanksModal(
