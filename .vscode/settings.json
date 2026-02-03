@@ -5,5 +5,6 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "zandercowboy",
     "projectKey": "ZanderCowboy_multichoice"
-  }
+  },
+  "cmake.sourceDirectory": "G:/Programming/Projects/multichoice/apps/multichoice/windows"
 }
