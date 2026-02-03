@@ -16,8 +16,8 @@ class _VerticalTab extends HookWidget {
     useEffect(
       () {
         if (entries.length > previousEntriesLength.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await scrollController.animateTo(
               scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
@@ -86,12 +86,13 @@ class _VerticalTab extends HookWidget {
                           builder: (context, _) {
                             return EntryCard(
                               entry: entry,
-                              onDoubleTap: () {
-                                context
-                                    .read<HomeBloc>()
-                                    .add(HomeEvent.onUpdateEntry(entry.id));
-                                context.router
-                                    .push(EditEntryPageRoute(ctx: context));
+                              onDoubleTap: () async {
+                                context.read<HomeBloc>().add(
+                                  HomeEvent.onUpdateEntry(entry.id),
+                                );
+                                await context.router.push(
+                                  EditEntryPageRoute(ctx: context),
+                                );
                               },
                             );
                           },

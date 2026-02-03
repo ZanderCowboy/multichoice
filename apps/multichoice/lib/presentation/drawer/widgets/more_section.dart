@@ -56,8 +56,8 @@ class MoreSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
           title: const Text('Send Feedback'),
-          onTap: () {
-            context.router.push(const FeedbackPageRoute());
+          onTap: () async {
+            await context.router.push(const FeedbackPageRoute());
           },
         ),
         ListTile(

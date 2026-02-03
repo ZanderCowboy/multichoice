@@ -5,8 +5,9 @@ import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import '../../../../helpers/export.dart';
 
 void main() {
-  testWidgets('AddTabCard renders correctly and responds to tap',
-      (WidgetTester tester) async {
+  testWidgets('AddTabCard renders correctly and responds to tap', (
+    tester,
+  ) async {
     const testWidth = 100.0;
     const Color testColor = Colors.blue;
     const testSemanticLabel = 'Add Tab';
@@ -43,8 +44,9 @@ void main() {
     expect(pressed, isTrue);
   });
 
-  testWidgets('AddTabCard uses default values when not provided',
-      (WidgetTester tester) async {
+  testWidgets('AddTabCard uses default values when not provided', (
+    tester,
+  ) async {
     var pressed = false;
 
     await tester.pumpWidget(

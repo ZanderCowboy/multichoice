@@ -69,8 +69,8 @@ class _SearchView extends StatelessWidget {
               child: Text(
                 state.errorMessage!,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             );
           }
@@ -86,22 +86,23 @@ class _SearchView extends StatelessWidget {
               final result = state.results[index];
               final isTab = result.isTab;
               final item = result.item;
-              final title =
-                  isTab ? (item as TabsDTO).title : (item as EntryDTO).title;
+              final title = isTab
+                  ? (item as TabsDTO).title
+                  : (item as EntryDTO).title;
               final subtitle = isTab
                   ? (item as TabsDTO).subtitle
                   : (item as EntryDTO).subtitle;
               return SearchResultCard(
                 title: title,
                 subtitle: subtitle,
-                onTap: () {
-                  context.router.push(
+                onTap: () async {
+                  await context.router.push(
                     DetailsPageRoute(
                       result: result,
                       onBack: () {
                         context.read<SearchBloc>().add(
-                              const SearchEvent.refresh(),
-                            );
+                          const SearchEvent.refresh(),
+                        );
                         context.router.pop();
                       },
                     ),
@@ -110,9 +111,9 @@ class _SearchView extends StatelessWidget {
                 onEdit: () async {
                   await onEdit(result);
                   if (context.mounted) {
-                    context
-                        .read<SearchBloc>()
-                        .add(SearchEvent.search(state.query));
+                    context.read<SearchBloc>().add(
+                      SearchEvent.search(state.query),
+                    );
                   }
                 },
                 onDelete: () async {
