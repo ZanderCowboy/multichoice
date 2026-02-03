@@ -84,8 +84,8 @@ Multichoice is a versatile Flutter application that helps users manage and organ
 
 ### Prerequisites
 
-- Flutter version: 3.27.1
-- Dart version: 3.6.0
+- Flutter version: 3.38.9
+- Dart version: 3.10.8
 - Android Studio / VS Code
 - Windows (for Windows platform development)
 
