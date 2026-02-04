@@ -7,6 +7,7 @@
 /apps/showcase/
 /tools/
 
+# Multichoice V2
 **/gradle-wrapper.jar
 **/.gradle
 **/captures/
