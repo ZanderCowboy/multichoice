@@ -8,13 +8,13 @@ environment:
   sdk: ">=3.10.8 <4.0.0"
 
 dependencies:
-  auto_route: ^10.0.1
+  auto_route: ^11.1.0
   bloc: ^9.0.0
   core: ^0.0.1
   file_picker: ^10.1.9
-  firebase_analytics: ^10.10.5
+  firebase_analytics: ^12.1.1
   firebase_core: ^4.4.0
-  firebase_remote_config: ^4.4.5
+  firebase_remote_config: ^6.1.4
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0

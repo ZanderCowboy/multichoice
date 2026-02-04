@@ -80,6 +80,7 @@ upload-keystore.*
 .svn/
 migrate_working_dir/
 devtools_options.yaml
+**/node_modules/
 
 # IntelliJ related
 *.iml
