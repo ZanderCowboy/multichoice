@@ -6,5 +6,10 @@ linter:
     lines_longer_than_80_chars: false
 
 analyzer:
+  errors:
+    flutter_style_todos: ignore
   exclude:
     - lib/firebase_options.dart
+    - "**/*.gr.dart"
+    - "**/*.gen.dart"
+    - /dummy/

@@ -4,9 +4,11 @@ inputs:
   version_number:
     required: true
     description: "Specifies the version to add to commit message"
+    default: "1.0.0"
   download_filename:
     required: true
     description: "Specifies the id/name for the artifact to download"
+    default: "pubspec-file"
 runs:
   using: "composite"
   steps:

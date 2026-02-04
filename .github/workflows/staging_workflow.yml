@@ -1,0 +1,181 @@
+---
+# This workflow is triggered on pull request closure for branch 'rc'.
+# It is responsible for building the Android app, running tests, and uploading artifacts.
+# It also manages versioning based on labels applied to the pull request.
+#
+# The versioning works as follows:
+# - If the pull request is merged and has labels 'major', 'minor', or 'patch', it will bump the version accordingly with -RC suffix.
+#   For example, 1.0.0+5, and the label is 'minor', it will become 1.1.0-RC+6.
+# - If the pull request is merged and has no labels, it will bump the build number only.
+#   For example, if the current version is 1.0.0+5, it will become 1.0.0-RC+6.
+# - If the pull request is merged and has the label 'no-build', it will skip the build process.
+#
+name: rc-workflow
+on:
+  pull_request:
+    branches: ["rc"]
+    types:
+      - closed
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preBuild:
+    name: Prebuild - Version Management
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: false
+    outputs:
+      version_number: ${{ steps.version_management.outputs.version_number }}
+      version_part: ${{ steps.version_management.outputs.version_part }}
+      build_number: ${{ steps.version_management.outputs.build_number }}
+
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      ##############################################
+      # Generate GitHub App Token
+      ##############################################
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      ##############################################
+      # Check Version Labels
+      ##############################################
+      - name: Check Version Labels
+        id: check_labels
+        uses: ./.github/actions/check-version-labels
+        with:
+          labels: ${{ toJson(github.event.pull_request.labels) }}
+          allowed_labels: "major,minor,patch"
+          no_build_label: "no-build"
+
+      ##############################################
+      # Version Management
+      ##############################################
+      - name: Version Management
+        id: version_management
+        uses: ./.github/actions/version-management
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+          pubspec_path: apps/multichoice/pubspec.yaml
+          branch_name: rc
+          bump_type: ${{ steps.check_labels.outputs.bump_type }}
+          version_suffix: "-RC"
+
+  build:
+    name: Builds Android App
+    needs: [preBuild]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      statuses: write
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
+      ##############################################
+      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      ##############################################
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
+
+      ##############################################
+      # Build App Bundle
+      ##############################################
+      - name: Build App Bundle
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload App Bundle as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v5
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+
+      ###############################################
+      # Release to Google Play Internal Track
+      ###############################################
+      - name: Release Build to internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: "co.za.zanderkotze.multichoice"
+          track: "internal"
+          releaseName: ${{ needs.preBuild.outputs.version_number }}
+          status: "completed"
+
+      ##############################################
+      # Create New Tag
+      ##############################################
+      - name: Create New Tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "full"
+          allowed_formats: "rc"

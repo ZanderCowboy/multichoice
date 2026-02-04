@@ -1,15 +1,17 @@
 ---
+# This workflow is triggered on pull request closure from branch 'rc' to 'main'.
+# It is responsible for creating a new PROD tag (vX.Y.Z).
 name: Tag and Release
 on:
-  pull_request:
-    branches:
-      - "main"
-    types:
-      - "opened"
-      - "synchronize"
-      - "reopened"
-      - "ready_for_review"
-      - "labeled"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #   types:
+  #     - "opened"
+  #     - "synchronize"
+  #     - "reopened"
+  #     - "ready_for_review"
+  #     - "labeled"
 
   workflow_dispatch:
 
@@ -19,7 +21,7 @@ concurrency:
 
 jobs:
   bumpVersion:
-    name: Bump build number and get prebuild ready
+    name: Bump Build Number, Prebuild
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -30,9 +32,12 @@ jobs:
       web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
       windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
+      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
+      android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
+      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Update version number and download
         id: id_unlabeled
@@ -92,9 +97,6 @@ jobs:
             version_num=${{ steps.id_unlabeled.outputs.version-number }}
           fi
 
-          # echo "version=${{ steps.id_unlabeled.outputs.version-number }}" >> $GITHUB_OUTPUT
-          # version_num=${{ steps.id_unlabeled.outputs.version-number }}
-
           echo "version_number=${version_num}"
           version=$(echo "${version_num}" | sed 's/+.*//')
           echo "version_rel=${version}" >> $GITHUB_OUTPUT
@@ -103,14 +105,18 @@ jobs:
           echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
           echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
 
+          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
+          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
+
       - name: Get pubspec.yaml version
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: pubspec-file-release
           path: ${{ github.workspace }}/apps/multichoice/
 
   buildRelease:
-    name: Build Apps for Release
+    name: Release Build
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/_build-env-apps.yml
     needs: [bumpVersion]
@@ -129,7 +135,7 @@ jobs:
 
   commitBump:
     name: Auto Commit Bumped Version
-    needs: [build, bumpVersion]
+    needs: [bumpVersion, buildRelease]
     if: success()
     runs-on: ubuntu-latest
     concurrency:
@@ -139,7 +145,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref }}
 
@@ -154,7 +160,7 @@ jobs:
           download_filename: "pubspec-file-release"
 
   tagAndRelease:
-    name: Git tagging and releases
+    name: Git Tagging, Release
     needs: [commitBump, bumpVersion]
     if: github.event.pull_request.draft == false && success()
     runs-on: ubuntu-latest
@@ -162,7 +168,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 

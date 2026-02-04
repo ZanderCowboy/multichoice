@@ -1,5 +1,9 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "svg.preview.background": "editor"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "svg.preview.background": "editor",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "zandercowboy",
+    "projectKey": "ZanderCowboy_multichoice"
+  }
 }

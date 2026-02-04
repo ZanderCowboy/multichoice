@@ -1,17 +1,15 @@
 ---
+# This workflow is triggered on pull request closure for branches 'develop' and 'rc'.
+# It is responsible for building the Android app, running tests, and uploading artifacts.
+# It also manages versioning based on labels applied to the pull request.
 name: Test, Analyze, Build
 on:
-  push:
-    branches:
-      - "develop"
-  pull_request:
-    branches:
-      - "develop"
-    types:
-      - "opened"
-      - "synchronize"
-      - "reopened"
-      - "ready_for_review"
+  # pull_request:
+  #   branches:
+  #     - "develop"
+  #     - "rc"
+  #   types:
+  #     - "closed"
 
   workflow_dispatch:
 
@@ -21,95 +19,156 @@ concurrency:
 
 jobs:
   preBuild:
-    name: Prebuild - Bump build number
-    if: github.event.pull_request.draft == false
+    name: Prebuild - Version Management
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
       cancel-in-progress: false
     outputs:
-      version_number: ${{ steps.id_out.outputs.version }}
-      web_build_flag: ${{ steps.id_out.outputs.web_build_flag }}
+      version_number: ${{ steps.version_management.outputs.version_number }}
       android_build_flag: ${{ steps.id_out.outputs.android_build_flag }}
-      windows_build_flag: ${{ steps.id_out.outputs.windows_build_flag }}
-
-      web_environment_flag: ${{ steps.id_out.outputs.web_environment_flag }}
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
-      windows_environment_flag: ${{ steps.id_out.outputs.windows_environment_flag }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Update version number and download
-        id: id_updated_version
-        uses: ./.github/actions/app-versioning
+      - name: Checkout Repository
+        uses: actions/checkout@v5
         with:
-          bump-strategy: "none"
-          file-path: "./apps/multichoice/pubspec.yaml"
-          upload-filename: "pubspec-file"
+          fetch-depth: 0
 
-      - name: read-config-file
-        uses: actions-tools/yaml-outputs@v2
-        id: read_config_yaml
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: peter-murray/workflow-application-token-action@v4
         with:
-          file-path: "${{ github.workspace }}/config.yml"
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Check Version Labels
+        id: check_labels
+        run: |
+          LABELS='${{ toJson(github.event.pull_request.labels) }}'
+          VALID_LABELS=$(echo "$LABELS" | jq -r '.[] | select(.name | IN("no-build","major","minor","patch")) | .name')
+          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
+          if [[ $LABEL_COUNT -gt 1 ]]; then
+            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: major, minor, patch, or no-build"
+            exit 1
+          fi
+          if [[ $LABEL_COUNT -eq 0 ]]; then
+            echo "::error::No version label found. Please add one of: major, minor, patch, or no-build"
+            exit 1
+          fi
+          case "$VALID_LABELS" in
+            "no-build") echo "bump_type=none" >> $GITHUB_OUTPUT ;;
+            "major") echo "bump_type=major" >> $GITHUB_OUTPUT ;;
+            "minor") echo "bump_type=minor" >> $GITHUB_OUTPUT ;;
+            "patch") echo "bump_type=patch" >> $GITHUB_OUTPUT ;;
+          esac
+        shell: bash
+
+      - name: Version Management
+        id: version_management
+        uses: ./.github/actions/version-management
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+          pubspec_path: apps/multichoice/pubspec.yaml
+          branch_name: develop
+          bump_type: ${{ steps.check_labels.outputs.bump_type }}
 
       - id: id_out
         run: |
-          echo "version=${{ steps.id_updated_version.outputs.version-number }}" >> $GITHUB_OUTPUT
-          echo "web_build_flag=${{ steps.read_config_yaml.outputs.build__web_build_flag }}" >> $GITHUB_OUTPUT
-          echo "android_build_flag=${{ steps.read_config_yaml.outputs.build__android_build_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_build_flag=${{ steps.read_config_yaml.outputs.build__windows_build_flag }}" >> $GITHUB_OUTPUT
-
-          echo "web_environment_flag=${{ steps.read_config_yaml.outputs.environment__web_environment_flag }}" >> $GITHUB_OUTPUT
-          echo "android_environment_flag=${{ steps.read_config_yaml.outputs.environment__android_environment_flag }}" >> $GITHUB_OUTPUT
-          echo "windows_environment_flag=${{ steps.read_config_yaml.outputs.environment__windows_environment_flag }}" >> $GITHUB_OUTPUT
-
-      - name: Get pubspec.yaml version
-        uses: actions/download-artifact@v4
-        with:
-          name: pubspec-file
-          path: ${{ github.workspace }}/apps/multichoice/
+          echo "version_number=${{ steps.version_management.outputs.version_number }}" >> $GITHUB_OUTPUT
 
   build:
-    name: Build Apps
-    if: github.event.pull_request.draft == false && success()
-    uses: ./.github/workflows/_build-env-apps.yml
+    name: Builds Android App
     needs: [preBuild]
-    secrets: inherit
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-    with:
-      pubspec_filename: "pubspec-file"
-      web_build_flag: ${{ needs.preBuild.outputs.web_build_flag == 'true' }}
-      web_environment_flag: ${{ needs.preBuild.outputs.web_environment_flag }}
-      android_build_flag: ${{ needs.preBuild.outputs.android_build_flag == 'true' }}
-      android_environment_flag: ${{ needs.preBuild.outputs.android_environment_flag }}
-      android_versionNumber: ${{ needs.preBuild.outputs.version_number }}
-      android_build_artifact: "android-release"
-      android_build_appbundle: ${{ 'false' == 'true' }}
-      windows_build_flag: ${{ needs.preBuild.outputs.windows_build_flag == 'true' }}
-      windows_environment_flag: ${{ needs.preBuild.outputs.windows_environment_flag }}
-
-  post-build:
-    name: Post Build
-    needs: [build, preBuild]
     runs-on: ubuntu-latest
-    concurrency:
-      group: post-build-group
-      cancel-in-progress: false
     permissions:
       contents: write
+      packages: read
+      statuses: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+      - name: Checkout Repository
+        uses: actions/checkout@v5
 
-      - name: Call Auto Commit Version action
-        uses: ./.github/actions/auto-commit-version
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          version_number: ${{ needs.preBuild.outputs.version_number }}
-          download_filename: "pubspec-file"
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
+
+      ###############################################
+      # Build APK
+      ###############################################
+      - name: Build APK
+        run: flutter build apk --release
+        working-directory: apps/multichoice/
+
+      ###############################################
+      # Upload APK to Firebase App Distribution
+      ###############################################
+      - name: Upload APK to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotesFile: ./CHANGELOG.md
+          debug: true
+
+      ###############################################
+      # Build App Bundle
+      ###############################################
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+        working-directory: apps/multichoice/
+
+      ###############################################
+      # Upload App Bundle as Artifact
+      ###############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v5
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+
+      - name: Create New Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          new_tag=${{ needs.preBuild.outputs.version_number }}
+          if [[ -z "$new_tag" ]]; then
+            echo "Error: version_number is empty"
+            exit 1
+          fi
+          git tag $new_tag
+          git push origin $new_tag

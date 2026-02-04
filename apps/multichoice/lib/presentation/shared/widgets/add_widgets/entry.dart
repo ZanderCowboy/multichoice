@@ -6,12 +6,14 @@ class AddEntryCard extends StatelessWidget {
     required this.padding,
     this.semanticLabel,
     this.color,
+    this.margin = allPadding4,
     super.key,
   });
 
   final String? semanticLabel;
   final VoidCallback onPressed;
   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry margin;
   final Color? color;
 
   @override
@@ -24,6 +26,7 @@ class AddEntryCard extends StatelessWidget {
         borderRadius: borderCircular5,
       ),
       padding: padding,
+      margin: margin,
       icon: const Icon(Icons.add_outlined),
       iconSize: 36,
       onPressed: onPressed,

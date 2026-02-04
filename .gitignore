@@ -4,6 +4,17 @@
 /web/
 /windows/
 
+/apps/showcase/
+/tools/
+
+**/gradle-wrapper.jar
+**/.gradle
+**/captures/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+**/GeneratedPluginRegistrant.java
+
 # Files and directories created by pub
 .dart_tool/
 .packages
@@ -25,9 +36,12 @@ pubspec.lock
 **/*.gr.dart
 **/*.isar
 **/*.isar.lock
-**/libisar.dylib
+**/*.isar-lck
+**/isar.dll
+**/libisar.**
 **/coverage
 **/*.mocks.dart
+**/functions/node_modules/
 
 # Keys and Secrets
 password.txt
@@ -35,6 +49,10 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
+**/.secrets
+
+# Running Workflows Locally
+**/.secrets
 
 # dotenv environment variables file
 .env*
@@ -68,3 +86,6 @@ devtools_options.yaml
 *.ipr
 *.iws
 .idea/
+
+# FVM Version Cache
+.fvm/
