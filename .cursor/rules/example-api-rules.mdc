@@ -1,0 +1,36 @@
+---
+description: API and service layer conventions
+globs: ["**/services/**", "**/api/**", "**/repositories/**"]
+alwaysApply: false
+---
+
+# API and Service Rules Example
+
+This rule file demonstrates rules for API and service layer code.
+
+## Service Layer Conventions
+
+### Interface Requirements
+- Every service implementation must have an interface
+- Interface files: `i_<service_name>_service.dart`
+- Implementation files: `<service_name>_service.dart`
+- Interfaces in `interfaces/` directory
+- Implementations in `implementations/` directory
+
+### Error Handling
+- Always handle network errors gracefully
+- Return `Result<T>` or `Either<Error, T>` types
+- Log errors appropriately
+- Never expose internal error details to UI
+
+### Async Operations
+- Use `Future` for async operations
+- Always handle timeouts
+- Use proper cancellation tokens
+- Document expected response times
+
+### Testing Services
+- Mock external dependencies
+- Test error scenarios
+- Test timeout handling
+- Verify proper error propagation

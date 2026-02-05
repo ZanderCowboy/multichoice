@@ -1,0 +1,138 @@
+---
+description: Reusable code patterns and templates that can be referenced
+globs: 
+alwaysApply: true
+---
+
+# Reusable Patterns and Templates
+
+This rule file documents reusable patterns that can be referenced when creating new code.
+
+## Service Pattern
+
+When creating a new service, use this pattern:
+
+### Interface File (`interfaces/i_<service_name>_service.dart`)
+```dart
+abstract class I<ServiceName>Service {
+  Future<Result<T>> methodName();
+}
+```
+
+### Implementation File (`implementations/<service_name>_service.dart`)
+```dart
+@injectable
+class <ServiceName>Service implements I<ServiceName>Service {
+  @override
+  Future<Result<T>> methodName() {
+    // Implementation
+  }
+}
+```
+
+## Page Pattern
+
+When creating a new page, use this structure:
+
+```dart
+class <PageName>Page extends StatelessWidget {
+  const <PageName>Page({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('<Page Title>'),
+      ),
+      body: _<PageName>Page(),
+    );
+  }
+}
+
+class _<PageName>Page extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+```
+
+## Test Pattern
+
+When creating a new test file, use this structure:
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('<ClassName>', () {
+    test('should <expected behavior>', () async {
+      // Arrange
+      // Act
+      // Assert
+    });
+  });
+}
+```
+
+## Repository Pattern
+
+When creating a new repository:
+
+```dart
+abstract class I<EntityName>Repository {
+  Future<Result<List<<EntityName>>>> getAll();
+  Future<Result<<EntityName>>> getById(String id);
+  Future<Result<<EntityName>>> create(<EntityName> entity);
+  Future<Result<<EntityName>>> update(<EntityName> entity);
+  Future<Result<void>> delete(String id);
+}
+```
+
+## Freezed Model Pattern
+
+When creating a new Freezed model:
+
+```dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part '<model_name>.freezed.dart';
+part '<model_name>.g.dart';
+
+@freezed
+class <ModelName> with _$<ModelName> {
+  const factory <ModelName>({
+    required String id,
+    // Add fields here
+  }) = _<ModelName>;
+
+  factory <ModelName>.fromJson(Map<String, dynamic> json) =>
+      _$<ModelName>FromJson(json);
+}
+```
+
+## Widget Pattern
+
+When creating a reusable widget:
+
+```dart
+class <WidgetName> extends StatelessWidget {
+  const <WidgetName>({
+    super.key,
+    // Add parameters
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+```
+
+## Usage Instructions
+
+When creating new code:
+1. Find the appropriate pattern above
+2. Copy and adapt it to your needs
+3. Follow the naming conventions
+4. Ensure proper imports and dependencies

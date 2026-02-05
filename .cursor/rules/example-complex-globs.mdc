@@ -1,0 +1,46 @@
+---
+description: Example of complex glob patterns
+globs: 
+  - "packages/**/*.dart"
+  - "apps/**/lib/features/**/*.dart"
+  - "!**/*.g.dart"
+  - "!**/*.freezed.dart"
+  - "!**/*.mocks.dart"
+alwaysApply: false
+---
+
+# Complex Glob Patterns Example
+
+This demonstrates advanced glob pattern usage.
+
+## Glob Pattern Features
+
+### Inclusion Patterns
+- `packages/**/*.dart` - All Dart files in packages directory
+- `apps/**/lib/features/**/*.dart` - All Dart files in feature directories
+
+### Exclusion Patterns (using `!`)
+- `!**/*.g.dart` - Exclude generated files
+- `!**/*.freezed.dart` - Exclude Freezed generated files
+- `!**/*.mocks.dart` - Exclude mock files
+
+## Use Cases
+- Apply rules to source files but not generated files
+- Target specific directory structures
+- Exclude test files or build artifacts
+- Create rules for specific package types
+
+## Pattern Examples
+```yaml
+globs:
+  # Include patterns
+  - "**/*.dart"                    # All Dart files
+  - "packages/core/**"             # Everything in core package
+  - "apps/**/lib/**"               # All lib directories in apps
+  - "**/*.{dart,ts,js}"            # Multiple file extensions
+  
+  # Exclude patterns (must come after includes)
+  - "!**/test/**"                  # Exclude test directories
+  - "!**/*.g.dart"                 # Exclude generated files
+  - "!**/node_modules/**"          # Exclude dependencies
+```

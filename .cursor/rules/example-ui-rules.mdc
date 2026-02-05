@@ -1,0 +1,47 @@
+---
+description: UI and widget development guidelines
+globs: ["**/widgets/**", "**/pages/**", "**/screens/**", "**/ui_kit/**"]
+alwaysApply: false
+---
+
+# UI Development Rules Example
+
+This rule file demonstrates rules for UI and widget development.
+
+## Widget Conventions
+
+### Page Structure
+- Place `Scaffold` and `AppBar` in parent class
+- Keep main body in private child class (e.g., `_HomePage`)
+- Example:
+```dart
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(...),
+      body: _HomePage(),
+    );
+  }
+}
+
+class _HomePage extends StatelessWidget { ... }
+```
+
+### Constants Usage
+- **Spacing**: Use `spacing_constants.dart` for all spacing values
+- **Borders**: Use `border_constants.dart` for `BorderRadius.circular()`
+- **All UI constants**: Check `/constants` folder first
+- If constant doesn't exist, add it to appropriate file in `/constants`
+
+### Widget Modularity
+- Break large widgets into smaller, modular classes
+- Create separate files for modular classes
+- Use `part`/`part of` for file linkage
+- Keep `part` sections alphabetical
+- Place modular classes in `/widgets` folder
+
+### Testing UI
+- Use keys from `widget_keys.dart` for consistency
+- Test user interactions, not implementation
+- Keep widget tests focused and fast
