@@ -45,4 +45,14 @@ Future<void> bootstrap() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize Firebase Remote Config service
+  try {
+    final firebaseService = coreSl<IFirebaseService>();
+    await firebaseService.initialize();
+    await firebaseService.fetchAndActivate();
+  } catch (e) {
+    log('Error initializing Firebase Remote Config: $e');
+    // Continue app startup even if Remote Config fails
+  }
 }
