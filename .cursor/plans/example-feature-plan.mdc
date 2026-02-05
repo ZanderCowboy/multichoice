@@ -1,0 +1,46 @@
+---
+title: Example Feature Plan
+status: planning
+priority: high
+tags: [feature, ui, backend]
+---
+
+# Example Feature Plan
+
+This is an example of how to structure a feature plan in the `.cursor/plans/` directory.
+
+## Overview
+Brief description of what this feature will accomplish.
+
+## Goals
+- Primary goal 1
+- Primary goal 2
+- Secondary goal 1
+
+## Requirements
+1. Requirement 1
+2. Requirement 2
+3. Requirement 3
+
+## Implementation Steps
+- [ ] Step 1: Setup and preparation
+- [ ] Step 2: Core implementation
+- [ ] Step 3: Testing
+- [ ] Step 4: Documentation
+- [ ] Step 5: Review and merge
+
+## Technical Considerations
+- Consideration 1
+- Consideration 2
+
+## Dependencies
+- Package/feature dependency 1
+- Package/feature dependency 2
+
+## Testing Strategy
+- Unit tests for business logic
+- Widget tests for UI components
+- Integration tests for user flows
+
+## Notes
+Additional notes, questions, or concerns about this feature.
