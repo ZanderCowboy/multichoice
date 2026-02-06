@@ -4,6 +4,7 @@ enum FirebaseConfigKeys {
 
   // JSON configs
   // example: appConfig('app_config'),
+  changelog('changelog'),
 
   // Strings
   welcomeMessage('welcome_message')
