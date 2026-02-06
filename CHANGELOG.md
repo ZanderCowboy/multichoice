@@ -7,3 +7,4 @@
 - Add `changelog` key to `FirebaseConfigKeys` enum
 - Add changelog navigation item in drawer's "More" section
 - Sort versions by semantic versioning (newest first) in repository
+- Add `forceFetchAndActivate` to FirebaseService to immediately refresh Firebase Remote Config contents
