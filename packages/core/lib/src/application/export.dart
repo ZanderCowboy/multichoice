@@ -1,3 +1,4 @@
+export 'changelog/changelog_bloc.dart';
 export 'details/details_bloc.dart';
 export 'feedback/feedback_bloc.dart';
 export 'home/home_bloc.dart';

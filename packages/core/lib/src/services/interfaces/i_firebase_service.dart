@@ -7,6 +7,10 @@ abstract class IFirebaseService {
   /// Fetch and activate the latest config from Firebase
   Future<void> fetchAndActivate();
 
+  /// Force fetch and activate immediately, bypassing minimumFetchInterval
+  /// This is useful for development/testing purposes
+  Future<void> forceFetchAndActivate();
+
   /// Get a JSON config value and parse it as a model object
   /// Returns null if the config doesn't exist or parsing fails
   ///

@@ -33,5 +33,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   ),
   MockSpec<DocumentReference<Map<String, dynamic>>>(as: #MockDocumentReference),
   MockSpec<ISearchRepository>(as: #MockSearchRepository),
+  MockSpec<IFirebaseService>(as: #MockFirebaseService),
+  MockSpec<IChangelogRepository>(as: #MockChangelogRepository),
 ])
 void main() {}

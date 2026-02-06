@@ -61,6 +61,13 @@ class MoreSection extends StatelessWidget {
           },
         ),
         ListTile(
+          leading: const Icon(Icons.history),
+          title: const Text('Changelog'),
+          onTap: () async {
+            await context.router.push(const ChangelogPageRoute());
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.info_outline),
           title: const Text('About'),
           onTap: () async {

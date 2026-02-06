@@ -54,6 +54,32 @@ class FirebaseService implements IFirebaseService {
   }
 
   @override
+  Future<void> forceFetchAndActivate() async {
+    if (!_isInitialized) {
+      await initialize();
+    }
+
+    try {
+      // Temporarily set minimumFetchInterval to 0 to force immediate fetch
+      final originalSettings = _remoteConfig.settings;
+      await _remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: originalSettings.fetchTimeout,
+          minimumFetchInterval: Duration.zero,
+        ),
+      );
+
+      await _remoteConfig.fetchAndActivate();
+
+      // Restore original settings
+      await _remoteConfig.setConfigSettings(originalSettings);
+    } catch (e) {
+      log('Error force fetching and activating Remote Config: $e');
+      rethrow;
+    }
+  }
+
+  @override
   Future<T?> getConfig<T>(
     FirebaseConfigKeys key,
     T Function(Map<String, dynamic>) fromJson,

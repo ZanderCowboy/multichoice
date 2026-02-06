@@ -1,8 +1,10 @@
-#118 - Add Remote Config to Codebase
+#211 - Add Changelog Page in App
 
-- Add `FirebaseService` in core package for Firebase Remote Config management
-- Add `FirebaseConfigKeys` enum in models package for type-safe config keys
-- Support automatic JSON to model conversion via `getConfig<T>()`
-- Support feature flags via `isEnabled()` 
-- Support strings via `getString()`
-- Auto-initialize service in bootstrap
+- Add `ChangelogPage` to display version history from Firebase Remote Config
+- Add `Changelog` and `ChangelogEntry` models for changelog data structure
+- Add `IChangelogRepository` interface and `ChangelogRepository` implementation
+- Add `ChangelogBloc` for state management with loading, error, and success states
+- Add `changelog` key to `FirebaseConfigKeys` enum
+- Add changelog navigation item in drawer's "More" section
+- Sort versions by semantic versioning (newest first) in repository
+- Add `forceFetchAndActivate` to FirebaseService to immediately refresh Firebase Remote Config contents
