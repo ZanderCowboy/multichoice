@@ -1,0 +1,39 @@
+---
+description: Testing guidelines and conventions
+globs: ["**/*.test.dart", "**/*_test.dart", "**/test/**"]
+alwaysApply: false
+---
+
+# Testing Rules Example
+
+This rule file demonstrates rules that apply only to test files.
+
+## Usage
+- Targets all test files using multiple glob patterns
+- Ensures consistent testing practices across the project
+
+## Testing Conventions
+1. **Test File Naming**
+   - Unit tests: `*_test.dart` or `*.test.dart`
+   - Widget tests: `*_widget_test.dart`
+   - Integration tests: `*_integration_test.dart`
+
+2. **Test Structure**
+   - Use `setUp()` and `tearDown()` for common setup
+   - Group related tests with `group()`
+   - Use descriptive test names: `test('should return error when user is null')`
+
+3. **Mocking**
+   - Check for existing `mocks.dart` files first
+   - Use `mockito` for generating mocks
+   - Run `melos` for build_runner when mocks are needed
+
+4. **Coverage**
+   - Aim for 80%+ coverage
+   - Focus on business logic coverage
+   - Don't test implementation details
+
+## Test Organization
+- Place tests next to the code they test
+- Use `test/` directory for test files
+- Mirror the source directory structure in tests

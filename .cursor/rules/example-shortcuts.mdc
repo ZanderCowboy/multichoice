@@ -1,0 +1,42 @@
+---
+description: Common shortcuts and quick reference
+globs: 
+alwaysApply: true
+---
+
+# Quick Reference Shortcuts
+
+This file provides quick reference for common tasks and shortcuts.
+
+## Build Commands
+- `make db` - Run build_runner for code generation
+- `make fb` - Flutter build with code generation
+- `make frb` - Full Flutter rebuild (clean + code generation)
+- `make clean` - Clean all generated files
+- `make mr` - Melos rebuild all packages
+
+## Testing Commands
+- `melos test:all` - Run all tests
+- `melos test:core` - Run core package tests
+- `melos test:multichoice` - Run main app tests
+- `melos coverage:all` - Generate coverage reports
+
+## Code Generation
+- When mocks are needed: Check for `mocks.dart` first, then use `melos` for build_runner
+- Generated file patterns:
+  - `*.g.dart` - General generated code
+  - `*.freezed.dart` - Freezed models
+  - `*.mocks.dart` - Test mocks
+  - `*.auto_mappr.dart` - Object mapping
+
+## File Organization
+- Services: `interfaces/` and `implementations/` directories
+- Constants: Check `/constants` folder first
+- Tests: Mirror source structure, use `mocks.dart` when available
+- Exports: Use `export.dart` for barrel files
+
+## Quick Tips
+- Use `const` constructors when possible
+- Check existing constants before creating new ones
+- Use `part`/`part of` for modular widget classes
+- Keep `part` sections alphabetical
