@@ -100,7 +100,9 @@ class FirebaseService implements IFirebaseService {
     }
 
     try {
-      return _remoteConfig.getString(key.key);
+      final value = _remoteConfig.getString(key.key);
+
+      return value;
     } catch (e) {
       log('Error getting string for key "${key.key}": $e');
       return null;
