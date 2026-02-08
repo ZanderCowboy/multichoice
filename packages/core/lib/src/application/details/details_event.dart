@@ -9,5 +9,6 @@ class DetailsEvent with _$DetailsEvent {
       OnChangeSubtitleDetails;
   const factory DetailsEvent.onToggleEditMode() = OnToggleEditModeDetails;
   const factory DetailsEvent.onDeleteChild(int id) = OnDeleteChildDetails;
+  const factory DetailsEvent.onDelete() = OnDeleteDetails;
   const factory DetailsEvent.onSubmit() = OnSubmitDetails;
 }

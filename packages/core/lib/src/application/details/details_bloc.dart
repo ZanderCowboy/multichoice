@@ -140,6 +140,23 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               children: currentChildren,
             ));
           },
+          onDelete: (e) async {
+            emit(state.copyWith(isLoading: true));
+
+            if (isTab) {
+              await tabsRepository.deleteTab(tabId: state.tabId!);
+            } else if (isEntry) {
+              await entryRepository.deleteEntry(
+                tabId: state.tabId!,
+                entryId: state.entryId!,
+              );
+            }
+
+            emit(state.copyWith(
+              isLoading: false,
+              isDeleted: true,
+            ));
+          },
           onSubmit: (e) async {
             emit(state.copyWith(
               isLoading: true,
