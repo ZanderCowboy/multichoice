@@ -1,10 +1,14 @@
-#211 - Add Changelog Page in App
+#7 - Implement Draggable
 
-- Add `ChangelogPage` to display version history from Firebase Remote Config
-- Add `Changelog` and `ChangelogEntry` models for changelog data structure
-- Add `IChangelogRepository` interface and `ChangelogRepository` implementation
-- Add `ChangelogBloc` for state management with loading, error, and success states
-- Add `changelog` key to `FirebaseConfigKeys` enum
-- Add changelog navigation item in drawer's "More" section
-- Sort versions by semantic versioning (newest first) in repository
-- Add `forceFetchAndActivate` to FirebaseService to immediately refresh Firebase Remote Config contents
+- Add `order` field to `Tabs` model and `TabsDTO` for persistent collection ordering
+- Add `isEditMode` boolean flag to `HomeState` to toggle drag-and-drop mode
+- Add `OnToggleEditMode`, `OnReorderTabs`, and `OnReorderEntries` events to `HomeEvent`
+- Implement reorder handlers in `HomeBloc` with immediate UI updates and database persistence
+- Add pencil/tick toggle button in AppBar to enter/exit edit mode
+- Implement `ReorderableListView` for collections in both horizontal and vertical layouts
+- Implement `SliverReorderableList` and `ReorderableListView` for entries within tabs
+- Add drag handle icons that appear on collections and entries in edit mode
+- Update `TabsRepository` to sort by `order` field and add `updateTabsOrder` method
+- Update `EntryRepository` to respect `entryIds` order and add `updateEntriesOrder` method
+- Disable navigation and menu interactions when in edit mode
+- Add `AlwaysScrollableScrollPhysics` to reorderable lists for better drag behavior
