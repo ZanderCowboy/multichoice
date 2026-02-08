@@ -31,7 +31,9 @@ class EditEntryPage extends StatelessWidget {
             ),
           ),
         ),
-        body: const _EditEntryPage(),
+        body: const SafeArea(
+          child: _EditEntryPage(),
+        ),
       ),
     );
   }
@@ -61,8 +63,8 @@ class _EditEntryPage extends StatelessWidget {
                   initialValue: state.entry.title,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedEntryTitle(value),
-                        );
+                      HomeEvent.onChangedEntryTitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Title',
@@ -73,8 +75,8 @@ class _EditEntryPage extends StatelessWidget {
                   initialValue: state.entry.subtitle,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedEntrySubtitle(value),
-                        );
+                      HomeEvent.onChangedEntrySubtitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Subtitle',
@@ -87,8 +89,8 @@ class _EditEntryPage extends StatelessWidget {
                     OutlinedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
+                          const HomeEvent.onPressedCancel(),
+                        );
                         context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
@@ -96,9 +98,9 @@ class _EditEntryPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const HomeEvent.onSubmitEditEntry());
+                              context.read<HomeBloc>().add(
+                                const HomeEvent.onSubmitEditEntry(),
+                              );
 
                               context.router.popUntilRoot();
                             }

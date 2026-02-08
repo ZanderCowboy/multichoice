@@ -31,7 +31,9 @@ class EditTabPage extends StatelessWidget {
             ),
           ),
         ),
-        body: const _EditPage(),
+        body: const SafeArea(
+          child: _EditPage(),
+        ),
       ),
     );
   }
@@ -61,8 +63,8 @@ class _EditPage extends StatelessWidget {
                   initialValue: state.tab.title,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedTabTitle(value),
-                        );
+                      HomeEvent.onChangedTabTitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Title',
@@ -73,8 +75,8 @@ class _EditPage extends StatelessWidget {
                   initialValue: state.tab.subtitle,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedTabSubtitle(value),
-                        );
+                      HomeEvent.onChangedTabSubtitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Subtitle',
@@ -87,8 +89,8 @@ class _EditPage extends StatelessWidget {
                     OutlinedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
+                          const HomeEvent.onPressedCancel(),
+                        );
                         context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
@@ -96,9 +98,9 @@ class _EditPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const HomeEvent.onSubmitEditTab());
+                              context.read<HomeBloc>().add(
+                                const HomeEvent.onSubmitEditTab(),
+                              );
 
                               context.router.popUntilRoot();
                             }
