@@ -21,6 +21,7 @@ class SearchResult {
 
   Map<String, dynamic> toJson() => _$SearchResultToJson(this);
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -30,6 +31,7 @@ class SearchResult {
           item == other.item &&
           matchScore == other.matchScore;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode => isTab.hashCode ^ item.hashCode ^ matchScore.hashCode;
 

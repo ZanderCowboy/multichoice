@@ -13,6 +13,7 @@ class TabsDTO {
     required this.subtitle,
     required this.timestamp,
     required this.entries,
+    required this.order,
     this.isFirst,
   });
 
@@ -25,6 +26,7 @@ class TabsDTO {
     subtitle: '',
     timestamp: DateTime.now(),
     entries: [],
+    order: 0,
   );
 
   final int id;
@@ -32,10 +34,12 @@ class TabsDTO {
   final String subtitle;
   final DateTime timestamp;
   final List<EntryDTO> entries;
+  final int order;
   final bool? isFirst;
 
   Map<String, dynamic> toJson() => _$TabsDTOToJson(this);
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -46,8 +50,10 @@ class TabsDTO {
           subtitle == other.subtitle &&
           timestamp == other.timestamp &&
           entries == other.entries &&
+          order == other.order &&
           isFirst == other.isFirst;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       id.hashCode ^
@@ -55,9 +61,10 @@ class TabsDTO {
       subtitle.hashCode ^
       timestamp.hashCode ^
       entries.hashCode ^
+      order.hashCode ^
       isFirst.hashCode;
 
   @override
   String toString() =>
-      'TabsDTO(id: $id, title: $title, subtitle: $subtitle, timestamp: $timestamp, entries: $entries, isFirst: $isFirst)';
+      'TabsDTO(id: $id, title: $title, subtitle: $subtitle, timestamp: $timestamp, entries: $entries, order: $order, isFirst: $isFirst)';
 }

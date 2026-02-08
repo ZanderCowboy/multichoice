@@ -33,6 +33,7 @@ class EntryDTO {
 
   Map<String, dynamic> toJson() => _$EntryDTOToJson(this);
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -44,6 +45,7 @@ class EntryDTO {
           subtitle == other.subtitle &&
           timestamp == other.timestamp;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       id.hashCode ^
