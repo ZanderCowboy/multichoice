@@ -17,6 +17,10 @@ Create a pull request by pushing the branch and creating the PR with appropriate
 3. **Create the Pull Request**:
    - **Target branch**: `develop` (default for feature branches)
    - **Create as draft**: ALWAYS create PRs as drafts using `--draft` flag
+   - **Labels**: Add appropriate labels from available list: `breaking`, `bug`, `dev-ops`, `documentation`, `enhancement`, `feature`, `performance`, `refactor`, `testing`
+     - Determine label based on branch name/type (e.g., `feature/` → `feature`, `fix/` → `bug`)
+   - **Project**: Add to `Multichoice` project
+   - **Assignee**: Assign to `ZanderCowboy`
    - Use GitHub CLI if available: `gh pr create --draft`
    - Or provide instructions for manual PR creation (mark as draft)
 
@@ -28,18 +32,27 @@ Create a pull request by pushing the branch and creating the PR with appropriate
      - Example: Branch `7-implement-draggable-retry` → Title: `7 Implement Draggable Retry`
      - Example: Branch `12-fix-auth-token` → Title: `12 Fix Auth Token`
      - If branch doesn't have issue number, ask user for it
-   - **Description**: Include:
-     - Summary of changes
-     - What was changed and why
-     - Any breaking changes
-     - Testing performed
-     - Related issues (if any)
+   - **Description**: Start with issue number as hyperlink followed by summary:
+     - Format: `#<issue-number> <Summary>` (e.g., `#7 Summary of changes here`)
+     - GitHub automatically converts `#<issue-number>` to a hyperlink to the issue
+     - Then include:
+       - What was changed and why
+       - Any breaking changes
+       - Testing performed
+       - Related issues (if any)
+     - At the end, add a markdown table for screenshots/videos:
+       ```markdown
+       ## Screenshots/Videos
+       
+       | Feature | Screenshot/Video |
+       |---------|------------------|
+       | Feature #1 | |
+       | Feature #2 | |
+       ```
 
 5. **After PR creation**:
    - Show the PR URL or number
    - Display a summary of commits included
-   - Remind that PR is created as draft and user can update it
-   - Remind about adding version label if not already added
 
 ## Important Rules
 
@@ -67,5 +80,5 @@ git push -u origin feature/my-feature
 
 # 3. Create PR as draft
 # Example: Branch is "7-implement-draggable-retry"
-gh pr create --draft --base develop --title "7 Implement Draggable Retry" --body "Description of changes..." --label patch
+gh pr create --draft --base develop --title "7 Implement Draggable Retry" --body "Description of changes..." --label feature --project Multichoice --assignee ZanderCowboy
 ```
