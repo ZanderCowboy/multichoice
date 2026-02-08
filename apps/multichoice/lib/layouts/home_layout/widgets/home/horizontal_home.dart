@@ -32,7 +32,38 @@ class _HorizontalHome extends HookWidget {
       },
       builder: (context, state) {
         final tabs = state.tabs ?? [];
+        final isEditMode = state.isEditMode;
 
+        if (isEditMode && tabs.isNotEmpty) {
+          // Use ReorderableListView for edit mode
+          return Padding(
+            padding: horizontal8,
+            child: ReorderableListView.builder(
+              scrollController: scrollController,
+              buildDefaultDragHandles: false,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: tabs.length,
+              onReorder: (oldIndex, newIndex) {
+                context.read<HomeBloc>().add(
+                  HomeEvent.onReorderTabs(oldIndex, newIndex),
+                );
+              },
+              itemBuilder: (_, index) {
+                final tab = tabs[index];
+                return ReorderableDragStartListener(
+                  key: ValueKey(tab.id),
+                  index: index,
+                  child: Padding(
+                    padding: top4,
+                    child: CollectionTab(tab: tab, isEditMode: isEditMode),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+
+        // Normal mode
         return Padding(
           padding: horizontal8,
           child: CustomScrollView(
@@ -46,7 +77,7 @@ class _HorizontalHome extends HookWidget {
                   itemBuilder: (_, index) {
                     final tab = tabs[index];
 
-                    return CollectionTab(tab: tab);
+                    return CollectionTab(tab: tab, isEditMode: isEditMode);
                   },
                 ),
               ),

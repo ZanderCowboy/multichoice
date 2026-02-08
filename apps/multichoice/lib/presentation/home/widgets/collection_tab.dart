@@ -3,27 +3,31 @@ part of '../home_page.dart';
 class CollectionTab extends HookWidget {
   const CollectionTab({
     required this.tab,
+    this.isEditMode = false,
     super.key,
   });
 
   final TabsDTO tab;
+  final bool isEditMode;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        await context.router.push(
-          DetailsPageRoute(
-            result: SearchResult(isTab: true, item: tab, matchScore: 0),
-            onBack: () {
-              context.read<HomeBloc>().add(const HomeEvent.refresh());
-              context.router.pop();
+      onTap: isEditMode
+          ? null
+          : () async {
+              await context.router.push(
+                DetailsPageRoute(
+                  result: SearchResult(isTab: true, item: tab, matchScore: 0),
+                  onBack: () {
+                    context.read<HomeBloc>().add(const HomeEvent.refresh());
+                    context.router.pop();
+                  },
+                ),
+              );
             },
-          ),
-        );
-      },
-      onLongPress: () => _onDeleteTab(context),
-      child: TabLayout(tab: tab),
+      onLongPress: isEditMode ? null : () => _onDeleteTab(context),
+      child: TabLayout(tab: tab, isEditMode: isEditMode),
     );
   }
 

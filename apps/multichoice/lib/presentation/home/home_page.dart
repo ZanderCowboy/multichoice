@@ -35,15 +35,6 @@ class HomePageWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AppLayout(),
-        ),
-        BlocProvider(
-          create: (_) => coreSl<HomeBloc>()
-            ..add(
-              const HomeEvent.onGetTabs(),
-            ),
-        ),
         BlocProvider(
           create: (_) => coreSl<ProductBloc>(),
         ),
@@ -95,6 +86,21 @@ class _HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Multichoice'),
           actions: [
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return IconButton(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(
+                      const HomeEvent.onToggleEditMode(),
+                    );
+                  },
+                  tooltip: state.isEditMode ? 'Finish editing' : 'Edit order',
+                  icon: Icon(
+                    state.isEditMode ? Icons.check : Icons.edit_outlined,
+                  ),
+                );
+              },
+            ),
             IconButton(
               onPressed: () async {
                 await context.router.push(
