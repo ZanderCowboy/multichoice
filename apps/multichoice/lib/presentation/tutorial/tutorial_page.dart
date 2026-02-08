@@ -58,11 +58,13 @@ class TutorialPage extends StatelessWidget {
               ),
             ),
             drawer: const TutorialDrawer(),
-            body: const Stack(
-              children: [
-                TutorialBody(),
-                TutorialBanner(),
-              ],
+            body: const SafeArea(
+              child: Stack(
+                children: [
+                  TutorialBody(),
+                  TutorialBanner(),
+                ],
+              ),
             ),
           );
         },

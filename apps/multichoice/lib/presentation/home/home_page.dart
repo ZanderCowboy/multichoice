@@ -164,7 +164,9 @@ class _HomePage extends StatelessWidget {
           ),
         ),
         drawer: const HomeDrawer(),
-        body: const HomeLayout(),
+        body: const SafeArea(
+          child: HomeLayout(),
+        ),
       ),
     );
   }

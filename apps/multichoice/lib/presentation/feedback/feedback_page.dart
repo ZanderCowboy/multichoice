@@ -33,8 +33,9 @@ class FeedbackPage extends StatelessWidget {
           } else if (state.isError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content:
-                    Text('Error submitting feedback: ${state.errorMessage}'),
+                content: Text(
+                  'Error submitting feedback: ${state.errorMessage}',
+                ),
               ),
             );
           }
@@ -47,19 +48,19 @@ class FeedbackPage extends StatelessWidget {
                     ? GestureDetector(
                         onDoubleTap: () {
                           context.read<FeedbackBloc>().add(
-                                FeedbackEvent.submit(
-                                  FeedbackDTO(
-                                    id: 'test',
-                                    message: 'Test feedback',
-                                    userEmail: 'test@test.com',
-                                    rating: 5,
-                                    deviceInfo: 'Test device',
-                                    appVersion: '1.0.0',
-                                    timestamp: DateTime.now(),
-                                    category: 'Test',
-                                  ),
-                                ),
-                              );
+                            FeedbackEvent.submit(
+                              FeedbackDTO(
+                                id: 'test',
+                                message: 'Test feedback',
+                                userEmail: 'test@test.com',
+                                rating: 5,
+                                deviceInfo: 'Test device',
+                                appVersion: '1.0.0',
+                                timestamp: DateTime.now(),
+                                category: 'Test',
+                              ),
+                            ),
+                          );
                         },
                         child: const Text('Send Feedback'),
                       )
@@ -80,8 +81,10 @@ class FeedbackPage extends StatelessWidget {
               ),
             ],
           ),
-          body: const SingleChildScrollView(
-            child: FeedbackForm(),
+          body: const SafeArea(
+            child: SingleChildScrollView(
+              child: FeedbackForm(),
+            ),
           ),
         ),
       ),

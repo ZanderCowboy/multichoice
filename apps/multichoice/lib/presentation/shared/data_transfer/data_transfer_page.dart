@@ -47,26 +47,28 @@ class DataTransferScreen extends HookWidget {
           ),
         ],
       ),
-      body: Center(
-        child: !isDBEmpty.hasData
-            ? CircularLoader.small()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        _handleImport(context, dataTransferService),
-                    child: const Text('Import'),
-                  ),
-                  gap10,
-                  ElevatedButton(
-                    onPressed: isDBEmpty.data ?? true
-                        ? null
-                        : () => _handleExport(context, dataTransferService),
-                    child: const Text('Export'),
-                  ),
-                ],
-              ),
+      body: SafeArea(
+        child: Center(
+          child: !isDBEmpty.hasData
+              ? CircularLoader.small()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          _handleImport(context, dataTransferService),
+                      child: const Text('Import'),
+                    ),
+                    gap10,
+                    ElevatedButton(
+                      onPressed: isDBEmpty.data ?? true
+                          ? null
+                          : () => _handleExport(context, dataTransferService),
+                      child: const Text('Export'),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

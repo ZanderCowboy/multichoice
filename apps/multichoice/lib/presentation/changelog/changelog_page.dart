@@ -41,86 +41,88 @@ class ChangelogPage extends StatelessWidget {
               ),
             ],
           ),
-          body: BlocBuilder<ChangelogBloc, ChangelogState>(
-            builder: (context, state) {
-              if (state.isLoading) {
-                return Center(child: CircularLoader.medium());
-              }
+          body: SafeArea(
+            child: BlocBuilder<ChangelogBloc, ChangelogState>(
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return Center(child: CircularLoader.medium());
+                }
 
-              if (state.errorMessage != null) {
-                return Center(
-                  child: Padding(
-                    padding: allPadding24,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color:
-                              context.theme.appColors.error ??
-                              Theme.of(context).colorScheme.error,
-                        ),
-                        gap16,
-                        Text(
-                          'Failed to load changelog',
-                          style:
-                              context.theme.appTextTheme.titleMedium ??
-                              Theme.of(context).textTheme.titleMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        gap8,
-                        Text(
-                          state.errorMessage!,
-                          style:
-                              context.theme.appTextTheme.bodySmall ??
-                              Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                if (state.errorMessage != null) {
+                  return Center(
+                    child: Padding(
+                      padding: allPadding24,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color:
+                                context.theme.appColors.error ??
+                                Theme.of(context).colorScheme.error,
+                          ),
+                          gap16,
+                          Text(
+                            'Failed to load changelog',
+                            style:
+                                context.theme.appTextTheme.titleMedium ??
+                                Theme.of(context).textTheme.titleMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          gap8,
+                          Text(
+                            state.errorMessage!,
+                            style:
+                                context.theme.appTextTheme.bodySmall ??
+                                Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              final changelog = state.changelog;
+                final changelog = state.changelog;
 
-              if (changelog == null || changelog.versions.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: allPadding24,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          size: 64,
-                          color: context.theme.appColors.ternary,
-                        ),
-                        gap16,
-                        Text(
-                          'No changelog available',
-                          style:
-                              context.theme.appTextTheme.titleMedium ??
-                              Theme.of(context).textTheme.titleMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        gap8,
-                        Text(
-                          'Check back later for updates',
-                          style:
-                              context.theme.appTextTheme.bodySmall ??
-                              Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                if (changelog == null || changelog.versions.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: allPadding24,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 64,
+                            color: context.theme.appColors.ternary,
+                          ),
+                          gap16,
+                          Text(
+                            'No changelog available',
+                            style:
+                                context.theme.appTextTheme.titleMedium ??
+                                Theme.of(context).textTheme.titleMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          gap8,
+                          Text(
+                            'Check back later for updates',
+                            style:
+                                context.theme.appTextTheme.bodySmall ??
+                                Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              return _ChangelogList(changelog: changelog);
-            },
+                return _ChangelogList(changelog: changelog);
+              },
+            ),
           ),
         ),
       ),
