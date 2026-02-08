@@ -47,6 +47,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       final testEntry = EntryDTO(
@@ -167,6 +168,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       final testEntry = EntryDTO(
@@ -335,6 +337,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       blocTest<DetailsBloc, DetailsState>(

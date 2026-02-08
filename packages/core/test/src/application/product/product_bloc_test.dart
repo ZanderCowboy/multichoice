@@ -121,6 +121,7 @@ void main() {
         subtitle: 'My favorite movies',
         timestamp: DateTime.now(),
         entries: [],
+        order: 0,
       ),
       TabsDTO(
         id: 2,
@@ -128,6 +129,7 @@ void main() {
         subtitle: 'Must-read books',
         timestamp: DateTime.now(),
         entries: [],
+        order: 1,
       ),
     ];
 

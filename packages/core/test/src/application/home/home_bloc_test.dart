@@ -52,11 +52,13 @@ void main() {
       subtitle: 'subtitle',
       timestamp: timestamp,
       entryIds: [1, 2],
+      order: 0,
     );
     final tab2 = Tabs(
       uuid: 'uuid2',
       title: 'another title',
       subtitle: 'another subtitle',
+      order: 1,
       timestamp: timestamp,
       entryIds: [],
     );
@@ -81,6 +83,7 @@ void main() {
       subtitle: 'subtitle',
       timestamp: timestamp,
       entries: [],
+      order: 0,
     );
 
     final initial = HomeState(
@@ -89,6 +92,7 @@ void main() {
       entry: EntryDTO.empty(),
       entryCards: null,
       isLoading: false,
+      isEditMode: false,
       isDeleted: false,
       isAdded: false,
       isValid: false,
@@ -145,6 +149,7 @@ void main() {
         subtitle: 'subtitle',
         timestamp: timestamp,
         entries: [],
+        order: 0,
       ),
       tabs: [],
       entry: EntryDTO(
@@ -159,6 +164,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -254,6 +260,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -365,6 +372,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -446,6 +454,7 @@ void main() {
         subtitle: 'subtitle',
         timestamp: timestamp,
         entries: [],
+        order: 0,
       ),
       tabs: [],
       entry: EntryDTO(
@@ -460,6 +469,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -528,6 +538,7 @@ void main() {
         subtitle: 'subtitle',
         timestamp: timestamp,
         entries: [],
+        order: 0,
       ),
       tabs: [],
       entry: EntryDTO(
@@ -542,6 +553,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -574,6 +586,7 @@ void main() {
       isDeleted: false,
       isAdded: false,
       isValid: false,
+      isEditMode: false,
       errorMessage: '',
     );
 
@@ -650,6 +663,7 @@ void main() {
           subtitle: 'Subtitle 1',
           timestamp: DateTime.now(),
           entries: [],
+          order: 0,
         ),
         TabsDTO(
           id: 2,
@@ -657,6 +671,7 @@ void main() {
           subtitle: 'Subtitle 2',
           timestamp: DateTime.now(),
           entries: [],
+          order: 1,
         ),
       ];
 
@@ -694,6 +709,7 @@ void main() {
                 subtitle: 'Subtitle 1',
                 timestamp: DateTime.now(),
                 entries: [],
+                order: 0,
               ),
             ),
           );
