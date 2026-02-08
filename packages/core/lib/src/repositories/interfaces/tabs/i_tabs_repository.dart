@@ -19,4 +19,6 @@ abstract class ITabsRepository {
   Future<bool> deleteTab({required int? tabId});
 
   Future<bool> deleteTabs();
+
+  Future<bool> updateTabsOrder(List<int> tabIds);
 }

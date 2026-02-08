@@ -26,6 +26,12 @@ class TabsRepository implements ITabsRepository {
   }) async {
     try {
       return await db.writeTxn(() async {
+        // Get the maximum order value to set the new tab's order
+        final tabs = await db.tabs.where().findAll();
+        final maxOrder = tabs.isEmpty 
+            ? 0 
+            : tabs.map((t) => t.order).reduce((a, b) => a > b ? a : b);
+        
         final result = db.tabs.put(
           Tabs(
             uuid: const Uuid().v4(),
@@ -33,6 +39,7 @@ class TabsRepository implements ITabsRepository {
             subtitle: subtitle,
             timestamp: clock.now(),
             entryIds: [],
+            order: maxOrder + 1,
           ),
         );
 
@@ -50,7 +57,7 @@ class TabsRepository implements ITabsRepository {
   @override
   Future<List<TabsDTO>> readTabs() async {
     try {
-      final tabs = await db.tabs.where().sortByTimestamp().findAll();
+      final tabs = await db.tabs.where().sortByOrder().findAll();
 
       final tabsConverter = TabsMapper();
       final entryConverter = EntryMapper();
@@ -188,6 +195,30 @@ class TabsRepository implements ITabsRepository {
         } else {
           return false;
         }
+      });
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  /// Updates the order of tabs in the database.
+  ///
+  /// [tabIds]: The list of tab IDs in the new order.
+  ///
+  /// Returns `true` if the tabs were successfully reordered, otherwise `false`.
+  @override
+  Future<bool> updateTabsOrder(List<int> tabIds) async {
+    try {
+      return await db.writeTxn(() async {
+        for (int i = 0; i < tabIds.length; i++) {
+          final tab = await db.tabs.get(tabIds[i]);
+          if (tab != null) {
+            final updatedTab = tab.copyWith(order: i);
+            await db.tabs.put(updatedTab);
+          }
+        }
+        return true;
       });
     } catch (e) {
       log(e.toString());

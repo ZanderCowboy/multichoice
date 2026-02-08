@@ -63,15 +63,21 @@ class EntryRepository implements IEntryRepository {
   @override
   Future<List<EntryDTO>> readEntries({required int tabId}) async {
     try {
-      final entries = await db.entrys.where().sortByTimestamp().findAll();
-
-      final result =
-          entries.where((element) => element.tabId == tabId).toList();
+      // Get the tab to access the ordered entryIds list
+      final tab = await db.tabs.get(tabId);
+      final entryIds = tab?.entryIds ?? [];
 
       final converter = EntryMapper();
-      final entriesDTO = result
-          .map((entry) => converter.convert<Entry, EntryDTO>(entry))
-          .toList();
+      final entriesDTO = <EntryDTO>[];
+
+      // Retrieve entries in the order specified by entryIds
+      for (final id in entryIds) {
+        final entry = await db.entrys.get(id);
+        if (entry != null) {
+          final entryDTO = converter.convert<Entry, EntryDTO>(entry);
+          entriesDTO.add(entryDTO);
+        }
+      }
 
       return entriesDTO;
     } catch (e) {
@@ -163,6 +169,33 @@ class EntryRepository implements IEntryRepository {
         } else {
           return false;
         }
+      });
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  /// Updates the order of entries within a tab.
+  ///
+  /// [tabId]: The ID of the tab containing the entries.
+  /// [entryIds]: The list of entry IDs in the new order.
+  ///
+  /// Returns `true` if the entries were successfully reordered, otherwise `false`.
+  @override
+  Future<bool> updateEntriesOrder({
+    required int tabId,
+    required List<int> entryIds,
+  }) async {
+    try {
+      return await db.writeTxn(() async {
+        final tab = await db.tabs.get(tabId);
+        if (tab != null) {
+          final updatedTab = tab.copyWith(entryIds: entryIds);
+          await db.tabs.put(updatedTab);
+          return true;
+        }
+        return false;
       });
     } catch (e) {
       log(e.toString());
