@@ -55,6 +55,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _handleUpdateEntry(id, emit);
       case OnRefresh():
         await _handleRefresh(emit);
+      case OnToggleEditMode():
+        _handleToggleEditMode(emit);
+      case OnReorderTabs(:final oldIndex, :final newIndex):
+        await _handleReorderTabs(oldIndex, newIndex, emit);
+      case OnReorderEntries(:final tabId, :final oldIndex, :final newIndex):
+        await _handleReorderEntries(tabId, oldIndex, newIndex, emit);
       default:
     }
   }
@@ -86,12 +92,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     final tabs = await _tabsRepository.readTabs();
-    emit(state.copyWith(
-      tab: TabsDTO.empty(),
-      tabs: tabs,
-      isLoading: false,
-      isAdded: false,
-    ));
+    emit(
+      state.copyWith(
+        tab: TabsDTO.empty(),
+        tabs: tabs,
+        isLoading: false,
+        isAdded: false,
+      ),
+    );
   }
 
   Future<void> _handleAddEntry(Emitter<HomeState> emit) async {
@@ -112,25 +120,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     final tabs = await _tabsRepository.readTabs();
-    emit(state.copyWith(
-      tab: TabsDTO.empty(),
-      tabs: tabs,
-      entry: EntryDTO.empty(),
-      isLoading: false,
-      isAdded: false,
-    ));
+    emit(
+      state.copyWith(
+        tab: TabsDTO.empty(),
+        tabs: tabs,
+        entry: EntryDTO.empty(),
+        isLoading: false,
+        isAdded: false,
+      ),
+    );
   }
 
   Future<void> _handleDeleteTab(int tabId, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true, isDeleted: true));
     await _tabsRepository.deleteTab(tabId: tabId);
     final tabs = await _tabsRepository.readTabs();
-    emit(state.copyWith(
-      tabs: tabs,
-      entryCards: [],
-      isLoading: false,
-      isDeleted: false,
-    ));
+    emit(
+      state.copyWith(
+        tabs: tabs,
+        entryCards: [],
+        isLoading: false,
+        isDeleted: false,
+      ),
+    );
   }
 
   Future<void> _handleDeleteEntry(
@@ -142,12 +154,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await _entryRepository.deleteEntry(tabId: tabId, entryId: entryId);
     final entryCards = await _entryRepository.readEntries(tabId: tabId);
     final tabs = await _tabsRepository.readTabs();
-    emit(state.copyWith(
-      tabs: tabs,
-      entryCards: entryCards,
-      isLoading: false,
-      isDeleted: false,
-    ));
+    emit(
+      state.copyWith(
+        tabs: tabs,
+        entryCards: entryCards,
+        isLoading: false,
+        isDeleted: false,
+      ),
+    );
   }
 
   Future<void> _handleDeleteAllEntries(
@@ -159,11 +173,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = await _tabsRepository.readTabs();
 
     if (result) {
-      emit(state.copyWith(
-        tabs: tabs,
-        entryCards: [],
-        isLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          tabs: tabs,
+          entryCards: [],
+          isLoading: false,
+        ),
+      );
     } else {
       emit(state.copyWith(errorMessage: 'Tab entries failed to delete.'));
     }
@@ -174,14 +190,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final result = await _tabsRepository.deleteTabs();
 
     if (result) {
-      emit(state.copyWith(
-        tab: TabsDTO.empty(),
-        tabs: null,
-        entry: EntryDTO.empty(),
-        entryCards: null,
-        isLoading: false,
-        isValid: false,
-      ));
+      emit(
+        state.copyWith(
+          tab: TabsDTO.empty(),
+          tabs: null,
+          entry: EntryDTO.empty(),
+          entryCards: null,
+          isLoading: false,
+          isValid: false,
+        ),
+      );
     } else {
       emit(state.copyWith(errorMessage: 'Failed to delete all tabs.'));
     }
@@ -189,34 +207,42 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _handleTabTitleChange(String text, Emitter<HomeState> emit) {
     final isValid = Validator.isValidInput(text);
-    emit(state.copyWith(
-      tab: state.tab.copyWith(title: text),
-      isValid: isValid,
-    ));
+    emit(
+      state.copyWith(
+        tab: state.tab.copyWith(title: text),
+        isValid: isValid,
+      ),
+    );
   }
 
   void _handleTabSubtitleChange(String text, Emitter<HomeState> emit) {
     final isValid = Validator.isValidSubtitle(text);
-    emit(state.copyWith(
-      tab: state.tab.copyWith(subtitle: text),
-      isValid: isValid,
-    ));
+    emit(
+      state.copyWith(
+        tab: state.tab.copyWith(subtitle: text),
+        isValid: isValid,
+      ),
+    );
   }
 
   void _handleEntryTitleChange(String text, Emitter<HomeState> emit) {
     final isValid = Validator.isValidInput(text);
-    emit(state.copyWith(
-      entry: state.entry.copyWith(title: text),
-      isValid: isValid,
-    ));
+    emit(
+      state.copyWith(
+        entry: state.entry.copyWith(title: text),
+        isValid: isValid,
+      ),
+    );
   }
 
   void _handleEntrySubtitleChange(String text, Emitter<HomeState> emit) {
     final isValid = Validator.isValidSubtitle(text);
-    emit(state.copyWith(
-      entry: state.entry.copyWith(subtitle: text),
-      isValid: isValid,
-    ));
+    emit(
+      state.copyWith(
+        entry: state.entry.copyWith(subtitle: text),
+        isValid: isValid,
+      ),
+    );
   }
 
   Future<void> _handleSubmitEditTab(Emitter<HomeState> emit) async {
@@ -232,12 +258,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     final tabs = await _tabsRepository.readTabs();
-    emit(state.copyWith(
-      tab: TabsDTO.empty(),
-      tabs: tabs,
-      isLoading: false,
-      isValid: false,
-    ));
+    emit(
+      state.copyWith(
+        tab: TabsDTO.empty(),
+        tabs: tabs,
+        isLoading: false,
+        isValid: false,
+      ),
+    );
   }
 
   Future<void> _handleSubmitEditEntry(Emitter<HomeState> emit) async {
@@ -255,31 +283,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final tabs = await _tabsRepository.readTabs();
     final entryCards = await _entryRepository.readEntries(tabId: entry.tabId);
-    emit(state.copyWith(
-      tabs: tabs,
-      entry: EntryDTO.empty(),
-      entryCards: entryCards,
-      isLoading: false,
-      isValid: false,
-    ));
+    emit(
+      state.copyWith(
+        tabs: tabs,
+        entry: EntryDTO.empty(),
+        entryCards: entryCards,
+        isLoading: false,
+        isValid: false,
+      ),
+    );
   }
 
   void _handleCancel(Emitter<HomeState> emit) {
-    emit(state.copyWith(
-      tab: TabsDTO.empty(),
-      entry: EntryDTO.empty(),
-      isValid: false,
-    ));
+    emit(
+      state.copyWith(
+        tab: TabsDTO.empty(),
+        entry: EntryDTO.empty(),
+        isValid: false,
+      ),
+    );
   }
 
   Future<void> _handleUpdateTabId(int id, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));
     final tab = await _tabsRepository.getTab(tabId: id);
-    emit(state.copyWith(
-      tab: tab,
-      isValid: false,
-      isLoading: false,
-    ));
+    emit(
+      state.copyWith(
+        tab: tab,
+        isValid: false,
+        isLoading: false,
+      ),
+    );
   }
 
   Future<void> _handleUpdateEntry(int id, Emitter<HomeState> emit) async {
@@ -292,19 +326,105 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = await _tabsRepository.readTabs();
 
     if (state.tab.id != 0) {
-      final entryCards =
-          await _entryRepository.readEntries(tabId: state.tab.id);
-      emit(state.copyWith(
-        tabs: tabs,
-        entryCards: entryCards,
-        isLoading: false,
-      ));
+      final entryCards = await _entryRepository.readEntries(
+        tabId: state.tab.id,
+      );
+      emit(
+        state.copyWith(
+          tabs: tabs,
+          entryCards: entryCards,
+          isLoading: false,
+        ),
+      );
     } else {
-      emit(state.copyWith(
-        tabs: tabs,
-        isLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          tabs: tabs,
+          isLoading: false,
+        ),
+      );
     }
+  }
+
+  void _handleToggleEditMode(Emitter<HomeState> emit) {
+    emit(
+      state.copyWith(
+        isEditMode: !state.isEditMode,
+      ),
+    );
+  }
+
+  Future<void> _handleReorderTabs(
+    int oldIndex,
+    int newIndex,
+    Emitter<HomeState> emit,
+  ) async {
+    final tabs = state.tabs;
+    if (tabs == null || tabs.isEmpty) return;
+
+    // Create a mutable copy of the tabs list
+    final updatedTabs = List<TabsDTO>.from(tabs);
+
+    // Adjust newIndex if moving down
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    // Reorder the tabs
+    final tab = updatedTabs.removeAt(oldIndex);
+    updatedTabs.insert(newIndex, tab);
+
+    // Update the UI immediately
+    emit(state.copyWith(tabs: updatedTabs));
+
+    // Persist the new order to the database
+    final tabIds = updatedTabs.map((t) => t.id).toList();
+    await _tabsRepository.updateTabsOrder(tabIds);
+  }
+
+  Future<void> _handleReorderEntries(
+    int tabId,
+    int oldIndex,
+    int newIndex,
+    Emitter<HomeState> emit,
+  ) async {
+    final tabs = state.tabs;
+    if (tabs == null) return;
+
+    // Find the tab
+    final tabIndex = tabs.indexWhere((t) => t.id == tabId);
+    if (tabIndex == -1) return;
+
+    final tab = tabs[tabIndex];
+    final entries = tab.entries;
+    if (entries.isEmpty) return;
+
+    // Create a mutable copy of the entries list
+    final updatedEntries = List<EntryDTO>.from(entries);
+
+    // Adjust newIndex if moving down
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    // Reorder the entries
+    final entry = updatedEntries.removeAt(oldIndex);
+    updatedEntries.insert(newIndex, entry);
+
+    // Update the tab with the new entries order
+    final updatedTab = tab.copyWith(entries: updatedEntries);
+    final updatedTabs = List<TabsDTO>.from(tabs);
+    updatedTabs[tabIndex] = updatedTab;
+
+    // Update the UI immediately
+    emit(state.copyWith(tabs: updatedTabs));
+
+    // Persist the new order to the database
+    final entryIds = updatedEntries.map((e) => e.id).toList();
+    await _entryRepository.updateEntriesOrder(
+      tabId: tabId,
+      entryIds: entryIds,
+    );
   }
 
   final ITabsRepository _tabsRepository;

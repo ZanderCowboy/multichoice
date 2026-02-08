@@ -36,4 +36,13 @@ class HomeEvent with _$HomeEvent {
 
   const factory HomeEvent.onPressedDeleteAll() = OnPressedDeleteAll;
   const factory HomeEvent.refresh() = OnRefresh;
+
+  const factory HomeEvent.onToggleEditMode() = OnToggleEditMode;
+  const factory HomeEvent.onReorderTabs(int oldIndex, int newIndex) =
+      OnReorderTabs;
+  const factory HomeEvent.onReorderEntries(
+    int tabId,
+    int oldIndex,
+    int newIndex,
+  ) = OnReorderEntries;
 }
