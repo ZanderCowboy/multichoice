@@ -4,10 +4,12 @@ class _HorizontalTab extends HookWidget {
   const _HorizontalTab({
     required this.tab,
     this.isEditMode = false,
+    this.dragIndex,
   });
 
   final TabsDTO tab;
   final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,8 @@ class _HorizontalTab extends HookWidget {
 
     return Card(
       margin: allPadding4,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
       color: context.theme.appColors.primary,
       child: Padding(
         padding: allPadding2,
@@ -53,7 +57,19 @@ class _HorizontalTab extends HookWidget {
                     children: [
                       Row(
                         children: [
-                          if (isEditMode)
+                          if (isEditMode && dragIndex != null)
+                            Padding(
+                              padding: right4,
+                              child: ReorderableDragStartListener(
+                                index: dragIndex!,
+                                child: Icon(
+                                  Icons.drag_handle,
+                                  size: 20,
+                                  color: context.theme.appColors.ternary,
+                                ),
+                              ),
+                            )
+                          else if (isEditMode)
                             Padding(
                               padding: right4,
                               child: Icon(
@@ -79,15 +95,16 @@ class _HorizontalTab extends HookWidget {
                       if (tab.subtitle.isEmpty)
                         const SizedBox.shrink()
                       else
-                        Padding(
-                          padding: left4,
-                          child: Text(
-                            tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium
-                                ?.copyWith(fontSize: 12),
+                        Expanded(
+                          child: Padding(
+                            padding: left4,
+                            child: Text(
+                              tab.subtitle,
+                              style: context.theme.appTextTheme.subtitleMedium
+                                  ?.copyWith(fontSize: 12),
+                            ),
                           ),
                         ),
-                      const Expanded(child: SizedBox()),
                       Center(
                         child: isEditMode
                             ? const SizedBox.shrink()
@@ -115,16 +132,14 @@ class _HorizontalTab extends HookWidget {
                   },
                   itemBuilder: (context, index) {
                     final entry = entries[index];
-                    return ReorderableDragStartListener(
+                    return SizedBox(
                       key: ValueKey(entry.id),
-                      index: index,
-                      child: SizedBox(
-                        width: UIConstants.horiTabHeight(context) / 2,
-                        child: EntryCard(
-                          entry: entry,
-                          onDoubleTap: () {},
-                          isEditMode: isEditMode,
-                        ),
+                      width: UIConstants.horiTabHeight(context) / 2,
+                      child: EntryCard(
+                        entry: entry,
+                        onDoubleTap: () {},
+                        isEditMode: isEditMode,
+                        dragIndex: index,
                       ),
                     );
                   },

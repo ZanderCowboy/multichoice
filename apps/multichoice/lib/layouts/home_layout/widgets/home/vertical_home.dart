@@ -36,6 +36,7 @@ class _VerticalHome extends HookWidget {
 
         if (isEditMode && tabs.isNotEmpty) {
           // Use ReorderableListView with horizontal scrolling for edit mode
+          final theme = Theme.of(context);
           return Padding(
             padding: left0top4right0bottom24,
             child: SizedBox(
@@ -45,6 +46,19 @@ class _VerticalHome extends HookWidget {
                 scrollDirection: Axis.horizontal,
                 buildDefaultDragHandles: false,
                 physics: const AlwaysScrollableScrollPhysics(),
+                proxyDecorator: (child, index, animation) {
+                  // Override Card theme to make it transparent
+                  return Theme(
+                    data: theme.copyWith(
+                      cardTheme: theme.cardTheme.copyWith(
+                        color: Colors.transparent,
+                        surfaceTintColor: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    ),
+                    child: child,
+                  );
+                },
                 itemCount: tabs.length,
                 onReorder: (oldIndex, newIndex) {
                   context.read<HomeBloc>().add(
@@ -53,12 +67,13 @@ class _VerticalHome extends HookWidget {
                 },
                 itemBuilder: (_, index) {
                   final tab = tabs[index];
-                  return ReorderableDragStartListener(
+                  return Padding(
                     key: ValueKey(tab.id),
-                    index: index,
-                    child: Padding(
-                      padding: left4,
-                      child: CollectionTab(tab: tab, isEditMode: isEditMode),
+                    padding: left4,
+                    child: CollectionTab(
+                      tab: tab,
+                      isEditMode: isEditMode,
+                      dragIndex: index,
                     ),
                   );
                 },
@@ -69,7 +84,7 @@ class _VerticalHome extends HookWidget {
 
         // Normal mode
         return Padding(
-          padding: left0top4right0bottom24,
+          padding: vertical4horizontal0,
           child: SizedBox(
             height: UIConstants.vertTabHeight(context),
             child: CustomScrollView(

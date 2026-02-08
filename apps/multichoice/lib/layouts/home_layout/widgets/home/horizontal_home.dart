@@ -36,12 +36,26 @@ class _HorizontalHome extends HookWidget {
 
         if (isEditMode && tabs.isNotEmpty) {
           // Use ReorderableListView for edit mode
+          final theme = Theme.of(context);
           return Padding(
             padding: horizontal8,
             child: ReorderableListView.builder(
               scrollController: scrollController,
               buildDefaultDragHandles: false,
               physics: const AlwaysScrollableScrollPhysics(),
+              proxyDecorator: (child, index, animation) {
+                // Override Card theme to make it transparent
+                return Theme(
+                  data: theme.copyWith(
+                    cardTheme: theme.cardTheme.copyWith(
+                      color: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                  ),
+                  child: child,
+                );
+              },
               itemCount: tabs.length,
               onReorder: (oldIndex, newIndex) {
                 context.read<HomeBloc>().add(
@@ -50,12 +64,13 @@ class _HorizontalHome extends HookWidget {
               },
               itemBuilder: (_, index) {
                 final tab = tabs[index];
-                return ReorderableDragStartListener(
+                return Padding(
                   key: ValueKey(tab.id),
-                  index: index,
-                  child: Padding(
-                    padding: top4,
-                    child: CollectionTab(tab: tab, isEditMode: isEditMode),
+                  padding: top4,
+                  child: CollectionTab(
+                    tab: tab,
+                    isEditMode: isEditMode,
+                    dragIndex: index,
                   ),
                 );
               },

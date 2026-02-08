@@ -4,10 +4,12 @@ class _VerticalTab extends HookWidget {
   const _VerticalTab({
     required this.tab,
     this.isEditMode = false,
+    this.dragIndex,
   });
 
   final TabsDTO tab;
   final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,8 @@ class _VerticalTab extends HookWidget {
 
     return Card(
       margin: allPadding4,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
       color: context.theme.appColors.primary,
       child: Padding(
         padding: allPadding2,
@@ -45,10 +49,23 @@ class _VerticalTab extends HookWidget {
               Padding(
                 padding: left4,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        if (isEditMode)
+                        if (isEditMode && dragIndex != null)
+                          Padding(
+                            padding: right4,
+                            child: ReorderableDragStartListener(
+                              index: dragIndex!,
+                              child: Icon(
+                                Icons.drag_handle,
+                                size: 20,
+                                color: context.theme.appColors.ternary,
+                              ),
+                            ),
+                          )
+                        else if (isEditMode)
                           Padding(
                             padding: right4,
                             child: Icon(
@@ -70,6 +87,8 @@ class _VerticalTab extends HookWidget {
                       Text(
                         tab.subtitle,
                         style: context.theme.appTextTheme.subtitleMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
                       )
                     else
                       const SizedBox.shrink(),
@@ -101,14 +120,12 @@ class _VerticalTab extends HookWidget {
                         },
                         itemBuilder: (_, index) {
                           final entry = entries[index];
-                          return ReorderableDragStartListener(
+                          return EntryCard(
                             key: ValueKey(entry.id),
-                            index: index,
-                            child: EntryCard(
-                              entry: entry,
-                              onDoubleTap: () {},
-                              isEditMode: isEditMode,
-                            ),
+                            entry: entry,
+                            onDoubleTap: () {},
+                            isEditMode: isEditMode,
+                            dragIndex: index,
                           );
                         },
                       )
