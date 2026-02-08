@@ -22,10 +22,6 @@ class TutorialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AppLayout(),
-        ),
-
         /// using BlocProvider.value to avoid the issue where it tries
         /// to add events that is already closed.
         BlocProvider<ProductBloc>.value(

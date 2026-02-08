@@ -36,8 +36,10 @@ class TutorialBody extends StatelessWidget {
                     final tab = tabs[index];
 
                     if (tabs.isNotEmpty && index == 0) {
-                      final step =
-                          context.watch<ProductBloc>().state.currentStep;
+                      final step = context
+                          .watch<ProductBloc>()
+                          .state
+                          .currentStep;
 
                       if (step == ProductTourStep.showCollection) {
                         return TourWidgetWrapper(
@@ -111,10 +113,10 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style:
-                              context.theme.appTextTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                          ),
+                          style: context.theme.appTextTheme.titleMedium
+                              ?.copyWith(
+                                fontSize: 16,
+                              ),
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
