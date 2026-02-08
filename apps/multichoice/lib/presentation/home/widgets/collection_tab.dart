@@ -4,11 +4,13 @@ class CollectionTab extends HookWidget {
   const CollectionTab({
     required this.tab,
     this.isEditMode = false,
+    this.dragIndex,
     super.key,
   });
 
   final TabsDTO tab;
   final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,11 @@ class CollectionTab extends HookWidget {
               );
             },
       onLongPress: isEditMode ? null : () => _onDeleteTab(context),
-      child: TabLayout(tab: tab, isEditMode: isEditMode),
+      child: TabLayout(
+        tab: tab,
+        isEditMode: isEditMode,
+        dragIndex: dragIndex,
+      ),
     );
   }
 

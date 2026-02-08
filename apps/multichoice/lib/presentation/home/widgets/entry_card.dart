@@ -5,12 +5,14 @@ class EntryCard extends HookWidget {
     required this.entry,
     required this.onDoubleTap,
     this.isEditMode = false,
+    this.dragIndex,
     super.key,
   });
 
   final EntryDTO entry;
   final VoidCallback onDoubleTap;
   final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,19 @@ class EntryCard extends HookWidget {
                       children: [
                         Row(
                           children: [
-                            if (isEditMode)
+                            if (isEditMode && dragIndex != null)
+                              Padding(
+                                padding: right4,
+                                child: ReorderableDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.drag_handle,
+                                    size: 16,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                ),
+                              )
+                            else if (isEditMode)
                               Padding(
                                 padding: right4,
                                 child: Icon(
