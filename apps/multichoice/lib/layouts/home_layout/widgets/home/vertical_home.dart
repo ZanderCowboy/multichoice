@@ -47,7 +47,7 @@ class _VerticalHome extends HookWidget {
                 buildDefaultDragHandles: false,
                 physics: const AlwaysScrollableScrollPhysics(),
                 proxyDecorator: (child, index, animation) {
-                  // Override Card theme to make it transparent
+                  // Override Card theme to make it transparent when dragging
                   return Theme(
                     data: theme.copyWith(
                       cardTheme: theme.cardTheme.copyWith(
