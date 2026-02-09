@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:core/src/services/implementations/data_exchange_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,6 +14,8 @@ import '../../mocks.mocks.dart';
 final getIt = GetIt.instance;
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late DataExchangeService dataExchangeService;
   late MockFilePickerWrapper mockFilePickerWrapper;
   late Isar db;
@@ -202,10 +204,22 @@ void main() {
     group('importDataFromJSON', () {
       test('should import data from JSON successfully', () async {
         // Arrange
-        final filePath = 'assets/test_data/import_file.json';
+        // Load asset and create temporary file
+        final assetContent = await rootBundle.loadString(
+          'assets/test_data/import_file.json',
+        );
+        final tempFile = File(
+          '${Directory.systemTemp.path}/import_file_test.json',
+        );
+        await tempFile.writeAsString(assetContent);
+
+        // Verify file exists before importing
+        expect(await tempFile.exists(), true);
 
         // Act
-        final result = await dataExchangeService.importDataFromJSON(filePath);
+        final result = await dataExchangeService.importDataFromJSON(
+          tempFile.path,
+        );
 
         // Assert
         expect(result, true);
@@ -215,6 +229,11 @@ void main() {
 
         expect(tabs.length, 2);
         expect(entries.length, 2);
+
+        // Cleanup
+        if (await tempFile.exists()) {
+          await tempFile.delete();
+        }
       });
 
       test('should handle error during import', () async {
