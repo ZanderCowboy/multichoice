@@ -21,7 +21,7 @@ void main() {
   setUpAll(() async {
     // Initialize Isar first (before TestWidgetsFlutterBinding) to allow download
     db = await configureIsarInstance();
-    
+
     mockFilePickerWrapper = MockFilePickerWrapper();
 
     dataExchangeService = DataExchangeService(
@@ -205,7 +205,7 @@ void main() {
       test('should import data from JSON successfully', () async {
         // Initialize TestWidgetsFlutterBinding for rootBundle access
         TestWidgetsFlutterBinding.ensureInitialized();
-        
+
         // Arrange
         // Load asset and create temporary file
         final assetContent = await rootBundle.loadString(
