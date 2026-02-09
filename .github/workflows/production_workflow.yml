@@ -198,7 +198,7 @@ jobs:
       # Upload APK as Artifact
       ##############################################
       - name: Upload Android APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: "android-release-apk"
           path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
@@ -217,7 +217,7 @@ jobs:
       # Upload App Bundle as Artifact
       ##############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
