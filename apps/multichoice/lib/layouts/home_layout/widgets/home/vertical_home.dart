@@ -38,7 +38,7 @@ class _VerticalHome extends HookWidget {
           // Use ReorderableListView with horizontal scrolling for edit mode
           final theme = Theme.of(context);
           return Padding(
-            padding: left0top4right0bottom24,
+            padding: vertical4horizontal0,
             child: SizedBox(
               height: UIConstants.vertTabHeight(context),
               child: ReorderableListView.builder(
