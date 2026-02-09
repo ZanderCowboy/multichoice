@@ -40,7 +40,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -91,7 +91,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       ##############################################
       # Set up Flutter and Java
@@ -152,7 +152,7 @@ jobs:
       # Upload App Bundle as Artifact
       ##############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
