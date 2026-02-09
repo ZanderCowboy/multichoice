@@ -4,11 +4,15 @@ class EntryCard extends HookWidget {
   const EntryCard({
     required this.entry,
     required this.onDoubleTap,
+    this.isEditMode = false,
+    this.dragIndex,
     super.key,
   });
 
   final EntryDTO entry;
   final VoidCallback onDoubleTap;
+  final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -45,30 +49,36 @@ class EntryCard extends HookWidget {
             ),
           ],
           child: GestureDetector(
-            onTap: () async {
-              await context.router.push(
-                DetailsPageRoute(
-                  // TODO: Change type to be dynamic
-                  result: SearchResult(
-                    isTab: false,
-                    item: entry,
-                    matchScore: 0,
-                  ),
-                  onBack: () {
-                    context.read<HomeBloc>().add(const HomeEvent.refresh());
-                    context.router.pop();
+            onTap: isEditMode
+                ? null
+                : () async {
+                    await context.router.push(
+                      DetailsPageRoute(
+                        // TODO: Change type to be dynamic
+                        result: SearchResult(
+                          isTab: false,
+                          item: entry,
+                          matchScore: 0,
+                        ),
+                        onBack: () {
+                          context.read<HomeBloc>().add(
+                            const HomeEvent.refresh(),
+                          );
+                          context.router.pop();
+                        },
+                      ),
+                    );
                   },
-                ),
-              );
-            },
-            onDoubleTap: onDoubleTap,
-            onLongPress: () {
-              if (menuController.isOpen) {
-                menuController.close();
-              } else {
-                menuController.open();
-              }
-            },
+            onDoubleTap: isEditMode ? null : onDoubleTap,
+            onLongPress: isEditMode
+                ? null
+                : () {
+                    if (menuController.isOpen) {
+                      menuController.close();
+                    } else {
+                      menuController.open();
+                    }
+                  },
             child: Padding(
               padding: isLayoutVertical ? allPadding2 : allPadding4,
               child: Card(
@@ -86,16 +96,43 @@ class EntryCard extends HookWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          entry.title,
-                          style: context.theme.appTextTheme.titleSmall
-                              ?.copyWith(
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                height: 1,
+                        Row(
+                          children: [
+                            if (isEditMode && dragIndex != null)
+                              Padding(
+                                padding: right4,
+                                child: ReorderableDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.drag_handle,
+                                    size: 16,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                ),
+                              )
+                            else if (isEditMode)
+                              Padding(
+                                padding: right4,
+                                child: Icon(
+                                  Icons.drag_handle,
+                                  size: 16,
+                                  color: context.theme.appColors.ternary,
+                                ),
                               ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                            Expanded(
+                              child: Text(
+                                entry.title,
+                                style: context.theme.appTextTheme.titleSmall
+                                    ?.copyWith(
+                                      fontSize: 16,
+                                      letterSpacing: 0.3,
+                                      height: 1,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
                         ),
                         gap4,
                         Text(

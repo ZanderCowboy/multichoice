@@ -47,6 +47,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       final testEntry = EntryDTO(
@@ -77,13 +78,16 @@ void main() {
       blocTest<DetailsBloc, DetailsState>(
         'emits correct state when populating with tab',
         build: () {
-          when(mockEntryRepository.readEntries(tabId: testTab.id))
-              .thenAnswer((_) async => testChildren);
+          when(
+            mockEntryRepository.readEntries(tabId: testTab.id),
+          ).thenAnswer((_) async => testChildren);
           return detailsBloc;
         },
-        act: (bloc) => bloc.add(DetailsEvent.onPopulate(
-          SearchResult(isTab: true, item: testTab, matchScore: 1.0),
-        )),
+        act: (bloc) => bloc.add(
+          DetailsEvent.onPopulate(
+            SearchResult(isTab: true, item: testTab, matchScore: 1.0),
+          ),
+        ),
         expect: () => [
           isA<DetailsState>().having((s) => s.isLoading, 'isLoading', true),
           isA<DetailsState>()
@@ -101,13 +105,16 @@ void main() {
       blocTest<DetailsBloc, DetailsState>(
         'emits correct state when populating with entry',
         build: () {
-          when(mockTabsRepository.getTab(tabId: testEntry.tabId))
-              .thenAnswer((_) async => testTab);
+          when(
+            mockTabsRepository.getTab(tabId: testEntry.tabId),
+          ).thenAnswer((_) async => testTab);
           return detailsBloc;
         },
-        act: (bloc) => bloc.add(DetailsEvent.onPopulate(
-          SearchResult(isTab: false, item: testEntry, matchScore: 1.0),
-        )),
+        act: (bloc) => bloc.add(
+          DetailsEvent.onPopulate(
+            SearchResult(isTab: false, item: testEntry, matchScore: 1.0),
+          ),
+        ),
         expect: () => [
           isA<DetailsState>().having((s) => s.isLoading, 'isLoading', true),
           isA<DetailsState>()
@@ -154,8 +161,11 @@ void main() {
         act: (bloc) =>
             bloc.add(const DetailsEvent.onChangeSubtitle('New Subtitle')),
         expect: () => [
-          isA<DetailsState>()
-              .having((s) => s.subtitle, 'subtitle', 'New Subtitle'),
+          isA<DetailsState>().having(
+            (s) => s.subtitle,
+            'subtitle',
+            'New Subtitle',
+          ),
         ],
       );
     });
@@ -167,6 +177,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       final testEntry = EntryDTO(
@@ -183,8 +194,11 @@ void main() {
         build: () => detailsBloc,
         act: (bloc) => bloc.add(const DetailsEvent.onToggleEditMode()),
         expect: () => [
-          isA<DetailsState>()
-              .having((s) => s.isEditingMode, 'isEditingMode', true),
+          isA<DetailsState>().having(
+            (s) => s.isEditingMode,
+            'isEditingMode',
+            true,
+          ),
         ],
       );
 
@@ -197,6 +211,7 @@ void main() {
           isValid: true,
           isLoading: false,
           isEditingMode: true,
+          isDeleted: false,
           parent: null,
           children: [],
           deleteChildren: [],
@@ -204,10 +219,12 @@ void main() {
           entryId: null,
         ),
         build: () {
-          when(mockTabsRepository.getTab(tabId: 1))
-              .thenAnswer((_) async => testTab);
-          when(mockEntryRepository.readEntries(tabId: 1))
-              .thenAnswer((_) async => []);
+          when(
+            mockTabsRepository.getTab(tabId: 1),
+          ).thenAnswer((_) async => testTab);
+          when(
+            mockEntryRepository.readEntries(tabId: 1),
+          ).thenAnswer((_) async => []);
           return detailsBloc;
         },
         act: (bloc) => bloc.add(const DetailsEvent.onToggleEditMode()),
@@ -229,6 +246,7 @@ void main() {
           isValid: true,
           isLoading: false,
           isEditingMode: true,
+          isDeleted: false,
           parent: testTab,
           children: null,
           deleteChildren: [],
@@ -236,8 +254,9 @@ void main() {
           entryId: 1,
         ),
         build: () {
-          when(mockEntryRepository.getEntry(entryId: 1))
-              .thenAnswer((_) async => testEntry);
+          when(
+            mockEntryRepository.getEntry(entryId: 1),
+          ).thenAnswer((_) async => testEntry);
           return detailsBloc;
         },
         act: (bloc) => bloc.add(const DetailsEvent.onToggleEditMode()),
@@ -277,6 +296,7 @@ void main() {
           isValid: true,
           isLoading: false,
           isEditingMode: true,
+          isDeleted: false,
           parent: null,
           children: testChildren,
           deleteChildren: [],
@@ -287,40 +307,32 @@ void main() {
         act: (bloc) => bloc.add(const DetailsEvent.onDeleteChild(1)),
         expect: () => [
           isA<DetailsState>()
-              .having((s) => s.deleteChildren, 'deleteChildren', [1]).having(
-                  (s) => s.children?.length, 'children.length', 1),
+              .having((s) => s.deleteChildren, 'deleteChildren', [1])
+              .having((s) => s.children?.length, 'children.length', 1),
         ],
       );
 
       blocTest<DetailsBloc, DetailsState>(
         'emits correct state when unmarking child for deletion',
-        seed: () {
-          print(
-              'Test children: ${testChildren.map((e) => '${e.id}: ${e.title}').join(', ')}');
-          return DetailsState(
-            title: 'Test',
-            subtitle: 'Test',
-            timestamp: fixedTimestamp,
-            isValid: true,
-            isLoading: false,
-            isEditingMode: true,
-            parent: null,
-            children: testChildren,
-            deleteChildren: [1],
-            tabId: 1,
-            entryId: null,
-          );
-        },
+        seed: () => DetailsState(
+          title: 'Test',
+          subtitle: 'Test',
+          timestamp: fixedTimestamp,
+          isValid: true,
+          isLoading: false,
+          isEditingMode: true,
+          isDeleted: false,
+          parent: null,
+          children: testChildren,
+          deleteChildren: [1],
+          tabId: 1,
+          entryId: null,
+        ),
         build: () => detailsBloc,
-        act: (bloc) {
-          print(
-              'Current state children: ${bloc.state.children?.map((e) => '${e.id}: ${e.title}').join(', ')}');
-          print('Current state deleteChildren: ${bloc.state.deleteChildren}');
-          bloc.add(const DetailsEvent.onDeleteChild(1));
-        },
+        act: (bloc) => bloc.add(const DetailsEvent.onDeleteChild(1)),
         expect: () => [
           isA<DetailsState>()
-              .having((s) => s.deleteChildren, 'deleteChildren', <EntryDTO>[])
+              .having((s) => s.deleteChildren, 'deleteChildren', <int>[])
               .having((s) => s.children?.length, 'children.length', 2)
               .having((s) => s.children?[0].id, 'children[0].id', 1)
               .having((s) => s.children?[1].id, 'children[1].id', 2),
@@ -335,6 +347,7 @@ void main() {
         subtitle: 'Test Subtitle',
         timestamp: fixedTimestamp,
         entries: [],
+        order: 0,
       );
 
       blocTest<DetailsBloc, DetailsState>(
@@ -346,6 +359,7 @@ void main() {
           isValid: true,
           isLoading: false,
           isEditingMode: true,
+          isDeleted: false,
           parent: null,
           children: [],
           deleteChildren: [2],
@@ -353,15 +367,19 @@ void main() {
           entryId: null,
         ),
         build: () {
-          when(mockTabsRepository.updateTab(
-            id: 1,
-            title: 'Modified Title',
-            subtitle: 'Modified Subtitle',
-          )).thenAnswer((_) async => 1);
-          when(mockEntryRepository.deleteEntry(
-            tabId: 1,
-            entryId: 2,
-          )).thenAnswer((_) async => true);
+          when(
+            mockTabsRepository.updateTab(
+              id: 1,
+              title: 'Modified Title',
+              subtitle: 'Modified Subtitle',
+            ),
+          ).thenAnswer((_) async => 1);
+          when(
+            mockEntryRepository.deleteEntry(
+              tabId: 1,
+              entryId: 2,
+            ),
+          ).thenAnswer((_) async => true);
           return detailsBloc;
         },
         act: (bloc) => bloc.add(const DetailsEvent.onSubmit()),
@@ -382,6 +400,7 @@ void main() {
           isValid: true,
           isLoading: false,
           isEditingMode: true,
+          isDeleted: false,
           parent: testTab,
           children: null,
           deleteChildren: [],
@@ -389,12 +408,14 @@ void main() {
           entryId: 1,
         ),
         build: () {
-          when(mockEntryRepository.updateEntry(
-            id: 1,
-            tabId: 1,
-            title: 'Modified Title',
-            subtitle: 'Modified Subtitle',
-          )).thenAnswer((_) async => 1);
+          when(
+            mockEntryRepository.updateEntry(
+              id: 1,
+              tabId: 1,
+              title: 'Modified Title',
+              subtitle: 'Modified Subtitle',
+            ),
+          ).thenAnswer((_) async => 1);
           return detailsBloc;
         },
         act: (bloc) => bloc.add(const DetailsEvent.onSubmit()),

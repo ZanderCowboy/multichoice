@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/_app_bar.dart';
@@ -39,7 +40,9 @@ class DetailsPage extends StatelessWidget {
           appBar: _AppBar(
             onBack: onBack,
           ),
-          body: const _DetailsView(),
+          body: _DetailsView(
+            onBack: onBack,
+          ),
         ),
       ),
     );
@@ -47,11 +50,22 @@ class DetailsPage extends StatelessWidget {
 }
 
 class _DetailsView extends StatelessWidget {
-  const _DetailsView();
+  const _DetailsView({
+    required this.onBack,
+  });
+
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DetailsBloc, DetailsState>(
+    return BlocConsumer<DetailsBloc, DetailsState>(
+      listenWhen: (previous, current) =>
+          previous.isDeleted != current.isDeleted && current.isDeleted,
+      listener: (context, state) {
+        if (state.isDeleted) {
+          onBack();
+        }
+      },
       builder: (context, state) {
         if (state.isLoading) {
           return Center(child: CircularLoader.medium());

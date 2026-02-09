@@ -32,7 +32,57 @@ class _VerticalHome extends HookWidget {
       },
       builder: (context, state) {
         final tabs = state.tabs ?? [];
+        final isEditMode = state.isEditMode;
 
+        if (isEditMode && tabs.isNotEmpty) {
+          // Use ReorderableListView with horizontal scrolling for edit mode
+          final theme = Theme.of(context);
+          return Padding(
+            padding: vertical4horizontal0,
+            child: SizedBox(
+              height: UIConstants.vertTabHeight(context),
+              child: ReorderableListView.builder(
+                scrollController: scrollController,
+                scrollDirection: Axis.horizontal,
+                buildDefaultDragHandles: false,
+                physics: const AlwaysScrollableScrollPhysics(),
+                proxyDecorator: (child, index, animation) {
+                  // Override Card theme to make it transparent when dragging
+                  return Theme(
+                    data: theme.copyWith(
+                      cardTheme: theme.cardTheme.copyWith(
+                        color: Colors.transparent,
+                        surfaceTintColor: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    ),
+                    child: child,
+                  );
+                },
+                itemCount: tabs.length,
+                onReorder: (oldIndex, newIndex) {
+                  context.read<HomeBloc>().add(
+                    HomeEvent.onReorderTabs(oldIndex, newIndex),
+                  );
+                },
+                itemBuilder: (_, index) {
+                  final tab = tabs[index];
+                  return Padding(
+                    key: ValueKey(tab.id),
+                    padding: left4,
+                    child: CollectionTab(
+                      tab: tab,
+                      isEditMode: isEditMode,
+                      dragIndex: index,
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }
+
+        // Normal mode
         // Note: The nested scroll structure (SingleChildScrollView wrapping
         // CustomScrollView) is intentional. RefreshIndicator requires vertical
         // scrolling, but this layout uses horizontal scrolling for tabs.
@@ -42,7 +92,7 @@ class _VerticalHome extends HookWidget {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
-              padding: left0top4right0bottom24,
+              padding: vertical4horizontal0,
               child: SizedBox(
                 height: UIConstants.vertTabHeight(context),
                 child: CustomScrollView(
@@ -57,7 +107,10 @@ class _VerticalHome extends HookWidget {
                         itemBuilder: (_, index) {
                           final tab = tabs[index];
 
-                          return CollectionTab(tab: tab);
+                          return CollectionTab(
+                            tab: tab,
+                            isEditMode: isEditMode,
+                          );
                         },
                       ),
                     ),

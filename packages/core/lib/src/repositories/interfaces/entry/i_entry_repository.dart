@@ -28,4 +28,9 @@ abstract class IEntryRepository {
   });
 
   Future<bool> deleteEntries({required int tabId});
+
+  Future<bool> updateEntriesOrder({
+    required int tabId,
+    required List<int> entryIds,
+  });
 }

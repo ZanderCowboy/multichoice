@@ -33,7 +33,7 @@ class _DetailsSection extends HookWidget {
           margin: horizontal12 + top12 + bottom6,
           color: context.theme.appColors.primary,
           child: Padding(
-            padding: allPadding16,
+            padding: allPadding8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,25 +44,25 @@ class _DetailsSection extends HookWidget {
                   controller: titleController,
                   onChanged: (value) {
                     context.read<DetailsBloc>().add(
-                          DetailsEvent.onChangeTitle(value),
-                        );
+                      DetailsEvent.onChangeTitle(value),
+                    );
                   },
                   labelText: 'Edit Title',
                 ),
-                gap4,
+                gap3,
                 _DetailsListTile(
                   title: 'Subtitle',
-                  subtitle: state.subtitle,
+                  subtitle: state.subtitle.isEmpty ? 'None' : state.subtitle,
                   isEditing: isEditing,
                   controller: subtitleController,
                   onChanged: (value) {
                     context.read<DetailsBloc>().add(
-                          DetailsEvent.onChangeSubtitle(value),
-                        );
+                      DetailsEvent.onChangeSubtitle(value),
+                    );
                   },
                   labelText: 'Edit Subtitle',
                 ),
-                gap4,
+                gap3,
                 _DetailsListTile(
                   title: 'Date Added',
                   subtitle: '${state.timestamp.toLocal()}'.split('.')[0],

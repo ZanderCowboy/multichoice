@@ -37,6 +37,7 @@ class FeedbackModel {
 
   Map<String, dynamic> toJson() => _$FeedbackModelToJson(this);
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -53,6 +54,7 @@ class FeedbackModel {
           category == other.category &&
           status == other.status;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       id.hashCode ^

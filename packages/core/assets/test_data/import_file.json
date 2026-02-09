@@ -4,28 +4,36 @@
             "uuid": "test",
             "title": "First",
             "subtitle": "Second",
+            "timestamp": null,
             "entryIds": [
                 590699460983228343,
                 590700560494856554
-            ]
+            ],
+            "order": 0
         },
         {
             "uuid": "moon",
             "title": "Donkey",
             "subtitle": "Dog",
-            "entryIds": null
+            "timestamp": null,
+            "entryIds": null,
+            "order": 1
         }
     ],
     "entries": [
         {
             "uuid": "1",
             "tabId": 2715383224155124699,
-            "title": "hello"
+            "title": "hello",
+            "subtitle": null,
+            "timestamp": null
         },
         {
             "uuid": "2",
             "tabId": 2715383224155124699,
-            "title": "bye"
+            "title": "bye",
+            "subtitle": null,
+            "timestamp": null
         }
     ]
 }

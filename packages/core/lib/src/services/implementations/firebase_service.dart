@@ -8,8 +8,8 @@ import 'package:models/models.dart';
 
 @LazySingleton(as: IFirebaseService)
 class FirebaseService implements IFirebaseService {
-  FirebaseService() {
-    _remoteConfig = FirebaseRemoteConfig.instance;
+  FirebaseService({FirebaseRemoteConfig? remoteConfig}) {
+    _remoteConfig = remoteConfig ?? FirebaseRemoteConfig.instance;
   }
 
   late final FirebaseRemoteConfig _remoteConfig;

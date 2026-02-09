@@ -44,6 +44,7 @@ class FeedbackDTO {
 
   Map<String, dynamic> toJson() => _$FeedbackDTOToJson(this);
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -60,6 +61,7 @@ class FeedbackDTO {
           category == other.category &&
           status == other.status;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       id.hashCode ^

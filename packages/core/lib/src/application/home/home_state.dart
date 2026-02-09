@@ -11,6 +11,7 @@ abstract class HomeState with _$HomeState {
     required bool isDeleted,
     required bool isAdded,
     required bool isValid,
+    required bool isEditMode,
     required String? errorMessage,
   }) = _HomeState;
 
@@ -23,6 +24,7 @@ abstract class HomeState with _$HomeState {
         isDeleted: false,
         isAdded: false,
         isValid: false,
+        isEditMode: false,
         errorMessage: '',
       );
 }

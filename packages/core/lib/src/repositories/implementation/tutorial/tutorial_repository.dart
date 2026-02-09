@@ -53,6 +53,7 @@ class TutorialRepository implements ITutorialRepository {
         subtitle: 'My favorite movies',
         timestamp: DateTime.now(),
         entries: movieEntries,
+        order: 0,
       );
 
       final booksTab = TabsDTO(
@@ -61,6 +62,7 @@ class TutorialRepository implements ITutorialRepository {
         subtitle: 'Must-read books',
         timestamp: DateTime.now(),
         entries: bookEntries,
+        order: 1,
       );
 
       return [moviesTab, booksTab];

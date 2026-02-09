@@ -14,10 +14,14 @@ part 'widgets/tab/vertical_tab.dart';
 class TabLayout extends StatelessWidget {
   const TabLayout({
     required this.tab,
+    this.isEditMode = false,
+    this.dragIndex,
     super.key,
   });
 
   final TabsDTO tab;
+  final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,15 @@ class TabLayout extends StatelessWidget {
     }
 
     return appLayout.isLayoutVertical
-        ? _VerticalTab(tab: tab)
-        : _HorizontalTab(tab: tab);
+        ? _VerticalTab(
+            tab: tab,
+            isEditMode: isEditMode,
+            dragIndex: dragIndex,
+          )
+        : _HorizontalTab(
+            tab: tab,
+            isEditMode: isEditMode,
+            dragIndex: dragIndex,
+          );
   }
 }

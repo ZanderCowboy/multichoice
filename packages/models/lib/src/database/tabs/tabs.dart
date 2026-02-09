@@ -15,6 +15,7 @@ class Tabs {
     required this.subtitle,
     required this.timestamp,
     required this.entryIds,
+    required this.order,
   });
 
   factory Tabs.empty() => const Tabs(
@@ -23,6 +24,7 @@ class Tabs {
     subtitle: null,
     timestamp: null,
     entryIds: null,
+    order: 0,
   );
 
   factory Tabs.fromJson(Map<String, dynamic> json) => _$TabsFromJson(json);
@@ -32,11 +34,14 @@ class Tabs {
   final String? subtitle;
   final DateTime? timestamp;
   final List<int>? entryIds;
+  @JsonKey(defaultValue: 0)
+  final int order;
 
   Map<String, dynamic> toJson() => _$TabsToJson(this);
 
   Id get id => uuid.fastHash();
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -46,17 +51,20 @@ class Tabs {
           title == other.title &&
           subtitle == other.subtitle &&
           timestamp == other.timestamp &&
-          entryIds == other.entryIds;
+          entryIds == other.entryIds &&
+          order == other.order;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       uuid.hashCode ^
       title.hashCode ^
       subtitle.hashCode ^
       timestamp.hashCode ^
-      entryIds.hashCode;
+      entryIds.hashCode ^
+      order.hashCode;
 
   @override
   String toString() =>
-      'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp, entryIds: $entryIds)';
+      'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp, entryIds: $entryIds, order: $order)';
 }

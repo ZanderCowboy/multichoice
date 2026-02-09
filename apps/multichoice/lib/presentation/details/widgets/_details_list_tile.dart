@@ -20,8 +20,12 @@ class _DetailsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: context.theme.appColors.primary?.withValues(alpha: 0.2),
+      tileColor: context.theme.appColors.secondary?.withValues(alpha: 0.1),
       contentPadding: horizontal16,
+      visualDensity: VisualDensity.compact,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderCircular12,
+      ),
       title: !isEditing
           ? Text(
               title,

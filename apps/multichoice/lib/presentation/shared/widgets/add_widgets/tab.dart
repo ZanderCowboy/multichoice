@@ -18,7 +18,7 @@ class AddTabCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _BaseCard(
       semanticLabel: semanticLabel ?? 'AddTab',
-      elevation: 5,
+      elevation: 0,
       color: color ?? context.theme.appColors.primaryLight,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular12,

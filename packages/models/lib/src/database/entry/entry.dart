@@ -37,6 +37,7 @@ class Entry {
 
   Id get id => uuid.fastHash();
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -48,6 +49,7 @@ class Entry {
           subtitle == other.subtitle &&
           timestamp == other.timestamp;
 
+  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
   int get hashCode =>
       uuid.hashCode ^

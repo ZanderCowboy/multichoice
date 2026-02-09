@@ -140,6 +140,27 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               children: currentChildren,
             ));
           },
+          onDelete: (e) async {
+            emit(state.copyWith(isLoading: true));
+
+            bool deleteSuccess = false;
+            if (isTab) {
+              deleteSuccess = await tabsRepository.deleteTab(tabId: state.tabId!);
+            } else if (isEntry) {
+              deleteSuccess = await entryRepository.deleteEntry(
+                tabId: state.tabId!,
+                entryId: state.entryId!,
+              );
+            }
+
+            // Only mark as deleted if the operation succeeded
+            emit(state.copyWith(
+              isLoading: false,
+              isDeleted: deleteSuccess,
+            ));
+            
+            // TODO: If deleteSuccess is false, show error message to user
+          },
           onSubmit: (e) async {
             emit(state.copyWith(
               isLoading: true,
