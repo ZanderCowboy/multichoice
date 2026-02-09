@@ -32,7 +32,8 @@ Future<void> _onHomeRefresh(BuildContext context) async {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: context.theme.appColors.ternary,
-                  fontSize: 16,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               gap8,
@@ -43,7 +44,7 @@ Future<void> _onHomeRefresh(BuildContext context) async {
                 child: Icon(
                   Icons.close,
                   color: context.theme.appColors.ternary,
-                  size: 16,
+                  size: 20,
                 ),
               ),
             ],
