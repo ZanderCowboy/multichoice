@@ -79,30 +79,33 @@ class _HorizontalHome extends HookWidget {
         }
 
         // Normal mode
-        return Padding(
-          padding: horizontal8,
-          child: CustomScrollView(
-            controller: scrollController,
-            scrollBehavior: CustomScrollBehaviour(),
-            slivers: [
-              SliverPadding(
-                padding: top4,
-                sliver: SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (_, index) {
-                    final tab = tabs[index];
+        return RefreshIndicator(
+          onRefresh: () => _onHomeRefresh(context),
+          child: Padding(
+            padding: horizontal8,
+            child: CustomScrollView(
+              controller: scrollController,
+              scrollBehavior: CustomScrollBehaviour(),
+              slivers: [
+                SliverPadding(
+                  padding: top4,
+                  sliver: SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
 
-                    return CollectionTab(tab: tab, isEditMode: isEditMode);
-                  },
+                      return CollectionTab(tab: tab, isEditMode: isEditMode);
+                    },
+                  ),
                 ),
-              ),
-              const SliverPadding(
-                padding: bottom24,
-                sliver: SliverToBoxAdapter(
-                  child: NewTab(),
+                const SliverPadding(
+                  padding: bottom24,
+                  sliver: SliverToBoxAdapter(
+                    child: NewTab(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

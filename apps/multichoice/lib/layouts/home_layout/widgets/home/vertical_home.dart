@@ -83,33 +83,46 @@ class _VerticalHome extends HookWidget {
         }
 
         // Normal mode
-        return Padding(
-          padding: vertical4horizontal0,
-          child: SizedBox(
-            height: UIConstants.vertTabHeight(context),
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverPadding(
-                  padding: left4,
-                  sliver: SliverList.builder(
-                    itemCount: tabs.length,
-                    itemBuilder: (_, index) {
-                      final tab = tabs[index];
+        // Note: The nested scroll structure (SingleChildScrollView wrapping
+        // CustomScrollView) is intentional. RefreshIndicator requires vertical
+        // scrolling, but this layout uses horizontal scrolling for tabs.
+        // The outer vertical scroll enables pull-to-refresh functionality.
+        return RefreshIndicator(
+          onRefresh: () => _onHomeRefresh(context),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: vertical4horizontal0,
+              child: SizedBox(
+                height: UIConstants.vertTabHeight(context),
+                child: CustomScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: scrollController,
+                  scrollBehavior: CustomScrollBehaviour(),
+                  slivers: [
+                    SliverPadding(
+                      padding: left4,
+                      sliver: SliverList.builder(
+                        itemCount: tabs.length,
+                        itemBuilder: (_, index) {
+                          final tab = tabs[index];
 
-                      return CollectionTab(tab: tab, isEditMode: isEditMode);
-                    },
-                  ),
+                          return CollectionTab(
+                            tab: tab,
+                            isEditMode: isEditMode,
+                          );
+                        },
+                      ),
+                    ),
+                    const SliverPadding(
+                      padding: right12,
+                      sliver: SliverToBoxAdapter(
+                        child: NewTab(),
+                      ),
+                    ),
+                  ],
                 ),
-                const SliverPadding(
-                  padding: right12,
-                  sliver: SliverToBoxAdapter(
-                    child: NewTab(),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         );
