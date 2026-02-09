@@ -81,6 +81,8 @@ class _HorizontalHome extends HookWidget {
         // Normal mode
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
+          color: context.theme.appColors.ternary,
+          backgroundColor: context.theme.appColors.background,
           child: Padding(
             padding: horizontal8,
             child: CustomScrollView(
