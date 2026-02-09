@@ -34,7 +34,7 @@ class _HorizontalHome extends HookWidget {
         final tabs = state.tabs ?? [];
 
         return RefreshIndicator(
-          onRefresh: () => context.performHomeRefresh(),
+          onRefresh: () => _onHomeRefresh(context),
           child: Padding(
             padding: horizontal8,
             child: CustomScrollView(

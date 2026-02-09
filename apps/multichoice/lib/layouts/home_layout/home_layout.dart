@@ -11,40 +11,52 @@ import 'package:ui_kit/ui_kit.dart';
 part 'widgets/home/horizontal_home.dart';
 part 'widgets/home/vertical_home.dart';
 
-/// Extension to handle home refresh functionality
-extension _HomeRefreshHelper on BuildContext {
-  /// Performs a home refresh and shows a success message
-  Future<void> performHomeRefresh() async {
-    final bloc = read<HomeBloc>();
-    bloc.add(const HomeEvent.refresh());
+Future<void> _onHomeRefresh(BuildContext context) async {
+  final bloc = context.read<HomeBloc>()..add(const HomeEvent.refresh());
 
-    // Wait for the refresh to complete by listening to state changes
-    try {
-      await bloc.stream
-          .firstWhere((state) => !state.isLoading)
-          .timeout(const Duration(seconds: 5));
+  try {
+    await bloc.stream
+        .firstWhere((state) => !state.isLoading)
+        .timeout(const Duration(seconds: 5));
 
-      if (mounted) {
-        ScaffoldMessenger.of(this).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Refreshed.',
-              style: TextStyle(
-                color: theme.appColors.onSurface,
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Refreshed',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: context.theme.appColors.ternary,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            duration: const Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: theme.appColors.surface.withOpacity(0.9),
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+              gap8,
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+                child: Icon(
+                  Icons.close,
+                  color: context.theme.appColors.ternary,
+                  size: 16,
+                ),
+              ),
+            ],
           ),
-        );
-      }
-    } on TimeoutException {
-      // Refresh took too long, but don't show error to user
-      // The error listener will handle any actual errors
-    }
+        ),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        behavior: SnackBarBehavior.fixed,
+      ),
+    );
+  } on TimeoutException {
+    // Refresh took too long; actual errors are handled by the error listener
   }
 }
 

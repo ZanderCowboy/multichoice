@@ -38,7 +38,7 @@ class _VerticalHome extends HookWidget {
         // scrolling, but this layout uses horizontal scrolling for tabs.
         // The outer vertical scroll enables pull-to-refresh functionality.
         return RefreshIndicator(
-          onRefresh: () => context.performHomeRefresh(),
+          onRefresh: () => _onHomeRefresh(context),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
