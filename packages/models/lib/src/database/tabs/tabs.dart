@@ -34,6 +34,7 @@ class Tabs {
   final String? subtitle;
   final DateTime? timestamp;
   final List<int>? entryIds;
+  @JsonKey(defaultValue: 0)
   final int order;
 
   Map<String, dynamic> toJson() => _$TabsToJson(this);

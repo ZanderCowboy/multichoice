@@ -362,6 +362,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = state.tabs;
     if (tabs == null || tabs.isEmpty) return;
 
+    // Store the original tabs for rollback if needed
+    final originalTabs = tabs;
+
     // Create a mutable copy of the tabs list
     final updatedTabs = List<TabsDTO>.from(tabs);
 
@@ -374,12 +377,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tab = updatedTabs.removeAt(oldIndex);
     updatedTabs.insert(newIndex, tab);
 
-    // Update the UI immediately
+    // Update the UI optimistically
     emit(state.copyWith(tabs: updatedTabs));
 
     // Persist the new order to the database
     final tabIds = updatedTabs.map((t) => t.id).toList();
-    await _tabsRepository.updateTabsOrder(tabIds);
+    final success = await _tabsRepository.updateTabsOrder(tabIds);
+    
+    // If persistence failed, revert to original order
+    if (!success) {
+      emit(state.copyWith(tabs: originalTabs));
+      // TODO: Show error message to user
+    }
   }
 
   Future<void> _handleReorderEntries(
@@ -399,6 +408,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final entries = tab.entries;
     if (entries.isEmpty) return;
 
+    // Store the original tabs for rollback if needed
+    final originalTabs = tabs;
+
     // Create a mutable copy of the entries list
     final updatedEntries = List<EntryDTO>.from(entries);
 
@@ -416,15 +428,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final updatedTabs = List<TabsDTO>.from(tabs);
     updatedTabs[tabIndex] = updatedTab;
 
-    // Update the UI immediately
+    // Update the UI optimistically
     emit(state.copyWith(tabs: updatedTabs));
 
     // Persist the new order to the database
     final entryIds = updatedEntries.map((e) => e.id).toList();
-    await _entryRepository.updateEntriesOrder(
+    final success = await _entryRepository.updateEntriesOrder(
       tabId: tabId,
       entryIds: entryIds,
     );
+    
+    // If persistence failed, revert to original order
+    if (!success) {
+      emit(state.copyWith(tabs: originalTabs));
+      // TODO: Show error message to user
+    }
   }
 
   final ITabsRepository _tabsRepository;
