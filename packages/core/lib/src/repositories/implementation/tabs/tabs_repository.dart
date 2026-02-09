@@ -204,20 +204,35 @@ class TabsRepository implements ITabsRepository {
 
   /// Updates the order of tabs in the database.
   ///
+  /// This method uses bulk operations for better performance with large tab lists.
+  ///
   /// [tabIds]: The list of tab IDs in the new order.
   ///
   /// Returns `true` if the tabs were successfully reordered, otherwise `false`.
   @override
   Future<bool> updateTabsOrder(List<int> tabIds) async {
     try {
+      // Early return for empty list - nothing to update
+      if (tabIds.isEmpty) return true;
+      
       return await db.writeTxn(() async {
-        for (int i = 0; i < tabIds.length; i++) {
-          final tab = await db.tabs.get(tabIds[i]);
+        // Fetch all tabs in bulk
+        // Note: getAll() returns tabs in the same order as tabIds,
+        // with null entries for non-existent IDs
+        final tabs = await db.tabs.getAll(tabIds);
+        
+        // Build list of updated tabs with new order
+        final updatedTabs = <Tabs>[];
+        for (int i = 0; i < tabs.length; i++) {
+          final tab = tabs[i];
           if (tab != null) {
-            final updatedTab = tab.copyWith(order: i);
-            await db.tabs.put(updatedTab);
+            updatedTabs.add(tab.copyWith(order: i));
           }
         }
+        
+        // Update all tabs in bulk
+        await db.tabs.putAll(updatedTabs);
+        
         return true;
       });
     } catch (e) {
