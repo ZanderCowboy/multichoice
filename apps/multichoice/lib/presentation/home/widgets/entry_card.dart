@@ -70,15 +70,13 @@ class EntryCard extends HookWidget {
                     );
                   },
             onDoubleTap: isEditMode ? null : onDoubleTap,
-            onLongPress: isEditMode
-                ? null
-                : () {
-                    if (menuController.isOpen) {
-                      menuController.close();
-                    } else {
-                      menuController.open();
-                    }
-                  },
+            onLongPress: () async {
+              final bloc = context.read<HomeBloc>();
+              if (!bloc.state.isEditMode) {
+                await HapticFeedback.mediumImpact();
+                bloc.add(const HomeEvent.onToggleEditMode());
+              }
+            },
             child: Padding(
               padding: isLayoutVertical ? allPadding2 : allPadding4,
               child: Card(
@@ -97,25 +95,26 @@ class EntryCard extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (isEditMode && dragIndex != null)
                               Padding(
-                                padding: right4,
+                                padding: horizontal4,
                                 child: ReorderableDragStartListener(
                                   index: dragIndex!,
                                   child: Icon(
                                     Icons.drag_handle,
-                                    size: 16,
+                                    size: 24,
                                     color: context.theme.appColors.ternary,
                                   ),
                                 ),
                               )
                             else if (isEditMode)
                               Padding(
-                                padding: right4,
+                                padding: horizontal4,
                                 child: Icon(
                                   Icons.drag_handle,
-                                  size: 16,
+                                  size: 24,
                                   color: context.theme.appColors.ternary,
                                 ),
                               ),

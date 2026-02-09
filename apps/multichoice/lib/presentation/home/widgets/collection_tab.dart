@@ -28,26 +28,18 @@ class CollectionTab extends HookWidget {
                 ),
               );
             },
-      onLongPress: isEditMode ? null : () => _onDeleteTab(context),
+      onLongPress: () async {
+        final bloc = context.read<HomeBloc>();
+        if (!bloc.state.isEditMode) {
+          await HapticFeedback.mediumImpact();
+          bloc.add(const HomeEvent.onToggleEditMode());
+        }
+      },
       child: TabLayout(
         tab: tab,
         isEditMode: isEditMode,
         dragIndex: dragIndex,
       ),
-    );
-  }
-
-  void _onDeleteTab(BuildContext context) {
-    deleteModal(
-      context: context,
-      title: tab.title,
-      content: Text(
-        "Are you sure you want to delete tab ${tab.title} and all it's entries?",
-      ),
-      onConfirm: () {
-        context.read<HomeBloc>().add(HomeEvent.onLongPressedDeleteTab(tab.id));
-        Navigator.of(context).pop();
-      },
     );
   }
 }
