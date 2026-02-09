@@ -264,7 +264,7 @@ jobs:
       # Download APK Artifact
       ##############################################
       - name: Download APK Artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: "android-release-apk"
           path: ./artifacts/
