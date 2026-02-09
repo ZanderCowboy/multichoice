@@ -27,6 +27,9 @@ class TabsRepository implements ITabsRepository {
     try {
       return await db.writeTxn(() async {
         // Get the maximum order value to set the new tab's order
+        // Note: Order values are sequential starting from 0
+        // If all tabs are deleted, the next tab will start at order 0
+        // (Sequential integrity is maintained by migration logic in readTabs())
         final tabs = await db.tabs.where().findAll();
         final maxOrder = tabs.isEmpty 
             ? -1 
@@ -84,8 +87,16 @@ class TabsRepository implements ITabsRepository {
 
         // Optimize: Use bulk read instead of individual gets
         final entries = await db.entrys.getAll(entryIds);
-        final entriesDTO = entries
-            .where((entry) => entry != null)
+        
+        // Log if there are null entries (data integrity issue)
+        final validEntries = entries.where((e) => e != null).toList();
+        final nullCount = entries.length - validEntries.length;
+        if (nullCount > 0) {
+          log('Warning: Tab ${tab.uuid} has $nullCount missing entries '
+              '(expected ${entryIds.length}, found ${validEntries.length} valid entries).');
+        }
+        
+        final entriesDTO = validEntries
             .map((entry) => entryConverter.convert<Entry, EntryDTO>(entry!))
             .toList();
 

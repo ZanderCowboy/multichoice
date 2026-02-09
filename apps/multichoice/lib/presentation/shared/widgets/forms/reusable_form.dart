@@ -32,14 +32,18 @@ class ReusableForm extends StatelessWidget {
     // Defensive check: Verify controllers are still usable
     // This prevents crashes when the widget rebuilds after disposal
     // TODO: Fix parent widget lifecycle to prevent this scenario
-    if (!titleController.hasListeners && !subtitleController.hasListeners) {
-      // Controllers appear to be disposed - return minimal widget
+    try {
+      // Try to access controller text to verify it's not disposed
+      final isTitleNotEmpty = titleController.text.isNotEmpty;
+      
+      return _buildForm(context, isTitleNotEmpty);
+    } catch (e) {
+      // Controllers are disposed - return minimal widget
       return const SizedBox.shrink();
     }
+  }
 
-    // Safely get title text - avoid accessing disposed controller
-    final isTitleNotEmpty = titleController.text.isNotEmpty;
-
+  Widget _buildForm(BuildContext context, bool isTitleNotEmpty) {
     return Form(
       child: SingleChildScrollView(
         child: Column(
