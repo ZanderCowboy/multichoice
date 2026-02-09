@@ -31,7 +31,7 @@ jobs:
       android_environment_flag: ${{ steps.id_out.outputs.android_environment_flag }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -87,7 +87,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Flutter and Java
         uses: ./.github/actions/setup-flutter-with-java
