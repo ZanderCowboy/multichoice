@@ -14,14 +14,14 @@ import '../../mocks.mocks.dart';
 final getIt = GetIt.instance;
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   late DataExchangeService dataExchangeService;
   late MockFilePickerWrapper mockFilePickerWrapper;
   late Isar db;
 
   setUpAll(() async {
+    // Initialize Isar first (before TestWidgetsFlutterBinding) to allow download
     db = await configureIsarInstance();
+
     mockFilePickerWrapper = MockFilePickerWrapper();
 
     dataExchangeService = DataExchangeService(
@@ -203,6 +203,9 @@ void main() {
 
     group('importDataFromJSON', () {
       test('should import data from JSON successfully', () async {
+        // Initialize TestWidgetsFlutterBinding for rootBundle access
+        TestWidgetsFlutterBinding.ensureInitialized();
+
         // Arrange
         // Load asset and create temporary file
         final assetContent = await rootBundle.loadString(

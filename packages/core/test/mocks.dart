@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:isar_community/isar.dart';
 import 'package:mockito/annotations.dart';
 import 'package:models/models.dart';
@@ -35,5 +36,6 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<ISearchRepository>(as: #MockSearchRepository),
   MockSpec<IFirebaseService>(as: #MockFirebaseService),
   MockSpec<IChangelogRepository>(as: #MockChangelogRepository),
+  MockSpec<FirebaseRemoteConfig>(as: #MockFirebaseRemoteConfig),
 ])
 void main() {}
