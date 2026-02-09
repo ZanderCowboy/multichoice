@@ -33,6 +33,10 @@ class _VerticalHome extends HookWidget {
       builder: (context, state) {
         final tabs = state.tabs ?? [];
 
+        // Note: The nested scroll structure (SingleChildScrollView wrapping
+        // CustomScrollView) is intentional. RefreshIndicator requires vertical
+        // scrolling, but this layout uses horizontal scrolling for tabs.
+        // The outer vertical scroll enables pull-to-refresh functionality.
         return RefreshIndicator(
           onRefresh: () => context.performHomeRefresh(),
           child: SingleChildScrollView(

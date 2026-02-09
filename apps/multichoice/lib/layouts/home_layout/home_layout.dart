@@ -27,7 +27,12 @@ extension _HomeRefreshHelper on BuildContext {
       if (mounted) {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
-            content: const Text('Refreshed.'),
+            content: Text(
+              'Refreshed.',
+              style: TextStyle(
+                color: theme.appColors.onSurface,
+              ),
+            ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
             backgroundColor: theme.appColors.surface.withOpacity(0.9),
