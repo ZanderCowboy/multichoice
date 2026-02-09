@@ -143,19 +143,23 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
           onDelete: (e) async {
             emit(state.copyWith(isLoading: true));
 
+            bool deleteSuccess = false;
             if (isTab) {
-              await tabsRepository.deleteTab(tabId: state.tabId!);
+              deleteSuccess = await tabsRepository.deleteTab(tabId: state.tabId!);
             } else if (isEntry) {
-              await entryRepository.deleteEntry(
+              deleteSuccess = await entryRepository.deleteEntry(
                 tabId: state.tabId!,
                 entryId: state.entryId!,
               );
             }
 
+            // Only mark as deleted if the operation succeeded
             emit(state.copyWith(
               isLoading: false,
-              isDeleted: true,
+              isDeleted: deleteSuccess,
             ));
+            
+            // TODO: If deleteSuccess is false, show error message to user
           },
           onSubmit: (e) async {
             emit(state.copyWith(

@@ -34,6 +34,7 @@ class TabsDTO {
   final String subtitle;
   final DateTime timestamp;
   final List<EntryDTO> entries;
+  @JsonKey(defaultValue: 0)
   final int order;
   final bool? isFirst;
 

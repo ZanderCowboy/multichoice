@@ -27,49 +27,23 @@ class ReusableForm extends StatelessWidget {
   final VoidCallback? onTitleTap;
   final VoidCallback? onSubtitleTap;
 
-  bool _isControllerValid(TextEditingController controller) {
-    try {
-      // Try to add and remove a listener to check if controller is disposed
-      // This will throw if the controller is disposed
-      void listener() {}
-
-      controller
-        ..addListener(listener)
-        ..removeListener(listener);
-
-      return true;
-    } catch (e) {
-      // Controller is disposed or invalid
-      return false;
-    }
-  }
-
-  String _safeGetText(TextEditingController controller) {
-    try {
-      return controller.text;
-    } catch (e) {
-      // Controller is disposed, return empty string
-      return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Check if controllers are still valid before using them
-    final areControllersValid =
-        _isControllerValid(titleController) &&
-        _isControllerValid(subtitleController);
-
-    if (!areControllersValid) {
-      // Return empty container if controllers are disposed
-      // This prevents errors during widget rebuilds
+    // Defensive check: Verify controllers are still usable
+    // This prevents crashes when the widget rebuilds after disposal
+    // TODO: Fix parent widget lifecycle to prevent this scenario
+    try {
+      // Try to access controller text to verify it's not disposed
+      final isTitleNotEmpty = titleController.text.isNotEmpty;
+      
+      return _buildForm(context, isTitleNotEmpty);
+    } catch (e) {
+      // Controllers are disposed - return minimal widget
       return const SizedBox.shrink();
     }
+  }
 
-    // Safely get title text to avoid disposed controller errors
-    final titleText = _safeGetText(titleController);
-    final isTitleNotEmpty = titleText.isNotEmpty;
-
+  Widget _buildForm(BuildContext context, bool isTitleNotEmpty) {
     return Form(
       child: SingleChildScrollView(
         child: Column(

@@ -27,9 +27,12 @@ class TabsRepository implements ITabsRepository {
     try {
       return await db.writeTxn(() async {
         // Get the maximum order value to set the new tab's order
+        // Note: Order values are sequential starting from 0
+        // If all tabs are deleted, the next tab will start at order 0
+        // (Sequential integrity is maintained by migration logic in readTabs())
         final tabs = await db.tabs.where().findAll();
         final maxOrder = tabs.isEmpty 
-            ? 0 
+            ? -1 
             : tabs.map((t) => t.order).reduce((a, b) => a > b ? a : b);
         
         final result = db.tabs.put(
@@ -57,7 +60,22 @@ class TabsRepository implements ITabsRepository {
   @override
   Future<List<TabsDTO>> readTabs() async {
     try {
-      final tabs = await db.tabs.where().sortByOrder().findAll();
+      var tabs = await db.tabs.where().sortByOrder().findAll();
+      
+      // Migration: Check if multiple tabs have the same order (e.g., all 0)
+      // This can happen when upgrading from a version without the order field
+      final orderCounts = <int, int>{};
+      for (final tab in tabs) {
+        orderCounts[tab.order] = (orderCounts[tab.order] ?? 0) + 1;
+      }
+      
+      // If we detect duplicate orders, reassign based on timestamp
+      final hasDuplicateOrders = orderCounts.values.any((count) => count > 1);
+      if (hasDuplicateOrders) {
+        await _migrateTabOrders(tabs);
+        // Re-fetch tabs after migration
+        tabs = await db.tabs.where().sortByOrder().findAll();
+      }
 
       final tabsConverter = TabsMapper();
       final entryConverter = EntryMapper();
@@ -67,12 +85,20 @@ class TabsRepository implements ITabsRepository {
         final tabDTO = tabsConverter.convert<Tabs, TabsDTO>(tab);
         final entryIds = tab.entryIds ?? [];
 
-        final entriesDTO = <EntryDTO>[];
-        for (final id in entryIds) {
-          final entry = await db.entrys.get(id) ?? Entry.empty();
-          final entryDTO = entryConverter.convert<Entry, EntryDTO>(entry);
-          entriesDTO.add(entryDTO);
+        // Optimize: Use bulk read instead of individual gets
+        final entries = await db.entrys.getAll(entryIds);
+        
+        // Log if there are null entries (data integrity issue)
+        final validEntries = entries.where((e) => e != null).toList();
+        final nullCount = entries.length - validEntries.length;
+        if (nullCount > 0) {
+          log('Warning: Tab ${tab.uuid} has $nullCount missing entries '
+              '(expected ${entryIds.length}, found ${validEntries.length} valid entries).');
         }
+        
+        final entriesDTO = validEntries
+            .map((entry) => entryConverter.convert<Entry, EntryDTO>(entry!))
+            .toList();
 
         final newTabDTO = tabDTO.copyWith(entries: entriesDTO);
         result.add(newTabDTO);
@@ -82,6 +108,28 @@ class TabsRepository implements ITabsRepository {
     } catch (e) {
       log(e.toString());
       return [];
+    }
+  }
+  
+  /// Migrates tab orders by assigning sequential order values based on timestamp.
+  /// This is needed when upgrading from a version without the order field.
+  Future<void> _migrateTabOrders(List<Tabs> tabs) async {
+    try {
+      await db.writeTxn(() async {
+        // Sort by timestamp to preserve the original creation order
+        final sortedTabs = List<Tabs>.from(tabs)
+          ..sort((a, b) => (a.timestamp ?? DateTime.now())
+              .compareTo(b.timestamp ?? DateTime.now()));
+        
+        // Reassign order values starting from 0
+        for (int i = 0; i < sortedTabs.length; i++) {
+          final updatedTab = sortedTabs[i].copyWith(order: i);
+          await db.tabs.put(updatedTab);
+        }
+      });
+      log('Migrated ${tabs.length} tabs to use proper order values');
+    } catch (e) {
+      log('Error migrating tab orders: $e');
     }
   }
 
@@ -99,12 +147,12 @@ class TabsRepository implements ITabsRepository {
       final dto = TabsMapper().convert<Tabs, TabsDTO>(result);
       final entryIds = result.entryIds ?? [];
 
-      final entriesDTO = <EntryDTO>[];
-      for (final id in entryIds) {
-        final entry = await db.entrys.get(id) ?? Entry.empty();
-        final entryDTO = EntryMapper().convert<Entry, EntryDTO>(entry);
-        entriesDTO.add(entryDTO);
-      }
+      // Optimize: Use bulk read instead of individual gets
+      final entries = await db.entrys.getAll(entryIds);
+      final entriesDTO = entries
+          .where((entry) => entry != null)
+          .map((entry) => EntryMapper().convert<Entry, EntryDTO>(entry!))
+          .toList();
 
       final newTabDTO = dto.copyWith(entries: entriesDTO);
 
@@ -211,13 +259,20 @@ class TabsRepository implements ITabsRepository {
   Future<bool> updateTabsOrder(List<int> tabIds) async {
     try {
       return await db.writeTxn(() async {
-        for (int i = 0; i < tabIds.length; i++) {
-          final tab = await db.tabs.get(tabIds[i]);
+        // Optimize: Use bulk read instead of individual gets
+        final tabs = await db.tabs.getAll(tabIds);
+        final updatedTabs = <Tabs>[];
+        
+        for (int i = 0; i < tabs.length; i++) {
+          final tab = tabs[i];
           if (tab != null) {
             final updatedTab = tab.copyWith(order: i);
-            await db.tabs.put(updatedTab);
+            updatedTabs.add(updatedTab);
           }
         }
+        
+        // Optimize: Use bulk write instead of individual puts
+        await db.tabs.putAll(updatedTabs);
         return true;
       });
     } catch (e) {
