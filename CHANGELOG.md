@@ -1,10 +1,7 @@
-#211 - Add Changelog Page in App
+#177 Implement Refresh Manual Functionality
 
-- Add `ChangelogPage` to display version history from Firebase Remote Config
-- Add `Changelog` and `ChangelogEntry` models for changelog data structure
-- Add `IChangelogRepository` interface and `ChangelogRepository` implementation
-- Add `ChangelogBloc` for state management with loading, error, and success states
-- Add `changelog` key to `FirebaseConfigKeys` enum
-- Add changelog navigation item in drawer's "More" section
-- Sort versions by semantic versioning (newest first) in repository
-- Add `forceFetchAndActivate` to FirebaseService to immediately refresh Firebase Remote Config contents
+- Refactor home refresh from extension method to standalone function
+- Improve refresh snackbar UI with centered text and close button
+- Update snackbar styling with transparent background and improved colors
+- Add workspace configuration file with Java and SVG settings
+- Update VS Code extensions recommendations to include GitLens, Pull Request, and Java support
