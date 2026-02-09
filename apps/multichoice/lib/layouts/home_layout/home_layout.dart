@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,38 @@ import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/home/horizontal_home.dart';
 part 'widgets/home/vertical_home.dart';
+
+/// Extension to handle home refresh functionality
+extension _HomeRefreshHelper on BuildContext {
+  /// Performs a home refresh and shows a success message
+  Future<void> performHomeRefresh() async {
+    final bloc = read<HomeBloc>();
+    bloc.add(const HomeEvent.refresh());
+
+    // Wait for the refresh to complete by listening to state changes
+    try {
+      await bloc.stream
+          .firstWhere((state) => !state.isLoading)
+          .timeout(const Duration(seconds: 5));
+
+      if (mounted) {
+        ScaffoldMessenger.of(this).showSnackBar(
+          SnackBar(
+            content: const Text('Refreshed.'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: theme.appColors.surface.withOpacity(0.9),
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+          ),
+        );
+      }
+    } on TimeoutException {
+      // Refresh took too long, but don't show error to user
+      // The error listener will handle any actual errors
+    }
+  }
+}
 
 class HomeLayout extends HookWidget {
   const HomeLayout({super.key});

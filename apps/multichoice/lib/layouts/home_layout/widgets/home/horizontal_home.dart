@@ -33,30 +33,33 @@ class _HorizontalHome extends HookWidget {
       builder: (context, state) {
         final tabs = state.tabs ?? [];
 
-        return Padding(
-          padding: horizontal8,
-          child: CustomScrollView(
-            controller: scrollController,
-            scrollBehavior: CustomScrollBehaviour(),
-            slivers: [
-              SliverPadding(
-                padding: top4,
-                sliver: SliverList.builder(
-                  itemCount: tabs.length,
-                  itemBuilder: (_, index) {
-                    final tab = tabs[index];
+        return RefreshIndicator(
+          onRefresh: () => context.performHomeRefresh(),
+          child: Padding(
+            padding: horizontal8,
+            child: CustomScrollView(
+              controller: scrollController,
+              scrollBehavior: CustomScrollBehaviour(),
+              slivers: [
+                SliverPadding(
+                  padding: top4,
+                  sliver: SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
 
-                    return CollectionTab(tab: tab);
-                  },
+                      return CollectionTab(tab: tab);
+                    },
+                  ),
                 ),
-              ),
-              const SliverPadding(
-                padding: bottom24,
-                sliver: SliverToBoxAdapter(
-                  child: NewTab(),
+                const SliverPadding(
+                  padding: bottom24,
+                  sliver: SliverToBoxAdapter(
+                    child: NewTab(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
