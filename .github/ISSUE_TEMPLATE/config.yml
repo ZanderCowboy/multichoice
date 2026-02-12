@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/ZanderCowboy/multichoice/discussions
+    about: Ask questions, share ideas, and discuss the project with the community
+  - name: 🔒 Security Issues
+    url: https://github.com/ZanderCowboy/multichoice/security/advisories/new
+    about: Report security vulnerabilities privately
+  - name: 📱 Google Play Store
+    url: https://play.google.com/store/apps/details?id=co.za.zandercowboy.multichoice
+    about: Rate and review the app on Google Play Store
+  - name: 📊 Project Roadmap
+    url: https://github.com/ZanderCowboy/multichoice/projects
+    about: View our development roadmap and project milestones 
