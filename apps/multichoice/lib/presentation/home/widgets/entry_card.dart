@@ -27,7 +27,7 @@ class EntryCard extends HookWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return MenuAnchor(
+        final card = MenuAnchor(
           controller: menuController,
           consumeOutsideTap: true,
           builder: (context, controller, child) {
@@ -153,6 +153,27 @@ class EntryCard extends HookWidget {
               ),
             ),
           ),
+        );
+
+        if (!isEditMode) {
+          return card;
+        }
+
+        // In edit mode, make the entry card draggable so it can be moved
+        // between tabs (collections).
+        return LongPressDraggable<({EntryDTO entry, int fromTabId})>(
+          data: (entry: entry, fromTabId: entry.tabId),
+          feedback: Material(
+            color: Colors.transparent,
+            child: SizedBox(
+              width: isLayoutVertical
+                  ? UIConstants.vertTabWidth(context) - 4
+                  : UIConstants.horiTabHeight(context) / 2 - 8,
+              child: card,
+            ),
+          ),
+          childWhenDragging: const SizedBox.shrink(),
+          child: card,
         );
       },
     );
