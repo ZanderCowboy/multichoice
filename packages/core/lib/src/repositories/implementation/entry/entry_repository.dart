@@ -201,4 +201,67 @@ class EntryRepository implements IEntryRepository {
       return false;
     }
   }
+
+  /// Moves an entry from one tab to another and updates ordering.
+  ///
+  /// This operation:
+  /// - Removes the entry ID from the source tab's [entryIds] list.
+  /// - Inserts the entry ID into the destination tab's [entryIds] list
+  ///   at [insertIndex] (or at the end if out of range).
+  /// - Updates the [Entry.tabId] to [toTabId].
+  ///
+  /// All changes are applied in a single transaction.
+  @override
+  Future<bool> moveEntryToTab({
+    required int entryId,
+    required int fromTabId,
+    required int toTabId,
+    required int insertIndex,
+  }) async {
+    try {
+      return await db.writeTxn(() async {
+        final entry = await db.entrys.get(entryId);
+        final fromTab = await db.tabs.get(fromTabId);
+        final toTab = await db.tabs.get(toTabId);
+
+        if (entry == null || fromTab == null || toTab == null) {
+          return false;
+        }
+
+        // Ensure the entry actually belongs to the source tab before moving.
+        if (entry.tabId != fromTabId) {
+          return false;
+        }
+
+        // Remove the entry from the source tab's ordered list.
+        final updatedFromEntryIds = [...(fromTab.entryIds ?? <int>[])];
+        final removed = updatedFromEntryIds.remove(entryId);
+        if (!removed) {
+          // If the entry ID is not found in the source tab, treat as failure to
+          // avoid corrupting ordering.
+          return false;
+        }
+
+        // Insert the entry into the destination tab's ordered list.
+        final updatedToEntryIds = [...(toTab.entryIds ?? <int>[])];
+        var targetIndex = insertIndex;
+        if (targetIndex < 0 || targetIndex > updatedToEntryIds.length) {
+          targetIndex = updatedToEntryIds.length;
+        }
+        updatedToEntryIds.insert(targetIndex, entryId);
+
+        final updatedEntry = entry.copyWith(tabId: toTabId);
+        final updatedFromTab = fromTab.copyWith(entryIds: updatedFromEntryIds);
+        final updatedToTab = toTab.copyWith(entryIds: updatedToEntryIds);
+
+        await db.entrys.put(updatedEntry);
+        await db.tabs.putAll([updatedFromTab, updatedToTab]);
+
+        return true;
+      });
+    } catch (e, s) {
+      log(e.toString(), error: e, stackTrace: s);
+      return false;
+    }
+  }
 }

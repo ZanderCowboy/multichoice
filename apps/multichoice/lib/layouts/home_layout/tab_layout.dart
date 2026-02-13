@@ -1,15 +1,10 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/horizontal_tab.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/vertical_tab.dart';
 import 'package:ui_kit/ui_kit.dart';
-
-part 'widgets/tab/horizontal_tab.dart';
-part 'widgets/tab/vertical_tab.dart';
 
 class TabLayout extends StatelessWidget {
   const TabLayout({
@@ -32,12 +27,12 @@ class TabLayout extends StatelessWidget {
     }
 
     return appLayout.isLayoutVertical
-        ? _VerticalTab(
+        ? VerticalTab(
             tab: tab,
             isEditMode: isEditMode,
             dragIndex: dragIndex,
           )
-        : _HorizontalTab(
+        : HorizontalTab(
             tab: tab,
             isEditMode: isEditMode,
             dragIndex: dragIndex,

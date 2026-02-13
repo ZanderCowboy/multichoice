@@ -27,7 +27,7 @@ class EntryCard extends HookWidget {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return MenuAnchor(
+        final card = MenuAnchor(
           controller: menuController,
           consumeOutsideTap: true,
           builder: (context, controller, child) {
@@ -153,6 +153,39 @@ class EntryCard extends HookWidget {
               ),
             ),
           ),
+        );
+
+        if (!isEditMode) {
+          return card;
+        }
+
+        // In edit mode, make the entry card draggable so it can be moved
+        // between tabs (collections). Report drag position when a scope is
+        // present so the layout can edge-scroll (vertical: left/right,
+        // horizontal: top/bottom).
+        final dragScrollScope = DragScrollScope.maybeOf(context);
+        final useEdgeScroll = isEditMode && dragScrollScope != null;
+
+        return LongPressDraggable<({EntryDTO entry, int fromTabId})>(
+          data: (entry: entry, fromTabId: entry.tabId),
+          onDragStarted: useEdgeScroll ? dragScrollScope.onDragStarted : null,
+          onDragEnd: useEdgeScroll
+              ? (_) => dragScrollScope.onDragEnd()
+              : null,
+          onDragUpdate: useEdgeScroll
+              ? (details) => dragScrollScope.onDragUpdate(details.globalPosition)
+              : null,
+          feedback: Material(
+            color: Colors.transparent,
+            child: SizedBox(
+              width: isLayoutVertical
+                  ? UIConstants.vertTabWidth(context) - 4
+                  : UIConstants.horiTabHeight(context) / 2,
+              child: card,
+            ),
+          ),
+          childWhenDragging: const SizedBox.shrink(),
+          child: card,
         );
       },
     );

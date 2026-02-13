@@ -33,4 +33,20 @@ abstract class IEntryRepository {
     required int tabId,
     required List<int> entryIds,
   });
+
+  /// Moves an entry from one tab to another and updates ordering.
+  ///
+  /// [entryId]: The ID of the entry being moved.
+  /// [fromTabId]: The ID of the source tab.
+  /// [toTabId]: The ID of the destination tab.
+  /// [insertIndex]: The index in the destination tab's entry list where the
+  /// entry should be inserted. If out of range, the entry is appended.
+  ///
+  /// Returns `true` if the move succeeded, otherwise `false`.
+  Future<bool> moveEntryToTab({
+    required int entryId,
+    required int fromTabId,
+    required int toTabId,
+    required int insertIndex,
+  });
 }
