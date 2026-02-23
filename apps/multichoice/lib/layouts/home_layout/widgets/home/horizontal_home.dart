@@ -1,11 +1,51 @@
 part of '../../home_layout.dart';
 
+/// Width of the edge zone for horizontal layout (top/bottom). When the drag
+/// is in this zone, the collections list scrolls vertically.
+const _kHorizontalEdgeScrollZoneWidth = 80.0;
+
+/// Scroll step and interval (same as vertical layout).
+const _kHorizontalEdgeScrollStep = 12.0;
+const _kHorizontalEdgeScrollInterval = Duration(milliseconds: 50);
+
 class _HorizontalHome extends HookWidget {
   const _HorizontalHome();
 
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
+    final dragPositionRef = useRef<Offset?>(null);
+    final isDraggingRef = useRef(false);
+    final viewportContextRef = useRef<BuildContext?>(null);
+
+    useEffect(
+      () {
+        final timer = Timer.periodic(_kHorizontalEdgeScrollInterval, (_) {
+          if (!isDraggingRef.value) return;
+          final pos = dragPositionRef.value;
+          if (pos == null) return;
+          final ctx = viewportContextRef.value;
+          if (ctx == null || !ctx.mounted) return;
+          final box = ctx.findRenderObject() as RenderBox?;
+          if (box == null || !box.hasSize) return;
+          final viewportRect = box.localToGlobal(Offset.zero) & box.size;
+          final position = scrollController.position;
+          // Top edge: scroll up (decrease pixels).
+          if (pos.dy < viewportRect.top + _kHorizontalEdgeScrollZoneWidth) {
+            final newOffset = (position.pixels - _kHorizontalEdgeScrollStep)
+                .clamp(position.minScrollExtent, position.maxScrollExtent);
+            scrollController.jumpTo(newOffset);
+          } else if (pos.dy >
+              viewportRect.bottom - _kHorizontalEdgeScrollZoneWidth) {
+            final newOffset = (position.pixels + _kHorizontalEdgeScrollStep)
+                .clamp(position.minScrollExtent, position.maxScrollExtent);
+            scrollController.jumpTo(newOffset);
+          }
+        });
+        return timer.cancel;
+      },
+      [scrollController],
+    );
 
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
@@ -35,45 +75,77 @@ class _HorizontalHome extends HookWidget {
         final isEditMode = state.isEditMode;
 
         if (isEditMode && tabs.isNotEmpty) {
-          // Use ReorderableListView for edit mode
+          // Use ReorderableListView for edit mode. Wrap in DragScrollScope
+          // and overlay so dragging near top/bottom scrolls the collections list.
           final theme = Theme.of(context);
-          return Padding(
-            padding: horizontal8,
-            child: ReorderableListView.builder(
-              scrollController: scrollController,
-              buildDefaultDragHandles: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              proxyDecorator: (child, index, animation) {
-                // Override Card theme to make it transparent when dragging
-                return Theme(
-                  data: theme.copyWith(
-                    cardTheme: theme.cardTheme.copyWith(
-                      color: Colors.transparent,
-                      surfaceTintColor: Colors.transparent,
-                      elevation: 0,
-                    ),
-                  ),
-                  child: child,
-                );
-              },
-              itemCount: tabs.length,
-              onReorder: (oldIndex, newIndex) {
-                context.read<HomeBloc>().add(
-                  HomeEvent.onReorderTabs(oldIndex, newIndex),
-                );
-              },
-              itemBuilder: (_, index) {
-                final tab = tabs[index];
-                return Padding(
-                  key: ValueKey(tab.id),
-                  padding: top4,
-                  child: CollectionTab(
-                    tab: tab,
-                    isEditMode: isEditMode,
-                    dragIndex: index,
-                  ),
-                );
-              },
+          void onDragStarted() {
+            isDraggingRef.value = true;
+          }
+
+          void onDragEnd() {
+            isDraggingRef.value = false;
+            dragPositionRef.value = null;
+          }
+
+          void onDragUpdate(Offset globalPosition) {
+            dragPositionRef.value = globalPosition;
+          }
+
+          return DragScrollScope(
+            onDragStarted: onDragStarted,
+            onDragEnd: onDragEnd,
+            onDragUpdate: onDragUpdate,
+            child: Padding(
+              padding: horizontal8,
+              child: Builder(
+                builder: (context) {
+                  viewportContextRef.value = context;
+                  return Stack(
+                    children: [
+                      ReorderableListView.builder(
+                        scrollController: scrollController,
+                        buildDefaultDragHandles: false,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        proxyDecorator: (child, index, animation) {
+                          return Theme(
+                            data: theme.copyWith(
+                              cardTheme: theme.cardTheme.copyWith(
+                                color: Colors.transparent,
+                                surfaceTintColor: Colors.transparent,
+                                elevation: 0,
+                              ),
+                            ),
+                            child: child,
+                          );
+                        },
+                        itemCount: tabs.length,
+                        onReorder: (oldIndex, newIndex) {
+                          context.read<HomeBloc>().add(
+                            HomeEvent.onReorderTabs(oldIndex, newIndex),
+                          );
+                        },
+                        itemBuilder: (_, index) {
+                          final tab = tabs[index];
+                          return Padding(
+                            key: ValueKey(tab.id),
+                            padding: top4,
+                            child: CollectionTab(
+                              tab: tab,
+                              isEditMode: isEditMode,
+                              dragIndex: index,
+                            ),
+                          );
+                        },
+                      ),
+                      const Positioned.fill(
+                        child: IgnorePointer(
+                          child: SizedBox.expand(),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           );
         }

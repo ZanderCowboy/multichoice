@@ -520,4 +520,100 @@ void main() {
       expect(tabResult, null);
     });
   });
+
+  group('EntryRepository - moveEntryToTab', () {
+    setUp(() async {
+      tabsRepository = TabsRepository(db);
+      entryRepository = EntryRepository(db);
+
+      await db.writeTxn(() => db.clear());
+
+      await tabsRepository.addTab(
+        title: 'Source Tab',
+        subtitle: 'source',
+      );
+      await tabsRepository.addTab(
+        title: 'Destination Tab',
+        subtitle: 'destination',
+      );
+
+      final tabs = await db.tabs.where().findAll();
+      final sourceTab = tabs.firstWhere((e) => e.title == 'Source Tab');
+
+      await entryRepository.addEntry(
+        tabId: sourceTab.id,
+        title: 'entry title',
+        subtitle: 'entry subtitle',
+      );
+    });
+
+    test(
+        'should move entry between tabs and update entryIds and entry.tabId when moveEntryToTab is called',
+        () async {
+      // Arrange
+      final tabs = await db.tabs.where().findAll();
+      final sourceTab = tabs.firstWhere((e) => e.title == 'Source Tab');
+      final destinationTab =
+          tabs.firstWhere((e) => e.title == 'Destination Tab');
+      final entries = await db.entrys.where().findAll();
+      final entry = entries.firstWhere((e) => e.title == 'entry title');
+
+      // Act
+      final result = await entryRepository.moveEntryToTab(
+        entryId: entry.id,
+        fromTabId: sourceTab.id,
+        toTabId: destinationTab.id,
+        insertIndex: 0,
+      );
+
+      // Assert
+      expect(result, true);
+
+      final updatedSourceTab =
+          (await db.tabs.where().findAll()).firstWhere((e) => e.id == sourceTab.id);
+      final updatedDestinationTab =
+          (await db.tabs.where().findAll()).firstWhere((e) => e.id == destinationTab.id);
+      final updatedEntry =
+          (await db.entrys.where().findAll()).firstWhere((e) => e.id == entry.id);
+
+      expect(updatedSourceTab.entryIds, isEmpty);
+      expect(updatedDestinationTab.entryIds, [entry.id]);
+      expect(updatedEntry.tabId, destinationTab.id);
+    });
+
+    test(
+        'should not move entry when fromTabId does not match entry.tabId and return false',
+        () async {
+      // Arrange
+      final tabs = await db.tabs.where().findAll();
+      final sourceTab = tabs.firstWhere((e) => e.title == 'Source Tab');
+      final destinationTab =
+          tabs.firstWhere((e) => e.title == 'Destination Tab');
+      final entries = await db.entrys.where().findAll();
+      final entry = entries.firstWhere((e) => e.title == 'entry title');
+
+      // Act
+      final result = await entryRepository.moveEntryToTab(
+        entryId: entry.id,
+        fromTabId: destinationTab.id,
+        toTabId: sourceTab.id,
+        insertIndex: 0,
+      );
+
+      // Assert
+      expect(result, false);
+
+      final updatedSourceTab =
+          (await db.tabs.where().findAll()).firstWhere((e) => e.id == sourceTab.id);
+      final updatedDestinationTab =
+          (await db.tabs.where().findAll()).firstWhere((e) => e.id == destinationTab.id);
+      final updatedEntry =
+          (await db.entrys.where().findAll()).firstWhere((e) => e.id == entry.id);
+
+      // Original relations should remain unchanged.
+      expect(updatedSourceTab.entryIds, isNotEmpty);
+      expect(updatedDestinationTab.entryIds, isEmpty);
+      expect(updatedEntry.tabId, sourceTab.id);
+    });
+  });
 }

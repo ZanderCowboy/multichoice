@@ -61,6 +61,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _handleReorderTabs(oldIndex, newIndex, emit);
       case OnReorderEntries(:final tabId, :final oldIndex, :final newIndex):
         await _handleReorderEntries(tabId, oldIndex, newIndex, emit);
+      case OnMoveEntryToTab(
+          :final entryId,
+          :final fromTabId,
+          :final toTabId,
+          :final insertIndex,
+        ):
+        await _handleMoveEntryToTab(
+          entryId,
+          fromTabId,
+          toTabId,
+          insertIndex,
+          emit,
+        );
       default:
     }
   }
@@ -343,6 +356,62 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           isLoading: false,
         ),
       );
+    }
+  }
+
+  Future<void> _handleMoveEntryToTab(
+    int entryId,
+    int fromTabId,
+    int toTabId,
+    int insertIndex,
+    Emitter<HomeState> emit,
+  ) async {
+    final tabs = state.tabs;
+    if (tabs == null || tabs.isEmpty) return;
+
+    final fromTabIndex = tabs.indexWhere((t) => t.id == fromTabId);
+    final toTabIndex = tabs.indexWhere((t) => t.id == toTabId);
+    if (fromTabIndex == -1 || toTabIndex == -1) return;
+
+    final originalTabs = tabs;
+
+    final updatedTabs = List<TabsDTO>.from(tabs);
+    final fromTab = updatedTabs[fromTabIndex];
+    final toTab = updatedTabs[toTabIndex];
+
+    final fromEntries = List<EntryDTO>.from(fromTab.entries);
+    final toEntries = List<EntryDTO>.from(toTab.entries);
+
+    final entryIndexInFrom =
+        fromEntries.indexWhere((entry) => entry.id == entryId);
+    if (entryIndexInFrom == -1) return;
+
+    final entry = fromEntries.removeAt(entryIndexInFrom);
+
+    var targetIndex = insertIndex;
+    if (targetIndex < 0 || targetIndex > toEntries.length) {
+      targetIndex = toEntries.length;
+    }
+
+    toEntries.insert(targetIndex, entry.copyWith(tabId: toTabId));
+
+    updatedTabs[fromTabIndex] = fromTab.copyWith(entries: fromEntries);
+    updatedTabs[toTabIndex] = toTab.copyWith(entries: toEntries);
+
+    // Optimistically update UI.
+    emit(state.copyWith(tabs: updatedTabs));
+
+    final success = await _entryRepository.moveEntryToTab(
+      entryId: entryId,
+      fromTabId: fromTabId,
+      toTabId: toTabId,
+      insertIndex: targetIndex,
+    );
+
+    if (!success) {
+      // Roll back to original state if persistence fails.
+      emit(state.copyWith(tabs: originalTabs));
+      // TODO: surface an error message to the user.
     }
   }
 

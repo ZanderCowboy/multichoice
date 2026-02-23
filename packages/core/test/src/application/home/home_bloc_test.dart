@@ -756,5 +756,154 @@ void main() {
         },
       );
     });
+
+    group('OnMoveEntryToTab', () {
+      final sourceTab = TabsDTO(
+        id: 1,
+        title: 'Source',
+        subtitle: 'Source subtitle',
+        timestamp: timestamp,
+        entries: [
+          EntryDTO(
+            id: 10,
+            tabId: 1,
+            title: 'Entry 1',
+            subtitle: 'Subtitle 1',
+            timestamp: timestamp,
+          ),
+        ],
+        order: 0,
+      );
+
+      final destinationTab = TabsDTO(
+        id: 2,
+        title: 'Destination',
+        subtitle: 'Destination subtitle',
+        timestamp: timestamp,
+        entries: const [],
+        order: 1,
+      );
+
+      blocTest<HomeBloc, HomeState>(
+        'moves entry between tabs in state and calls repository when OnMoveEntryToTab succeeds',
+        seed: () => HomeState(
+          tab: TabsDTO.empty(),
+          tabs: [sourceTab, destinationTab],
+          entry: EntryDTO.empty(),
+          entryCards: null,
+          isLoading: false,
+          isDeleted: false,
+          isAdded: false,
+          isValid: false,
+          isEditMode: false,
+          errorMessage: '',
+        ),
+        build: () {
+          when(
+            mockEntryRepository.moveEntryToTab(
+              entryId: anyNamed('entryId'),
+              fromTabId: anyNamed('fromTabId'),
+              toTabId: anyNamed('toTabId'),
+              insertIndex: anyNamed('insertIndex'),
+            ),
+          ).thenAnswer((_) async => true);
+
+          return homeBloc;
+        },
+        act: (bloc) => bloc.add(
+          const HomeEvent.onMoveEntryToTab(10, 1, 2, 0),
+        ),
+        expect: () => [
+          isA<HomeState>()
+              .having(
+                (s) => s.tabs?.length,
+                'tabs.length',
+                2,
+              )
+              .having(
+                (s) => s.tabs![0].entries.length,
+                'source entries length',
+                0,
+              )
+              .having(
+                (s) => s.tabs![1].entries.length,
+                'destination entries length',
+                1,
+              )
+              .having(
+                (s) => s.tabs![1].entries.first.tabId,
+                'destination entry tabId',
+                2,
+              ),
+        ],
+        verify: (_) {
+          verify(
+            mockEntryRepository.moveEntryToTab(
+              entryId: 10,
+              fromTabId: 1,
+              toTabId: 2,
+              insertIndex: 0,
+            ),
+          ).called(1);
+        },
+      );
+
+      blocTest<HomeBloc, HomeState>(
+        'reverts state when OnMoveEntryToTab fails in repository',
+        seed: () => HomeState(
+          tab: TabsDTO.empty(),
+          tabs: [sourceTab, destinationTab],
+          entry: EntryDTO.empty(),
+          entryCards: null,
+          isLoading: false,
+          isDeleted: false,
+          isAdded: false,
+          isValid: false,
+          isEditMode: false,
+          errorMessage: '',
+        ),
+        build: () {
+          when(
+            mockEntryRepository.moveEntryToTab(
+              entryId: anyNamed('entryId'),
+              fromTabId: anyNamed('fromTabId'),
+              toTabId: anyNamed('toTabId'),
+              insertIndex: anyNamed('insertIndex'),
+            ),
+          ).thenAnswer((_) async => false);
+
+          return homeBloc;
+        },
+        act: (bloc) => bloc.add(
+          const HomeEvent.onMoveEntryToTab(10, 1, 2, 0),
+        ),
+        expect: () => [
+          // Optimistic update state.
+          isA<HomeState>()
+              .having(
+                (s) => s.tabs![0].entries.length,
+                'source entries length after optimistic move',
+                0,
+              )
+              .having(
+                (s) => s.tabs![1].entries.length,
+                'destination entries length after optimistic move',
+                1,
+              ),
+          // Rolled back state.
+          isA<HomeState>()
+              .having(
+                (s) => s.tabs![0].entries.length,
+                'source entries length after rollback',
+                1,
+              )
+              .having(
+                (s) => s.tabs![1].entries.length,
+                'destination entries length after rollback',
+                0,
+              ),
+        ],
+      );
+    });
   });
 }

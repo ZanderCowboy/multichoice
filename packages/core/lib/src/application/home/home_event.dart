@@ -45,4 +45,11 @@ class HomeEvent with _$HomeEvent {
     int oldIndex,
     int newIndex,
   ) = OnReorderEntries;
+
+  const factory HomeEvent.onMoveEntryToTab(
+    int entryId,
+    int fromTabId,
+    int toTabId,
+    int insertIndex,
+  ) = OnMoveEntryToTab;
 }

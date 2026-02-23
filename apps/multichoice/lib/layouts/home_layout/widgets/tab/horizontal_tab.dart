@@ -1,15 +1,48 @@
-part of '../../tab_layout.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/tab_drop_target.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/tab_header.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/tab_placeholder_card.dart';
+import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:ui_kit/ui_kit.dart';
 
-class _HorizontalTab extends HookWidget {
-  const _HorizontalTab({
+class HorizontalTab extends HookWidget {
+  const HorizontalTab({
     required this.tab,
     this.isEditMode = false,
     this.dragIndex,
+    super.key,
   });
 
   final TabsDTO tab;
   final bool isEditMode;
   final int? dragIndex;
+
+  int? _getInsertIndex(BuildContext context, Offset globalOffset) {
+    final entries = tab.entries;
+    if (!isEditMode || entries.isEmpty) return null;
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return null;
+    final localPosition = box.globalToLocal(globalOffset);
+    final headerWidth = UIConstants.horiTabHeaderWidth(context);
+    final entryListLeft = headerWidth + 8;
+    final entryListRight = box.size.width;
+    if (localPosition.dx < entryListLeft || localPosition.dx > entryListRight) {
+      return null;
+    }
+    final entryWidth = UIConstants.horiTabHeight(context) / 2;
+    final relativeX = localPosition.dx - entryListLeft;
+    final entryIndex = (relativeX / entryWidth).floor();
+    final positionInEntry = relativeX - (entryIndex * entryWidth);
+    final isInRightHalf = positionInEntry > entryWidth / 2;
+    final calculatedIndex = isInRightHalf ? entryIndex + 1 : entryIndex;
+    return calculatedIndex.clamp(0, entries.length);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +67,13 @@ class _HorizontalTab extends HookWidget {
       [entries.length],
     );
 
-    return Card(
-      margin: allPadding4,
-      elevation: 0,
-      surfaceTintColor: Colors.transparent,
-      color: context.theme.appColors.primary,
-      child: Padding(
-        padding: allPadding2,
-        child: SizedBox(
+    return TabDropTarget(
+      tab: tab,
+      isEditMode: isEditMode,
+      entries: entries,
+      getInsertIndex: _getInsertIndex,
+      builder: (insertIndex, {required isActiveDropTarget}) {
+        return SizedBox(
           height: UIConstants.horiTabHeight(context),
           child: CustomScrollView(
             scrollDirection: Axis.horizontal,
@@ -50,68 +82,11 @@ class _HorizontalTab extends HookWidget {
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child: SizedBox(
-                  width: UIConstants.horiTabHeaderWidth(context),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          if (isEditMode && dragIndex != null)
-                            Padding(
-                              padding: right4,
-                              child: ReorderableDragStartListener(
-                                index: dragIndex!,
-                                child: Icon(
-                                  Icons.drag_handle,
-                                  size: 20,
-                                  color: context.theme.appColors.ternary,
-                                ),
-                              ),
-                            )
-                          else if (isEditMode)
-                            Padding(
-                              padding: right4,
-                              child: Icon(
-                                Icons.drag_handle,
-                                size: 20,
-                                color: context.theme.appColors.ternary,
-                              ),
-                            ),
-                          Expanded(
-                            child: Padding(
-                              padding: left4,
-                              child: Text(
-                                tab.title,
-                                style: context.theme.appTextTheme.titleMedium
-                                    ?.copyWith(
-                                      fontSize: 16,
-                                    ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (tab.subtitle.isEmpty)
-                        const SizedBox.shrink()
-                      else
-                        Expanded(
-                          child: Padding(
-                            padding: left4,
-                            child: Text(
-                              tab.subtitle,
-                              style: context.theme.appTextTheme.subtitleMedium
-                                  ?.copyWith(fontSize: 12),
-                            ),
-                          ),
-                        ),
-                      Center(
-                        child: isEditMode
-                            ? const SizedBox.shrink()
-                            : MenuWidget(tab: tab),
-                      ),
-                    ],
-                  ),
+                child: TabHeader(
+                  tab: tab,
+                  isEditMode: isEditMode,
+                  dragIndex: dragIndex,
+                  layout: TabHeaderLayout.horizontal,
                 ),
               ),
               SliverToBoxAdapter(
@@ -127,56 +102,98 @@ class _HorizontalTab extends HookWidget {
                   itemCount: entries.length,
                   onReorder: (oldIndex, newIndex) {
                     context.read<HomeBloc>().add(
-                      HomeEvent.onReorderEntries(tab.id, oldIndex, newIndex),
-                    );
-                  },
-                  itemBuilder: (context, index) {
-                    final entry = entries[index];
-                    return SizedBox(
-                      key: ValueKey(entry.id),
-                      width: UIConstants.horiTabHeight(context) / 2,
-                      child: EntryCard(
-                        entry: entry,
-                        onDoubleTap: () {},
-                        isEditMode: isEditMode,
-                        dragIndex: index,
+                      HomeEvent.onReorderEntries(
+                        tab.id,
+                        oldIndex,
+                        newIndex,
                       ),
                     );
                   },
-                )
-              else
-                SliverGrid.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemCount: entries.length + 1,
                   itemBuilder: (context, index) {
-                    if (index == entries.length) {
-                      return NewEntry(
-                        tabId: tab.id,
-                      );
-                    }
-
                     final entry = entries[index];
-
-                    return EntryCard(
-                      entry: entry,
-                      isEditMode: isEditMode,
-                      onDoubleTap: () async {
-                        context.read<HomeBloc>().add(
-                          HomeEvent.onUpdateEntry(entry.id),
-                        );
-                        await context.router.push(
-                          EditEntryPageRoute(ctx: context),
-                        );
-                      },
+                    final showPlaceholderBefore = insertIndex == index;
+                    final entryWidth = UIConstants.horiTabHeight(context) / 2;
+                    return SizedBox(
+                      key: ValueKey(entry.id),
+                      width: showPlaceholderBefore
+                          ? entryWidth * 2
+                          : entryWidth,
+                      child: Row(
+                        children: [
+                          if (showPlaceholderBefore)
+                            SizedBox(
+                              width: entryWidth,
+                              child: const TabPlaceholderCard(),
+                            ),
+                          SizedBox(
+                            width: entryWidth,
+                            child: EntryCard(
+                              entry: entry,
+                              onDoubleTap: () {},
+                              isEditMode: isEditMode,
+                              dragIndex: index,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
+              if (isEditMode &&
+                  entries.isNotEmpty &&
+                  insertIndex == entries.length)
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: UIConstants.horiTabHeight(context) / 2,
+                    child: const TabPlaceholderCard(),
+                  ),
+                ),
+              if (!(isEditMode && entries.isNotEmpty))
+                if (isEditMode && entries.isEmpty && isActiveDropTarget)
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      width: UIConstants.horiTabHeight(context) / 2,
+                      child: const TabPlaceholderCard(),
+                    ),
+                  )
+                else
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: UIConstants.horiTabHeight(context),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (var i = 0; i < entries.length; i++) ...[
+                            SizedBox(
+                              width: UIConstants.horiTabHeight(context) / 2,
+                              child: EntryCard(
+                                entry: entries[i],
+                                isEditMode: isEditMode,
+                                onDoubleTap: () async {
+                                  context.read<HomeBloc>().add(
+                                    HomeEvent.onUpdateEntry(entries[i].id),
+                                  );
+                                  await context.router.push(
+                                    EditEntryPageRoute(ctx: context),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                          if (!isEditMode)
+                            SizedBox(
+                              width: UIConstants.horiTabHeight(context) / 2,
+                              child: NewEntry(tabId: tab.id),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
