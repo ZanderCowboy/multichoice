@@ -7,7 +7,8 @@ enum FirebaseConfigKeys {
   changelog('changelog'),
 
   // Strings
-  welcomeMessage('welcome_message')
+  welcomeMessage('welcome_message'),
+  playStoreUrl('play_store_url')
   ;
 
   const FirebaseConfigKeys(this.key);
