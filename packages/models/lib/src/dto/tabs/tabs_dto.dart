@@ -40,31 +40,6 @@ class TabsDTO {
 
   Map<String, dynamic> toJson() => _$TabsDTOToJson(this);
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TabsDTO &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          title == other.title &&
-          subtitle == other.subtitle &&
-          timestamp == other.timestamp &&
-          entries == other.entries &&
-          order == other.order &&
-          isFirst == other.isFirst;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      title.hashCode ^
-      subtitle.hashCode ^
-      timestamp.hashCode ^
-      entries.hashCode ^
-      order.hashCode ^
-      isFirst.hashCode;
-
   @override
   String toString() =>
       'TabsDTO(id: $id, title: $title, subtitle: $subtitle, timestamp: $timestamp, entries: $entries, order: $order, isFirst: $isFirst)';

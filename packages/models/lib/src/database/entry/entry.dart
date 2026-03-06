@@ -37,27 +37,6 @@ class Entry {
 
   Id get id => uuid.fastHash();
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Entry &&
-          runtimeType == other.runtimeType &&
-          uuid == other.uuid &&
-          tabId == other.tabId &&
-          title == other.title &&
-          subtitle == other.subtitle &&
-          timestamp == other.timestamp;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode =>
-      uuid.hashCode ^
-      tabId.hashCode ^
-      title.hashCode ^
-      subtitle.hashCode ^
-      timestamp.hashCode;
-
   @override
   String toString() =>
       'Entry(uuid: $uuid, tabId: $tabId, title: $title, subtitle: $subtitle, timestamp: $timestamp)';

@@ -27,18 +27,6 @@ class Changelog {
     return json;
   }
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Changelog &&
-          runtimeType == other.runtimeType &&
-          versions == other.versions;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode => versions.hashCode;
-
   @override
   String toString() => 'Changelog(versions: $versions)';
 }

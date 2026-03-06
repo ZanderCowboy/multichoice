@@ -37,37 +37,6 @@ class FeedbackModel {
 
   Map<String, dynamic> toJson() => _$FeedbackModelToJson(this);
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is FeedbackModel &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          message == other.message &&
-          rating == other.rating &&
-          deviceInfo == other.deviceInfo &&
-          appVersion == other.appVersion &&
-          timestamp == other.timestamp &&
-          userId == other.userId &&
-          userEmail == other.userEmail &&
-          category == other.category &&
-          status == other.status;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      message.hashCode ^
-      rating.hashCode ^
-      deviceInfo.hashCode ^
-      appVersion.hashCode ^
-      timestamp.hashCode ^
-      userId.hashCode ^
-      userEmail.hashCode ^
-      category.hashCode ^
-      status.hashCode;
-
   @override
   String toString() =>
       'FeedbackModel(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';

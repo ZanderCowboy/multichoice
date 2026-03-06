@@ -19,19 +19,6 @@ class ChangelogEntry {
 
   Map<String, dynamic> toJson() => _$ChangelogEntryToJson(this);
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ChangelogEntry &&
-          runtimeType == other.runtimeType &&
-          date == other.date &&
-          changes == other.changes;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode => date.hashCode ^ changes.hashCode;
-
   @override
   String toString() => 'ChangelogEntry(date: $date, changes: $changes)';
 }
