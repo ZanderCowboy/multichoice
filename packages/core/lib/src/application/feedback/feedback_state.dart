@@ -1,14 +1,14 @@
 part of 'feedback_bloc.dart';
 
-@freezed
-abstract class FeedbackState with _$FeedbackState {
-  const factory FeedbackState({
-    required FeedbackDTO feedback,
-    required bool isLoading,
-    required bool isSuccess,
-    required bool isError,
-    required String? errorMessage,
-  }) = _FeedbackState;
+@CopyWith()
+class FeedbackState {
+  const FeedbackState({
+    required this.feedback,
+    required this.isLoading,
+    required this.isSuccess,
+    required this.isError,
+    required this.errorMessage,
+  });
 
   factory FeedbackState.initial() => FeedbackState(
     feedback: FeedbackDTO.empty(),
@@ -17,4 +17,25 @@ abstract class FeedbackState with _$FeedbackState {
     isError: false,
     errorMessage: null,
   );
+
+  final FeedbackDTO feedback;
+  final bool isLoading;
+  final bool isSuccess;
+  final bool isError;
+  final String? errorMessage;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is FeedbackState &&
+        other.feedback == feedback &&
+        other.isLoading == isLoading &&
+        other.isSuccess == isSuccess &&
+        other.isError == isError &&
+        other.errorMessage == errorMessage;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(feedback, isLoading, isSuccess, isError, errorMessage);
 }
