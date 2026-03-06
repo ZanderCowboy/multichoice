@@ -16,6 +16,19 @@ class _VerticalTab extends HookWidget {
     final entries = tab.entries;
     final scrollController = useScrollController();
     final previousEntriesLength = useState(entries.length);
+    final hasVerticalOverflow = useState(false);
+    final canScrollToTop = useState(false);
+
+    void refreshScrollIndicators() {
+      if (!scrollController.hasClients) {
+        return;
+      }
+
+      final maxScrollExtent = scrollController.position.maxScrollExtent;
+      final currentOffset = scrollController.offset;
+      hasVerticalOverflow.value = maxScrollExtent > 0;
+      canScrollToTop.value = maxScrollExtent > 0 && currentOffset > 12;
+    }
 
     useEffect(
       () {
@@ -33,6 +46,85 @@ class _VerticalTab extends HookWidget {
       },
       [entries.length],
     );
+
+    useEffect(
+      () {
+        void listener() {
+          refreshScrollIndicators();
+        }
+
+        scrollController.addListener(listener);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          refreshScrollIndicators();
+        });
+
+        return () {
+          scrollController.removeListener(listener);
+        };
+      },
+      [entries.length, isEditMode],
+    );
+
+    final listContent = isEditMode && entries.isNotEmpty
+        ? ReorderableListView.builder(
+            scrollController: scrollController,
+            buildDefaultDragHandles: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: entries.length,
+            onReorder: (oldIndex, newIndex) {
+              context.read<HomeBloc>().add(
+                HomeEvent.onReorderEntries(
+                  tab.id,
+                  oldIndex,
+                  newIndex,
+                ),
+              );
+            },
+            itemBuilder: (_, index) {
+              final entry = entries[index];
+              return EntryCard(
+                key: ValueKey(entry.id),
+                entry: entry,
+                onDoubleTap: () {},
+                isEditMode: isEditMode,
+                dragIndex: index,
+              );
+            },
+          )
+        : CustomScrollView(
+            controller: scrollController,
+            scrollBehavior: CustomScrollBehaviour(),
+            slivers: [
+              SliverList.builder(
+                itemCount: entries.length,
+                itemBuilder: (_, index) {
+                  final entry = entries[index];
+
+                  return BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, _) {
+                      return EntryCard(
+                        entry: entry,
+                        isEditMode: isEditMode,
+                        onDoubleTap: () async {
+                          context.read<HomeBloc>().add(
+                            HomeEvent.onUpdateEntry(entry.id),
+                          );
+                          await context.router.push(
+                            EditEntryPageRoute(ctx: context),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+              SliverToBoxAdapter(
+                child: NewEntry(
+                  tabId: tab.id,
+                ),
+              ),
+            ],
+          );
 
     return Card(
       margin: allPadding4,
@@ -103,66 +195,41 @@ class _VerticalTab extends HookWidget {
               ),
               gap4,
               Expanded(
-                child: isEditMode && entries.isNotEmpty
-                    ? ReorderableListView.builder(
-                        scrollController: scrollController,
-                        buildDefaultDragHandles: false,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: entries.length,
-                        onReorder: (oldIndex, newIndex) {
-                          context.read<HomeBloc>().add(
-                            HomeEvent.onReorderEntries(
-                              tab.id,
-                              oldIndex,
-                              newIndex,
-                            ),
-                          );
-                        },
-                        itemBuilder: (_, index) {
-                          final entry = entries[index];
-                          return EntryCard(
-                            key: ValueKey(entry.id),
-                            entry: entry,
-                            onDoubleTap: () {},
-                            isEditMode: isEditMode,
-                            dragIndex: index,
-                          );
-                        },
-                      )
-                    : CustomScrollView(
-                        controller: scrollController,
-                        scrollBehavior: CustomScrollBehaviour(),
-                        slivers: [
-                          SliverList.builder(
-                            itemCount: entries.length,
-                            itemBuilder: (_, index) {
-                              final entry = entries[index];
-
-                              return BlocBuilder<HomeBloc, HomeState>(
-                                builder: (context, _) {
-                                  return EntryCard(
-                                    entry: entry,
-                                    isEditMode: isEditMode,
-                                    onDoubleTap: () async {
-                                      context.read<HomeBloc>().add(
-                                        HomeEvent.onUpdateEntry(entry.id),
-                                      );
-                                      await context.router.push(
-                                        EditEntryPageRoute(ctx: context),
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          SliverToBoxAdapter(
-                            child: NewEntry(
-                              tabId: tab.id,
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: listContent),
+                    if (hasVerticalOverflow.value && canScrollToTop.value)
+                      Positioned(
+                        top: 5,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Material(
+                            color: context.theme.appColors.white,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () async {
+                                await scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeOut,
+                                );
+                              },
+                              child: Padding(
+                                padding: allPadding2,
+                                child: Icon(
+                                  Icons.keyboard_arrow_up,
+                                  size: 16,
+                                  color: context.theme.appColors.ternary,
+                                ),
+                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
+                  ],
+                ),
               ),
             ],
           ),
