@@ -1,8 +1,9 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:models/src/models/changelog/changelog_entry.dart';
 
 @CopyWith()
-class Changelog {
+class Changelog extends Equatable {
   const Changelog({
     required this.versions,
   });
@@ -27,18 +28,11 @@ class Changelog {
     return json;
   }
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Changelog &&
-          runtimeType == other.runtimeType &&
-          versions == other.versions;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode => versions.hashCode;
-
   @override
   String toString() => 'Changelog(versions: $versions)';
+
+  @override
+  List<Object?> get props => [
+    versions,
+  ];
 }
