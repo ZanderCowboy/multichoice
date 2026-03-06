@@ -69,7 +69,7 @@ Widget _scrollToStartButton({
             padding: allPadding2,
             child: Icon(
               icon,
-              size: 16,
+              size: 24,
               color: context.theme.appColors.ternary,
             ),
           ),
