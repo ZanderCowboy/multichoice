@@ -39,6 +39,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
                 title: tab.title,
                 subtitle: tab.subtitle,
                 timestamp: tab.timestamp,
+                allChildren: children,
                 children: children,
                 tabId: tab.id,
               ),
@@ -93,6 +94,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               state.copyWith(
                 title: tab.title,
                 subtitle: tab.subtitle,
+                allChildren: children,
                 children: children,
                 deleteChildren: <int>[],
                 isEditingMode: false,
@@ -111,38 +113,27 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             );
           }
         case OnDeleteChildDetails(:final id):
-          final current = List<int>.from(state.deleteChildren ?? []);
-          final currentChildren = List<EntryDTO>.from(state.children ?? []);
-          final originalChildren = List<EntryDTO>.from(state.children ?? []);
+          final updatedDeleteChildren = List<int>.from(
+            state.deleteChildren ?? <int>[],
+          );
+          final baseChildren = List<EntryDTO>.from(
+            state.allChildren ?? state.children ?? <EntryDTO>[],
+          );
 
-          final isAlreadyMarked = current.contains(id);
-
-          if (!isAlreadyMarked) {
-            current.add(id);
-            // Remove from children list when marked for deletion
-            currentChildren.removeWhere((entry) => entry.id == id);
+          if (updatedDeleteChildren.contains(id)) {
+            updatedDeleteChildren.remove(id);
           } else {
-            current.remove(id);
-
-            // Add back to children list when unmarked for deletion
-            final entryToRestore = originalChildren.firstWhere(
-              (entry) => entry.id == id,
-              orElse: () => throw Exception('Entry not found'),
-            );
-
-            // Only add if not already in the list
-            final isAlreadyRestored = currentChildren.any(
-              (entry) => entry.id == id,
-            );
-            if (!isAlreadyRestored) {
-              currentChildren.add(entryToRestore);
-            }
+            updatedDeleteChildren.add(id);
           }
+
+          final updatedChildren = baseChildren
+              .where((entry) => !updatedDeleteChildren.contains(entry.id))
+              .toList();
 
           emit(
             state.copyWith(
-              deleteChildren: current,
-              children: currentChildren,
+              deleteChildren: updatedDeleteChildren,
+              children: updatedChildren,
             ),
           );
         case OnDeleteDetails():

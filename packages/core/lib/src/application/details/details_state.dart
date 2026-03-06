@@ -11,6 +11,7 @@ class DetailsState extends Equatable {
     required this.isEditingMode,
     required this.isDeleted,
     required this.parent,
+    required this.allChildren,
     required this.children,
     required this.deleteChildren,
     required this.tabId,
@@ -26,6 +27,7 @@ class DetailsState extends Equatable {
     isEditingMode: false,
     isDeleted: false,
     parent: null,
+    allChildren: null,
     children: null,
     deleteChildren: <int>[],
     tabId: null,
@@ -40,6 +42,7 @@ class DetailsState extends Equatable {
   final bool isEditingMode;
   final bool isDeleted;
   final TabsDTO? parent;
+  final List<EntryDTO>? allChildren;
   final List<EntryDTO>? children;
   final List<int>? deleteChildren;
   final int? tabId;
@@ -55,6 +58,7 @@ class DetailsState extends Equatable {
     isEditingMode,
     isDeleted,
     parent,
+    allChildren,
     children,
     deleteChildren,
     tabId,

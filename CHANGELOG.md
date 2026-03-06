@@ -6,3 +6,4 @@
 - Integrated Equatable package for state equality comparison
 - Updated all 7 application blocs (changelog, details, feedback, firebase, home, product, search)
 - Cleaned up configuration files and documentation
+- Fixed child delete toggle in Details to derive visible children from an immutable source list.
