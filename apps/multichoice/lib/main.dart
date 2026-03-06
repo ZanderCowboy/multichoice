@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io' show Platform;
 
@@ -29,4 +30,5 @@ void main() async {
   }
 
   runApp(Multichoice());
+  unawaited(initializeNonCriticalServices());
 }

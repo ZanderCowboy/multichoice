@@ -29,13 +29,18 @@ class _ProductTourState extends State<ProductTour> {
       coreSl<IProductTourController>();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await handleProductTour(context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ShowCaseWidget(
       builder: (_) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => handleProductTour(context),
-        );
-
         return BlocListener<ProductBloc, ProductState>(
           listener: (context, state) async {
             if (state.currentStep == ProductTourStep.reset) {
