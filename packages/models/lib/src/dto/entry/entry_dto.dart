@@ -1,11 +1,12 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'entry_dto.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class EntryDTO {
+class EntryDTO extends Equatable {
   const EntryDTO({
     required this.id,
     required this.tabId,
@@ -36,4 +37,13 @@ class EntryDTO {
   @override
   String toString() =>
       'EntryDTO(id: $id, tabId: $tabId, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
+
+  @override
+  List<Object?> get props => [
+    id,
+    tabId,
+    title,
+    subtitle,
+    timestamp,
+  ];
 }

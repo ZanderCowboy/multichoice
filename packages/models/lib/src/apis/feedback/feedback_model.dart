@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart'
     show DocumentSnapshot, Timestamp;
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'feedback_model.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class FeedbackModel {
+class FeedbackModel extends Equatable {
   const FeedbackModel({
     required this.id,
     required this.message,
@@ -40,6 +41,20 @@ class FeedbackModel {
   @override
   String toString() =>
       'FeedbackModel(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';
+
+  @override
+  List<Object?> get props => [
+    id,
+    message,
+    rating,
+    deviceInfo,
+    appVersion,
+    timestamp,
+    userId,
+    userEmail,
+    category,
+    status,
+  ];
 }
 
 extension FeedbackModelFirestoreX on FeedbackModel {

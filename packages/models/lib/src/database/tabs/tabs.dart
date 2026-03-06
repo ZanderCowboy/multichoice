@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:models/src/dto/extensions/string.dart';
@@ -8,7 +9,7 @@ part 'tabs.g.dart';
 @CopyWith()
 @Collection(ignore: {'copyWith'})
 @JsonSerializable()
-class Tabs {
+class Tabs extends Equatable {
   const Tabs({
     required this.uuid,
     required this.title,
@@ -44,4 +45,14 @@ class Tabs {
   @override
   String toString() =>
       'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp, entryIds: $entryIds, order: $order)';
+
+  @override
+  List<Object?> get props => [
+    uuid,
+    title,
+    subtitle,
+    timestamp,
+    entryIds,
+    order,
+  ];
 }

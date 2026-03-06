@@ -1,8 +1,9 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:models/src/models/changelog/changelog_entry.dart';
 
 @CopyWith()
-class Changelog {
+class Changelog extends Equatable {
   const Changelog({
     required this.versions,
   });
@@ -29,4 +30,9 @@ class Changelog {
 
   @override
   String toString() => 'Changelog(versions: $versions)';
+
+  @override
+  List<Object?> get props => [
+    versions,
+  ];
 }

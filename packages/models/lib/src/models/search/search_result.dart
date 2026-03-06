@@ -1,11 +1,12 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'search_result.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class SearchResult {
+class SearchResult extends Equatable {
   const SearchResult({
     required this.isTab,
     required this.item,
@@ -24,4 +25,11 @@ class SearchResult {
   @override
   String toString() =>
       'SearchResult(isTab: $isTab, item: $item, matchScore: $matchScore)';
+
+  @override
+  List<Object?> get props => [
+    isTab,
+    item,
+    matchScore,
+  ];
 }

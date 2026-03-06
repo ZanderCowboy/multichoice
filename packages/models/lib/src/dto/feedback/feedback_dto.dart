@@ -1,11 +1,12 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'feedback_dto.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class FeedbackDTO {
+class FeedbackDTO extends Equatable {
   const FeedbackDTO({
     required this.id,
     required this.message,
@@ -47,4 +48,18 @@ class FeedbackDTO {
   @override
   String toString() =>
       'FeedbackDTO(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';
+
+  @override
+  List<Object?> get props => [
+    id,
+    message,
+    rating,
+    deviceInfo,
+    appVersion,
+    timestamp,
+    userId,
+    userEmail,
+    category,
+    status,
+  ];
 }
