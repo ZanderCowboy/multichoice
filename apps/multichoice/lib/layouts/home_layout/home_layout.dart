@@ -37,11 +37,11 @@ Future<void> _onHomeRefresh(BuildContext context) async {
                 ),
               ),
               gap8,
-              GestureDetector(
-                onTap: () {
+              IconButton(
+                onPressed: () {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
-                child: Icon(
+                icon: Icon(
                   Icons.close,
                   color: context.theme.appColors.ternary,
                   size: 20,
