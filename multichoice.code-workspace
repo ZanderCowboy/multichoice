@@ -8,6 +8,10 @@
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"svg.preview.background": "editor",
+		"chat.tools.terminal.autoApprove": {
+			"dart": true,
+			"flutter": true
+		},
 	},
 	"extensions": {
 		"recommendations": [
