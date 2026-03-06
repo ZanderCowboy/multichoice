@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:injectable/injectable.dart';
 

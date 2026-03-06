@@ -1,7 +1,7 @@
 part of 'firebase_bloc.dart';
 
 @CopyWith()
-class FirebaseState {
+class FirebaseState extends Equatable {
   const FirebaseState({
     required this.color,
   });
@@ -13,11 +13,5 @@ class FirebaseState {
   final String color;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is FirebaseState && other.color == color;
-  }
-
-  @override
-  int get hashCode => color.hashCode;
+  List<Object?> get props => [color];
 }

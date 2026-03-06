@@ -1,7 +1,7 @@
 part of 'search_bloc.dart';
 
 @CopyWith()
-class SearchState {
+class SearchState extends Equatable {
   const SearchState({
     required this.results,
     required this.isLoading,
@@ -22,29 +22,5 @@ class SearchState {
   final String query;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is SearchState &&
-        _listEquals(other.results, results) &&
-        other.isLoading == isLoading &&
-        other.errorMessage == errorMessage &&
-        other.query == query;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    Object.hashAll(results),
-    isLoading,
-    errorMessage,
-    query,
-  );
-}
-
-bool _listEquals<T>(List<T> a, List<T> b) {
-  if (identical(a, b)) return true;
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
+  List<Object?> get props => [results, isLoading, errorMessage, query];
 }

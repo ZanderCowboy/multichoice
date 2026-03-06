@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:core/core.dart';
+import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 

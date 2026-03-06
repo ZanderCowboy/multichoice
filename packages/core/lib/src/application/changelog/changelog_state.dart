@@ -1,7 +1,7 @@
 part of 'changelog_bloc.dart';
 
 @CopyWith()
-class ChangelogState {
+class ChangelogState extends Equatable {
   const ChangelogState({
     required this.isLoading,
     required this.errorMessage,
@@ -19,14 +19,5 @@ class ChangelogState {
   final Changelog? changelog;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ChangelogState &&
-        other.isLoading == isLoading &&
-        other.errorMessage == errorMessage &&
-        other.changelog == changelog;
-  }
-
-  @override
-  int get hashCode => Object.hash(isLoading, errorMessage, changelog);
+  List<Object?> get props => [isLoading, errorMessage, changelog];
 }

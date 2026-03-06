@@ -1,7 +1,7 @@
 part of 'home_bloc.dart';
 
 @CopyWith()
-class HomeState {
+class HomeState extends Equatable {
   const HomeState({
     required this.tab,
     required this.tabs,
@@ -40,41 +40,16 @@ class HomeState {
   final String? errorMessage;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is HomeState &&
-        other.tab == tab &&
-        _listEquals(other.tabs, tabs) &&
-        other.entry == entry &&
-        _listEquals(other.entryCards, entryCards) &&
-        other.isLoading == isLoading &&
-        other.isDeleted == isDeleted &&
-        other.isAdded == isAdded &&
-        other.isValid == isValid &&
-        other.isEditMode == isEditMode &&
-        other.errorMessage == errorMessage;
-  }
-
-  @override
-  int get hashCode => Object.hash(
+  List<Object?> get props => [
     tab,
-    Object.hashAll(tabs ?? const <TabsDTO>[]),
+    tabs,
     entry,
-    Object.hashAll(entryCards ?? const <EntryDTO>[]),
+    entryCards,
     isLoading,
     isDeleted,
     isAdded,
     isValid,
     isEditMode,
     errorMessage,
-  );
-}
-
-bool _listEquals<T>(List<T>? a, List<T>? b) {
-  if (identical(a, b)) return true;
-  if (a == null || b == null || a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
+  ];
 }

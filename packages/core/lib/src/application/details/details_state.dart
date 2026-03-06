@@ -1,7 +1,7 @@
 part of 'details_bloc.dart';
 
 @CopyWith()
-class DetailsState {
+class DetailsState extends Equatable {
   DetailsState({
     required this.title,
     required this.subtitle,
@@ -46,25 +46,7 @@ class DetailsState {
   final int? entryId;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is DetailsState &&
-        other.title == title &&
-        other.subtitle == subtitle &&
-        other.timestamp == timestamp &&
-        other.isValid == isValid &&
-        other.isLoading == isLoading &&
-        other.isEditingMode == isEditingMode &&
-        other.isDeleted == isDeleted &&
-        other.parent == parent &&
-        _listEquals(other.children, children) &&
-        _listEquals(other.deleteChildren, deleteChildren) &&
-        other.tabId == tabId &&
-        other.entryId == entryId;
-  }
-
-  @override
-  int get hashCode => Object.hash(
+  List<Object?> get props => [
     title,
     subtitle,
     timestamp,
@@ -73,18 +55,9 @@ class DetailsState {
     isEditingMode,
     isDeleted,
     parent,
-    Object.hashAll(children ?? const <EntryDTO>[]),
-    Object.hashAll(deleteChildren ?? const <int>[]),
+    children,
+    deleteChildren,
     tabId,
     entryId,
-  );
-}
-
-bool _listEquals<T>(List<T>? a, List<T>? b) {
-  if (identical(a, b)) return true;
-  if (a == null || b == null || a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
+  ];
 }

@@ -1,7 +1,7 @@
 part of 'product_bloc.dart';
 
 @CopyWith()
-class ProductState {
+class ProductState extends Equatable {
   const ProductState({
     required this.currentStep,
     required this.tabs,
@@ -22,29 +22,5 @@ class ProductState {
   final String? errorMessage;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ProductState &&
-        other.currentStep == currentStep &&
-        _listEquals(other.tabs, tabs) &&
-        other.isLoading == isLoading &&
-        other.errorMessage == errorMessage;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    currentStep,
-    Object.hashAll(tabs ?? const <TabsDTO>[]),
-    isLoading,
-    errorMessage,
-  );
-}
-
-bool _listEquals<T>(List<T>? a, List<T>? b) {
-  if (identical(a, b)) return true;
-  if (a == null || b == null || a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
+  List<Object?> get props => [currentStep, tabs, isLoading, errorMessage];
 }
