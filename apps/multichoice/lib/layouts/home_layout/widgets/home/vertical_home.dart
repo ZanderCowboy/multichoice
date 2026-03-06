@@ -89,6 +89,8 @@ class _VerticalHome extends HookWidget {
         // The outer vertical scroll enables pull-to-refresh functionality.
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
+          color: context.theme.appColors.ternary,
+          backgroundColor: context.theme.appColors.background,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(

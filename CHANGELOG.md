@@ -1,3 +1,14 @@
+#265 - Replace Long Press With Drag And Drop Edit Mode
+
+- Remove long-press delete behavior from collections (redundant with DetailsPage)
+- Remove long-press menu behavior from items (redundant with DetailsPage)
+- Implement long-press gesture to trigger drag-and-drop edit mode for both collections and items
+- Add haptic feedback when entering edit mode via long-press
+- Add VIBRATE permission to AndroidManifest for haptic feedback support
+- Update RefreshIndicator to use theme colors (ternary for indicator, background for background)
+- Increase drag handle icon sizes and adjust padding for better visibility
+- Update refresh snackbar text and icon sizes for improved readability
+
 #7 - Implement Draggable Retry - PART 1
 
 - Add `order` field to `Tabs` model and `TabsDTO` for persistent collection ordering and drag-and-drop support
