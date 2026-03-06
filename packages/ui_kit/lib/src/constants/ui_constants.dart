@@ -6,7 +6,10 @@ const elevatedButtonMinimumSize = Size(96, 48);
 const entryCardMinimumHeight = 90.0;
 const entryCardMinimumWidth = 0.0;
 const tabCardMinimumWidth = 120.0;
-const double tabsHeightConstant = 1.15;
+const double tabsHeightConstant = 1.2;
+
+/// Threshold in pixels for showing the scroll-to-start indicator button.
+const double scrollToStartThreshold = 12.0;
 const double tabsHeightConstantHori = 4;
 const double tabsWidthConstantMobile = 3.65;
 const double tabsWidthConstantDesktop = 8;

@@ -9,6 +9,7 @@ import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/tab/horizontal_tab.dart';
+part 'widgets/tab/scroll_indicator_hook.dart';
 part 'widgets/tab/vertical_tab.dart';
 
 class TabLayout extends StatelessWidget {
