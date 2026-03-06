@@ -7,7 +7,7 @@ import 'package:models/src/dto/extensions/string.dart';
 part 'entry.g.dart';
 
 @CopyWith()
-@Collection(ignore: {'copyWith'})
+@Collection(ignore: {'copyWith', 'props'})
 @JsonSerializable()
 class Entry extends Equatable {
   const Entry({

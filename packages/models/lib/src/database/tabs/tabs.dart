@@ -7,7 +7,7 @@ import 'package:models/src/dto/extensions/string.dart';
 part 'tabs.g.dart';
 
 @CopyWith()
-@Collection(ignore: {'copyWith'})
+@Collection(ignore: {'copyWith', 'props'})
 @JsonSerializable()
 class Tabs extends Equatable {
   const Tabs({
