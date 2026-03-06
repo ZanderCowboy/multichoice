@@ -16,19 +16,10 @@ class _HorizontalTab extends HookWidget {
     final entries = tab.entries;
     final scrollController = useScrollController();
     final previousEntriesLength = useState(entries.length);
-    final hasHorizontalOverflow = useState(false);
-    final canScrollToStart = useState(false);
-
-    void refreshScrollIndicators() {
-      if (!scrollController.hasClients) {
-        return;
-      }
-
-      final maxScrollExtent = scrollController.position.maxScrollExtent;
-      final currentOffset = scrollController.offset;
-      hasHorizontalOverflow.value = maxScrollExtent > 0;
-      canScrollToStart.value = maxScrollExtent > 0 && currentOffset > 12;
-    }
+    final canScrollToStart = useScrollToStartIndicator(
+      scrollController,
+      keys: [entries.length, isEditMode],
+    );
 
     useEffect(
       () {
@@ -45,24 +36,6 @@ class _HorizontalTab extends HookWidget {
         return null;
       },
       [entries.length],
-    );
-
-    useEffect(
-      () {
-        void listener() {
-          refreshScrollIndicators();
-        }
-
-        scrollController.addListener(listener);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          refreshScrollIndicators();
-        });
-
-        return () {
-          scrollController.removeListener(listener);
-        };
-      },
-      [entries.length, isEditMode],
     );
 
     final horizontalContent = CustomScrollView(
@@ -211,33 +184,17 @@ class _HorizontalTab extends HookWidget {
           child: Stack(
             children: [
               Positioned.fill(child: horizontalContent),
-              if (hasHorizontalOverflow.value && canScrollToStart.value)
+              if (canScrollToStart.value)
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  left: 5,
+                  left: UIConstants.horiTabHeaderWidth(context) + 5,
                   child: Center(
-                    child: Material(
-                      color: context.theme.appColors.white,
-                      shape: const CircleBorder(),
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: () async {
-                          await scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 250),
-                            curve: Curves.easeOut,
-                          );
-                        },
-                        child: Padding(
-                          padding: allPadding2,
-                          child: Icon(
-                            Icons.keyboard_arrow_left,
-                            size: 16,
-                            color: context.theme.appColors.ternary,
-                          ),
-                        ),
-                      ),
+                    child: _scrollToStartButton(
+                      context: context,
+                      scrollController: scrollController,
+                      label: 'Scroll to start',
+                      icon: Icons.keyboard_arrow_left,
                     ),
                   ),
                 ),

@@ -16,19 +16,10 @@ class _VerticalTab extends HookWidget {
     final entries = tab.entries;
     final scrollController = useScrollController();
     final previousEntriesLength = useState(entries.length);
-    final hasVerticalOverflow = useState(false);
-    final canScrollToTop = useState(false);
-
-    void refreshScrollIndicators() {
-      if (!scrollController.hasClients) {
-        return;
-      }
-
-      final maxScrollExtent = scrollController.position.maxScrollExtent;
-      final currentOffset = scrollController.offset;
-      hasVerticalOverflow.value = maxScrollExtent > 0;
-      canScrollToTop.value = maxScrollExtent > 0 && currentOffset > 12;
-    }
+    final canScrollToTop = useScrollToStartIndicator(
+      scrollController,
+      keys: [entries.length, isEditMode],
+    );
 
     useEffect(
       () {
@@ -45,24 +36,6 @@ class _VerticalTab extends HookWidget {
         return null;
       },
       [entries.length],
-    );
-
-    useEffect(
-      () {
-        void listener() {
-          refreshScrollIndicators();
-        }
-
-        scrollController.addListener(listener);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          refreshScrollIndicators();
-        });
-
-        return () {
-          scrollController.removeListener(listener);
-        };
-      },
-      [entries.length, isEditMode],
     );
 
     final listContent = isEditMode && entries.isNotEmpty
@@ -199,33 +172,17 @@ class _VerticalTab extends HookWidget {
                 child: Stack(
                   children: [
                     Positioned.fill(child: listContent),
-                    if (hasVerticalOverflow.value && canScrollToTop.value)
+                    if (canScrollToTop.value)
                       Positioned(
                         top: 5,
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: Material(
-                            color: context.theme.appColors.white,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: () async {
-                                await scrollController.animateTo(
-                                  0,
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.easeOut,
-                                );
-                              },
-                              child: Padding(
-                                padding: allPadding2,
-                                child: Icon(
-                                  Icons.keyboard_arrow_up,
-                                  size: 16,
-                                  color: context.theme.appColors.ternary,
-                                ),
-                              ),
-                            ),
+                          child: _scrollToStartButton(
+                            context: context,
+                            scrollController: scrollController,
+                            label: 'Scroll to top',
+                            icon: Icons.keyboard_arrow_up,
                           ),
                         ),
                       ),
