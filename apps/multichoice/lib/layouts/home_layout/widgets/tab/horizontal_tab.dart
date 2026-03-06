@@ -19,6 +19,7 @@ class _HorizontalTab extends HookWidget {
     final canScrollToStart = useScrollToStartIndicator(
       scrollController,
       keys: [entries.length, isEditMode],
+      showAfterOffset: UIConstants.horiTabHeaderWidth(context),
     );
 
     useEffect(
@@ -188,7 +189,7 @@ class _HorizontalTab extends HookWidget {
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  left: UIConstants.horiTabHeaderWidth(context) + 5,
+                  left: 5,
                   child: Center(
                     child: _scrollToStartButton(
                       context: context,

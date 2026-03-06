@@ -3,10 +3,11 @@ part of '../../tab_layout.dart';
 /// A custom hook that manages scroll-to-start indicator state.
 ///
 /// Listens to [scrollController] and returns a [ValueNotifier<bool>] that is
-/// `true` when the user has scrolled past [scrollToStartThreshold] pixels.
+/// `true` when the user has scrolled past [showAfterOffset] pixels.
 ValueNotifier<bool> useScrollToStartIndicator(
   ScrollController scrollController, {
   required List<Object?> keys,
+  double showAfterOffset = scrollToStartThreshold,
 }) {
   final canScrollToStart = useState(false);
 
@@ -16,7 +17,7 @@ ValueNotifier<bool> useScrollToStartIndicator(
     final maxScrollExtent = scrollController.position.maxScrollExtent;
     final currentOffset = scrollController.offset;
     canScrollToStart.value =
-        maxScrollExtent > 0 && currentOffset > scrollToStartThreshold;
+        maxScrollExtent > 0 && currentOffset >= showAfterOffset;
   }
 
   useEffect(
