@@ -1,25 +1,13 @@
-#265 - Replace Long Press With Drag And Drop Edit Mode
+# 2 - Add Arrow Up Icon on Columns to go to Top
 
-- Remove long-press delete behavior from collections (redundant with DetailsPage)
-- Remove long-press menu behavior from items (redundant with DetailsPage)
-- Implement long-press gesture to trigger drag-and-drop edit mode for both collections and items
-- Add haptic feedback when entering edit mode via long-press
-- Add VIBRATE permission to AndroidManifest for haptic feedback support
-- Update RefreshIndicator to use theme colors (ternary for indicator, background for background)
-- Increase drag handle icon sizes and adjust padding for better visibility
-- Update refresh snackbar text and icon sizes for improved readability
-
-#7 - Implement Draggable Retry - PART 1
-
-- Add `order` field to `Tabs` model and `TabsDTO` for persistent collection ordering and drag-and-drop support
-- Add `isEditMode` flag and drag/reorder events to `HomeState`/`HomeEvent`, with reorder handlers in `HomeBloc` that use optimistic UI updates and rollback on failure
-- Implement `ReorderableListView` / `SliverReorderableList` for collections and entries in both horizontal and vertical layouts, including drag handles and disabled navigation while editing
-- Update `TabsRepository` and `EntryRepository` to sort by `order` and persist tab and entry ordering
-- Refine details, edit, home, search, tutorial, and feedback pages to integrate the new drag/edit flows and improve UX
-- Rework editing overlay when in editing mode and added delete option.
-- Make `FirebaseService` accept an injectable `FirebaseRemoteConfig` for improved testability
-- Expand and update unit tests for blocs and services (home, details, product, search, data exchange, Firebase) to cover draggable and retry behavior
-- Adjust Android, iOS, and web splash/background colors and metadata to match updated branding
-- Apply shared spacing constants and minor layout refactors for more consistent spacing and readability
-- Add `SafeArea`s to deal with app behind system navigation bar
-- Remove elevation behind Collections and Items for better UI
+- Added a shared `useScrollToStartIndicator` hook for tab layouts to control
+  when the "scroll to start" button is visible.
+- Added an accessible reusable scroll-to-start button widget with `Semantics`
+  and `Tooltip` labels for both vertical and horizontal tabs.
+- Updated vertical tabs to show an up-arrow action (`Scroll to top`) after the
+  user scrolls down, with animated scrolling back to the start.
+- Updated horizontal tabs to show a left-arrow action (`Scroll to start`) and
+  use the header width as the visibility threshold so the arrow appears only
+  once the header has moved out of view.
+- Refactored tab layout files to share scroll-indicator behavior across
+  `vertical_tab.dart` and `horizontal_tab.dart`.

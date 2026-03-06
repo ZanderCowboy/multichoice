@@ -16,6 +16,10 @@ class _VerticalTab extends HookWidget {
     final entries = tab.entries;
     final scrollController = useScrollController();
     final previousEntriesLength = useState(entries.length);
+    final canScrollToTop = useScrollToStartIndicator(
+      scrollController,
+      keys: [entries.length, isEditMode],
+    );
 
     useEffect(
       () {
@@ -33,6 +37,67 @@ class _VerticalTab extends HookWidget {
       },
       [entries.length],
     );
+
+    final listContent = isEditMode && entries.isNotEmpty
+        ? ReorderableListView.builder(
+            scrollController: scrollController,
+            buildDefaultDragHandles: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: entries.length,
+            onReorder: (oldIndex, newIndex) {
+              context.read<HomeBloc>().add(
+                HomeEvent.onReorderEntries(
+                  tab.id,
+                  oldIndex,
+                  newIndex,
+                ),
+              );
+            },
+            itemBuilder: (_, index) {
+              final entry = entries[index];
+              return EntryCard(
+                key: ValueKey(entry.id),
+                entry: entry,
+                onDoubleTap: () {},
+                isEditMode: isEditMode,
+                dragIndex: index,
+              );
+            },
+          )
+        : CustomScrollView(
+            controller: scrollController,
+            scrollBehavior: CustomScrollBehaviour(),
+            slivers: [
+              SliverList.builder(
+                itemCount: entries.length,
+                itemBuilder: (_, index) {
+                  final entry = entries[index];
+
+                  return BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, _) {
+                      return EntryCard(
+                        entry: entry,
+                        isEditMode: isEditMode,
+                        onDoubleTap: () async {
+                          context.read<HomeBloc>().add(
+                            HomeEvent.onUpdateEntry(entry.id),
+                          );
+                          await context.router.push(
+                            EditEntryPageRoute(ctx: context),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+              SliverToBoxAdapter(
+                child: NewEntry(
+                  tabId: tab.id,
+                ),
+              ),
+            ],
+          );
 
     return Card(
       margin: allPadding4,
@@ -104,66 +169,25 @@ class _VerticalTab extends HookWidget {
               ),
               gap4,
               Expanded(
-                child: isEditMode && entries.isNotEmpty
-                    ? ReorderableListView.builder(
-                        scrollController: scrollController,
-                        buildDefaultDragHandles: false,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: entries.length,
-                        onReorder: (oldIndex, newIndex) {
-                          context.read<HomeBloc>().add(
-                            HomeEvent.onReorderEntries(
-                              tab.id,
-                              oldIndex,
-                              newIndex,
-                            ),
-                          );
-                        },
-                        itemBuilder: (_, index) {
-                          final entry = entries[index];
-                          return EntryCard(
-                            key: ValueKey(entry.id),
-                            entry: entry,
-                            onDoubleTap: () {},
-                            isEditMode: isEditMode,
-                            dragIndex: index,
-                          );
-                        },
-                      )
-                    : CustomScrollView(
-                        controller: scrollController,
-                        scrollBehavior: CustomScrollBehaviour(),
-                        slivers: [
-                          SliverList.builder(
-                            itemCount: entries.length,
-                            itemBuilder: (_, index) {
-                              final entry = entries[index];
-
-                              return BlocBuilder<HomeBloc, HomeState>(
-                                builder: (context, _) {
-                                  return EntryCard(
-                                    entry: entry,
-                                    isEditMode: isEditMode,
-                                    onDoubleTap: () async {
-                                      context.read<HomeBloc>().add(
-                                        HomeEvent.onUpdateEntry(entry.id),
-                                      );
-                                      await context.router.push(
-                                        EditEntryPageRoute(ctx: context),
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            },
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: listContent),
+                    if (canScrollToTop.value)
+                      Positioned(
+                        top: 5,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: _scrollToStartButton(
+                            context: context,
+                            scrollController: scrollController,
+                            label: 'Scroll to top',
+                            icon: Icons.keyboard_arrow_up,
                           ),
-                          SliverToBoxAdapter(
-                            child: NewEntry(
-                              tabId: tab.id,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
+                  ],
+                ),
               ),
             ],
           ),
