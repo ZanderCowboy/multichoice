@@ -52,25 +52,26 @@ class _VerticalTab extends HookWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (isEditMode && dragIndex != null)
                           Padding(
-                            padding: right4,
+                            padding: horizontal4,
                             child: ReorderableDragStartListener(
                               index: dragIndex!,
                               child: Icon(
                                 Icons.drag_handle,
-                                size: 20,
+                                size: 28,
                                 color: context.theme.appColors.ternary,
                               ),
                             ),
                           )
                         else if (isEditMode)
                           Padding(
-                            padding: right4,
+                            padding: horizontal4,
                             child: Icon(
                               Icons.drag_handle,
-                              size: 20,
+                              size: 28,
                               color: context.theme.appColors.ternary,
                             ),
                           ),
