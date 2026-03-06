@@ -35,7 +35,7 @@
   },
   "features": {
     "ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
-    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {}
   },
   "postCreateCommand": "/usr/local/bin/post_create_command.sh"
 }
