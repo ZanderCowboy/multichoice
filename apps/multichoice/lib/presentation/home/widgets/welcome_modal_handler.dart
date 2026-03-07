@@ -1,5 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/presentation/home/widgets/continue_tour_modal.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
 
 class WelcomeModalHandler extends StatefulWidget {
@@ -23,10 +25,40 @@ class _WelcomeModalHandlerState extends State<WelcomeModalHandler> {
 
   Future<void> _checkAndShowWelcomeModal(BuildContext context) async {
     final appStorageService = coreSl<IAppStorageService>();
+    final productTourController = coreSl<IProductTourController>();
     final isExistingUser = await appStorageService.isExistingUser;
     final isCompleted = await appStorageService.isCompleted;
+    final currentStep = await productTourController.currentStep;
+
+    final hasStartedTutorial =
+        currentStep != ProductTourStep.welcomePopup &&
+        currentStep != ProductTourStep.noneCompleted &&
+        currentStep != ProductTourStep.reset;
 
     if (!isExistingUser && !isCompleted && context.mounted) {
+      if (hasStartedTutorial) {
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => ContinueTourModal(
+            onFinishTour: () async {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                await widget.onSkipTour();
+              }
+            },
+            onContinueTour: () async {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                await widget.onFollowTutorial();
+              }
+            },
+          ),
+        );
+
+        return;
+      }
+
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
