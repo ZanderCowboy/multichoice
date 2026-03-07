@@ -14,7 +14,7 @@ class _BodyText extends StatelessWidget {
           Icon(
             Icons.search,
             size: 48,
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+            color: context.theme.appColors.ternary,
           ),
           gap16,
           Text(

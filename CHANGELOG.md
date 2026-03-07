@@ -1,9 +1,21 @@
-# 279 - Address Tutorial Issues
+# 281 - Feat: Rework Collection Cards and UI Improvements
 
-- Deal with issue when the user open the app the first time, and the user taps on the `Follow Tutorial` button, it does not start the tutorial.
-- Update `TutorialPage` with edit and search button
-- Update with UI constants
-- Update ProductTourKeys and ProductTourStep with new entry for `showEditAndSearch`
-- Ensure that native OS back-buttons does not dismiss product tour showcase
-- Add Exit Modal when the user attempts to exit while in Product Tour
-- Add Continue Tour Modal for when the user started with a tour, but closed the app.
+- Refactored both horizontal and vertical tab layouts to use `DecoratedSliver` and `SliverMainAxisGroup`
+- Collection cards now extend naturally with content using `SliverFillRemaining`
+- Simplified vertical home layout by removing unnecessary `SingleChildScrollView` wrapper
+- Improved card scrolling behavior and simplified widget hierarchy
+- Unified vertical and horizontal tab architecture for consistency
+- Added custom `SwitchTheme` styling for both light and dark modes
+- Applied 20% transparency to collection card backgrounds
+- Updated shadow colors to use theme colors instead of hardcoded values
+- Centered drag handles in edit mode for better visual alignment
+- Added text overflow handling (ellipsis, maxLines) to tab titles and subtitles
+- Created dedicated `HorizontalVerticalLayoutButton` widget with custom icons
+- Made text selectable in details page for better UX
+- Simplified text field decorations in details and forms
+- Made form fields multiline (maxLines: 3) with aligned labels
+- Reduced app version font size to 9px
+- Updated search icon color to use theme ternary color
+- Added spacing constants: `vertical4`, `vertical6`, `horizontal2`, `horizontal6`
+- Simplified tab width calculation by removing mobile/desktop distinction
+- Added "git fetch" to workspace auto-approve commands

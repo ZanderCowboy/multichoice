@@ -59,7 +59,7 @@ class EntryCard extends HookWidget {
             padding: isLayoutVertical ? allPadding2 : allPadding4,
             child: Card(
               elevation: 3,
-              shadowColor: Colors.grey[400],
+              shadowColor: context.theme.appColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: borderCircular5,
               ),

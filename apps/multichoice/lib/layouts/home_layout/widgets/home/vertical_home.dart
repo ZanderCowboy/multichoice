@@ -69,7 +69,7 @@ class _VerticalHome extends HookWidget {
                   final tab = tabs[index];
                   return Padding(
                     key: ValueKey(tab.id),
-                    padding: left4,
+                    padding: horizontal4,
                     child: CollectionTab(
                       tab: tab,
                       isEditMode: isEditMode,
@@ -83,47 +83,44 @@ class _VerticalHome extends HookWidget {
         }
 
         // Normal mode
-        // Note: The nested scroll structure (SingleChildScrollView wrapping
-        // CustomScrollView) is intentional. RefreshIndicator requires vertical
-        // scrolling, but this layout uses horizontal scrolling for tabs.
-        // The outer vertical scroll enables pull-to-refresh functionality.
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
           color: context.theme.appColors.ternary,
           backgroundColor: context.theme.appColors.background,
+          // Note: The nested scroll structure (SingleChildScrollView wrapping
+          // CustomScrollView) is intentional. RefreshIndicator requires vertical
+          // scrolling, but this layout uses horizontal scrolling for tabs.
+          // The outer vertical scroll enables pull-to-refresh functionality.
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: vertical4horizontal0,
-              child: SizedBox(
-                height: UIConstants.vertTabHeight(context),
-                child: CustomScrollView(
-                  scrollDirection: Axis.horizontal,
-                  controller: scrollController,
-                  scrollBehavior: CustomScrollBehaviour(),
-                  slivers: [
-                    SliverPadding(
-                      padding: left4,
-                      sliver: SliverList.builder(
-                        itemCount: tabs.length,
-                        itemBuilder: (_, index) {
-                          final tab = tabs[index];
+            child: SizedBox(
+              height: UIConstants.vertTabHeight(context),
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: scrollController,
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
 
-                          return CollectionTab(
-                            tab: tab,
-                            isEditMode: isEditMode,
-                          );
-                        },
-                      ),
+                      return Padding(
+                        padding: horizontal6,
+                        child: CollectionTab(
+                          tab: tab,
+                          isEditMode: isEditMode,
+                        ),
+                      );
+                    },
+                  ),
+                  const SliverPadding(
+                    padding: right12,
+                    sliver: SliverToBoxAdapter(
+                      child: NewTab(),
                     ),
-                    const SliverPadding(
-                      padding: right12,
-                      sliver: SliverToBoxAdapter(
-                        child: NewTab(),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
