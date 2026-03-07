@@ -26,6 +26,7 @@ class ProductTour extends StatefulWidget {
 class _ProductTourState extends State<ProductTour> {
   bool _isShowingDialog = false;
   bool _isShowingExitPrompt = false;
+  bool _isResetRestartInProgress = false;
   final IProductTourController _productTourController =
       coreSl<IProductTourController>();
   final GlobalKey<ShowCaseWidgetState> _showCaseWidgetKey =
@@ -51,8 +52,28 @@ class _ProductTourState extends State<ProductTour> {
       builder: (_) {
         return BlocListener<ProductBloc, ProductState>(
           listener: (context, state) async {
+            if (state.currentStep != ProductTourStep.reset) {
+              _isResetRestartInProgress = false;
+            }
+
             if (state.currentStep == ProductTourStep.reset) {
-              context.read<ProductBloc>().add(const ProductEvent.onLoadData());
+              if (_isResetRestartInProgress) {
+                return;
+              }
+
+              _isResetRestartInProgress = true;
+
+              final shouldLoadData = state.tabs == null || state.tabs!.isEmpty;
+
+              if (shouldLoadData) {
+                context.read<ProductBloc>().add(
+                  const ProductEvent.onLoadData(),
+                );
+              }
+
+              // Move away from `reset` so tab updates don't repeatedly trigger
+              // the reset branch while restart is being processed.
+              context.read<ProductBloc>().add(const ProductEvent.init());
               await handleProductTour(context, shouldRestart: true);
               return;
             } else if (state.currentStep == ProductTourStep.welcomePopup) {

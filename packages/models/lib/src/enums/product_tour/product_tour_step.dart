@@ -21,4 +21,14 @@ enum ProductTourStep {
   const ProductTourStep(this.value);
 
   final int value;
+
+  static ProductTourStep? fromValue(int value) {
+    for (final step in ProductTourStep.values) {
+      if (step.value == value) {
+        return step;
+      }
+    }
+
+    return null;
+  }
 }
