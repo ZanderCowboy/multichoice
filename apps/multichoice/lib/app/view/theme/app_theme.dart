@@ -57,6 +57,23 @@ class AppTheme with ChangeNotifier {
         ),
         iconColor: _lightAppColors.primary,
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _lightAppColors.secondary;
+          }
+
+          return _lightAppColors.ternary?.withValues(alpha: 0.7);
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _lightAppColors.primary;
+          }
+
+          return _lightAppColors.primaryLight?.withValues(alpha: 0.8);
+        }),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+      ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStatePropertyAll(
@@ -215,6 +232,23 @@ class AppTheme with ChangeNotifier {
           color: _darkAppColors.white,
         ),
         iconColor: _darkAppColors.white,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _darkAppColors.secondary;
+          }
+
+          return _darkAppColors.ternary?.withValues(alpha: 0.85);
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _darkAppColors.primary;
+          }
+
+          return _darkAppColors.primaryLight?.withValues(alpha: 0.9);
+        }),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
       ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
