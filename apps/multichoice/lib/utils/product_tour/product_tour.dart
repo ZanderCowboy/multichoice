@@ -1,4 +1,4 @@
-// ignore_for_file: document_ignores, deprecated_member_use
+import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,7 @@ class ProductTour extends StatefulWidget {
 
 class _ProductTourState extends State<ProductTour> {
   bool _isShowingDialog = false;
+  bool _isShowingExitPrompt = false;
   final IProductTourController _productTourController =
       coreSl<IProductTourController>();
   final GlobalKey<ShowCaseWidgetState> _showCaseWidgetKey =
@@ -60,10 +61,46 @@ class _ProductTourState extends State<ProductTour> {
 
             _startShowcaseForStep(state.currentStep);
           },
-          child: widget.builder(context),
+          child: BlocBuilder<ProductBloc, ProductState>(
+            buildWhen: (previous, current) =>
+                previous.currentStep != current.currentStep,
+            builder: (context, state) {
+              final shouldInterceptBack = _shouldInterceptBack(
+                state.currentStep,
+              );
+
+              return PopScope(
+                canPop: !shouldInterceptBack,
+                onPopInvokedWithResult: (didPop, _) {
+                  if (!shouldInterceptBack ||
+                      didPop ||
+                      _isShowingDialog ||
+                      _isShowingExitPrompt) {
+                    return;
+                  }
+
+                  _isShowingExitPrompt = true;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) {
+                      _isShowingExitPrompt = false;
+                      return;
+                    }
+
+                    unawaited(_showExitTutorialPrompt(context));
+                  });
+                },
+                child: widget.builder(context),
+              );
+            },
+          ),
         );
       },
     );
+  }
+
+  bool _shouldInterceptBack(ProductTourStep step) {
+    return step.value > ProductTourStep.welcomePopup.value &&
+        step.value < ProductTourStep.thanksPopup.value;
   }
 
   void _startShowcaseForStep(ProductTourStep step) {
@@ -140,5 +177,59 @@ class _ProductTourState extends State<ProductTour> {
     ).then((_) {
       _isShowingDialog = false;
     });
+  }
+
+  Future<void> _showExitTutorialPrompt(BuildContext context) async {
+    // Dismiss any active showcase overlay so the confirmation dialog is
+    // guaranteed to render as the top-most modal.
+    _showCaseWidgetKey.currentState?.dismiss();
+
+    try {
+      final shouldExit = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Exit tutorial?'),
+            content: const Text(
+              'Are you sure you want to exit the tutorial? Your tutorial '
+              'progress will be skipped.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext, rootNavigator: true).pop(false);
+                },
+                child: const Text('Stay'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(dialogContext, rootNavigator: true).pop(true);
+                },
+                child: const Text('Exit'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (shouldExit != true) {
+        final currentStep = context.read<ProductBloc>().state.currentStep;
+
+        if (_shouldInterceptBack(currentStep)) {
+          _startShowcaseForStep(currentStep);
+        }
+
+        return;
+      }
+
+      context.read<ProductBloc>().add(const ProductEvent.skipTour());
+      widget.onTourComplete(shouldRestoreData: true);
+    } finally {
+      _isShowingExitPrompt = false;
+    }
   }
 }
