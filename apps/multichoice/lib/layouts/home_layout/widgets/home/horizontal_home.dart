@@ -104,9 +104,9 @@ class _HorizontalHome extends HookWidget {
                   },
                 ),
               ),
-              const SliverPadding(
-                padding: horizontal12,
-                sliver: SliverToBoxAdapter(
+              SliverPadding(
+                padding: horizontal12 + bottom24,
+                sliver: const SliverToBoxAdapter(
                   child: NewTab(),
                 ),
               ),

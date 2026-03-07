@@ -15,9 +15,6 @@ class HorizontalVerticalLayoutButton extends HookWidget {
       key: context.keys.layoutSwitch,
       title: const Text('Horizontal / Vertical Layout'),
       value: appLayout.isLayoutVertical,
-      trackColor: WidgetStatePropertyAll(
-        context.theme.appColors.primary,
-      ),
       activeThumbColor: context.theme.appColors.secondary,
       inactiveThumbColor: context.theme.appColors.secondary,
       thumbIcon: WidgetStateProperty.resolveWith((states) {
