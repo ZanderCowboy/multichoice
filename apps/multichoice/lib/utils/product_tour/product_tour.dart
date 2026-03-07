@@ -27,6 +27,8 @@ class _ProductTourState extends State<ProductTour> {
   bool _isShowingDialog = false;
   final IProductTourController _productTourController =
       coreSl<IProductTourController>();
+  final GlobalKey<ShowCaseWidgetState> _showCaseWidgetKey =
+      GlobalKey<ShowCaseWidgetState>();
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _ProductTourState extends State<ProductTour> {
   @override
   Widget build(BuildContext context) {
     return ShowCaseWidget(
+      key: _showCaseWidgetKey,
       builder: (_) {
         return BlocListener<ProductBloc, ProductState>(
           listener: (context, state) async {
@@ -47,19 +50,36 @@ class _ProductTourState extends State<ProductTour> {
               context.read<ProductBloc>().add(const ProductEvent.onLoadData());
               await handleProductTour(context, shouldRestart: true);
               return;
+            } else if (state.currentStep == ProductTourStep.welcomePopup) {
+              await handleProductTour(context);
+              return;
             } else if (state.currentStep == ProductTourStep.thanksPopup) {
               await handleProductTour(context);
               return;
             }
 
-            final key = getProductTourKey(state.currentStep);
-
-            if (key != null) ShowCaseWidget.of(context).startShowCase([key]);
+            _startShowcaseForStep(state.currentStep);
           },
           child: widget.builder(context),
         );
       },
     );
+  }
+
+  void _startShowcaseForStep(ProductTourStep step) {
+    if (step == ProductTourStep.welcomePopup ||
+        step == ProductTourStep.noneCompleted ||
+        step == ProductTourStep.reset) {
+      return;
+    }
+
+    final key = getProductTourKey(step);
+    if (key == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _showCaseWidgetKey.currentState?.startShowCase([key]);
+    });
   }
 
   Future<void> handleProductTour(
@@ -91,9 +111,9 @@ class _ProductTourState extends State<ProductTour> {
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => TutorialWelcomeModal(
+      builder: (dialogContext) => TutorialWelcomeModal(
         onStart: () {
-          Navigator.of(context).pop();
+          Navigator.of(dialogContext, rootNavigator: true).pop();
           context.read<ProductBloc>().add(const ProductEvent.nextStep());
         },
       ),
@@ -108,9 +128,10 @@ class _ProductTourState extends State<ProductTour> {
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ThanksModal(
+      builder: (dialogContext) => ThanksModal(
         onGoHome: () async {
-          if (context.mounted) {
+          if (dialogContext.mounted) {
+            Navigator.of(dialogContext, rootNavigator: true).pop();
             coreSl<ProductBloc>().add(const ProductEvent.skipTour());
             widget.onTourComplete(shouldRestoreData: true);
           }

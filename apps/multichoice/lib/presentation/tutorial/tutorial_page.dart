@@ -27,6 +27,9 @@ class TutorialPage extends StatelessWidget {
         BlocProvider<ProductBloc>.value(
           value: coreSl<ProductBloc>()
             ..add(
+              const ProductEvent.init(),
+            )
+            ..add(
               const ProductEvent.onLoadData(),
             ),
         ),
@@ -56,6 +59,25 @@ class TutorialPage extends StatelessWidget {
                   icon: const Icon(Icons.settings_outlined),
                 ),
               ),
+              actions: [
+                TourWidgetWrapper(
+                  step: ProductTourStep.showEditAndSearch,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        tooltip: 'Edit order',
+                        icon: const Icon(Icons.edit_outlined),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        tooltip: TooltipEnums.search.tooltip,
+                        icon: const Icon(Icons.search_outlined),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             drawer: const TutorialDrawer(),
             body: const SafeArea(
