@@ -66,7 +66,7 @@ class _HorizontalHome extends HookWidget {
                 final tab = tabs[index];
                 return Padding(
                   key: ValueKey(tab.id),
-                  padding: top4,
+                  padding: const EdgeInsets.only(bottom: 8, top: 4),
                   child: CollectionTab(
                     tab: tab,
                     isEditMode: isEditMode,
@@ -83,31 +83,34 @@ class _HorizontalHome extends HookWidget {
           onRefresh: () => _onHomeRefresh(context),
           color: context.theme.appColors.ternary,
           backgroundColor: context.theme.appColors.background,
-          child: Padding(
-            padding: horizontal8,
-            child: CustomScrollView(
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverPadding(
-                  padding: top4,
-                  sliver: SliverList.builder(
-                    itemCount: tabs.length,
-                    itemBuilder: (_, index) {
-                      final tab = tabs[index];
+          child: CustomScrollView(
+            controller: scrollController,
+            scrollBehavior: CustomScrollBehaviour(),
+            slivers: [
+              SliverPadding(
+                padding: top4,
+                sliver: SliverList.builder(
+                  itemCount: tabs.length,
+                  itemBuilder: (_, index) {
+                    final tab = tabs[index];
 
-                      return CollectionTab(tab: tab, isEditMode: isEditMode);
-                    },
-                  ),
+                    return Padding(
+                      padding: vertical6,
+                      child: CollectionTab(
+                        tab: tab,
+                        isEditMode: isEditMode,
+                      ),
+                    );
+                  },
                 ),
-                const SliverPadding(
-                  padding: bottom24,
-                  sliver: SliverToBoxAdapter(
-                    child: NewTab(),
-                  ),
+              ),
+              const SliverPadding(
+                padding: horizontal12,
+                sliver: SliverToBoxAdapter(
+                  child: NewTab(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
