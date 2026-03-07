@@ -42,6 +42,10 @@ class _ProductTourState extends State<ProductTour> {
 
   @override
   Widget build(BuildContext context) {
+    // ShowCaseWidget is deprecated but migration to ShowcaseView.register()
+    // requires architectural changes. Keeping current implementation until
+    // proper migration can be planned. See: showcaseview v5.0.0 changelog
+    // ignore: deprecated_member_use
     return ShowCaseWidget(
       key: _showCaseWidgetKey,
       builder: (_) {
@@ -115,7 +119,7 @@ class _ProductTourState extends State<ProductTour> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _showCaseWidgetKey.currentState?.startShowCase([key]);
+      ShowcaseView.get().startShowCase([key]);
     });
   }
 
@@ -182,7 +186,9 @@ class _ProductTourState extends State<ProductTour> {
   Future<void> _showExitTutorialPrompt(BuildContext context) async {
     // Dismiss any active showcase overlay so the confirmation dialog is
     // guaranteed to render as the top-most modal.
-    _showCaseWidgetKey.currentState?.dismiss();
+    ShowcaseView.get().dismiss();
+
+    final productBloc = context.read<ProductBloc>();
 
     try {
       final shouldExit = await showDialog<bool>(
@@ -217,7 +223,7 @@ class _ProductTourState extends State<ProductTour> {
       }
 
       if (shouldExit != true) {
-        final currentStep = context.read<ProductBloc>().state.currentStep;
+        final currentStep = productBloc.state.currentStep;
 
         if (_shouldInterceptBack(currentStep)) {
           _startShowcaseForStep(currentStep);
@@ -226,7 +232,7 @@ class _ProductTourState extends State<ProductTour> {
         return;
       }
 
-      context.read<ProductBloc>().add(const ProductEvent.skipTour());
+      productBloc.add(const ProductEvent.skipTour());
       widget.onTourComplete(shouldRestoreData: true);
     } finally {
       _isShowingExitPrompt = false;
