@@ -35,7 +35,7 @@ class ReusableForm extends StatelessWidget {
     try {
       // Try to access controller text to verify it's not disposed
       final isTitleNotEmpty = titleController.text.isNotEmpty;
-      
+
       return _buildForm(context, isTitleNotEmpty);
     } catch (e) {
       // Controllers are disposed - return minimal widget
@@ -53,20 +53,26 @@ class ReusableForm extends StatelessWidget {
               controller: titleController,
               onChanged: onTitleChanged,
               onTap: onTitleTap,
+              textAlignVertical: TextAlignVertical.top,
               decoration: const InputDecoration(
+                alignLabelWithHint: true,
                 labelText: 'Enter a Title',
                 hintText: 'Title',
               ),
+              maxLines: 3,
             ),
             gap10,
             TextFormField(
               controller: subtitleController,
               onChanged: onSubtitleChanged,
               onTap: onSubtitleTap,
+              textAlignVertical: TextAlignVertical.top,
               decoration: const InputDecoration(
+                alignLabelWithHint: true,
                 labelText: 'Enter a Subtitle',
                 hintText: 'Subtitle',
               ),
+              maxLines: 3,
             ),
             gap24,
             Row(

@@ -27,7 +27,7 @@ class _DetailsListTile extends StatelessWidget {
         borderRadius: borderCircular12,
       ),
       title: !isEditing
-          ? Text(
+          ? SelectableText(
               title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -39,15 +39,18 @@ class _DetailsListTile extends StatelessWidget {
           ? TextFormField(
               controller: controller,
               decoration: InputDecoration(
+                alignLabelWithHint: true,
                 labelText: labelText,
-                border: OutlineInputBorder(
-                  borderRadius: borderCircular12,
-                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
                 isDense: true,
               ),
               onChanged: onChanged,
+              maxLines: 3,
+              textAlignVertical: TextAlignVertical.top,
             )
-          : Text(
+          : SelectableText(
               subtitle ?? '',
               style: TextStyle(
                 fontSize: 16,
