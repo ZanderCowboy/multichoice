@@ -73,19 +73,15 @@ class _VerticalTab extends HookWidget {
                 itemBuilder: (_, index) {
                   final entry = entries[index];
 
-                  return BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, _) {
-                      return EntryCard(
-                        entry: entry,
-                        isEditMode: isEditMode,
-                        onDoubleTap: () async {
-                          context.read<HomeBloc>().add(
-                            HomeEvent.onUpdateEntry(entry.id),
-                          );
-                          await context.router.push(
-                            EditEntryPageRoute(ctx: context),
-                          );
-                        },
+                  return EntryCard(
+                    entry: entry,
+                    isEditMode: isEditMode,
+                    onDoubleTap: () async {
+                      context.read<HomeBloc>().add(
+                        HomeEvent.onUpdateEntry(entry.id),
+                      );
+                      await context.router.push(
+                        EditEntryPageRoute(ctx: context),
                       );
                     },
                   );

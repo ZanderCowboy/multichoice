@@ -1,12 +1,17 @@
 part of 'firebase_bloc.dart';
 
-@freezed
-abstract class FirebaseState with _$FirebaseState {
-  const factory FirebaseState({
-    required String color,
-  }) = _FirebaseState;
+@CopyWith()
+class FirebaseState extends Equatable {
+  const FirebaseState({
+    required this.color,
+  });
 
-  factory FirebaseState.initial() => FirebaseState(
+  factory FirebaseState.initial() => const FirebaseState(
     color: '',
   );
+
+  final String color;
+
+  @override
+  List<Object?> get props => [color];
 }

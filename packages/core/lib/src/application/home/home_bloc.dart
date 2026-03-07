@@ -1,12 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:core/core.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
-part 'home_bloc.freezed.dart';
 part 'home_event.dart';
 part 'home_state.dart';
+part 'home_bloc.g.dart';
 
 @Injectable()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -61,7 +62,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _handleReorderTabs(oldIndex, newIndex, emit);
       case OnReorderEntries(:final tabId, :final oldIndex, :final newIndex):
         await _handleReorderEntries(tabId, oldIndex, newIndex, emit);
-      default:
     }
   }
 
@@ -383,7 +383,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // Persist the new order to the database
     final tabIds = updatedTabs.map((t) => t.id).toList();
     final success = await _tabsRepository.updateTabsOrder(tabIds);
-    
+
     // If persistence failed, revert to original order
     if (!success) {
       emit(state.copyWith(tabs: originalTabs));
@@ -437,7 +437,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       tabId: tabId,
       entryIds: entryIds,
     );
-    
+
     // If persistence failed, revert to original order
     if (!success) {
       emit(state.copyWith(tabs: originalTabs));

@@ -1,19 +1,23 @@
+WORKDIR ?= $(CURDIR)
+BUILD_RUNNER = dart run build_runner build --delete-conflicting-outputs
+GEN_FILES = \( -name '*.g.dart' -o -name '*.gr.dart' -o -name '*.config.dart' -o -name '*.auto_mappr.dart' -o -name '*.mocks.dart' \)
+
 # Flutter Build
-fb: 
-	flutter pub get && dart run build_runner build --delete-conflicting-outputs
+fb:
+	cd "$(WORKDIR)" && flutter pub get && $(BUILD_RUNNER)
 
 # Dart Build Runner
 db:
-	dart run build_runner build --delete-conflicting-outputs
+	cd "$(WORKDIR)" && $(BUILD_RUNNER)
 
 # Flutter Rebuild
 frb:
-	flutter clean && find * -type f \( -name '*.g.dart' -o -name '*.gr.dart' -o -name '*.freezed.dart' -o -name '*.config.dart' -o -name '*.auto_mappr.dart' -o -name '*.mocks.dart' \) -delete && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete && flutter pub get && $(BUILD_RUNNER)
 
 # Clean
 clean:
-	flutter clean && find * -type f \( -name '*.g.dart' -o -name '*.gr.dart' -o -name '*.freezed.dart' -o -name '*.config.dart' -o -name '*.auto_mappr.dart' -o -name '*.mocks.dart' \) -delete
+	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete
 
 # Plain Rebuild
 mr:
-	melos rebuild:all
+	cd "$(WORKDIR)" && melos rebuild:all

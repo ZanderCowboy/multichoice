@@ -1,12 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:core/core.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
-part 'product_bloc.freezed.dart';
 part 'product_event.dart';
 part 'product_state.dart';
+part 'product_bloc.g.dart';
 
 @Singleton()
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
@@ -79,10 +80,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         case OnLoadData():
           final tabs = await _tutorialRepository.loadTutorialData();
 
-          emit(state.copyWith(
-            tabs: tabs,
-            isLoading: false,
-          ));
+          emit(
+            state.copyWith(
+              tabs: tabs,
+              isLoading: false,
+            ),
+          );
           break;
         case OnClearData():
           emit(
@@ -93,7 +96,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           );
 
           break;
-        default:
       }
     });
   }
