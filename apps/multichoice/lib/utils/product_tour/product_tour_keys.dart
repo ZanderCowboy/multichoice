@@ -15,7 +15,9 @@ class ProductTourKeys {
   static final GlobalKey showItemActions = GlobalKey(
     debugLabel: 'showItemActions',
   );
-  static final GlobalKey showCollectionActions = GlobalKey();
+  static final GlobalKey showCollectionActions = GlobalKey(
+    debugLabel: 'showCollectionActions',
+  );
   static final GlobalKey showCollectionMenu = GlobalKey(
     debugLabel: 'showCollectionMenu',
   );
