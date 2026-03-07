@@ -11,7 +11,9 @@
 		"chat.tools.terminal.autoApprove": {
 			"dart": true,
 			"flutter": true,
-			"make": true
+			"make": true,
+			"git fetch": true,
+			"git add": true
 		},
 		"files.exclude": {
 			"**/.git": true,
