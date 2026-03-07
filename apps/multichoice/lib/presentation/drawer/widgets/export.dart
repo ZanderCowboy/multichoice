@@ -19,3 +19,4 @@ part 'data_section.dart';
 part 'drawer_header_section.dart';
 part 'more_section.dart';
 part 'light_dark_mode_button.dart';
+part 'horizontal_vertical_layout_button.dart';

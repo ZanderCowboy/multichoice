@@ -27,8 +27,8 @@ class LightDarkModeButton extends HookWidget {
       title: const Text('Light / Dark Mode'),
       value: isDark.value,
       activeThumbImage: AssetImage(Assets.images.sleepMode.path),
-      thumbColor: const WidgetStatePropertyAll(
-        Colors.white,
+      thumbColor: WidgetStatePropertyAll(
+        context.theme.appColors.primary,
       ),
       inactiveThumbColor: Colors.black,
       inactiveThumbImage: AssetImage(Assets.images.sun.path),
