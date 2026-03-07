@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class TutorialWelcomeModal extends StatelessWidget {
   const TutorialWelcomeModal({
@@ -14,7 +15,7 @@ class TutorialWelcomeModal extends StatelessWidget {
       canPop: false,
       child: Dialog(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: allPadding24,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -25,14 +26,14 @@ class TutorialWelcomeModal extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              gap16,
               const Text(
                 "Let's walk through the main features of Multichoice. "
                 "We'll show you how to create collections and add entries.",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 24),
+              gap24,
               ElevatedButton(
                 onPressed: onStart,
                 child: const Text('Start'),

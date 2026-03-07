@@ -1,15 +1,9 @@
-# 285 - Refactor - Remove freezed completely
+# 279 - Address Tutorial Issues
 
-- Removed Freezed package from application layer
-- Replaced Freezed unions with Dart 3 sealed classes for events
-- Replaced Freezed states with `@CopyWith()` from copy_with_extension
-- Integrated Equatable package for state equality comparison
-- Updated all 7 application blocs (changelog, details, feedback, firebase, home, product, search)
-- Cleaned up configuration files and documentation
-- Fixed child delete toggle in Details to derive visible children from an immutable source list.
-- Update to-top-arrow from 16 to 24
-- Update app_version text size from bodyMedium to bodySmall
-- Reduce startup jank by deferring Firebase Remote Config initialization until after `runApp`.
-- Prevent repeated welcome modal checks by moving post-frame scheduling from `build` to `initState`.
-- Prevent repeated product tour checks by scheduling initial post-frame work once in `initState`.
-- Remove redundant per-entry `BlocBuilder` in vertical tab list to reduce rebuild pressure.
+- Deal with issue when the user open the app the first time, and the user taps on the `Follow Tutorial` button, it does not start the tutorial.
+- Update `TutorialPage` with edit and search button
+- Update with UI constants
+- Update ProductTourKeys and ProductTourStep with new entry for `showEditAndSearch`
+- Ensure that native OS back-buttons does not dismiss product tour showcase
+- Add Exit Modal when the user attempts to exit while in Product Tour
+- Add Continue Tour Modal for when the user started with a tour, but closed the app.
