@@ -6,3 +6,4 @@
 - Update ProductTourKeys and ProductTourStep with new entry for `showEditAndSearch`
 - Ensure that native OS back-buttons does not dismiss product tour showcase
 - Add Exit Modal when the user attempts to exit while in Product Tour
+- Add Continue Tour Modal for when the user started with a tour, but closed the app.
