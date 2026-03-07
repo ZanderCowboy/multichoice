@@ -50,7 +50,7 @@ class _HorizontalTab extends HookWidget {
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: context.theme.appColors.primary,
+            color: context.theme.appColors.primary?.withValues(alpha: 0.8),
             borderRadius: borderCircular12,
           ),
           sliver: SliverMainAxisGroup(
@@ -63,43 +63,36 @@ class _HorizontalTab extends HookWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (isEditMode && dragIndex != null)
-                              Padding(
-                                padding: horizontal4,
-                                child: ReorderableDragStartListener(
-                                  index: dragIndex!,
-                                  child: Icon(
-                                    Icons.drag_handle,
-                                    size: 28,
-                                    color: context.theme.appColors.ternary,
-                                  ),
-                                ),
-                              )
-                            else if (isEditMode)
-                              Padding(
-                                padding: horizontal4,
-                                child: Icon(
-                                  Icons.drag_handle,
-                                  size: 28,
-                                  color: context.theme.appColors.ternary,
-                                ),
-                              ),
-                            Expanded(
-                              child: Padding(
-                                padding: left4,
-                                child: Text(
-                                  tab.title,
-                                  style: context.theme.appTextTheme.titleMedium
-                                      ?.copyWith(
-                                        fontSize: 16,
-                                      ),
-                                ),
+                        if (isEditMode && dragIndex != null)
+                          Center(
+                            child: ReorderableDragStartListener(
+                              index: dragIndex!,
+                              child: Icon(
+                                Icons.drag_handle,
+                                size: 28,
+                                color: context.theme.appColors.ternary,
                               ),
                             ),
-                          ],
+                          )
+                        else if (isEditMode)
+                          Center(
+                            child: Icon(
+                              Icons.drag_handle,
+                              size: 28,
+                              color: context.theme.appColors.ternary,
+                            ),
+                          ),
+                        Padding(
+                          padding: left4,
+                          child: Text(
+                            tab.title,
+                            style: context.theme.appTextTheme.titleMedium
+                                ?.copyWith(
+                                  fontSize: 16,
+                                ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                          ),
                         ),
                         if (tab.subtitle.isEmpty)
                           const Expanded(child: SizedBox.shrink())
@@ -111,6 +104,8 @@ class _HorizontalTab extends HookWidget {
                                 tab.subtitle,
                                 style: context.theme.appTextTheme.subtitleMedium
                                     ?.copyWith(fontSize: 12),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
                               ),
                             ),
                           ),

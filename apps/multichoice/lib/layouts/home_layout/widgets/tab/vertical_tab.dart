@@ -38,156 +38,167 @@ class _VerticalTab extends HookWidget {
       [entries.length],
     );
 
-    final listContent = isEditMode && entries.isNotEmpty
-        ? ReorderableListView.builder(
-            scrollController: scrollController,
-            buildDefaultDragHandles: false,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: entries.length,
-            onReorder: (oldIndex, newIndex) {
-              context.read<HomeBloc>().add(
-                HomeEvent.onReorderEntries(
-                  tab.id,
-                  oldIndex,
-                  newIndex,
-                ),
-              );
-            },
-            itemBuilder: (_, index) {
-              final entry = entries[index];
-              return EntryCard(
-                key: ValueKey(entry.id),
-                entry: entry,
-                onDoubleTap: () {},
-                isEditMode: isEditMode,
-                dragIndex: index,
-              );
-            },
-          )
-        : CustomScrollView(
-            controller: scrollController,
-            scrollBehavior: CustomScrollBehaviour(),
+    final listContent = CustomScrollView(
+      controller: scrollController,
+      scrollBehavior: CustomScrollBehaviour(),
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 8),
+        ),
+        DecoratedSliver(
+          decoration: BoxDecoration(
+            color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+            borderRadius: borderCircular12,
+          ),
+          sliver: SliverMainAxisGroup(
             slivers: [
-              SliverList.builder(
-                itemCount: entries.length,
-                itemBuilder: (_, index) {
-                  final entry = entries[index];
-
-                  return EntryCard(
-                    entry: entry,
-                    isEditMode: isEditMode,
-                    onDoubleTap: () async {
-                      context.read<HomeBloc>().add(
-                        HomeEvent.onUpdateEntry(entry.id),
-                      );
-                      await context.router.push(
-                        EditEntryPageRoute(ctx: context),
-                      );
-                    },
-                  );
-                },
-              ),
               SliverToBoxAdapter(
-                child: NewEntry(
-                  tabId: tab.id,
-                ),
-              ),
-            ],
-          );
-
-    return Card(
-      margin: allPadding4,
-      elevation: 0,
-      surfaceTintColor: Colors.transparent,
-      color: context.theme.appColors.primary,
-      child: Padding(
-        padding: allPadding2,
-        child: SizedBox(
-          width: UIConstants.vertTabWidth(context),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: left4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (isEditMode && dragIndex != null)
-                          Padding(
-                            padding: horizontal4,
-                            child: ReorderableDragStartListener(
-                              index: dragIndex!,
-                              child: Icon(
-                                Icons.drag_handle,
-                                size: 28,
-                                color: context.theme.appColors.ternary,
-                              ),
-                            ),
-                          )
-                        else if (isEditMode)
-                          Padding(
-                            padding: horizontal4,
+                child: Padding(
+                  padding: allPadding4,
+                  child: Row(
+                    children: [
+                      if (isEditMode && dragIndex != null)
+                        Center(
+                          child: ReorderableDragStartListener(
+                            index: dragIndex!,
                             child: Icon(
                               Icons.drag_handle,
                               size: 28,
                               color: context.theme.appColors.ternary,
                             ),
                           ),
-                        Expanded(
-                          child: Text(
-                            tab.title,
-                            style: context.theme.appTextTheme.titleMedium,
+                        )
+                      else if (isEditMode)
+                        Center(
+                          child: Icon(
+                            Icons.drag_handle,
+                            size: 28,
+                            color: context.theme.appColors.ternary,
                           ),
                         ),
-                        if (!isEditMode) MenuWidget(tab: tab),
-                      ],
-                    ),
-                    if (tab.subtitle.isNotEmpty)
-                      Text(
-                        tab.subtitle,
-                        style: context.theme.appTextTheme.subtitleMedium,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                      )
-                    else
-                      const SizedBox.shrink(),
-                  ],
-                ),
-              ),
-              Divider(
-                color: context.theme.appColors.secondaryLight,
-                thickness: 2,
-                indent: 4,
-                endIndent: 4,
-              ),
-              gap4,
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(child: listContent),
-                    if (canScrollToTop.value)
-                      Positioned(
-                        top: 5,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: _scrollToStartButton(
-                            context: context,
-                            scrollController: scrollController,
-                            label: 'Scroll to top',
-                            icon: Icons.keyboard_arrow_up,
-                          ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tab.title,
+                              style: context.theme.appTextTheme.titleMedium,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                            ),
+                            if (tab.subtitle.isNotEmpty)
+                              Text(
+                                tab.subtitle,
+                                style:
+                                    context.theme.appTextTheme.subtitleMedium,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                              ),
+                          ],
                         ),
                       ),
-                  ],
+                      if (!isEditMode) MenuWidget(tab: tab),
+                    ],
+                  ),
                 ),
+              ),
+              SliverToBoxAdapter(
+                child: Divider(
+                  color: context.theme.appColors.secondaryLight,
+                  thickness: 2,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+              ),
+
+              if (isEditMode && entries.isNotEmpty)
+                SliverReorderableList(
+                  itemCount: entries.length,
+                  onReorder: (oldIndex, newIndex) {
+                    context.read<HomeBloc>().add(
+                      HomeEvent.onReorderEntries(
+                        tab.id,
+                        oldIndex,
+                        newIndex,
+                      ),
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    final entry = entries[index];
+                    return EntryCard(
+                      key: ValueKey(entry.id),
+                      entry: entry,
+                      onDoubleTap: () {},
+                      isEditMode: isEditMode,
+                      dragIndex: index,
+                    );
+                  },
+                )
+              else ...[
+                SliverPadding(
+                  padding: horizontal2,
+                  sliver: SliverList.builder(
+                    itemCount: entries.length,
+                    itemBuilder: (_, index) {
+                      final entry = entries[index];
+
+                      return EntryCard(
+                        entry: entry,
+                        isEditMode: isEditMode,
+                        onDoubleTap: () async {
+                          context.read<HomeBloc>().add(
+                            HomeEvent.onUpdateEntry(entry.id),
+                          );
+                          await context.router.push(
+                            EditEntryPageRoute(ctx: context),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: NewEntry(
+                    tabId: tab.id,
+                  ),
+                ),
+              ],
+              // Keep the moving card at least viewport-high; once content grows,
+              // this contributes zero and the card extends naturally.
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: SizedBox.shrink(),
               ),
             ],
           ),
         ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 8),
+        ),
+      ],
+    );
+
+    return SizedBox(
+      width: UIConstants.vertTabWidth(context),
+      child: Stack(
+        children: [
+          Positioned.fill(child: listContent),
+          if (canScrollToTop.value)
+            Positioned(
+              top: 5,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: _scrollToStartButton(
+                  context: context,
+                  scrollController: scrollController,
+                  label: 'Scroll to top',
+                  icon: Icons.keyboard_arrow_up,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
