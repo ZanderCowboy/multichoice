@@ -11,32 +11,35 @@ class TutorialWelcomeModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: allPadding24,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Welcome to the Tutorial',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        child: Padding(
+          padding: allPadding24,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Welcome to the Tutorial',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            gap16,
-            const Text(
-              "Let's walk through the main features of Multichoice. "
-              "We'll show you how to create collections and add entries.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            gap24,
-            ElevatedButton(
-              onPressed: onStart,
-              child: const Text('Start'),
-            ),
-          ],
+              gap16,
+              const Text(
+                "Let's walk through the main features of Multichoice. "
+                "We'll show you how to create collections and add entries.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              gap24,
+              ElevatedButton(
+                onPressed: onStart,
+                child: const Text('Start'),
+              ),
+            ],
+          ),
         ),
       ),
     );
