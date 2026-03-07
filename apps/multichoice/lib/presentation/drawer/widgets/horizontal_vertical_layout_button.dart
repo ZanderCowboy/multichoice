@@ -20,7 +20,6 @@ class HorizontalVerticalLayoutButton extends HookWidget {
       ),
       activeThumbColor: context.theme.appColors.secondary,
       inactiveThumbColor: context.theme.appColors.secondary,
-      activeThumbImage: AssetImage(Assets.images.verticalMode.path),
       thumbIcon: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return const Icon(
