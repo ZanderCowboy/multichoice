@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/presentation/feedback/widgets/feedback_form.dart';
 
 @RoutePage()
@@ -40,50 +40,45 @@ class FeedbackPage extends StatelessWidget {
             );
           }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            title: BlocBuilder<FeedbackBloc, FeedbackState>(
-              builder: (context, _) {
-                return kDebugMode
-                    ? GestureDetector(
-                        onDoubleTap: () {
-                          context.read<FeedbackBloc>().add(
-                            FeedbackEvent.submit(
-                              FeedbackDTO(
-                                id: 'test',
-                                message: 'Test feedback',
-                                userEmail: 'test@test.com',
-                                rating: 5,
-                                deviceInfo: 'Test device',
-                                appVersion: '1.0.0',
-                                timestamp: DateTime.now(),
-                                category: 'Test',
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Send Feedback'),
-                      )
-                    : const Text('Send Feedback');
-              },
-            ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_outlined),
-              onPressed: () => context.router.pop(),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  context.router.popUntilRoot();
-                  scaffoldKey.currentState?.closeDrawer();
+        child: AnalyticsPageTracker(
+          page: AnalyticsPage.feedback,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Send Feedback'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                onPressed: () async {
+                  await coreSl<IAnalyticsService>().logEvent(
+                    const UiActionEventData(
+                      page: AnalyticsPage.feedback,
+                      button: AnalyticsButton.back,
+                      action: AnalyticsAction.tap,
+                    ),
+                  );
+                  context.router.pop();
                 },
               ),
-            ],
-          ),
-          body: const SafeArea(
-            child: SingleChildScrollView(
-              child: FeedbackForm(),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () async {
+                    await coreSl<IAnalyticsService>().logEvent(
+                      const UiActionEventData(
+                        page: AnalyticsPage.feedback,
+                        button: AnalyticsButton.home,
+                        action: AnalyticsAction.tap,
+                      ),
+                    );
+                    context.router.popUntilRoot();
+                    scaffoldKey.currentState?.closeDrawer();
+                  },
+                ),
+              ],
+            ),
+            body: const SafeArea(
+              child: SingleChildScrollView(
+                child: FeedbackForm(),
+              ),
             ),
           ),
         ),

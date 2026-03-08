@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/presentation/tutorial/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
@@ -28,6 +29,7 @@ class _TutorialPageState extends State<TutorialPage> {
   @override
   void initState() {
     super.initState();
+
     /// Dispatch init events once so that rebuilds do not re-trigger
     /// them and cause inconsistent tour state.
     _productBloc = coreSl<ProductBloc>()
@@ -48,59 +50,85 @@ class _TutorialPageState extends State<TutorialPage> {
           value: coreSl<HomeBloc>(),
         ),
       ],
-      child: ProductTour(
-        onTourComplete: ({required shouldRestoreData}) {
-          if (shouldRestoreData) {
-            widget.onCallback.call();
-            context.router.popUntilRoot();
-          }
-        },
-        builder: (_) {
-          return Scaffold(
-            key: scaffoldKeyTutorial,
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              leading: TourWidgetWrapper(
-                step: ProductTourStep.showSettings,
-                child: IconButton(
-                  onPressed: () {
-                    scaffoldKeyTutorial.currentState?.openDrawer();
-                  },
-                  tooltip: TooltipEnums.settings.tooltip,
-                  icon: const Icon(Icons.settings_outlined),
-                ),
-              ),
-              actions: [
-                TourWidgetWrapper(
-                  step: ProductTourStep.showEditAndSearch,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        tooltip: 'Edit order',
-                        icon: const Icon(Icons.edit_outlined),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        tooltip: TooltipEnums.search.tooltip,
-                        icon: const Icon(Icons.search_outlined),
-                      ),
-                    ],
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.tutorial,
+        child: ProductTour(
+          onTourComplete: ({required shouldRestoreData}) {
+            if (shouldRestoreData) {
+              widget.onCallback.call();
+              context.router.popUntilRoot();
+            }
+          },
+          builder: (_) {
+            return Scaffold(
+              key: scaffoldKeyTutorial,
+              appBar: AppBar(
+                title: const Text('Multichoice'),
+                leading: TourWidgetWrapper(
+                  step: ProductTourStep.showSettings,
+                  child: IconButton(
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.tutorial,
+                          button: AnalyticsButton.settings,
+                          action: AnalyticsAction.open,
+                        ),
+                      );
+                      scaffoldKeyTutorial.currentState?.openDrawer();
+                    },
+                    tooltip: TooltipEnums.settings.tooltip,
+                    icon: const Icon(Icons.settings_outlined),
                   ),
                 ),
-              ],
-            ),
-            drawer: const TutorialDrawer(),
-            body: const SafeArea(
-              child: Stack(
-                children: [
-                  TutorialBody(),
-                  TutorialBanner(),
+                actions: [
+                  TourWidgetWrapper(
+                    step: ProductTourStep.showEditAndSearch,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            await coreSl<IAnalyticsService>().logEvent(
+                              const UiActionEventData(
+                                page: AnalyticsPage.tutorial,
+                                button: AnalyticsButton.editOrder,
+                                action: AnalyticsAction.open,
+                              ),
+                            );
+                          },
+                          tooltip: 'Edit order',
+                          icon: const Icon(Icons.edit_outlined),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await coreSl<IAnalyticsService>().logEvent(
+                              const UiActionEventData(
+                                page: AnalyticsPage.tutorial,
+                                button: AnalyticsButton.search,
+                                action: AnalyticsAction.open,
+                              ),
+                            );
+                          },
+                          tooltip: TooltipEnums.search.tooltip,
+                          icon: const Icon(Icons.search_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          );
-        },
+              drawer: const TutorialDrawer(),
+              body: const SafeArea(
+                child: Stack(
+                  children: [
+                    TutorialBody(),
+                    TutorialBanner(),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

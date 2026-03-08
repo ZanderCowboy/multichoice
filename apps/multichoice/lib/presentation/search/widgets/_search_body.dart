@@ -32,6 +32,15 @@ class _SearchBody extends StatelessWidget {
               title: title,
               subtitle: subtitle,
               onTap: () async {
+                await coreSl<IAnalyticsService>().logEvent(
+                  SearchResultOpenedEventData(
+                    page: AnalyticsPage.search,
+                    resultType: result.isTab
+                        ? AnalyticsEntity.tab
+                        : AnalyticsEntity.entry,
+                  ),
+                );
+
                 await context.router.push(
                   DetailsPageRoute(
                     result: result,
