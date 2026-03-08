@@ -1,14 +1,10 @@
-// The context is used synchronously in this file, and the asynchronous usage is safe here.
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/engine/tooltip_enums.dart';
 import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
-import 'package:multichoice/presentation/shared/data_transfer/widgets/file_name_dialog.dart';
-import 'package:multichoice/presentation/shared/data_transfer/widgets/import_confirmation_dialog.dart';
-import 'package:ui_kit/ui_kit.dart';
+import 'package:multichoice/presentation/shared/data_transfer/utils/data_transfer_handlers.dart';
+import 'package:multichoice/presentation/shared/data_transfer/widgets/data_transfer_content.dart';
 
 @RoutePage()
 class DataTransferScreen extends StatefulWidget {
@@ -59,123 +55,22 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
         ],
       ),
       body: SafeArea(
-        child: Center(
-          child: FutureBuilder<bool>(
-            future: _isDBEmpty,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularLoader.small();
-              }
-
-              if (snapshot.hasError) {
-                return const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                    ),
-                    gap10,
-                    Text('Failed to load data transfer state.'),
-                  ],
-                );
-              }
-
-              if (!snapshot.hasData) {
-                return CircularLoader.small();
-              }
-              final isDBEmpty = snapshot.data ?? true;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        _handleImport(context, _dataTransferService),
-                    child: const Text('Import'),
-                  ),
-                  gap10,
-                  ElevatedButton(
-                    onPressed: isDBEmpty
-                        ? null
-                        : () => _handleExport(context, _dataTransferService),
-                    child: const Text('Export'),
-                  ),
-                ],
-              );
-            },
+        child: DataTransferContent(
+          isDBEmpty: _isDBEmpty,
+          onImportPressed: () => handleImport(
+            context: context,
+            service: _dataTransferService,
+            onImportSuccess: widget.onCallback,
+            showMessage: (message) => _showSnackBar(context, message),
+          ),
+          onExportPressed: () => handleExport(
+            context: context,
+            service: _dataTransferService,
+            showMessage: (message) => _showSnackBar(context, message),
           ),
         ),
       ),
     );
-  }
-
-  Future<void> _handleImport(
-    BuildContext context,
-    DataTransferService service,
-  ) async {
-    final filePath = await service.pickFile();
-    if (filePath == null) {
-      _showSnackBar(context, 'No file selected');
-      return;
-    }
-
-    final isDBEmpty = await service.isDBEmpty();
-    if (!isDBEmpty) {
-      final shouldAppend = await showDialog<bool>(
-        context: context,
-        builder: (context) => const ImportConfirmationDialog(),
-      );
-
-      if (shouldAppend == null) {
-        _showSnackBar(context, 'Aborted import operation');
-        return;
-      }
-
-      await _handleImportFeedback(context, service, filePath, shouldAppend);
-    } else {
-      await _handleImportFeedback(context, service, filePath, true);
-    }
-  }
-
-  Future<void> _handleImportFeedback(
-    BuildContext context,
-    DataTransferService service,
-    String filePath,
-    bool shouldAppend,
-  ) async {
-    final result = await service.importDataFromJSON(
-      filePath,
-      shouldAppend: shouldAppend,
-    );
-
-    if (result) {
-      widget.onCallback.call();
-      _showSnackBar(context, 'Data imported successfully');
-      context.router.popUntilRoot();
-      scaffoldKey.currentState?.closeDrawer();
-    } else {
-      _showSnackBar(context, 'Failed to import data');
-    }
-  }
-
-  Future<void> _handleExport(
-    BuildContext context,
-    DataTransferService service,
-  ) async {
-    final jsonString = await service.exportDataToJSON();
-    final fileName = await showDialog<String>(
-      context: context,
-      builder: (context) => const FileNameDialog(),
-    );
-
-    if (fileName == null) {
-      _showSnackBar(context, 'Export cancelled');
-      return;
-    }
-
-    final fileBytes = service.convertToBytes(jsonString);
-    await service.saveFile(fileName, fileBytes);
-    _showSnackBar(context, 'File saved successfully!');
   }
 
   void _showSnackBar(BuildContext context, String message) {
