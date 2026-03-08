@@ -31,9 +31,6 @@ class EntryCard extends StatelessWidget {
                     matchScore: 0,
                   ),
                   onBack: () {
-                    context.read<HomeBloc>().add(
-                      const HomeEvent.refresh(),
-                    );
                     context.router.pop();
                   },
                 ),

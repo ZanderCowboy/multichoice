@@ -61,10 +61,17 @@ class _DetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<DetailsBloc, DetailsState>(
       listenWhen: (previous, current) =>
-          previous.isDeleted != current.isDeleted && current.isDeleted,
+          (previous.isDeleted != current.isDeleted && current.isDeleted) ||
+          (previous.isLoading && !current.isLoading && !current.isEditingMode),
       listener: (context, state) {
+        // Refresh Home immediately when edits complete or delete succeeds
+        // This ensures data is fresh before user navigates back
         if (state.isDeleted) {
+          context.read<HomeBloc>().add(const HomeEvent.refresh());
           onBack();
+        } else if (!state.isLoading && !state.isEditingMode) {
+          // Edit/submit just completed
+          context.read<HomeBloc>().add(const HomeEvent.refresh());
         }
       },
       builder: (context, state) {

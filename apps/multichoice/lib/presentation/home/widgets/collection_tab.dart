@@ -22,7 +22,6 @@ class CollectionTab extends StatelessWidget {
                 DetailsPageRoute(
                   result: SearchResult(isTab: true, item: tab, matchScore: 0),
                   onBack: () {
-                    context.read<HomeBloc>().add(const HomeEvent.refresh());
                     context.router.pop();
                   },
                 ),
