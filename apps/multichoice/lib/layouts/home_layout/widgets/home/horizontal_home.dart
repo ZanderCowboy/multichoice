@@ -55,7 +55,7 @@ class _HorizontalHomeState extends State<_HorizontalHome> {
           // Use ReorderableListView for edit mode
           final theme = Theme.of(context);
           return Padding(
-            padding: horizontal8,
+            padding: top4,
             child: ReorderableListView.builder(
               scrollController: _scrollController,
               buildDefaultDragHandles: false,
