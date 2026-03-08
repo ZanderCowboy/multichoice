@@ -9,6 +9,7 @@ import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/_body_text.dart';
 part 'widgets/_search_bar.dart';
+part 'widgets/_search_body.dart';
 
 @RoutePage()
 class SearchPage extends StatelessWidget {
@@ -79,53 +80,10 @@ class _SearchView extends StatelessWidget {
               return const _BodyText();
             }
 
-            return ListView.builder(
-              padding: allPadding16,
-              itemCount: state.results.length,
-              itemBuilder: (_, index) {
-                final result = state.results[index];
-                final isTab = result.isTab;
-                final item = result.item;
-                final title = isTab
-                    ? (item as TabsDTO).title
-                    : (item as EntryDTO).title;
-                final subtitle = isTab
-                    ? (item as TabsDTO).subtitle
-                    : (item as EntryDTO).subtitle;
-                return SearchResultCard(
-                  title: title,
-                  subtitle: subtitle,
-                  onTap: () async {
-                    await context.router.push(
-                      DetailsPageRoute(
-                        result: result,
-                        onBack: () {
-                          context.read<SearchBloc>().add(
-                            const SearchEvent.refresh(),
-                          );
-                          context.router.pop();
-                        },
-                      ),
-                    );
-                  },
-                  onEdit: () async {
-                    await onEdit(result);
-                    if (context.mounted) {
-                      context.read<SearchBloc>().add(
-                        SearchEvent.search(state.query),
-                      );
-                    }
-                  },
-                  onDelete: () async {
-                    await onDelete(result);
-                    if (context.mounted) {
-                      context.read<SearchBloc>().add(
-                        const SearchEvent.refresh(),
-                      );
-                    }
-                  },
-                );
-              },
+            return _SearchBody(
+              onEdit: onEdit,
+              onDelete: onDelete,
+              onBack: onBack,
             );
           },
         ),
