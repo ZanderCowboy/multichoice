@@ -4,8 +4,9 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/bootstrap/bootstrap.dart';
+import 'package:multichoice/app/bootstrap/non_critical_services.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/bootstrap.dart';
 import 'package:multichoice/crashlytics_setup.dart';
 import 'package:window_size/window_size.dart';
 
