@@ -15,3 +15,5 @@
   - `CollectionTab`, `EntryCard`, `NewEntry`, `NewTab`
   - `_DetailsSection`, `_SearchBar`, `LightDarkModeButton`
   - `HomeLayout`, `DataTransferScreen`, `HorizontalVerticalLayoutButton`
+- Remove unused BlocBuilder from EntryCard
+- Improve UI responsiveness by removing unnecessary EntryCard rebuilds caused by watching AppLayout
