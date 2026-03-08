@@ -3,7 +3,6 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/engine/tooltip_enums.dart';
 import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
@@ -12,7 +11,7 @@ import 'package:multichoice/presentation/shared/data_transfer/widgets/import_con
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
-class DataTransferScreen extends HookWidget {
+class DataTransferScreen extends StatefulWidget {
   const DataTransferScreen({
     required this.onCallback,
     super.key,
@@ -20,14 +19,26 @@ class DataTransferScreen extends HookWidget {
 
   final void Function() onCallback;
 
+  @override
+  State<DataTransferScreen> createState() => _DataTransferScreenState();
+}
+
+class _DataTransferScreenState extends State<DataTransferScreen> {
+  late final DataTransferService _dataTransferService;
+  late final Future<bool> _isDBEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataTransferService = DataTransferService();
+    _isDBEmpty = _dataTransferService.isDBEmpty();
+  }
+
   // TODO(@ZanderCowboy): When the user Appends New Data, the data should
   // be appended to the end of the existing data, NOT the beginning.
 
   @override
   Widget build(BuildContext context) {
-    final dataTransferService = useMemoized(DataTransferService.new);
-    final isDBEmpty = useFuture(dataTransferService.isDBEmpty());
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Data Transfer'),
@@ -49,25 +60,50 @@ class DataTransferScreen extends HookWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: !isDBEmpty.hasData
-              ? CircularLoader.small()
-              : Column(
+          child: FutureBuilder<bool>(
+            future: _isDBEmpty,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularLoader.small();
+              }
+
+              if (snapshot.hasError) {
+                return const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          _handleImport(context, dataTransferService),
-                      child: const Text('Import'),
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
                     ),
                     gap10,
-                    ElevatedButton(
-                      onPressed: isDBEmpty.data ?? true
-                          ? null
-                          : () => _handleExport(context, dataTransferService),
-                      child: const Text('Export'),
-                    ),
+                    Text('Failed to load data transfer state.'),
                   ],
-                ),
+                );
+              }
+
+              if (!snapshot.hasData) {
+                return CircularLoader.small();
+              }
+              final isDBEmpty = snapshot.data ?? true;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        _handleImport(context, _dataTransferService),
+                    child: const Text('Import'),
+                  ),
+                  gap10,
+                  ElevatedButton(
+                    onPressed: isDBEmpty
+                        ? null
+                        : () => _handleExport(context, _dataTransferService),
+                    child: const Text('Export'),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -113,7 +149,7 @@ class DataTransferScreen extends HookWidget {
     );
 
     if (result) {
-      onCallback.call();
+      widget.onCallback.call();
       _showSnackBar(context, 'Data imported successfully');
       context.router.popUntilRoot();
       scaffoldKey.currentState?.closeDrawer();

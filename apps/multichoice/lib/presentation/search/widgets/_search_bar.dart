@@ -1,16 +1,33 @@
 part of '../search_page.dart';
 
-class _SearchBar extends HookWidget {
+class _SearchBar extends StatefulWidget {
   const _SearchBar();
 
   @override
-  Widget build(BuildContext context) {
-    final controller = useTextEditingController();
+  State<_SearchBar> createState() => _SearchBarState();
+}
 
+class _SearchBarState extends State<_SearchBar> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 36,
       child: TextField(
-        controller: controller,
+        controller: _controller,
         autofocus: true,
         cursorColor: Colors.black87,
         cursorHeight: 18,
@@ -41,7 +58,7 @@ class _SearchBar extends HookWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              controller.clear();
+              _controller.clear();
               context.read<SearchBloc>().add(const SearchEvent.clear());
             },
           ),

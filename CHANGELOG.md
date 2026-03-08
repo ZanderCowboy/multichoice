@@ -1,21 +1,19 @@
-# 281 - Feat: Rework Collection Cards and UI Improvements
+# 286 - Refactor = Remove HookWidgets
 
-- Refactored both horizontal and vertical tab layouts to use `DecoratedSliver` and `SliverMainAxisGroup`
-- Collection cards now extend naturally with content using `SliverFillRemaining`
-- Simplified vertical home layout by removing unnecessary `SingleChildScrollView` wrapper
-- Improved card scrolling behavior and simplified widget hierarchy
-- Unified vertical and horizontal tab architecture for consistency
-- Added custom `SwitchTheme` styling for both light and dark modes
-- Applied 20% transparency to collection card backgrounds
-- Updated shadow colors to use theme colors instead of hardcoded values
-- Centered drag handles in edit mode for better visual alignment
-- Added text overflow handling (ellipsis, maxLines) to tab titles and subtitles
-- Created dedicated `HorizontalVerticalLayoutButton` widget with custom icons
-- Made text selectable in details page for better UX
-- Simplified text field decorations in details and forms
-- Made form fields multiline (maxLines: 3) with aligned labels
-- Reduced app version font size to 9px
-- Updated search icon color to use theme ternary color
-- Added spacing constants: `vertical4`, `vertical6`, `horizontal2`, `horizontal6`
-- Simplified tab width calculation by removing mobile/desktop distinction
-- Added "git fetch" to workspace auto-approve commands
+- Refactor: Remove all HookWidgets and replace with Flutter's native StatefulWidget
+- Remove flutter_hooks dependency from application code
+- Convert custom hooks to StatefulWidget lifecycle methods
+  - Replace useScrollController() with ScrollController in StatefulWidget
+  - Replace useTextEditingController() with TextEditingController in StatefulWidget
+  - Replace useState() with class fields and setState()
+  - Replace useEffect() with initState(), didUpdateWidget(), and dispose()
+  - Replace useMemoized() with late final initialization
+  - Replace useFuture() with FutureBuilder
+  - Replace useScrollToStartIndicator custom hook with native scroll listeners
+- Updated widgets:
+  - `_VerticalHome`, `_HorizontalHome`, `_VerticalTab`, `_HorizontalTab`
+  - `CollectionTab`, `EntryCard`, `NewEntry`, `NewTab`
+  - `_DetailsSection`, `_SearchBar`, `LightDarkModeButton`
+  - `HomeLayout`, `DataTransferScreen`, `HorizontalVerticalLayoutButton`
+- Remove unused BlocBuilder from EntryCard
+- Improve UI responsiveness by removing unnecessary EntryCard rebuilds caused by watching AppLayout
