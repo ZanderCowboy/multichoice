@@ -74,7 +74,7 @@ class EntryCard extends StatelessWidget {
                               ? ReorderableDragStartListener(
                                   index: dragIndex!,
                                   child: Icon(
-                                    Icons.drag_handle,
+                                    Icons.unfold_more,
                                     size: 24,
                                     color: context.theme.appColors.ternary,
                                   ),
@@ -82,7 +82,7 @@ class EntryCard extends StatelessWidget {
                               : ReorderableGridDelayedDragStartListener(
                                   index: dragIndex!,
                                   child: Icon(
-                                    Icons.drag_handle,
+                                    Icons.open_with,
                                     size: 24,
                                     color: context.theme.appColors.ternary,
                                   ),
@@ -92,7 +92,9 @@ class EntryCard extends StatelessWidget {
                         Padding(
                           padding: horizontal4,
                           child: Icon(
-                            Icons.drag_handle,
+                            isLayoutVertical
+                                ? Icons.unfold_more
+                                : Icons.open_with,
                             size: 24,
                             color: context.theme.appColors.ternary,
                           ),

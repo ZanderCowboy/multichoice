@@ -10,3 +10,4 @@
   - Add `reorderable_grid` package
   - Update `HomeBloc` and `HomeEvent`
 - Conditionally render X button on search bar based on query
+- Update the icons used in Edit Mode

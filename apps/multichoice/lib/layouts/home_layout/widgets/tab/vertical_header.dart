@@ -23,19 +23,25 @@ class VerticalHeader extends StatelessWidget {
               Center(
                 child: ReorderableDragStartListener(
                   index: dragIndex!,
-                  child: Icon(
-                    Icons.drag_handle,
-                    size: 28,
-                    color: context.theme.appColors.ternary,
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: Icon(
+                      Icons.unfold_more,
+                      size: 28,
+                      color: context.theme.appColors.ternary,
+                    ),
                   ),
                 ),
               )
             else if (isEditMode)
               Center(
-                child: Icon(
-                  Icons.drag_handle,
-                  size: 28,
-                  color: context.theme.appColors.ternary,
+                child: RotatedBox(
+                  quarterTurns: 1,
+                  child: Icon(
+                    Icons.unfold_more,
+                    size: 28,
+                    color: context.theme.appColors.ternary,
+                  ),
                 ),
               ),
             Expanded(

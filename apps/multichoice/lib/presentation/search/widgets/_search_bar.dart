@@ -64,21 +64,27 @@ class _SearchBarState extends State<_SearchBar> {
             borderRadius: borderCircular16,
             borderSide: BorderSide.none,
           ),
-          suffixIcon: _hasQuery
-              ? IconButton(
-                  icon: const Icon(
-                    Icons.clear,
-                    color: Colors.black54,
-                    size: 20,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    _controller.clear();
-                    context.read<SearchBloc>().add(const SearchEvent.clear());
-                  },
-                )
-              : null,
+          suffixIconConstraints: const BoxConstraints(minWidth: 32),
+          suffixIcon: IgnorePointer(
+            ignoring: !_hasQuery,
+            child: AnimatedOpacity(
+              opacity: _hasQuery ? 1 : 0,
+              duration: const Duration(milliseconds: 120),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.clear,
+                  color: Colors.black54,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  _controller.clear();
+                  context.read<SearchBloc>().add(const SearchEvent.clear());
+                },
+              ),
+            ),
+          ),
         ),
         onChanged: (query) {
           context.read<SearchBloc>().add(SearchEvent.search(query));

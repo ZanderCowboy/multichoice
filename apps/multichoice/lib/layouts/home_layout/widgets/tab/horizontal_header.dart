@@ -27,7 +27,7 @@ class HorizontalHeader extends StatelessWidget {
                   child: ReorderableDragStartListener(
                     index: dragIndex!,
                     child: Icon(
-                      Icons.drag_handle,
+                      Icons.unfold_more,
                       size: 28,
                       color: context.theme.appColors.ternary,
                     ),
@@ -36,7 +36,7 @@ class HorizontalHeader extends StatelessWidget {
               else if (isEditMode)
                 Center(
                   child: Icon(
-                    Icons.drag_handle,
+                    Icons.unfold_more,
                     size: 28,
                     color: context.theme.appColors.ternary,
                   ),
