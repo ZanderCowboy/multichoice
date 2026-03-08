@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_refresh_changelog.dart';
@@ -21,10 +22,13 @@ class ChangelogPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => coreSl<ChangelogBloc>()..add(const ChangelogEvent.fetch()),
-      child: Builder(
-        builder: (blocContext) => Scaffold(
-          appBar: _AppBar(outerContext: blocContext),
-          body: const _ChangelogView(),
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.changelog,
+        child: Builder(
+          builder: (blocContext) => Scaffold(
+            appBar: _AppBar(outerContext: blocContext),
+            body: const _ChangelogView(),
+          ),
         ),
       ),
     );

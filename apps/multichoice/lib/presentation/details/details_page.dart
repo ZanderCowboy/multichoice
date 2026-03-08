@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -36,13 +37,16 @@ class DetailsPage extends StatelessWidget {
         ..add(
           DetailsEvent.onPopulate(result),
         ),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: _AppBar(
-            onBack: onBack,
-          ),
-          body: _DetailsView(
-            onBack: onBack,
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.details,
+        child: SafeArea(
+          child: Scaffold(
+            appBar: _AppBar(
+              onBack: onBack,
+            ),
+            body: _DetailsView(
+              onBack: onBack,
+            ),
           ),
         ),
       ),
