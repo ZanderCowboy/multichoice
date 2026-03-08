@@ -1,6 +1,6 @@
 part of 'export.dart';
 
-class HorizontalVerticalLayoutButton extends HookWidget {
+class HorizontalVerticalLayoutButton extends StatelessWidget {
   const HorizontalVerticalLayoutButton({super.key});
 
   @override

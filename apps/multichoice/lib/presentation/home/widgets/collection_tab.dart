@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class CollectionTab extends HookWidget {
+class CollectionTab extends StatelessWidget {
   const CollectionTab({
     required this.tab,
     this.isEditMode = false,

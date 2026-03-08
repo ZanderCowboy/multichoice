@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class EntryCard extends HookWidget {
+class EntryCard extends StatelessWidget {
   const EntryCard({
     required this.entry,
     required this.onDoubleTap,
