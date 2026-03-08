@@ -4,6 +4,7 @@ class EntryCard extends StatelessWidget {
   const EntryCard({
     required this.entry,
     required this.onDoubleTap,
+    required this.isLayoutVertical,
     this.isEditMode = false,
     this.dragIndex,
     super.key,
@@ -11,19 +12,12 @@ class EntryCard extends StatelessWidget {
 
   final EntryDTO entry;
   final VoidCallback onDoubleTap;
+  final bool isLayoutVertical;
   final bool isEditMode;
   final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
-    final appLayout = context.watch<AppLayout>();
-
-    if (!appLayout.isInitialized) {
-      return CircularLoader.small();
-    }
-
-    final isLayoutVertical = appLayout.isLayoutVertical;
-
     return GestureDetector(
       onTap: isEditMode
           ? null

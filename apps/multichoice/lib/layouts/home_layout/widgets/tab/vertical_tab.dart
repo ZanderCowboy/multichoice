@@ -87,6 +87,7 @@ class _VerticalTabState extends State<_VerticalTab> {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
     final entries = widget.tab.entries;
 
     final listContent = CustomScrollView(
@@ -181,6 +182,7 @@ class _VerticalTabState extends State<_VerticalTab> {
                       key: ValueKey(entry.id),
                       entry: entry,
                       onDoubleTap: () {},
+                      isLayoutVertical: appLayout.isLayoutVertical,
                       isEditMode: widget.isEditMode,
                       dragIndex: index,
                     );
@@ -196,6 +198,7 @@ class _VerticalTabState extends State<_VerticalTab> {
 
                       return EntryCard(
                         entry: entry,
+                        isLayoutVertical: appLayout.isLayoutVertical,
                         isEditMode: widget.isEditMode,
                         onDoubleTap: () async {
                           context.read<HomeBloc>().add(

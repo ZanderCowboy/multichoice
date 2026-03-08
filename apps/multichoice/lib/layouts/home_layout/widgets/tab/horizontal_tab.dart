@@ -87,6 +87,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
     final entries = widget.tab.entries;
 
     final horizontalContent = CustomScrollView(
@@ -198,6 +199,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
                       child: EntryCard(
                         entry: entry,
                         onDoubleTap: () {},
+                        isLayoutVertical: appLayout.isLayoutVertical,
                         isEditMode: widget.isEditMode,
                         dragIndex: index,
                       ),
@@ -224,6 +226,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
 
                       return EntryCard(
                         entry: entry,
+                        isLayoutVertical: appLayout.isLayoutVertical,
                         isEditMode: widget.isEditMode,
                         onDoubleTap: () async {
                           context.read<HomeBloc>().add(
