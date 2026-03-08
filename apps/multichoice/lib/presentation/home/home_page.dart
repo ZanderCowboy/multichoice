@@ -4,6 +4,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,7 +90,10 @@ class _HomePage extends StatelessWidget {
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return IconButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    if (!state.isEditMode) {
+                      await _triggerEditModeHaptic();
+                    }
                     context.read<HomeBloc>().add(
                       const HomeEvent.onToggleEditMode(),
                     );
@@ -169,5 +173,29 @@ class _HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _triggerEditModeHaptic() async {
+  // Haptics are only available on mobile platforms with supported hardware.
+  if (kIsWeb) return;
+
+  final platform = defaultTargetPlatform;
+  if (platform != TargetPlatform.android && platform != TargetPlatform.iOS) {
+    return;
+  }
+
+  try {
+    if (platform == TargetPlatform.android) {
+      // Android impact haptics can be too subtle; long-press vibration is
+      // stronger and more consistently perceptible across devices.
+      await HapticFeedback.vibrate();
+    } else {
+      await HapticFeedback.mediumImpact();
+    }
+  } on PlatformException {
+    // Ignore unsupported devices or disabled system haptics.
+  } on MissingPluginException {
+    // Ignore missing platform implementations (for example desktop targets).
   }
 }

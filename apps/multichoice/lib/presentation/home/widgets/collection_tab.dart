@@ -31,7 +31,7 @@ class CollectionTab extends StatelessWidget {
       onLongPress: () async {
         final bloc = context.read<HomeBloc>();
         if (!bloc.state.isEditMode) {
-          await HapticFeedback.mediumImpact();
+          await _triggerEditModeHaptic();
           bloc.add(const HomeEvent.onToggleEditMode());
         }
       },
