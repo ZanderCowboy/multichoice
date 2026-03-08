@@ -1,24 +1,39 @@
 part of '../details_page.dart';
 
-class _DetailsSection extends HookWidget {
+class _DetailsSection extends StatefulWidget {
   const _DetailsSection();
 
   @override
+  State<_DetailsSection> createState() => _DetailsSectionState();
+}
+
+class _DetailsSectionState extends State<_DetailsSection> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _subtitleController;
+  late final StreamSubscription<DetailsState> _blocSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _subtitleController = TextEditingController();
+
+    _blocSubscription = context.read<DetailsBloc>().stream.listen((state) {
+      _titleController.text = state.title;
+      _subtitleController.text = state.subtitle;
+    });
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _blocSubscription.cancel();
+    _titleController.dispose();
+    _subtitleController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final titleController = useTextEditingController();
-    final subtitleController = useTextEditingController();
-
-    useEffect(
-      () {
-        final subscription = context.read<DetailsBloc>().stream.listen((state) {
-          titleController.text = state.title;
-          subtitleController.text = state.subtitle;
-        });
-        return subscription.cancel;
-      },
-      [context.read<DetailsBloc>()],
-    );
-
     return BlocBuilder<DetailsBloc, DetailsState>(
       builder: (context, state) {
         if (state.isLoading) {
@@ -41,7 +56,7 @@ class _DetailsSection extends HookWidget {
                   title: 'Title',
                   subtitle: state.title,
                   isEditing: isEditing,
-                  controller: titleController,
+                  controller: _titleController,
                   onChanged: (value) {
                     context.read<DetailsBloc>().add(
                       DetailsEvent.onChangeTitle(value),
@@ -54,7 +69,7 @@ class _DetailsSection extends HookWidget {
                   title: 'Subtitle',
                   subtitle: state.subtitle.isEmpty ? 'None' : state.subtitle,
                   isEditing: isEditing,
-                  controller: subtitleController,
+                  controller: _subtitleController,
                   onChanged: (value) {
                     context.read<DetailsBloc>().add(
                       DetailsEvent.onChangeSubtitle(value),
