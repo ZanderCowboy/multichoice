@@ -19,14 +19,16 @@ class _DetailsSectionState extends State<_DetailsSection> {
     _subtitleController = TextEditingController();
 
     _blocSubscription = context.read<DetailsBloc>().stream.listen((state) {
-      _titleController.text = state.title;
-      _subtitleController.text = state.subtitle;
+      if (mounted) {
+        _titleController.text = state.title;
+        _subtitleController.text = state.subtitle;
+      }
     });
   }
 
   @override
-  Future<void> dispose() async {
-    await _blocSubscription.cancel();
+  void dispose() {
+    unawaited(_blocSubscription.cancel());
     _titleController.dispose();
     _subtitleController.dispose();
     super.dispose();

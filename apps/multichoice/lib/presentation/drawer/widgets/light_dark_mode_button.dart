@@ -1,31 +1,37 @@
 part of 'export.dart';
 
-class LightDarkModeButton extends HookWidget {
+class LightDarkModeButton extends StatefulWidget {
   const LightDarkModeButton({super.key});
 
   @override
+  State<LightDarkModeButton> createState() => _LightDarkModeButtonState();
+}
+
+class _LightDarkModeButtonState extends State<LightDarkModeButton> {
+  final IAppStorageService _appStorageService = coreSl<IAppStorageService>();
+  bool _isDark = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadDarkModePreference());
+  }
+
+  Future<void> _loadDarkModePreference() async {
+    final isDarkMode = await _appStorageService.isDarkMode;
+    if (mounted) {
+      setState(() {
+        _isDark = isDarkMode;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final appStorageService = coreSl<IAppStorageService>();
-
-    final isDark = useState<bool>(false);
-
-    useEffect(
-      () {
-        Future<void> loadDarkModePreference() async {
-          final isDarkMode = await appStorageService.isDarkMode;
-          isDark.value = isDarkMode;
-        }
-
-        unawaited(loadDarkModePreference());
-        return null;
-      },
-      [],
-    );
-
     return SwitchListTile(
       key: context.keys.lightDarkModeSwitch,
       title: const Text('Light / Dark Mode'),
-      value: isDark.value,
+      value: _isDark,
       activeThumbImage: AssetImage(Assets.images.sleepMode.path),
       thumbColor: WidgetStatePropertyAll(
         context.theme.appColors.primary,
@@ -33,11 +39,13 @@ class LightDarkModeButton extends HookWidget {
       inactiveThumbColor: Colors.black,
       inactiveThumbImage: AssetImage(Assets.images.sun.path),
       onChanged: (value) async {
-        isDark.value = !isDark.value;
-        context.read<AppTheme>().themeMode = isDark.value
+        setState(() {
+          _isDark = !_isDark;
+        });
+        context.read<AppTheme>().themeMode = _isDark
             ? ThemeMode.dark
             : ThemeMode.light;
-        await appStorageService.setIsDarkMode(isDark.value);
+        await _appStorageService.setIsDarkMode(_isDark);
       },
     );
   }
