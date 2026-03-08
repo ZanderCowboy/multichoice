@@ -86,7 +86,6 @@ class _SearchView extends StatelessWidget {
               return _SearchBody(
                 onEdit: onEdit,
                 onDelete: onDelete,
-                onBack: onBack,
               );
             },
           ),

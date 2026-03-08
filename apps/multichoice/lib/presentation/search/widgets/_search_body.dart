@@ -6,12 +6,10 @@ class _SearchBody extends StatelessWidget {
   const _SearchBody({
     required this.onEdit,
     required this.onDelete,
-    required this.onBack,
   });
 
   final Future<void> Function(SearchResult? result) onEdit;
   final Future<void> Function(SearchResult? result) onDelete;
-  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {

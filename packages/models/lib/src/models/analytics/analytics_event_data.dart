@@ -23,7 +23,11 @@ abstract class AnalyticsEventData {
   }
 
   Object _normalizeValue(Object value) {
-    if (value is String || value is num || value is bool) {
+    if (value is bool) {
+      return value ? 'true' : 'false';
+    }
+
+    if (value is String || value is num) {
       return value;
     }
 
