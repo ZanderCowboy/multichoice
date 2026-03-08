@@ -13,7 +13,6 @@ import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -27,29 +26,6 @@ part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 part 'widgets/search_button.dart';
-
-@RoutePage()
-class HomePageWrapper extends StatelessWidget {
-  const HomePageWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => coreSl<ProductBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => coreSl<SearchBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => coreSl<DetailsBloc>(),
-        ),
-      ],
-      child: const HomePage(),
-    );
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
