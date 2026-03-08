@@ -9,3 +9,4 @@
 - Implement Grid layout for reordering in Horizontal Layout
   - Add `reorderable_grid` package
   - Update `HomeBloc` and `HomeEvent`
+- Conditionally render X button on search bar based on query
