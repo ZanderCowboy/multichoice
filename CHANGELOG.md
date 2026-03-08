@@ -1,14 +1,23 @@
-# 289 - BUG - Multiple UI/UX Issues
+# 180 - FEATURE - Firebase Analytics
 
-- Address Haptic Feedback issue by changing to `HapticFeedback.vibrate();` instead of `HapticFeedback.mediumImpact();`
-- Fix PopScope closing app instead of closing drawer, exits edit mode
-  - Change HomePage from Stateless to Stateful for drawer close
-  - Refactor home_page.dart into smaller files
-- Fix data not refreshing when navigating back to HomePage
-- Fix white flash when transitioning between pages
-- Implement Grid layout for reordering in Horizontal Layout
-  - Add `reorderable_grid` package
-  - Update `HomeBloc` and `HomeEvent`
-- Conditionally render X button on search bar based on query
-- Update the icons used in Edit Mode
-- In edit mode, disable drawer and search icon
+- Implement Firebase Analytics integration
+  - Configure native Android support with Google Services plugin
+  - Create analytics service layer with `IAnalyticsService` interface
+  - Add comprehensive analytics event system (CRUD, Search, Tutorial, Feedback, UI Actions)
+- Add screen view tracking with `AnalyticsPageTracker` widget
+  - Track all major pages (Home, Search, Details, Edit, Feedback, Tutorial, Changelog, Data Transfer)
+  - Include previous page context for navigation flow
+- Track user interactions across the app
+  - CRUD operations (create, update, delete, reorder) for tabs and entries
+  - Search queries with result counts
+  - Tutorial progress and feedback submissions
+  - Button clicks and data transfer operations
+- Refactor bootstrap structure
+  - Split bootstrap into modular files (bootstrap, non_critical_services, simple_bloc_observer)
+  - Initialize Firebase before core dependencies
+  - Set up analytics user ID and properties (app version, platform, existing user)
+- Refactor pages into smaller, reusable widgets
+  - Split changelog, data transfer, and search pages
+  - Extract HomePageWrapper to separate file
+- Update all BLoC tests with analytics service mocks
+- Add comprehensive analytics service test coverage
