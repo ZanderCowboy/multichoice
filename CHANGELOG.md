@@ -1,19 +1,14 @@
-# 286 - Refactor = Remove HookWidgets
+# 289 - BUG - Multiple UI/UX Issues
 
-- Refactor: Remove all HookWidgets and replace with Flutter's native StatefulWidget
-- Remove flutter_hooks dependency from application code
-- Convert custom hooks to StatefulWidget lifecycle methods
-  - Replace useScrollController() with ScrollController in StatefulWidget
-  - Replace useTextEditingController() with TextEditingController in StatefulWidget
-  - Replace useState() with class fields and setState()
-  - Replace useEffect() with initState(), didUpdateWidget(), and dispose()
-  - Replace useMemoized() with late final initialization
-  - Replace useFuture() with FutureBuilder
-  - Replace useScrollToStartIndicator custom hook with native scroll listeners
-- Updated widgets:
-  - `_VerticalHome`, `_HorizontalHome`, `_VerticalTab`, `_HorizontalTab`
-  - `CollectionTab`, `EntryCard`, `NewEntry`, `NewTab`
-  - `_DetailsSection`, `_SearchBar`, `LightDarkModeButton`
-  - `HomeLayout`, `DataTransferScreen`, `HorizontalVerticalLayoutButton`
-- Remove unused BlocBuilder from EntryCard
-- Improve UI responsiveness by removing unnecessary EntryCard rebuilds caused by watching AppLayout
+- Address Haptic Feedback issue by changing to `HapticFeedback.vibrate();` instead of `HapticFeedback.mediumImpact();`
+- Fix PopScope closing app instead of closing drawer, exits edit mode
+  - Change HomePage from Stateless to Stateful for drawer close
+  - Refactor home_page.dart into smaller files
+- Fix data not refreshing when navigating back to HomePage
+- Fix white flash when transitioning between pages
+- Implement Grid layout for reordering in Horizontal Layout
+  - Add `reorderable_grid` package
+  - Update `HomeBloc` and `HomeEvent`
+- Conditionally render X button on search bar based on query
+- Update the icons used in Edit Mode
+- In edit mode, disable drawer and search icon

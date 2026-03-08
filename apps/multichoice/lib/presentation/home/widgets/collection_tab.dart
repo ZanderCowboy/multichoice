@@ -22,7 +22,6 @@ class CollectionTab extends StatelessWidget {
                 DetailsPageRoute(
                   result: SearchResult(isTab: true, item: tab, matchScore: 0),
                   onBack: () {
-                    context.read<HomeBloc>().add(const HomeEvent.refresh());
                     context.router.pop();
                   },
                 ),
@@ -31,7 +30,7 @@ class CollectionTab extends StatelessWidget {
       onLongPress: () async {
         final bloc = context.read<HomeBloc>();
         if (!bloc.state.isEditMode) {
-          await HapticFeedback.mediumImpact();
+          await _triggerEditModeHaptic();
           bloc.add(const HomeEvent.onToggleEditMode());
         }
       },

@@ -19,6 +19,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
   late final ScrollController _scrollController;
   int _previousEntriesLength = 0;
   bool _canScrollToStart = false;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
     _scrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _isDisposed) return;
       _refreshScrollIndicators();
     });
   }
@@ -39,13 +41,12 @@ class _HorizontalTabState extends State<_HorizontalTab> {
     final entries = widget.tab.entries;
     if (entries.length > _previousEntriesLength) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (_scrollController.hasClients) {
-          await _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
+        if (!mounted || _isDisposed || !_scrollController.hasClients) return;
+        await _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       });
     }
     _previousEntriesLength = entries.length;
@@ -53,6 +54,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
     if (entries.length != oldWidget.tab.entries.length ||
         widget.isEditMode != oldWidget.isEditMode) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _isDisposed) return;
         _refreshScrollIndicators();
       });
     }
@@ -60,6 +62,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
 
   @override
   void dispose() {
+    _isDisposed = true;
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
@@ -71,7 +74,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
   }
 
   void _refreshScrollIndicators() {
-    if (!_scrollController.hasClients) return;
+    if (!mounted || _isDisposed || !_scrollController.hasClients) return;
 
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
     final currentOffset = _scrollController.offset;
@@ -106,69 +109,10 @@ class _HorizontalTabState extends State<_HorizontalTab> {
           ),
           sliver: SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: allPadding4,
-                  child: SizedBox(
-                    width: UIConstants.horiTabHeaderWidth(context),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.isEditMode && widget.dragIndex != null)
-                          Center(
-                            child: ReorderableDragStartListener(
-                              index: widget.dragIndex!,
-                              child: Icon(
-                                Icons.drag_handle,
-                                size: 28,
-                                color: context.theme.appColors.ternary,
-                              ),
-                            ),
-                          )
-                        else if (widget.isEditMode)
-                          Center(
-                            child: Icon(
-                              Icons.drag_handle,
-                              size: 28,
-                              color: context.theme.appColors.ternary,
-                            ),
-                          ),
-                        Padding(
-                          padding: left4,
-                          child: Text(
-                            widget.tab.title,
-                            style: context.theme.appTextTheme.titleMedium
-                                ?.copyWith(
-                                  fontSize: 16,
-                                ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                          ),
-                        ),
-                        if (widget.tab.subtitle.isEmpty)
-                          const Expanded(child: SizedBox.shrink())
-                        else
-                          Expanded(
-                            child: Padding(
-                              padding: left4,
-                              child: Text(
-                                widget.tab.subtitle,
-                                style: context.theme.appTextTheme.subtitleMedium
-                                    ?.copyWith(fontSize: 12),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 5,
-                              ),
-                            ),
-                          ),
-                        Center(
-                          child: widget.isEditMode
-                              ? const SizedBox.shrink()
-                              : MenuWidget(tab: widget.tab),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              HorizontalHeader(
+                dragIndex: widget.dragIndex,
+                isEditMode: widget.isEditMode,
+                tab: widget.tab,
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
@@ -180,65 +124,19 @@ class _HorizontalTabState extends State<_HorizontalTab> {
                 ),
               ),
               if (widget.isEditMode && entries.isNotEmpty)
-                SliverReorderableList(
-                  itemCount: entries.length,
-                  onReorder: (oldIndex, newIndex) {
-                    context.read<HomeBloc>().add(
-                      HomeEvent.onReorderEntries(
-                        widget.tab.id,
-                        oldIndex,
-                        newIndex,
-                      ),
-                    );
-                  },
-                  itemBuilder: (context, index) {
-                    final entry = entries[index];
-                    return SizedBox(
-                      key: ValueKey(entry.id),
-                      width: UIConstants.horiTabHeight(context) / 2,
-                      child: EntryCard(
-                        entry: entry,
-                        onDoubleTap: () {},
-                        isLayoutVertical: appLayout.isLayoutVertical,
-                        isEditMode: widget.isEditMode,
-                        dragIndex: index,
-                      ),
-                    );
-                  },
+                ReorderableEntriesGrid(
+                  entries: entries,
+                  tabId: widget.tab.id,
+                  isLayoutVertical: appLayout.isLayoutVertical,
+                  isEditMode: widget.isEditMode,
+                  dragIndex: widget.dragIndex,
                 )
               else
-                SliverPadding(
-                  padding: vertical4,
-                  sliver: SliverGrid.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
-                    itemCount: entries.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == entries.length) {
-                        return NewEntry(
-                          tabId: widget.tab.id,
-                        );
-                      }
-
-                      final entry = entries[index];
-
-                      return EntryCard(
-                        entry: entry,
-                        isLayoutVertical: appLayout.isLayoutVertical,
-                        isEditMode: widget.isEditMode,
-                        onDoubleTap: () async {
-                          context.read<HomeBloc>().add(
-                            HomeEvent.onUpdateEntry(entry.id),
-                          );
-                          await context.router.push(
-                            EditEntryPageRoute(ctx: context),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                EntriesGrid(
+                  entries: entries,
+                  isEditMode: widget.isEditMode,
+                  isLayoutVertical: appLayout.isLayoutVertical,
+                  tabId: widget.tab.id,
                 ),
               // Keep the moving card at least viewport-wide; once content grows,
               // this contributes zero and the card extends naturally.

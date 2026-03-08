@@ -105,55 +105,10 @@ class _VerticalTabState extends State<_VerticalTab> {
           ),
           sliver: SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: allPadding4,
-                  child: Row(
-                    children: [
-                      if (widget.isEditMode && widget.dragIndex != null)
-                        Center(
-                          child: ReorderableDragStartListener(
-                            index: widget.dragIndex!,
-                            child: Icon(
-                              Icons.drag_handle,
-                              size: 28,
-                              color: context.theme.appColors.ternary,
-                            ),
-                          ),
-                        )
-                      else if (widget.isEditMode)
-                        Center(
-                          child: Icon(
-                            Icons.drag_handle,
-                            size: 28,
-                            color: context.theme.appColors.ternary,
-                          ),
-                        ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.tab.title,
-                              style: context.theme.appTextTheme.titleMedium,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
-                            ),
-                            if (widget.tab.subtitle.isNotEmpty)
-                              Text(
-                                widget.tab.subtitle,
-                                style:
-                                    context.theme.appTextTheme.subtitleMedium,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (!widget.isEditMode) MenuWidget(tab: widget.tab),
-                    ],
-                  ),
-                ),
+              VerticalHeader(
+                dragIndex: widget.dragIndex,
+                isEditMode: widget.isEditMode,
+                tab: widget.tab,
               ),
               SliverToBoxAdapter(
                 child: Divider(
@@ -173,6 +128,7 @@ class _VerticalTabState extends State<_VerticalTab> {
                         widget.tab.id,
                         oldIndex,
                         newIndex,
+                        isGrid: false,
                       ),
                     );
                   },

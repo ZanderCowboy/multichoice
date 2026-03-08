@@ -1,4 +1,4 @@
-// ignore_for_file: discarded_futures, document_ignores
+// ignore_for_file: discarded_futures
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';

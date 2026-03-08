@@ -1,8 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multichoice/app/engine/app_router.dart';
-import 'package:multichoice/app/view/layout/app_layout.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +34,12 @@ class Multichoice extends StatelessWidget {
         themeMode: context.watch<AppTheme>().themeMode,
         debugShowCheckedModeBanner: false,
         routerConfig: _appRouter.config(),
+        builder: (context, child) => ColoredBox(
+          color:
+              context.theme.appColors.foreground ??
+              Theme.of(context).scaffoldBackgroundColor,
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }
