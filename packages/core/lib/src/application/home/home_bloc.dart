@@ -60,8 +60,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _handleToggleEditMode(emit);
       case OnReorderTabs(:final oldIndex, :final newIndex):
         await _handleReorderTabs(oldIndex, newIndex, emit);
-      case OnReorderEntries(:final tabId, :final oldIndex, :final newIndex):
-        await _handleReorderEntries(tabId, oldIndex, newIndex, emit);
+      case OnReorderEntries(
+        :final tabId,
+        :final oldIndex,
+        :final newIndex,
+        :final isGrid,
+      ):
+        await _handleReorderEntries(tabId, oldIndex, newIndex, isGrid, emit);
     }
   }
 
@@ -395,6 +400,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     int tabId,
     int oldIndex,
     int newIndex,
+    bool isGrid,
     Emitter<HomeState> emit,
   ) async {
     final tabs = state.tabs;
@@ -414,14 +420,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // Create a mutable copy of the entries list
     final updatedEntries = List<EntryDTO>.from(entries);
 
-    // Adjust newIndex if moving down
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
+    // Adjust newIndex based on source widget type
+    var targetIndex = newIndex;
+    if (!isGrid && oldIndex < newIndex) {
+      // Standard list behavior: adjust when moving down
+      targetIndex = newIndex - 1;
+    }
+
+    targetIndex = targetIndex.clamp(0, updatedEntries.length - 1);
+    if (targetIndex == oldIndex) {
+      return;
     }
 
     // Reorder the entries
     final entry = updatedEntries.removeAt(oldIndex);
-    updatedEntries.insert(newIndex, entry);
+    updatedEntries.insert(targetIndex, entry);
 
     // Update the tab with the new entries order
     final updatedTab = tab.copyWith(entries: updatedEntries);
@@ -433,6 +446,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Persist the new order to the database
     final entryIds = updatedEntries.map((e) => e.id).toList();
+
     final success = await _entryRepository.updateEntriesOrder(
       tabId: tabId,
       entryIds: entryIds,

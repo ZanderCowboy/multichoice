@@ -37,13 +37,16 @@ class EntryCard extends StatelessWidget {
               );
             },
       onDoubleTap: isEditMode ? null : onDoubleTap,
-      onLongPress: () async {
-        final bloc = context.read<HomeBloc>();
-        if (!bloc.state.isEditMode) {
-          await _triggerEditModeHaptic();
-          bloc.add(const HomeEvent.onToggleEditMode());
-        }
-      },
+      // Disable onLongPress during edit mode so ReorderableGridDragStartListener can work
+      onLongPress: isEditMode
+          ? null
+          : () async {
+              final bloc = context.read<HomeBloc>();
+              if (!bloc.state.isEditMode) {
+                await _triggerEditModeHaptic();
+                bloc.add(const HomeEvent.onToggleEditMode());
+              }
+            },
       child: Padding(
         padding: isLayoutVertical ? allPadding2 : allPadding4,
         child: Card(
@@ -67,14 +70,23 @@ class EntryCard extends StatelessWidget {
                       if (isEditMode && dragIndex != null)
                         Padding(
                           padding: horizontal4,
-                          child: ReorderableDragStartListener(
-                            index: dragIndex!,
-                            child: Icon(
-                              Icons.drag_handle,
-                              size: 24,
-                              color: context.theme.appColors.ternary,
-                            ),
-                          ),
+                          child: isLayoutVertical
+                              ? ReorderableDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.drag_handle,
+                                    size: 24,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                )
+                              : ReorderableGridDelayedDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.drag_handle,
+                                    size: 24,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                ),
                         )
                       else if (isEditMode)
                         Padding(

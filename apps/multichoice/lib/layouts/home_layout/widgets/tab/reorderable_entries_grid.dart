@@ -42,6 +42,7 @@ class ReorderableEntriesGrid extends StatelessWidget {
             tabId,
             oldIndex,
             newIndex,
+            isGrid: true,
           ),
         );
       },

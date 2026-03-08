@@ -33,8 +33,9 @@ sealed class HomeEvent {
   const factory HomeEvent.onReorderEntries(
     int tabId,
     int oldIndex,
-    int newIndex,
-  ) = OnReorderEntries;
+    int newIndex, {
+    required bool isGrid,
+  }) = OnReorderEntries;
 }
 
 final class OnGetTabs extends HomeEvent {
@@ -142,9 +143,15 @@ final class OnReorderTabs extends HomeEvent {
 }
 
 final class OnReorderEntries extends HomeEvent {
-  const OnReorderEntries(this.tabId, this.oldIndex, this.newIndex);
+  const OnReorderEntries(
+    this.tabId,
+    this.oldIndex,
+    this.newIndex, {
+    required this.isGrid,
+  });
 
   final int tabId;
   final int oldIndex;
   final int newIndex;
+  final bool isGrid;
 }

@@ -128,6 +128,7 @@ class _VerticalTabState extends State<_VerticalTab> {
                         widget.tab.id,
                         oldIndex,
                         newIndex,
+                        isGrid: false,
                       ),
                     );
                   },
