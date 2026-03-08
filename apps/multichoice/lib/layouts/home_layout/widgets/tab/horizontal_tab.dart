@@ -1,6 +1,6 @@
 part of '../../tab_layout.dart';
 
-class _HorizontalTab extends HookWidget {
+class _HorizontalTab extends StatefulWidget {
   const _HorizontalTab({
     required this.tab,
     this.isEditMode = false,
@@ -12,36 +12,86 @@ class _HorizontalTab extends HookWidget {
   final int? dragIndex;
 
   @override
-  Widget build(BuildContext context) {
-    final entries = tab.entries;
-    final scrollController = useScrollController();
-    final previousEntriesLength = useState(entries.length);
-    final canScrollToStart = useScrollToStartIndicator(
-      scrollController,
-      keys: [entries.length, isEditMode],
-      showAfterOffset: UIConstants.horiTabHeaderWidth(context),
-    );
+  State<_HorizontalTab> createState() => _HorizontalTabState();
+}
 
-    useEffect(
-      () {
-        if (entries.length > previousEntriesLength.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
+class _HorizontalTabState extends State<_HorizontalTab> {
+  late final ScrollController _scrollController;
+  int _previousEntriesLength = 0;
+  bool _canScrollToStart = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _previousEntriesLength = widget.tab.entries.length;
+    _scrollController.addListener(_onScroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshScrollIndicators();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_HorizontalTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final entries = widget.tab.entries;
+    if (entries.length > _previousEntriesLength) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (_scrollController.hasClients) {
+          await _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
         }
-        previousEntriesLength.value = entries.length;
-        return null;
-      },
-      [entries.length],
-    );
+      });
+    }
+    _previousEntriesLength = entries.length;
+
+    if (entries.length != oldWidget.tab.entries.length ||
+        widget.isEditMode != oldWidget.isEditMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _refreshScrollIndicators();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    _refreshScrollIndicators();
+  }
+
+  void _refreshScrollIndicators() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    final currentOffset = _scrollController.offset;
+    final showAfterOffset = UIConstants.horiTabHeaderWidth(context);
+    final shouldShow = maxScrollExtent > 0 && currentOffset >= showAfterOffset;
+
+    if (shouldShow != _canScrollToStart) {
+      setState(() {
+        _canScrollToStart = shouldShow;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = widget.tab.entries;
 
     final horizontalContent = CustomScrollView(
       scrollDirection: Axis.horizontal,
-      controller: scrollController,
+      controller: _scrollController,
       scrollBehavior: CustomScrollBehaviour(),
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
@@ -63,10 +113,10 @@ class _HorizontalTab extends HookWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (isEditMode && dragIndex != null)
+                        if (widget.isEditMode && widget.dragIndex != null)
                           Center(
                             child: ReorderableDragStartListener(
-                              index: dragIndex!,
+                              index: widget.dragIndex!,
                               child: Icon(
                                 Icons.drag_handle,
                                 size: 28,
@@ -74,7 +124,7 @@ class _HorizontalTab extends HookWidget {
                               ),
                             ),
                           )
-                        else if (isEditMode)
+                        else if (widget.isEditMode)
                           Center(
                             child: Icon(
                               Icons.drag_handle,
@@ -85,7 +135,7 @@ class _HorizontalTab extends HookWidget {
                         Padding(
                           padding: left4,
                           child: Text(
-                            tab.title,
+                            widget.tab.title,
                             style: context.theme.appTextTheme.titleMedium
                                 ?.copyWith(
                                   fontSize: 16,
@@ -94,14 +144,14 @@ class _HorizontalTab extends HookWidget {
                             maxLines: 5,
                           ),
                         ),
-                        if (tab.subtitle.isEmpty)
+                        if (widget.tab.subtitle.isEmpty)
                           const Expanded(child: SizedBox.shrink())
                         else
                           Expanded(
                             child: Padding(
                               padding: left4,
                               child: Text(
-                                tab.subtitle,
+                                widget.tab.subtitle,
                                 style: context.theme.appTextTheme.subtitleMedium
                                     ?.copyWith(fontSize: 12),
                                 overflow: TextOverflow.ellipsis,
@@ -110,9 +160,9 @@ class _HorizontalTab extends HookWidget {
                             ),
                           ),
                         Center(
-                          child: isEditMode
+                          child: widget.isEditMode
                               ? const SizedBox.shrink()
-                              : MenuWidget(tab: tab),
+                              : MenuWidget(tab: widget.tab),
                         ),
                       ],
                     ),
@@ -128,13 +178,13 @@ class _HorizontalTab extends HookWidget {
                   endIndent: 0,
                 ),
               ),
-              if (isEditMode && entries.isNotEmpty)
+              if (widget.isEditMode && entries.isNotEmpty)
                 SliverReorderableList(
                   itemCount: entries.length,
                   onReorder: (oldIndex, newIndex) {
                     context.read<HomeBloc>().add(
                       HomeEvent.onReorderEntries(
-                        tab.id,
+                        widget.tab.id,
                         oldIndex,
                         newIndex,
                       ),
@@ -148,7 +198,7 @@ class _HorizontalTab extends HookWidget {
                       child: EntryCard(
                         entry: entry,
                         onDoubleTap: () {},
-                        isEditMode: isEditMode,
+                        isEditMode: widget.isEditMode,
                         dragIndex: index,
                       ),
                     );
@@ -166,7 +216,7 @@ class _HorizontalTab extends HookWidget {
                     itemBuilder: (context, index) {
                       if (index == entries.length) {
                         return NewEntry(
-                          tabId: tab.id,
+                          tabId: widget.tab.id,
                         );
                       }
 
@@ -174,7 +224,7 @@ class _HorizontalTab extends HookWidget {
 
                       return EntryCard(
                         entry: entry,
-                        isEditMode: isEditMode,
+                        isEditMode: widget.isEditMode,
                         onDoubleTap: () async {
                           context.read<HomeBloc>().add(
                             HomeEvent.onUpdateEntry(entry.id),
@@ -207,7 +257,7 @@ class _HorizontalTab extends HookWidget {
       child: Stack(
         children: [
           Positioned.fill(child: horizontalContent),
-          if (canScrollToStart.value)
+          if (_canScrollToStart)
             Positioned(
               left: 5,
               top: 0,
@@ -215,7 +265,7 @@ class _HorizontalTab extends HookWidget {
               child: Center(
                 child: _scrollToStartButton(
                   context: context,
-                  scrollController: scrollController,
+                  scrollController: _scrollController,
                   label: 'Scroll to start',
                   icon: Icons.keyboard_arrow_left,
                 ),

@@ -1,6 +1,6 @@
 part of '../../tab_layout.dart';
 
-class _VerticalTab extends HookWidget {
+class _VerticalTab extends StatefulWidget {
   const _VerticalTab({
     required this.tab,
     this.isEditMode = false,
@@ -12,34 +12,85 @@ class _VerticalTab extends HookWidget {
   final int? dragIndex;
 
   @override
-  Widget build(BuildContext context) {
-    final entries = tab.entries;
-    final scrollController = useScrollController();
-    final previousEntriesLength = useState(entries.length);
-    final canScrollToTop = useScrollToStartIndicator(
-      scrollController,
-      keys: [entries.length, isEditMode],
-    );
+  State<_VerticalTab> createState() => _VerticalTabState();
+}
 
-    useEffect(
-      () {
-        if (entries.length > previousEntriesLength.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
+class _VerticalTabState extends State<_VerticalTab> {
+  late final ScrollController _scrollController;
+  int _previousEntriesLength = 0;
+  bool _canScrollToTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _previousEntriesLength = widget.tab.entries.length;
+    _scrollController.addListener(_onScroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshScrollIndicators();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_VerticalTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final entries = widget.tab.entries;
+    if (entries.length > _previousEntriesLength) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (_scrollController.hasClients) {
+          await _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
         }
-        previousEntriesLength.value = entries.length;
-        return null;
-      },
-      [entries.length],
-    );
+      });
+    }
+    _previousEntriesLength = entries.length;
+
+    if (entries.length != oldWidget.tab.entries.length ||
+        widget.isEditMode != oldWidget.isEditMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _refreshScrollIndicators();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    _refreshScrollIndicators();
+  }
+
+  void _refreshScrollIndicators() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    final currentOffset = _scrollController.offset;
+    final shouldShow =
+        maxScrollExtent > 0 && currentOffset >= scrollToStartThreshold;
+
+    if (shouldShow != _canScrollToTop) {
+      setState(() {
+        _canScrollToTop = shouldShow;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = widget.tab.entries;
 
     final listContent = CustomScrollView(
-      controller: scrollController,
+      controller: _scrollController,
       scrollBehavior: CustomScrollBehaviour(),
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
@@ -58,10 +109,10 @@ class _VerticalTab extends HookWidget {
                   padding: allPadding4,
                   child: Row(
                     children: [
-                      if (isEditMode && dragIndex != null)
+                      if (widget.isEditMode && widget.dragIndex != null)
                         Center(
                           child: ReorderableDragStartListener(
-                            index: dragIndex!,
+                            index: widget.dragIndex!,
                             child: Icon(
                               Icons.drag_handle,
                               size: 28,
@@ -69,7 +120,7 @@ class _VerticalTab extends HookWidget {
                             ),
                           ),
                         )
-                      else if (isEditMode)
+                      else if (widget.isEditMode)
                         Center(
                           child: Icon(
                             Icons.drag_handle,
@@ -82,14 +133,14 @@ class _VerticalTab extends HookWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              tab.title,
+                              widget.tab.title,
                               style: context.theme.appTextTheme.titleMedium,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                             ),
-                            if (tab.subtitle.isNotEmpty)
+                            if (widget.tab.subtitle.isNotEmpty)
                               Text(
-                                tab.subtitle,
+                                widget.tab.subtitle,
                                 style:
                                     context.theme.appTextTheme.subtitleMedium,
                                 overflow: TextOverflow.ellipsis,
@@ -98,7 +149,7 @@ class _VerticalTab extends HookWidget {
                           ],
                         ),
                       ),
-                      if (!isEditMode) MenuWidget(tab: tab),
+                      if (!widget.isEditMode) MenuWidget(tab: widget.tab),
                     ],
                   ),
                 ),
@@ -112,13 +163,13 @@ class _VerticalTab extends HookWidget {
                 ),
               ),
 
-              if (isEditMode && entries.isNotEmpty)
+              if (widget.isEditMode && entries.isNotEmpty)
                 SliverReorderableList(
                   itemCount: entries.length,
                   onReorder: (oldIndex, newIndex) {
                     context.read<HomeBloc>().add(
                       HomeEvent.onReorderEntries(
-                        tab.id,
+                        widget.tab.id,
                         oldIndex,
                         newIndex,
                       ),
@@ -130,7 +181,7 @@ class _VerticalTab extends HookWidget {
                       key: ValueKey(entry.id),
                       entry: entry,
                       onDoubleTap: () {},
-                      isEditMode: isEditMode,
+                      isEditMode: widget.isEditMode,
                       dragIndex: index,
                     );
                   },
@@ -145,7 +196,7 @@ class _VerticalTab extends HookWidget {
 
                       return EntryCard(
                         entry: entry,
-                        isEditMode: isEditMode,
+                        isEditMode: widget.isEditMode,
                         onDoubleTap: () async {
                           context.read<HomeBloc>().add(
                             HomeEvent.onUpdateEntry(entry.id),
@@ -160,7 +211,7 @@ class _VerticalTab extends HookWidget {
                 ),
                 SliverToBoxAdapter(
                   child: NewEntry(
-                    tabId: tab.id,
+                    tabId: widget.tab.id,
                   ),
                 ),
               ],
@@ -184,7 +235,7 @@ class _VerticalTab extends HookWidget {
       child: Stack(
         children: [
           Positioned.fill(child: listContent),
-          if (canScrollToTop.value)
+          if (_canScrollToTop)
             Positioned(
               top: 5,
               left: 0,
@@ -192,7 +243,7 @@ class _VerticalTab extends HookWidget {
               child: Center(
                 child: _scrollToStartButton(
                   context: context,
-                  scrollController: scrollController,
+                  scrollController: _scrollController,
                   label: 'Scroll to top',
                   icon: Icons.keyboard_arrow_up,
                 ),
