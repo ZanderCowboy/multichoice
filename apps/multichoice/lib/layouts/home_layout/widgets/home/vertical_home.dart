@@ -39,6 +39,7 @@ class _VerticalHomeState extends State<_VerticalHome> {
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!mounted || !_scrollController.hasClients) return;
             await _scrollController.animateTo(
               _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),

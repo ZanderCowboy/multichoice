@@ -63,6 +63,24 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
           child: FutureBuilder<bool>(
             future: _isDBEmpty,
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularLoader.small();
+              }
+
+              if (snapshot.hasError) {
+                return const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                    ),
+                    gap10,
+                    Text('Failed to load data transfer state.'),
+                  ],
+                );
+              }
+
               if (!snapshot.hasData) {
                 return CircularLoader.small();
               }
