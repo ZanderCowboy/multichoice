@@ -8,6 +8,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_refresh_changelog.dart';
+part 'widgets/_app_bar.dart';
 part 'widgets/_changelog_list.dart';
 part 'widgets/_failed_changelog.dart';
 part 'widgets/_no_changelog.dart';
@@ -22,52 +23,40 @@ class ChangelogPage extends StatelessWidget {
       create: (_) => coreSl<ChangelogBloc>()..add(const ChangelogEvent.fetch()),
       child: Builder(
         builder: (blocContext) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Changelog'),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_outlined),
-              onPressed: () => context.router.pop(),
-            ),
-            actions: [
-              if (kDebugMode)
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: 'Refresh Remote Config',
-                  onPressed: () => _refreshChangelog(blocContext),
-                ),
-              IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  context.router.popUntilRoot();
-                  scaffoldKey.currentState?.closeDrawer();
-                },
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: BlocBuilder<ChangelogBloc, ChangelogState>(
-              builder: (context, state) {
-                if (state.isLoading) {
-                  return Center(child: CircularLoader.medium());
-                }
-
-                if (state.errorMessage != null) {
-                  return _FailedChangelog(
-                    message: state.errorMessage!,
-                  );
-                }
-
-                final changelog = state.changelog;
-
-                if (changelog == null || changelog.versions.isEmpty) {
-                  return const _NoChangelog();
-                }
-
-                return _ChangelogList(changelog: changelog);
-              },
-            ),
-          ),
+          appBar: _AppBar(outerContext: blocContext),
+          body: const _ChangelogView(),
         ),
+      ),
+    );
+  }
+}
+
+class _ChangelogView extends StatelessWidget {
+  const _ChangelogView();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: BlocBuilder<ChangelogBloc, ChangelogState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return Center(child: CircularLoader.medium());
+          }
+
+          if (state.errorMessage != null) {
+            return _FailedChangelog(
+              message: state.errorMessage!,
+            );
+          }
+
+          final changelog = state.changelog;
+
+          if (changelog == null || changelog.versions.isEmpty) {
+            return const _NoChangelog();
+          }
+
+          return _ChangelogList(changelog: changelog);
+        },
       ),
     );
   }
