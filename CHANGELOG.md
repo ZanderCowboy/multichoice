@@ -5,3 +5,4 @@
   - Change HomePage from Stateless to Stateful for drawer close
   - Refactor home_page.dart into smaller files
 - Fix data not refreshing when navigating back to HomePage
+- Fix white flash when transitioning between pages
