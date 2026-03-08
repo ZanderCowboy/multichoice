@@ -120,16 +120,30 @@ class _HomePageState extends State<_HomePage> {
               },
               appBar: AppBar(
                 title: const Text('Multichoice'),
-                actions: const [
-                  EditModeButton(),
-                  SearchButton(),
+                actions: [
+                  const EditModeButton(),
+                  AnimatedOpacity(
+                    opacity: state.isEditMode ? 0.35 : 1,
+                    duration: const Duration(milliseconds: 180),
+                    child: IgnorePointer(
+                      ignoring: state.isEditMode,
+                      child: const SearchButton(),
+                    ),
+                  ),
                 ],
-                leading: IconButton(
-                  onPressed: () {
-                    scaffoldKey.currentState?.openDrawer();
-                  },
-                  tooltip: TooltipEnums.settings.tooltip,
-                  icon: const Icon(Icons.settings_outlined),
+                leading: AnimatedOpacity(
+                  opacity: state.isEditMode ? 0.35 : 1,
+                  duration: const Duration(milliseconds: 180),
+                  child: IgnorePointer(
+                    ignoring: state.isEditMode,
+                    child: IconButton(
+                      onPressed: () {
+                        scaffoldKey.currentState?.openDrawer();
+                      },
+                      tooltip: TooltipEnums.settings.tooltip,
+                      icon: const Icon(Icons.settings_outlined),
+                    ),
+                  ),
                 ),
               ),
               drawer: const HomeDrawer(),
