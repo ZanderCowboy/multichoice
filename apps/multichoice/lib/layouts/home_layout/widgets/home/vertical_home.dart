@@ -1,12 +1,29 @@
 part of '../../home_layout.dart';
 
-class _VerticalHome extends HookWidget {
+class _VerticalHome extends StatefulWidget {
   const _VerticalHome();
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
+  State<_VerticalHome> createState() => _VerticalHomeState();
+}
 
+class _VerticalHomeState extends State<_VerticalHome> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
         // Only proceed if we have both previous and current tabs
@@ -22,8 +39,8 @@ class _VerticalHome extends HookWidget {
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
+            await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
             );
@@ -42,7 +59,7 @@ class _VerticalHome extends HookWidget {
             child: SizedBox(
               height: UIConstants.vertTabHeight(context),
               child: ReorderableListView.builder(
-                scrollController: scrollController,
+                scrollController: _scrollController,
                 scrollDirection: Axis.horizontal,
                 buildDefaultDragHandles: false,
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -97,7 +114,7 @@ class _VerticalHome extends HookWidget {
               height: UIConstants.vertTabHeight(context),
               child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
-                controller: scrollController,
+                controller: _scrollController,
                 scrollBehavior: CustomScrollBehaviour(),
                 slivers: [
                   SliverList.builder(
