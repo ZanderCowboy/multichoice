@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_catches_without_on_clauses, document_ignores
+// ignore_for_file: avoid_catches_without_on_clauses
 
 import 'package:flutter/material.dart';
 import 'package:ui_kit/ui_kit.dart';
