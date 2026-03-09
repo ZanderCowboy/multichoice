@@ -22,3 +22,5 @@
 - Update all BLoC tests with analytics service mocks
 - Add comprehensive analytics service test coverage
 - Update SearchResultCard icon based on collection or item
+- Add Banner on HomePage for easy importing
+- Fix OS Back Button breaking from DetaTransferPage

@@ -46,7 +46,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
         appBar: AppBar(
           title: const Text('Data Transfer'),
           leading: IconButton(
-            onPressed: () => context.router.maybePop(),
+            onPressed: _handleBackNavigation,
             tooltip: TooltipEnums.back.tooltip,
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
@@ -99,6 +99,11 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleBackNavigation() async {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    await context.router.maybePop();
   }
 
   void _showSnackBar(BuildContext context, String message) {

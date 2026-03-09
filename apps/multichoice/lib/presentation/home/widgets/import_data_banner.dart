@@ -95,22 +95,14 @@ class _ImportDataBannerState extends State<ImportDataBanner> {
     );
 
     return usePillStyle
-        ? _buildPillStyle(context)
-        : _buildDefaultStyle(context);
-  }
-
-  Widget _buildPillStyle(BuildContext context) {
-    return _PillBanner(
-      handleImportTap: _handleImportTap,
-      handleDismiss: _dismissBanner,
-    );
-  }
-
-  Widget _buildDefaultStyle(BuildContext context) {
-    return _DefaultBanner(
-      handleImportTap: _handleImportTap,
-      handleDismiss: _dismissBanner,
-    );
+        ? _PillBanner(
+            handleImportTap: _handleImportTap,
+            handleDismiss: _dismissBanner,
+          )
+        : _DefaultBanner(
+            handleImportTap: _handleImportTap,
+            handleDismiss: _dismissBanner,
+          );
   }
 }
 
