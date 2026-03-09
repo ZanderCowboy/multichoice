@@ -1,27 +1,5 @@
-# 180 - FEATURE - Firebase Analytics
+# 269 - Feature - Landing Page for Multichoice
 
-- Implement Firebase Analytics integration
-  - Configure native Android support with Google Services plugin
-  - Create analytics service layer with `IAnalyticsService` interface
-  - Add comprehensive analytics event system (CRUD, Search, Tutorial, Feedback, UI Actions)
-- Add screen view tracking with `AnalyticsPageTracker` widget
-  - Track all major pages (Home, Search, Details, Edit, Feedback, Tutorial, Changelog, Data Transfer)
-  - Include previous page context for navigation flow
-- Track user interactions across the app
-  - CRUD operations (create, update, delete, reorder) for tabs and entries
-  - Search queries with result counts
-  - Tutorial progress and feedback submissions
-  - Button clicks and data transfer operations
-- Refactor bootstrap structure
-  - Split bootstrap into modular files (bootstrap, non_critical_services, simple_bloc_observer)
-  - Initialize Firebase before core dependencies
-  - Set up analytics user ID and properties (app version, platform, existing user)
-- Refactor pages into smaller, reusable widgets
-  - Split changelog, data transfer, and search pages
-  - Extract HomePageWrapper to separate file
-- Update all BLoC tests with analytics service mocks
-- Add comprehensive analytics service test coverage
-- Update SearchResultCard icon based on collection or item
-- Add Banner on HomePage for easy importing
-- Fix OS Back Button breaking from DetaTransferPage
-- Fix TextFormField edit black text color
+- Create landing page using HTML and CSS
+- Update firebase_config_keys
+- Create pages_workflow.yml

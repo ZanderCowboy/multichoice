@@ -12,7 +12,8 @@
 			"dart": true,
 			"flutter": true,
 			"make": true,
-			"git fetch": true
+			"git fetch": true,
+			"Test-Path": true
 		},
 		"files.exclude": {
 			"**/.git": true,
