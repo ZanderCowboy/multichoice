@@ -1,118 +1,178 @@
 part of '../../tab_layout.dart';
 
-class _HorizontalTab extends HookWidget {
+class _HorizontalTab extends StatefulWidget {
   const _HorizontalTab({
     required this.tab,
+    this.isEditMode = false,
+    this.dragIndex,
   });
 
   final TabsDTO tab;
+  final bool isEditMode;
+  final int? dragIndex;
+
+  @override
+  State<_HorizontalTab> createState() => _HorizontalTabState();
+}
+
+class _HorizontalTabState extends State<_HorizontalTab> {
+  late final ScrollController _scrollController;
+  int _previousEntriesLength = 0;
+  bool _canScrollToStart = false;
+  bool _isDisposed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _previousEntriesLength = widget.tab.entries.length;
+    _scrollController.addListener(_onScroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _isDisposed) return;
+      _refreshScrollIndicators();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_HorizontalTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final entries = widget.tab.entries;
+    if (entries.length > _previousEntriesLength) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted || _isDisposed || !_scrollController.hasClients) return;
+        await _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
+    _previousEntriesLength = entries.length;
+
+    if (entries.length != oldWidget.tab.entries.length ||
+        widget.isEditMode != oldWidget.isEditMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _isDisposed) return;
+        _refreshScrollIndicators();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    _refreshScrollIndicators();
+  }
+
+  void _refreshScrollIndicators() {
+    if (!mounted || _isDisposed || !_scrollController.hasClients) return;
+
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    final currentOffset = _scrollController.offset;
+    final showAfterOffset = UIConstants.horiTabHeaderWidth(context);
+    final shouldShow = maxScrollExtent > 0 && currentOffset >= showAfterOffset;
+
+    if (shouldShow != _canScrollToStart) {
+      setState(() {
+        _canScrollToStart = shouldShow;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final entries = tab.entries;
-    final scrollController = useScrollController();
-    final previousEntriesLength = useState(entries.length);
+    final appLayout = context.watch<AppLayout>();
+    final entries = widget.tab.entries;
 
-    useEffect(
-      () {
-        if (entries.length > previousEntriesLength.value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
-        }
-        previousEntriesLength.value = entries.length;
-        return null;
-      },
-      [entries.length],
-    );
-
-    return Card(
-      margin: allPadding4,
-      color: context.theme.appColors.primary,
-      child: Padding(
-        padding: allPadding2,
-        child: SizedBox(
-          height: UIConstants.horiTabHeight(context),
-          child: CustomScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: scrollController,
-            scrollBehavior: CustomScrollBehaviour(),
+    final horizontalContent = CustomScrollView(
+      scrollDirection: Axis.horizontal,
+      controller: _scrollController,
+      scrollBehavior: CustomScrollBehaviour(),
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        const SliverToBoxAdapter(
+          child: SizedBox(width: 8),
+        ),
+        DecoratedSliver(
+          decoration: BoxDecoration(
+            color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+            borderRadius: borderCircular12,
+          ),
+          sliver: SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  width: UIConstants.horiTabHeaderWidth(context),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: left4,
-                        child: Text(
-                          tab.title,
-                          style:
-                              context.theme.appTextTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      if (tab.subtitle.isEmpty)
-                        const SizedBox.shrink()
-                      else
-                        Padding(
-                          padding: left4,
-                          child: Text(
-                            tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium
-                                ?.copyWith(fontSize: 12),
-                          ),
-                        ),
-                      const Expanded(child: SizedBox()),
-                      Center(
-                        child: MenuWidget(tab: tab),
-                      ),
-                    ],
-                  ),
-                ),
+              HorizontalHeader(
+                dragIndex: widget.dragIndex,
+                isEditMode: widget.isEditMode,
+                tab: widget.tab,
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
                   color: context.theme.appColors.secondaryLight,
                   thickness: 2,
-                  indent: 4,
-                  endIndent: 4,
+                  width: 8,
+                  indent: 0,
+                  endIndent: 0,
                 ),
               ),
-              SliverGrid.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+              if (widget.isEditMode && entries.isNotEmpty)
+                ReorderableEntriesGrid(
+                  entries: entries,
+                  tabId: widget.tab.id,
+                  isLayoutVertical: appLayout.isLayoutVertical,
+                  isEditMode: widget.isEditMode,
+                  dragIndex: widget.dragIndex,
+                )
+              else
+                EntriesGrid(
+                  entries: entries,
+                  isEditMode: widget.isEditMode,
+                  isLayoutVertical: appLayout.isLayoutVertical,
+                  tabId: widget.tab.id,
                 ),
-                itemCount: entries.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == entries.length) {
-                    return NewEntry(
-                      tabId: tab.id,
-                    );
-                  }
-
-                  final entry = entries[index];
-
-                  return EntryCard(
-                    entry: entry,
-                    onDoubleTap: () {
-                      context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onUpdateEntry(entry.id));
-                      context.router.push(EditEntryPageRoute(ctx: context));
-                    },
-                  );
-                },
+              // Keep the moving card at least viewport-wide; once content grows,
+              // this contributes zero and the card extends naturally.
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: SizedBox.shrink(),
               ),
             ],
           ),
         ),
+        const SliverToBoxAdapter(
+          child: SizedBox(width: 8),
+        ),
+      ],
+    );
+
+    return SizedBox(
+      height: UIConstants.horiTabHeight(context),
+      child: Stack(
+        children: [
+          Positioned.fill(child: horizontalContent),
+          if (_canScrollToStart)
+            Positioned(
+              left: 5,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: _scrollToStartButton(
+                  context: context,
+                  scrollController: _scrollController,
+                  label: 'Scroll to start',
+                  icon: Icons.keyboard_arrow_left,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

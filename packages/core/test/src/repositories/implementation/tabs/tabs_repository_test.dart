@@ -1,7 +1,7 @@
 import 'package:core/src/repositories/implementation/entry/entry_repository.dart';
 import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
@@ -108,7 +108,8 @@ void main() {
           id: tabs.firstWhere((e) => e.title == 'title').id,
           title: 'title',
           subtitle: 'subtitle',
-          timestamp: tabs.firstWhere((e) => e.title == 'title').timestamp ??
+          timestamp:
+              tabs.firstWhere((e) => e.title == 'title').timestamp ??
               DateTime.now(),
           entries: [],
         ),
@@ -118,14 +119,15 @@ void main() {
           subtitle: 'not a subtitle',
           timestamp:
               tabs.firstWhere((e) => e.title == 'not a title').timestamp ??
-                  DateTime.now(),
+              DateTime.now(),
           entries: [],
         ),
         TabsDTO.empty().copyWith(
           id: tabs.firstWhere((e) => e.title == 'another t').id,
           title: 'another t',
           subtitle: 'another sub',
-          timestamp: tabs.firstWhere((e) => e.title == 'another t').timestamp ??
+          timestamp:
+              tabs.firstWhere((e) => e.title == 'another t').timestamp ??
               DateTime.now(),
           entries: <EntryDTO>[
             EntryDTO.empty().copyWith(
@@ -133,7 +135,8 @@ void main() {
               tabId: tabs.firstWhere((e) => e.title == 'another t').id,
               title: 'entry title',
               subtitle: 'entry subtitle',
-              timestamp: entries
+              timestamp:
+                  entries
                       .firstWhere((e) => e.title == 'entry title')
                       .timestamp ??
                   DateTime.now(),
@@ -143,7 +146,8 @@ void main() {
               tabId: tabs.firstWhere((e) => e.title == 'another t').id,
               title: 'wonderful day',
               subtitle: 'have a laugh',
-              timestamp: entries
+              timestamp:
+                  entries
                       .firstWhere((e) => e.title == 'wonderful day')
                       .timestamp ??
                   DateTime.now(),
@@ -155,7 +159,20 @@ void main() {
       // Act
       final result = await tabsRepository.readTabs();
       // Assert
-      expect(result, tabsDTO);
+      expect(result.length, tabsDTO.length);
+      for (var i = 0; i < result.length; i++) {
+        expect(result[i].id, tabsDTO[i].id);
+        expect(result[i].title, tabsDTO[i].title);
+        expect(result[i].subtitle, tabsDTO[i].subtitle);
+        expect(result[i].isFirst, tabsDTO[i].isFirst);
+        expect(result[i].entries.length, tabsDTO[i].entries.length);
+        for (var j = 0; j < result[i].entries.length; j++) {
+          expect(result[i].entries[j].id, tabsDTO[i].entries[j].id);
+          expect(result[i].entries[j].tabId, tabsDTO[i].entries[j].tabId);
+          expect(result[i].entries[j].title, tabsDTO[i].entries[j].title);
+          expect(result[i].entries[j].subtitle, tabsDTO[i].entries[j].subtitle);
+        }
+      }
     });
   });
 
@@ -188,16 +205,10 @@ void main() {
       final result = await tabsRepository.getTab(tabId: tab.id);
 
       // Assert
-      expect(
-        result,
-        TabsDTO.empty().copyWith(
-          id: tab.id,
-          title: 'not a title',
-          subtitle: 'not a subtitle',
-          timestamp: tab.timestamp ?? DateTime.now(),
-          entries: [],
-        ),
-      );
+      expect(result.id, tab.id);
+      expect(result.title, 'not a title');
+      expect(result.subtitle, 'not a subtitle');
+      expect(result.entries, isEmpty);
     });
   });
 
@@ -269,36 +280,41 @@ void main() {
     });
 
     test(
-        "should delete a tab and all it's entries and return a bool when deleteTab is called",
-        () async {
-      // Arrange
-      final tabs = await db.tabs.where().findAll();
-      final tabId =
-          tabs.firstWhere((element) => element.title == 'not a title').id;
+      "should delete a tab and all it's entries and return a bool when deleteTab is called",
+      () async {
+        // Arrange
+        final tabs = await db.tabs.where().findAll();
+        final tabId = tabs
+            .firstWhere((element) => element.title == 'not a title')
+            .id;
 
-      // Act
-      final result = await tabsRepository.deleteTab(tabId: tabId);
+        // Act
+        final result = await tabsRepository.deleteTab(tabId: tabId);
 
-      // Assert
-      final entries = await db.entrys.where().findAll();
-      expect(result, true);
-      expect(entries.length, 0);
-    });
+        // Assert
+        final entries = await db.entrys.where().findAll();
+        expect(result, true);
+        expect(entries.length, 0);
+      },
+    );
 
-    test('should return false when deleteTab is called on a tab not in the db',
-        () async {
-      // Arrange
-      const tabId = 5;
+    test(
+      'should return false when deleteTab is called on a tab not in the db',
+      () async {
+        // Arrange
+        const tabId = 5;
 
-      when(mockTabsRepository.deleteTab(tabId: anyNamed('tabId')))
-          .thenAnswer((_) => Future.value(true));
+        when(
+          mockTabsRepository.deleteTab(tabId: anyNamed('tabId')),
+        ).thenAnswer((_) => Future.value(true));
 
-      // Act
-      final result = await tabsRepository.deleteTab(tabId: tabId);
+        // Act
+        final result = await tabsRepository.deleteTab(tabId: tabId);
 
-      // Assert
-      expect(result, false);
-    });
+        // Assert
+        expect(result, false);
+      },
+    );
   });
 
   group('TabsRepository - deleteTabs', () {

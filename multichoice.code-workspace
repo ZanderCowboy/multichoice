@@ -1,0 +1,51 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"svg.preview.background": "editor",
+		"chat.tools.terminal.autoApprove": {
+			"dart": true,
+			"flutter": true,
+			"make": true,
+			"git fetch": true,
+			"Test-Path": true
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/flutter/ephemeral": true,
+			"**/Flutter/ephemeral": true,
+			"**/.symlinks": true,
+			"**/.plugin_symlinks": true,
+			"**/**.isar.*": true,
+			"**/**.isar-lck*": true,
+			"**/*isar.dll": true,
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"dart-code.dart-code",
+			"dart-code.flutter",
+			"alexisvt.flutter-snippets",
+			"nash.awesome-flutter-snippets",
+			"eamodio.gitlens",
+			"github.vscode-github-actions",
+			"redhat.java"
+		],
+		"unwantedRecommendations": [
+			"jeff-hykin.better-cpp-syntax",
+			"ms-vscode.cpptools",
+			"ms-vscode.cpptools-extension-pack",
+			"ms-vscode.cmake-tools",
+			"twxs.cmake"
+		]
+	}
+}

@@ -1,0 +1,27 @@
+---
+description: Rules that always apply to all conversations
+globs: 
+alwaysApply: true
+---
+
+# Always Apply Rules Example
+
+This rule file demonstrates how to create rules that **always apply** to every conversation, regardless of context.
+
+## Usage
+- `alwaysApply: true` - Makes these rules active in every conversation
+- `globs` can be empty when using `alwaysApply: true`
+- Use this for project-wide conventions and critical guidelines
+
+## Project-Wide Rules
+1. **Never commit secrets or API keys** - Always use environment variables
+2. **Write tests for new features** - Maintain at least 80% coverage
+3. **Follow conventional commits** - Use format: `type(scope): message`
+4. **Run linter before committing** - Fix all warnings and errors
+5. **Document public APIs** - Add doc comments for exported functions/classes
+
+## Code Quality Standards
+- All code must pass static analysis
+- All tests must pass before merging
+- Code reviews are required for all PRs
+- Keep functions under 50 lines when possible

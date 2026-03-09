@@ -1,0 +1,108 @@
+name: "Create Git Tag"
+description: "Creates a Git tag based on version number with configurable format validation and tag creation strategy"
+
+inputs:
+  version_number:
+    description: "The version number to create a tag for"
+    required: true
+  tag_strategy:
+    description: "Strategy for creating the tag: 'full' (include build number) or 'version-only' (exclude build number)"
+    required: true
+    default: "full"
+  allowed_formats:
+    description: "Comma-separated list of allowed version formats. Options: 'standard' (x.y.z+build), 'rc' (x.y.z-RC+build), 'both' (both formats)"
+    required: true
+    default: "both"
+
+outputs:
+  tag_version:
+    description: "The version used for the tag (without 'v' prefix)"
+    value: ${{ steps.create_tag.outputs.tag_version }}
+  full_version:
+    description: "The full version number including build number"
+    value: ${{ steps.create_tag.outputs.full_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Git Tag
+      id: create_tag
+      shell: bash
+      run: |
+        version_number="${{ inputs.version_number }}"
+        tag_strategy="${{ inputs.tag_strategy }}"
+        allowed_formats="${{ inputs.allowed_formats }}"
+        
+        if [[ -z "$version_number" ]]; then
+          echo "::error::version_number is empty"
+          exit 1
+        fi
+        
+        echo "Processing version: $version_number"
+        echo "Tag strategy: $tag_strategy"
+        echo "Allowed formats: $allowed_formats"
+        
+        # Define regex patterns based on allowed formats
+        case "$allowed_formats" in
+          "standard")
+            pattern='^[0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$'
+            expected_format="x.y.z+build"
+            ;;
+          "rc")
+            pattern='^[0-9]+\.[0-9]+\.[0-9]+-RC\+[0-9]+$'
+            expected_format="x.y.z-RC+build"
+            ;;
+          "both")
+            pattern='^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'
+            expected_format="x.y.z+build or x.y.z-RC+build"
+            ;;
+          *)
+            echo "::error::Invalid allowed_formats: $allowed_formats. Expected: standard, rc, or both"
+            exit 1
+            ;;
+        esac
+        
+        # Validate version format
+        if ! echo "$version_number" | grep -qE "$pattern"; then
+          echo "::error::Invalid version format: $version_number. Expected format: $expected_format"
+          exit 1
+        fi
+        
+        # Determine tag version based on strategy
+        case "$tag_strategy" in
+          "full")
+            tag_version="$version_number"
+            ;;
+          "version-only")
+            # Extract version without build number
+            tag_version=$(echo "$version_number" | cut -d'+' -f1)
+            
+            # Validate tag version format
+            if ! echo "$tag_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
+              echo "::error::Invalid tag version format: $tag_version"
+              exit 1
+            fi
+            ;;
+          *)
+            echo "::error::Invalid tag_strategy: $tag_strategy. Expected: full or version-only"
+            exit 1
+            ;;
+        esac
+        
+        # Check if tag already exists
+        if git tag -l "v$tag_version" | grep -q "v$tag_version"; then
+          echo "::error::Tag v$tag_version already exists"
+          exit 1
+        fi
+        
+        # Create and push tag
+        echo "Creating tag: v$tag_version"
+        git tag "v$tag_version"
+        git push origin "v$tag_version"
+        
+        # Set outputs
+        echo "tag_version=$tag_version" >> $GITHUB_OUTPUT
+        echo "full_version=$version_number" >> $GITHUB_OUTPUT
+        
+        echo "Successfully created tag: v$tag_version"
+        echo "Full version: $version_number" 

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:core/core.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'dart:convert';
 import 'dart:io';
 

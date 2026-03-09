@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/presentation/tutorial/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
-class TutorialPage extends StatelessWidget {
+class TutorialPage extends StatefulWidget {
   const TutorialPage({
     required this.onCallback,
     super.key,
@@ -19,57 +20,115 @@ class TutorialPage extends StatelessWidget {
   final void Function() onCallback;
 
   @override
+  State<TutorialPage> createState() => _TutorialPageState();
+}
+
+class _TutorialPageState extends State<TutorialPage> {
+  late final ProductBloc _productBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// Dispatch init events once so that rebuilds do not re-trigger
+    /// them and cause inconsistent tour state.
+    _productBloc = coreSl<ProductBloc>()
+      ..add(const ProductEvent.init())
+      ..add(const ProductEvent.onLoadData());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AppLayout(),
-        ),
-
         /// using BlocProvider.value to avoid the issue where it tries
         /// to add events that is already closed.
         BlocProvider<ProductBloc>.value(
-          value: coreSl<ProductBloc>()
-            ..add(
-              const ProductEvent.onLoadData(),
-            ),
+          value: _productBloc,
         ),
         BlocProvider.value(
           value: coreSl<HomeBloc>(),
         ),
       ],
-      child: ProductTour(
-        onTourComplete: ({required bool shouldRestoreData}) {
-          if (shouldRestoreData) {
-            onCallback.call();
-            context.router.popUntilRoot();
-          }
-        },
-        builder: (_) {
-          return Scaffold(
-            key: scaffoldKeyTutorial,
-            appBar: AppBar(
-              title: const Text('Multichoice'),
-              leading: TourWidgetWrapper(
-                step: ProductTourStep.showSettings,
-                child: IconButton(
-                  onPressed: () {
-                    scaffoldKeyTutorial.currentState?.openDrawer();
-                  },
-                  tooltip: TooltipEnums.settings.tooltip,
-                  icon: const Icon(Icons.settings_outlined),
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.tutorial,
+        child: ProductTour(
+          onTourComplete: ({required shouldRestoreData}) {
+            if (shouldRestoreData) {
+              widget.onCallback.call();
+              context.router.popUntilRoot();
+            }
+          },
+          builder: (_) {
+            return Scaffold(
+              key: scaffoldKeyTutorial,
+              appBar: AppBar(
+                title: const Text('Multichoice'),
+                leading: TourWidgetWrapper(
+                  step: ProductTourStep.showSettings,
+                  child: IconButton(
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.tutorial,
+                          button: AnalyticsButton.settings,
+                          action: AnalyticsAction.open,
+                        ),
+                      );
+                      scaffoldKeyTutorial.currentState?.openDrawer();
+                    },
+                    tooltip: TooltipEnums.settings.tooltip,
+                    icon: const Icon(Icons.settings_outlined),
+                  ),
+                ),
+                actions: [
+                  TourWidgetWrapper(
+                    step: ProductTourStep.showEditAndSearch,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            await coreSl<IAnalyticsService>().logEvent(
+                              const UiActionEventData(
+                                page: AnalyticsPage.tutorial,
+                                button: AnalyticsButton.editOrder,
+                                action: AnalyticsAction.open,
+                              ),
+                            );
+                          },
+                          tooltip: 'Edit order',
+                          icon: const Icon(Icons.edit_outlined),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await coreSl<IAnalyticsService>().logEvent(
+                              const UiActionEventData(
+                                page: AnalyticsPage.tutorial,
+                                button: AnalyticsButton.search,
+                                action: AnalyticsAction.open,
+                              ),
+                            );
+                          },
+                          tooltip: TooltipEnums.search.tooltip,
+                          icon: const Icon(Icons.search_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              drawer: const TutorialDrawer(),
+              body: const SafeArea(
+                child: Stack(
+                  children: [
+                    TutorialBody(),
+                    TutorialBanner(),
+                  ],
                 ),
               ),
-            ),
-            drawer: const TutorialDrawer(),
-            body: const Stack(
-              children: [
-                TutorialBody(),
-                TutorialBanner(),
-              ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

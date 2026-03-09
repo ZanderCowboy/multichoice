@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -17,21 +19,26 @@ class EditEntryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: ctx.read<HomeBloc>(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit entry'),
-          centerTitle: false,
-          leading: IconButton(
-            onPressed: () {
-              ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
-              context.router.popUntilRoot();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.editEntry,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Edit entry'),
+            centerTitle: false,
+            leading: IconButton(
+              onPressed: () {
+                ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+                context.router.popUntilRoot();
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+              ),
             ),
           ),
+          body: const SafeArea(
+            child: _EditEntryPage(),
+          ),
         ),
-        body: const _EditEntryPage(),
       ),
     );
   }
@@ -61,8 +68,8 @@ class _EditEntryPage extends StatelessWidget {
                   initialValue: state.entry.title,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedEntryTitle(value),
-                        );
+                      HomeEvent.onChangedEntryTitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Title',
@@ -73,8 +80,8 @@ class _EditEntryPage extends StatelessWidget {
                   initialValue: state.entry.subtitle,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedEntrySubtitle(value),
-                        );
+                      HomeEvent.onChangedEntrySubtitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Subtitle',
@@ -87,8 +94,8 @@ class _EditEntryPage extends StatelessWidget {
                     OutlinedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
+                          const HomeEvent.onPressedCancel(),
+                        );
                         context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
@@ -96,9 +103,9 @@ class _EditEntryPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
                           ? () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const HomeEvent.onSubmitEditEntry());
+                              context.read<HomeBloc>().add(
+                                const HomeEvent.onSubmitEditEntry(),
+                              );
 
                               context.router.popUntilRoot();
                             }

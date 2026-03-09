@@ -1,0 +1,161 @@
+{
+  "_comment": "Example snippets you can add to .vscode/snippets.code-snippets",
+  "_instructions": "Copy the snippets you want into your snippets.code-snippets file",
+  
+  "Service Interface": {
+    "scope": "dart",
+    "prefix": "iservice",
+    "body": [
+      "abstract class I${1:ServiceName}Service {",
+      "  Future<Result<${2:ReturnType}>> ${3:methodName}();",
+      "}"
+    ],
+    "description": "Create a service interface"
+  },
+  
+  "Service Implementation": {
+    "scope": "dart",
+    "prefix": "service",
+    "body": [
+      "@injectable",
+      "class ${1:ServiceName}Service implements I${1:ServiceName}Service {",
+      "  ${1:ServiceName}Service();",
+      "",
+      "  @override",
+      "  Future<Result<${2:ReturnType}>> ${3:methodName}() async {",
+      "    try {",
+      "      // Implementation",
+      "      return Result.success(${4:value});",
+      "    } catch (e) {",
+      "      return Result.failure(Exception(e.toString()));",
+      "    }",
+      "  }",
+      "}"
+    ],
+    "description": "Create a service implementation"
+  },
+  
+  "Flutter Page": {
+    "scope": "dart",
+    "prefix": "fpage",
+    "body": [
+      "class ${1:PageName}Page extends StatelessWidget {",
+      "  const ${1:PageName}Page({super.key});",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return Scaffold(",
+      "      appBar: AppBar(",
+      "        title: const Text('${2:Page Title}'),",
+      "      ),",
+      "      body: _${1:PageName}Page(),",
+      "    );",
+      "  }",
+      "}",
+      "",
+      "class _${1:PageName}Page extends StatelessWidget {",
+      "  const _${1:PageName}Page();",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return const Placeholder();",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Flutter page with scaffold"
+  },
+  
+  "Freezed Model": {
+    "scope": "dart",
+    "prefix": "fmodel",
+    "body": [
+      "import 'package:freezed_annotation/freezed_annotation.dart';",
+      "",
+      "part '${1:model_name}.freezed.dart';",
+      "part '${1:model_name}.g.dart';",
+      "",
+      "@freezed",
+      "class ${2:ModelName} with _$${2:ModelName} {",
+      "  const factory ${2:ModelName}({",
+      "    required String id,",
+      "    ${3:// Add fields here}",
+      "  }) = _${2:ModelName};",
+      "",
+      "  factory ${2:ModelName}.fromJson(Map<String, dynamic> json) =>",
+      "      _$${2:ModelName}FromJson(json);",
+      "}"
+    ],
+    "description": "Create a Freezed model"
+  },
+  
+  "Repository Interface": {
+    "scope": "dart",
+    "prefix": "irepo",
+    "body": [
+      "abstract class I${1:EntityName}Repository {",
+      "  Future<Result<List<${1:EntityName}>>> getAll();",
+      "  Future<Result<${1:EntityName}>> getById(String id);",
+      "  Future<Result<${1:EntityName}>> create(${1:EntityName} entity);",
+      "  Future<Result<${1:EntityName}>> update(${1:EntityName} entity);",
+      "  Future<Result<void>> delete(String id);",
+      "}"
+    ],
+    "description": "Create a repository interface"
+  },
+  
+  "Stateless Widget": {
+    "scope": "dart",
+    "prefix": "swidget",
+    "body": [
+      "class ${1:WidgetName} extends StatelessWidget {",
+      "  const ${1:WidgetName}({",
+      "    super.key,",
+      "    ${2:// Add parameters}",
+      "  });",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return ${3:const Placeholder();}",
+      "  }",
+      "}"
+    ],
+    "description": "Create a stateless widget"
+  },
+  
+  "Stateful Widget": {
+    "scope": "dart",
+    "prefix": "fwidget",
+    "body": [
+      "class ${1:WidgetName} extends StatefulWidget {",
+      "  const ${1:WidgetName}({super.key});",
+      "",
+      "  @override",
+      "  State<${1:WidgetName}> createState() => _${1:WidgetName}State();",
+      "}",
+      "",
+      "class _${1:WidgetName}State extends State<${1:WidgetName}> {",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return ${2:const Placeholder();}",
+      "  }",
+      "}"
+    ],
+    "description": "Create a stateful widget"
+  },
+  
+  "Result Type": {
+    "scope": "dart",
+    "prefix": "result",
+    "body": [
+      "Future<Result<${1:ReturnType}>> ${2:methodName}() async {",
+      "  try {",
+      "    ${3:// Implementation}",
+      "    return Result.success(${4:value});",
+      "  } catch (e) {",
+      "    return Result.failure(Exception(e.toString()));",
+      "  }",
+      "}"
+    ],
+    "description": "Create a method returning Result type"
+  }
+}

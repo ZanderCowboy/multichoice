@@ -1,12 +1,29 @@
 part of '../../home_layout.dart';
 
-class _HorizontalHome extends HookWidget {
+class _HorizontalHome extends StatefulWidget {
   const _HorizontalHome();
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
+  State<_HorizontalHome> createState() => _HorizontalHomeState();
+}
 
+class _HorizontalHomeState extends State<_HorizontalHome> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
         // Only proceed if we have both previous and current tabs
@@ -21,9 +38,10 @@ class _HorizontalHome extends HookWidget {
       },
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!mounted || !_scrollController.hasClients) return;
+            await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
             );
@@ -32,11 +50,59 @@ class _HorizontalHome extends HookWidget {
       },
       builder: (context, state) {
         final tabs = state.tabs ?? [];
+        final isEditMode = state.isEditMode;
 
-        return Padding(
-          padding: horizontal8,
+        if (isEditMode && tabs.isNotEmpty) {
+          // Use ReorderableListView for edit mode
+          final theme = Theme.of(context);
+          return Padding(
+            padding: top4,
+            child: ReorderableListView.builder(
+              scrollController: _scrollController,
+              buildDefaultDragHandles: false,
+              physics: const AlwaysScrollableScrollPhysics(),
+              proxyDecorator: (child, index, animation) {
+                // Override Card theme to make it transparent when dragging
+                return Theme(
+                  data: theme.copyWith(
+                    cardTheme: theme.cardTheme.copyWith(
+                      color: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                  ),
+                  child: child,
+                );
+              },
+              itemCount: tabs.length,
+              onReorder: (oldIndex, newIndex) {
+                context.read<HomeBloc>().add(
+                  HomeEvent.onReorderTabs(oldIndex, newIndex),
+                );
+              },
+              itemBuilder: (_, index) {
+                final tab = tabs[index];
+                return Padding(
+                  key: ValueKey(tab.id),
+                  padding: const EdgeInsets.only(bottom: 8, top: 4),
+                  child: CollectionTab(
+                    tab: tab,
+                    isEditMode: isEditMode,
+                    dragIndex: index,
+                  ),
+                );
+              },
+            ),
+          );
+        }
+
+        // Normal mode
+        return RefreshIndicator(
+          onRefresh: () => _onHomeRefresh(context),
+          color: context.theme.appColors.ternary,
+          backgroundColor: context.theme.appColors.background,
           child: CustomScrollView(
-            controller: scrollController,
+            controller: _scrollController,
             scrollBehavior: CustomScrollBehaviour(),
             slivers: [
               SliverPadding(
@@ -46,13 +112,19 @@ class _HorizontalHome extends HookWidget {
                   itemBuilder: (_, index) {
                     final tab = tabs[index];
 
-                    return CollectionTab(tab: tab);
+                    return Padding(
+                      padding: vertical6,
+                      child: CollectionTab(
+                        tab: tab,
+                        isEditMode: isEditMode,
+                      ),
+                    );
                   },
                 ),
               ),
-              const SliverPadding(
-                padding: bottom24,
-                sliver: SliverToBoxAdapter(
+              SliverPadding(
+                padding: horizontal12 + bottom24,
+                sliver: const SliverToBoxAdapter(
                   child: NewTab(),
                 ),
               ),

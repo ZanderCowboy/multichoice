@@ -40,8 +40,9 @@ void main() {
     });
 
     test('should set isDarkMode to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsDarkMode(true);
 
@@ -69,8 +70,9 @@ void main() {
     });
 
     test('should set currentStep to 2', () async {
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setCurrentStep(2);
 
@@ -98,8 +100,9 @@ void main() {
     });
 
     test('should set isCompleted to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsCompleted(true);
 
@@ -127,8 +130,9 @@ void main() {
     });
 
     test('should set isLayoutVertical to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsLayoutVertical(true);
 
@@ -156,8 +160,9 @@ void main() {
     });
 
     test('should set isExistingUser to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsExistingUser(true);
 
@@ -175,19 +180,22 @@ void main() {
       verify(mockSharedPreferences.getBool(any)).called(1);
     });
 
-    test('should return true when isPermissionsChecked is set to true',
-        () async {
-      when(mockSharedPreferences.getBool(any)).thenReturn(true);
+    test(
+      'should return true when isPermissionsChecked is set to true',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(true);
 
-      final result = await appStorageService.isPermissionsChecked;
+        final result = await appStorageService.isPermissionsChecked;
 
-      expect(result, true);
-      verify(mockSharedPreferences.getBool(any)).called(1);
-    });
+        expect(result, true);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
 
     test('should set isPermissionsChecked to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsPermissionsChecked(true);
 
@@ -197,10 +205,12 @@ void main() {
 
   group('AppStorageService - Reset Tour', () {
     test('should reset tour steps and completion status', () async {
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.resetTour();
 
@@ -211,15 +221,17 @@ void main() {
 
   group('AppStorageService - Clear All Data', () {
     test('should clear all data in debug mode', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.clearAllData();
 
       verify(mockSharedPreferences.setInt(any, -1)).called(1);
-      verify(mockSharedPreferences.setBool(any, false)).called(5);
+      verify(mockSharedPreferences.setBool(any, false)).called(6);
     });
   });
 }

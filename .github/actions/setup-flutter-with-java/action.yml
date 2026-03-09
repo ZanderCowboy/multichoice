@@ -5,7 +5,7 @@ inputs:
   flutter_version:
     description: "Flutter version to use"
     required: false
-    default: "3.27.x"
+    default: "3.41.x"
   channel:
     description: "Flutter channel to use"
     required: false
@@ -47,3 +47,28 @@ runs:
     - name: Melos Rebuild All
       shell: bash
       run: melos rebuild:all
+
+    - name: Verify Setup
+      shell: bash
+      run: |
+        # Verify Flutter is installed
+        flutter --version || {
+          echo "::error::Flutter installation verification failed"
+          exit 1
+        }
+
+        # Verify Melos is installed
+        melos --version || {
+          echo "::error::Melos installation verification failed"
+          exit 1
+        }
+
+        # Verify Java if setup_java is true
+        if [[ "${{ inputs.setup_java }}" == "true" ]]; then
+          java -version || {
+            echo "::error::Java installation verification failed"
+            exit 1
+          }
+        fi
+
+        echo "✅ All tools verified successfully"

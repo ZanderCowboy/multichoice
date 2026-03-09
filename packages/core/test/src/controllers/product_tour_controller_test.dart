@@ -6,6 +6,7 @@ import 'package:core/src/controllers/implementations/product_tour_controller.dar
 import '../../mocks.mocks.dart';
 
 void main() {
+  const stableStepOffset = 1000;
   late ProductTourController controller;
   late MockAppStorageService mockAppStorageService;
 
@@ -25,67 +26,123 @@ void main() {
         expect(result, equals(ProductTourStep.noneCompleted));
       });
 
-      test('should return welcomePopup when current step is negative',
-          () async {
+      test(
+        'should return welcomePopup when current step is negative',
+        () async {
+          when(
+            mockAppStorageService.isCompleted,
+          ).thenAnswer((_) async => false);
+          when(mockAppStorageService.currentStep).thenAnswer((_) async => -1);
+
+          final result = await controller.currentStep;
+
+          expect(result, equals(ProductTourStep.welcomePopup));
+        },
+      );
+
+      test('should return correct step based on stored stable value', () async {
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
-        when(mockAppStorageService.currentStep).thenAnswer((_) async => -1);
+        when(mockAppStorageService.currentStep).thenAnswer(
+          (_) async => stableStepOffset + ProductTourStep.showCollection.value,
+        );
 
         final result = await controller.currentStep;
 
-        expect(result, equals(ProductTourStep.welcomePopup));
+        expect(result, equals(ProductTourStep.showCollection));
       });
 
-      test('should return correct step based on current step index', () async {
+      test(
+        'should migrate legacy stored index when step was shifted by new insertion',
+        () async {
+          when(
+            mockAppStorageService.isCompleted,
+          ).thenAnswer((_) async => false);
+          // Legacy index for showSettings before showEditAndSearch was inserted.
+          when(mockAppStorageService.currentStep).thenAnswer((_) async => 8);
+
+          final result = await controller.currentStep;
+
+          expect(result, equals(ProductTourStep.showSettings));
+          verify(
+            mockAppStorageService.setCurrentStep(
+              stableStepOffset + ProductTourStep.showSettings.value,
+            ),
+          ).called(1);
+        },
+      );
+
+      test('should encode non-shifted legacy index on read', () async {
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
-        when(mockAppStorageService.currentStep).thenAnswer((_) async => 1);
+        when(mockAppStorageService.currentStep).thenAnswer((_) async => 3);
 
         final result = await controller.currentStep;
 
-        expect(result, equals(ProductTourStep.values[1]));
+        expect(result, equals(ProductTourStep.addNewCollection));
+        verify(
+          mockAppStorageService.setCurrentStep(
+            stableStepOffset + ProductTourStep.addNewCollection.value,
+          ),
+        ).called(1);
       });
     });
 
     group('nextStep', () {
       test('should move to next step when not at last step', () async {
-        when(mockAppStorageService.currentStep).thenAnswer((_) async => 0);
+        when(mockAppStorageService.currentStep).thenAnswer(
+          (_) async => stableStepOffset,
+        );
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
 
         await controller.nextStep();
 
-        verify(mockAppStorageService.setCurrentStep(1)).called(1);
+        verify(
+          mockAppStorageService.setCurrentStep(stableStepOffset + 1),
+        ).called(1);
       });
 
-      test('should complete tour when at second to last step', () async {
-        when(mockAppStorageService.currentStep)
-            .thenAnswer((_) async => ProductTourStep.values.length - 3);
+      test('should move to thanks popup when at close settings', () async {
+        when(
+          mockAppStorageService.currentStep,
+        ).thenAnswer((_) async => stableStepOffset + 13);
+        when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
+
+        await controller.nextStep();
+
+        verify(
+          mockAppStorageService.setCurrentStep(stableStepOffset + 14),
+        ).called(1);
+      });
+
+      test('should complete tour when at thanks popup', () async {
+        when(
+          mockAppStorageService.currentStep,
+        ).thenAnswer((_) async => stableStepOffset + 14);
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
 
         await controller.nextStep();
 
         verify(mockAppStorageService.setIsCompleted(true)).called(1);
       });
-
-      test('should throw exception when at last step', () async {
-        when(mockAppStorageService.currentStep)
-            .thenAnswer((_) async => ProductTourStep.values.length - 2);
-        when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
-
-        expect(() => controller.nextStep(), throwsException);
-      });
     });
 
     group('previousStep', () {
       test('should move to previous step when not at first step', () async {
-        when(mockAppStorageService.currentStep).thenAnswer((_) async => 1);
+        when(mockAppStorageService.currentStep).thenAnswer(
+          (_) async => stableStepOffset + 1,
+        );
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
 
         await controller.previousStep();
 
-        verify(mockAppStorageService.setCurrentStep(0)).called(1);
+        verify(
+          mockAppStorageService.setCurrentStep(stableStepOffset),
+        ).called(1);
       });
 
       test('should throw exception when at first step', () async {
-        when(mockAppStorageService.currentStep).thenAnswer((_) async => 0);
+        when(
+          mockAppStorageService.currentStep,
+        ).thenAnswer((_) async => stableStepOffset);
         when(mockAppStorageService.isCompleted).thenAnswer((_) async => false);
 
         expect(() => controller.previousStep(), throwsException);

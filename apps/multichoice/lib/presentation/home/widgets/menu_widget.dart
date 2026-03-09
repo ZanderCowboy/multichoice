@@ -32,9 +32,9 @@ class MenuWidget extends StatelessWidget {
           },
           menuChildren: [
             MenuItemButton(
-              onPressed: () {
+              onPressed: () async {
                 context.read<HomeBloc>().add(HomeEvent.onUpdateTabId(tab.id));
-                context.router.push(EditTabPageRoute(ctx: context));
+                await context.router.push(EditTabPageRoute(ctx: context));
               },
               child: Text(MenuItems.edit.name),
             ),
@@ -46,9 +46,9 @@ class MenuWidget extends StatelessWidget {
                         title: RichText(
                           text: TextSpan(
                             text: 'Delete all entries of ',
-                            style: DefaultTextStyle.of(context)
-                                .style
-                                .copyWith(fontSize: 24),
+                            style: DefaultTextStyle.of(
+                              context,
+                            ).style.copyWith(fontSize: 24),
                             children: [
                               TextSpan(
                                 text: tab.title,
@@ -58,9 +58,9 @@ class MenuWidget extends StatelessWidget {
                               ),
                               TextSpan(
                                 text: '?',
-                                style: DefaultTextStyle.of(context)
-                                    .style
-                                    .copyWith(fontSize: 24),
+                                style: DefaultTextStyle.of(
+                                  context,
+                                ).style.copyWith(fontSize: 24),
                               ),
                             ],
                           ),
@@ -76,8 +76,8 @@ class MenuWidget extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               context.read<HomeBloc>().add(
-                                    HomeEvent.onPressedDeleteAllEntries(tab.id),
-                                  );
+                                HomeEvent.onPressedDeleteAllEntries(tab.id),
+                              );
                               Navigator.of(context).pop();
                             },
                             child: const Text('Delete Entries'),
@@ -98,10 +98,10 @@ class MenuWidget extends StatelessWidget {
                   ),
                   onConfirm: () {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onLongPressedDeleteTab(
-                            tab.id,
-                          ),
-                        );
+                      HomeEvent.onLongPressedDeleteTab(
+                        tab.id,
+                      ),
+                    );
                     Navigator.of(context).pop();
                   },
                 );

@@ -7,6 +7,15 @@
 /apps/showcase/
 /tools/
 
+# Multichoice V2
+**/gradle-wrapper.jar
+**/.gradle
+**/captures/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+**/GeneratedPluginRegistrant.java
+
 # Files and directories created by pub
 .dart_tool/
 .packages
@@ -20,7 +29,6 @@ pubspec.lock
 **/ios/Flutter/.last_build_id
 
 # Generated Code
-**/*.freezed.dart
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart
@@ -28,10 +36,9 @@ pubspec.lock
 **/*.gr.dart
 **/*.isar
 **/*.isar.lock
-**/libisar.dylib
 **/*.isar-lck
 **/isar.dll
-**/libisar.so
+**/libisar.**
 **/coverage
 **/*.mocks.dart
 **/functions/node_modules/
@@ -73,6 +80,7 @@ upload-keystore.*
 .svn/
 migrate_working_dir/
 devtools_options.yaml
+**/node_modules/
 
 # IntelliJ related
 *.iml

@@ -56,14 +56,29 @@ class MoreSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
           title: const Text('Send Feedback'),
-          onTap: () {
-            context.router.push(const FeedbackPageRoute());
+          onTap: () async {
+            await context.router.push(const FeedbackPageRoute());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.history),
+          title: const Text('Changelog'),
+          onTap: () async {
+            await context.router.push(const ChangelogPageRoute());
           },
         ),
         ListTile(
           leading: const Icon(Icons.info_outline),
           title: const Text('About'),
           onTap: () async {
+            await coreSl<IAnalyticsService>().logEvent(
+              const UiActionEventData(
+                page: AnalyticsPage.settings,
+                button: AnalyticsButton.about,
+                action: AnalyticsAction.open,
+                source: 'about',
+              ),
+            );
             final appVersion = await coreSl<IAppInfoService>().getAppVersion();
 
             if (!context.mounted) return;

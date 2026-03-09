@@ -36,8 +36,10 @@ class TutorialBody extends StatelessWidget {
                     final tab = tabs[index];
 
                     if (tabs.isNotEmpty && index == 0) {
-                      final step =
-                          context.watch<ProductBloc>().state.currentStep;
+                      final step = context
+                          .watch<ProductBloc>()
+                          .state
+                          .currentStep;
 
                       if (step == ProductTourStep.showCollection) {
                         return TourWidgetWrapper(
@@ -85,6 +87,7 @@ class _HorizontalTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
     final entries = tab.entries;
     final isFirstTab =
         context.watch<ProductBloc>().state.tabs?.first.id == tab.id;
@@ -111,10 +114,10 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style:
-                              context.theme.appTextTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                          ),
+                          style: context.theme.appTextTheme.titleMedium
+                              ?.copyWith(
+                                fontSize: 16,
+                              ),
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
@@ -174,19 +177,35 @@ class _HorizontalTab extends StatelessWidget {
                     if (step == ProductTourStep.showItemsInCollection) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemsInCollection,
-                        child: EntryCard(entry: entry, onDoubleTap: () {}),
+                        child: EntryCard(
+                          entry: entry,
+                          onDoubleTap: () {},
+                          isLayoutVertical: appLayout.isLayoutVertical,
+                        ),
                       );
                     } else if (step == ProductTourStep.showItemActions) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemActions,
-                        child: EntryCard(entry: entry, onDoubleTap: () {}),
+                        child: EntryCard(
+                          entry: entry,
+                          onDoubleTap: () {},
+                          isLayoutVertical: appLayout.isLayoutVertical,
+                        ),
                       );
                     }
 
-                    return EntryCard(entry: entry, onDoubleTap: () {});
+                    return EntryCard(
+                      entry: entry,
+                      onDoubleTap: () {},
+                      isLayoutVertical: appLayout.isLayoutVertical,
+                    );
                   }
 
-                  return EntryCard(entry: entry, onDoubleTap: () {});
+                  return EntryCard(
+                    entry: entry,
+                    onDoubleTap: () {},
+                    isLayoutVertical: appLayout.isLayoutVertical,
+                  );
                 },
               ),
             ],

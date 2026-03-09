@@ -1,142 +1,147 @@
 part of '../home_page.dart';
 
-class EntryCard extends HookWidget {
+class EntryCard extends StatelessWidget {
   const EntryCard({
     required this.entry,
     required this.onDoubleTap,
+    required this.isLayoutVertical,
+    this.isEditMode = false,
+    this.dragIndex,
     super.key,
   });
 
   final EntryDTO entry;
   final VoidCallback onDoubleTap;
+  final bool isLayoutVertical;
+  final bool isEditMode;
+  final int? dragIndex;
 
   @override
   Widget build(BuildContext context) {
-    final menuController = MenuController();
-    final appLayout = context.watch<AppLayout>();
-
-    if (!appLayout.isInitialized) {
-      return CircularLoader.small();
-    }
-
-    final isLayoutVertical = appLayout.isLayoutVertical;
-
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return MenuAnchor(
-          controller: menuController,
-          consumeOutsideTap: true,
-          builder: (context, controller, child) {
-            return child ?? const SizedBox.shrink();
-          },
-          menuChildren: [
-            MenuItemButton(
-              onPressed: () {
-                context.read<HomeBloc>().add(
-                      HomeEvent.onUpdateEntry(entry.id),
-                    );
-                context.router.push(EditEntryPageRoute(ctx: context));
-              },
-              child: Text(MenuItems.edit.name),
-            ),
-            MenuItemButton(
-              onPressed: () => _onDeleteEntry(context),
-              child: Text(MenuItems.delete.name),
-            ),
-          ],
-          child: GestureDetector(
-            onTap: () {
-              context.router.push(
-                DetailsPageRoute(
-                  // TODO: Change type to be dynamic
-                  result: SearchResult(
-                    isTab: false,
-                    item: entry,
-                    matchScore: 0,
-                  ),
-                  onBack: () {
-                    context.read<HomeBloc>().add(const HomeEvent.refresh());
-                    context.router.pop();
-                  },
+    return GestureDetector(
+      onTap: isEditMode
+          ? null
+          : () async {
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.entry,
+                  action: AnalyticsAction.open,
+                  tabId: entry.tabId,
+                  entryId: entry.id,
                 ),
               );
-            },
-            onDoubleTap: onDoubleTap,
-            onLongPress: () {
-              if (menuController.isOpen) {
-                menuController.close();
-              } else {
-                menuController.open();
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    // TODO: Change type to be dynamic
+                    result: SearchResult(
+                      isTab: false,
+                      item: entry,
+                      matchScore: 0,
+                    ),
+                    onBack: () {
+                      context.router.pop();
+                    },
+                  ),
+                );
               }
             },
-            child: Padding(
-              padding: isLayoutVertical ? allPadding2 : allPadding4,
-              child: Card(
-                elevation: 3,
-                shadowColor: Colors.grey[400],
-                shape: RoundedRectangleBorder(
-                  borderRadius: borderCircular5,
-                ),
-                margin: EdgeInsets.zero,
-                color: context.theme.appColors.secondary,
-                child: Padding(
-                  padding: allPadding4,
-                  child: SizedBox(
-                    height: UIConstants.entryHeight(context),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entry.title,
-                          style:
-                              context.theme.appTextTheme.titleSmall?.copyWith(
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                            height: 1,
+      onDoubleTap: isEditMode ? null : onDoubleTap,
+      // Disable onLongPress during edit mode so ReorderableGridDragStartListener can work
+      onLongPress: isEditMode
+          ? null
+          : () async {
+              final bloc = context.read<HomeBloc>();
+              if (!bloc.state.isEditMode) {
+                await _triggerEditModeHaptic();
+                bloc.add(const HomeEvent.onToggleEditMode());
+              }
+            },
+      child: Padding(
+        padding: isLayoutVertical ? allPadding2 : allPadding4,
+        child: Card(
+          elevation: 3,
+          shadowColor: context.theme.appColors.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: borderCircular5,
+          ),
+          margin: EdgeInsets.zero,
+          color: context.theme.appColors.secondary,
+          child: Padding(
+            padding: allPadding4,
+            child: SizedBox(
+              height: UIConstants.entryHeight(context),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isEditMode && dragIndex != null)
+                        Padding(
+                          padding: horizontal4,
+                          child: isLayoutVertical
+                              ? ReorderableDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.unfold_more,
+                                    size: 24,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                )
+                              : ReorderableGridDelayedDragStartListener(
+                                  index: dragIndex!,
+                                  child: Icon(
+                                    Icons.open_with,
+                                    size: 24,
+                                    color: context.theme.appColors.ternary,
+                                  ),
+                                ),
+                        )
+                      else if (isEditMode)
+                        Padding(
+                          padding: horizontal4,
+                          child: Icon(
+                            isLayoutVertical
+                                ? Icons.unfold_more
+                                : Icons.open_with,
+                            size: 24,
+                            color: context.theme.appColors.ternary,
                           ),
+                        ),
+                      Expanded(
+                        child: Text(
+                          entry.title,
+                          style: context.theme.appTextTheme.titleSmall
+                              ?.copyWith(
+                                fontSize: 16,
+                                letterSpacing: 0.3,
+                                height: 1,
+                              ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
-                        gap4,
-                        Text(
-                          entry.subtitle,
-                          style: context.theme.appTextTheme.subtitleSmall
-                              ?.copyWith(
-                            fontSize: 12,
-                            letterSpacing: 0.5,
-                            height: 1.25,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
+                  gap4,
+                  Text(
+                    entry.subtitle,
+                    style: context.theme.appTextTheme.subtitleSmall?.copyWith(
+                      fontSize: 12,
+                      letterSpacing: 0.5,
+                      height: 1.25,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                  ),
+                ],
               ),
             ),
           ),
-        );
-      },
-    );
-  }
-
-  void _onDeleteEntry(BuildContext context) {
-    deleteModal(
-      context: context,
-      title: entry.title,
-      content: Text(
-        "Are you sure you want to delete ${entry.title} and all it's data?",
+        ),
       ),
-      onConfirm: () {
-        context.read<HomeBloc>().add(
-              HomeEvent.onLongPressedDeleteEntry(
-                entry.tabId,
-                entry.id,
-              ),
-            );
-        Navigator.of(context).pop();
-      },
     );
   }
 }

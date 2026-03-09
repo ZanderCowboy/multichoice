@@ -5,8 +5,9 @@ import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart
 import '../../../../helpers/export.dart';
 
 void main() {
-  testWidgets('deleteModal displays correctly and handles actions',
-      (WidgetTester tester) async {
+  testWidgets('deleteModal displays correctly and handles actions', (
+    tester,
+  ) async {
     var confirmPressed = false;
     var cancelPressed = false;
 
@@ -44,8 +45,9 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    final richTextWidget =
-        tester.widget<RichText>(find.byKey(keys.deleteModalTitle));
+    final richTextWidget = tester.widget<RichText>(
+      find.byKey(keys.deleteModalTitle),
+    );
 
     final textSpan = richTextWidget.text as TextSpan;
     expect(textSpan.text, 'Delete ');
@@ -72,8 +74,9 @@ void main() {
     expect(confirmPressed, isTrue);
   });
 
-  testWidgets('deleteModal displays correctly and handles actions',
-      (WidgetTester tester) async {
+  testWidgets('deleteModal displays correctly and handles actions', (
+    tester,
+  ) async {
     var confirmPressed = false;
 
     await tester.pumpWidget(
@@ -108,8 +111,9 @@ void main() {
 
     expect(find.byType(AlertDialog), findsOneWidget);
 
-    final richTextWidget =
-        tester.widget<RichText>(find.byKey(keys.deleteModalTitle));
+    final richTextWidget = tester.widget<RichText>(
+      find.byKey(keys.deleteModalTitle),
+    );
 
     final textSpan = richTextWidget.text as TextSpan;
     expect(textSpan.text, 'Delete ');

@@ -1,0 +1,29 @@
+---
+title: Example Refactoring Plan
+status: in-progress
+priority: medium
+tags: [refactoring, technical-debt]
+---
+
+# Example Refactoring Plan
+
+This demonstrates how to plan a refactoring effort.
+
+## Current State
+Description of the current implementation and its issues.
+
+## Target State
+Description of the desired state after refactoring.
+
+## Risks
+- Risk 1 and mitigation strategy
+- Risk 2 and mitigation strategy
+
+## Migration Strategy
+1. Phase 1: Preparation
+2. Phase 2: Incremental changes
+3. Phase 3: Cleanup
+
+## Success Criteria
+- Criterion 1
+- Criterion 2

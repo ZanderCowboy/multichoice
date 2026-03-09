@@ -4,7 +4,8 @@ import 'dart:typed_data';
 import 'package:core/core.dart';
 
 class DataTransferService {
-  final _dataExchangeService = coreSl<IDataExchangeService>();
+  final IDataExchangeService _dataExchangeService =
+      coreSl<IDataExchangeService>();
 
   Future<bool> isDBEmpty() => _dataExchangeService.isDBEmpty();
 
