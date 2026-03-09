@@ -21,3 +21,4 @@
   - Extract HomePageWrapper to separate file
 - Update all BLoC tests with analytics service mocks
 - Add comprehensive analytics service test coverage
+- Update SearchResultCard icon based on collection or item

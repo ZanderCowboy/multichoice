@@ -31,6 +31,7 @@ class _SearchBody extends StatelessWidget {
             return SearchResultCard(
               title: title,
               subtitle: subtitle,
+              isTab: isTab,
               onTap: () async {
                 await coreSl<IAnalyticsService>().logEvent(
                   SearchResultOpenedEventData(
