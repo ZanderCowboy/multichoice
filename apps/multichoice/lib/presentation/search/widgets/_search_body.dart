@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 part of '../search_page.dart';
 
 class _SearchBody extends StatelessWidget {
