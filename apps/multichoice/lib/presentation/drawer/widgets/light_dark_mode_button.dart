@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 part of 'export.dart';
 
 class LightDarkModeButton extends StatefulWidget {
@@ -42,6 +44,14 @@ class _LightDarkModeButtonState extends State<LightDarkModeButton> {
         setState(() {
           _isDark = !_isDark;
         });
+        await coreSl<IAnalyticsService>().logEvent(
+          UiActionEventData(
+            page: AnalyticsPage.settings,
+            button: AnalyticsButton.theme,
+            action: AnalyticsAction.tap,
+            source: _isDark ? 'dark_mode' : 'light_mode',
+          ),
+        );
         context.read<AppTheme>().themeMode = _isDark
             ? ThemeMode.dark
             : ThemeMode.light;

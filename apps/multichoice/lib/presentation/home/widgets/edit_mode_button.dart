@@ -11,6 +11,21 @@ class EditModeButton extends StatelessWidget {
           onPressed: () async {
             if (!state.isEditMode) {
               await _triggerEditModeHaptic();
+              await coreSl<IAnalyticsService>().logEvent(
+                const UiActionEventData(
+                  page: AnalyticsPage.home,
+                  button: AnalyticsButton.editOrder,
+                  action: AnalyticsAction.open,
+                ),
+              );
+            } else {
+              await coreSl<IAnalyticsService>().logEvent(
+                const UiActionEventData(
+                  page: AnalyticsPage.home,
+                  button: AnalyticsButton.editOrder,
+                  action: AnalyticsAction.close,
+                ),
+              );
             }
             // ignore: use_build_context_synchronously
             context.read<HomeBloc>().add(

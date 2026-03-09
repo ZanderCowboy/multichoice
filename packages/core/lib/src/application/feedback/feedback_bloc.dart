@@ -11,9 +11,13 @@ part 'feedback_bloc.g.dart';
 
 @Injectable()
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
-  final IFeedbackRepository repository;
+  final IFeedbackRepository _feedbackRepository;
+  final IAnalyticsService _analyticsService;
 
-  FeedbackBloc(this.repository) : super(FeedbackState.initial()) {
+  FeedbackBloc(
+    this._feedbackRepository,
+    this._analyticsService,
+  ) : super(FeedbackState.initial()) {
     on<FeedbackEvent>((event, emit) async {
       switch (event) {
         case SubmitFeedback(:final feedback):
@@ -26,28 +30,59 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               errorMessage: null,
             ),
           );
-
-          final result = await repository.submitFeedback(feedback);
-
-          result.fold(
-            (error) => emit(
-              state.copyWith(
-                feedback: feedback,
-                isLoading: false,
-                isSuccess: false,
-                isError: true,
-                errorMessage: error.message,
-              ),
+          await _analyticsService.logEvent(
+            FeedbackEventData(
+              page: AnalyticsPage.feedback,
+              action: AnalyticsAction.submit,
+              category: feedback.category,
+              rating: feedback.rating,
             ),
-            (_) => emit(
-              state.copyWith(
-                feedback: feedback,
-                isLoading: false,
-                isSuccess: true,
-                isError: false,
-                errorMessage: null,
-              ),
-            ),
+          );
+
+          final result = await _feedbackRepository.submitFeedback(feedback);
+
+          await result.fold(
+            (error) async {
+              await _analyticsService.logEvent(
+                FeedbackEventData(
+                  page: AnalyticsPage.feedback,
+                  action: AnalyticsAction.failure,
+                  category: feedback.category,
+                  rating: feedback.rating,
+                  errorMessage: error.message,
+                ),
+              );
+
+              emit(
+                state.copyWith(
+                  feedback: feedback,
+                  isLoading: false,
+                  isSuccess: false,
+                  isError: true,
+                  errorMessage: error.message,
+                ),
+              );
+            },
+            (_) async {
+              await _analyticsService.logEvent(
+                FeedbackEventData(
+                  page: AnalyticsPage.feedback,
+                  action: AnalyticsAction.success,
+                  category: feedback.category,
+                  rating: feedback.rating,
+                ),
+              );
+
+              emit(
+                state.copyWith(
+                  feedback: feedback,
+                  isLoading: false,
+                  isSuccess: true,
+                  isError: false,
+                  errorMessage: null,
+                ),
+              );
+            },
           );
         case ResetFeedback():
           emit(FeedbackState.initial());

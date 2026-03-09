@@ -54,6 +54,7 @@ class ReusableForm extends StatelessWidget {
               onChanged: onTitleChanged,
               onTap: onTitleTap,
               textAlignVertical: TextAlignVertical.top,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 alignLabelWithHint: true,
                 labelText: 'Enter a Title',
@@ -67,6 +68,7 @@ class ReusableForm extends StatelessWidget {
               onChanged: onSubtitleChanged,
               onTap: onSubtitleTap,
               textAlignVertical: TextAlignVertical.top,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 alignLabelWithHint: true,
                 labelText: 'Enter a Subtitle',

@@ -14,6 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(
     this._tabsRepository,
     this._entryRepository,
+    this._analyticsService,
   ) : super(HomeState.initial()) {
     on<HomeEvent>(_onEvent);
   }
@@ -73,6 +74,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleGetTabs(Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));
     final tabs = await _tabsRepository.readTabs();
+
+    // Log collection and item counts for analytics
+    if (tabs.isNotEmpty) {
+      final entries = await _entryRepository.readAllEntries();
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.open,
+          itemCount: tabs.length,
+        ),
+      );
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.open,
+          itemCount: entries.length,
+        ),
+      );
+    }
+
     emit(state.copyWith(tabs: tabs, isLoading: false));
   }
 
@@ -91,6 +116,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await _tabsRepository.addTab(
         title: updatedTitle,
         subtitle: updatedSubtitle,
+      );
+      await _analyticsService.logEvent(
+        const CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.create,
+        ),
       );
     } else {
       emit(state.copyWith(errorMessage: 'Failed to add collection.'));
@@ -120,6 +152,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         title: updatedTitle,
         subtitle: updatedSubtitle,
       );
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.create,
+          tabId: tab.id,
+        ),
+      );
     } else {
       emit(state.copyWith(errorMessage: 'Failed to add item.'));
     }
@@ -139,6 +179,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleDeleteTab(int tabId, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true, isDeleted: true));
     await _tabsRepository.deleteTab(tabId: tabId);
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.tab,
+        action: AnalyticsAction.delete,
+        tabId: tabId,
+      ),
+    );
     final tabs = await _tabsRepository.readTabs();
     emit(
       state.copyWith(
@@ -157,6 +205,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.copyWith(isLoading: true, isDeleted: true));
     await _entryRepository.deleteEntry(tabId: tabId, entryId: entryId);
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.entry,
+        action: AnalyticsAction.delete,
+        tabId: tabId,
+        entryId: entryId,
+      ),
+    );
     final entryCards = await _entryRepository.readEntries(tabId: tabId);
     final tabs = await _tabsRepository.readTabs();
     emit(
@@ -178,6 +235,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = await _tabsRepository.readTabs();
 
     if (result) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.allEntries,
+          action: AnalyticsAction.delete,
+          tabId: tabId,
+        ),
+      );
       emit(
         state.copyWith(
           tabs: tabs,
@@ -195,6 +260,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final result = await _tabsRepository.deleteTabs();
 
     if (result) {
+      await _analyticsService.logEvent(
+        const CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.allTabs,
+          action: AnalyticsAction.delete,
+        ),
+      );
       emit(
         state.copyWith(
           tab: TabsDTO.empty(),
@@ -261,6 +333,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       title: updatedTitle,
       subtitle: updatedSubtitle,
     );
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.tab,
+        action: AnalyticsAction.update,
+        tabId: tab.id,
+      ),
+    );
 
     final tabs = await _tabsRepository.readTabs();
     emit(
@@ -284,6 +364,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       tabId: entry.tabId,
       title: updatedTitle,
       subtitle: updatedSubtitle,
+    );
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.entry,
+        action: AnalyticsAction.update,
+        tabId: entry.tabId,
+        entryId: entry.id,
+      ),
     );
 
     final tabs = await _tabsRepository.readTabs();
@@ -388,6 +477,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // Persist the new order to the database
     final tabIds = updatedTabs.map((t) => t.id).toList();
     final success = await _tabsRepository.updateTabsOrder(tabIds);
+    if (success) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.reorder,
+          itemCount: tabIds.length,
+        ),
+      );
+    }
 
     // If persistence failed, revert to original order
     if (!success) {
@@ -451,6 +550,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       tabId: tabId,
       entryIds: entryIds,
     );
+    if (success) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.reorder,
+          tabId: tabId,
+          itemCount: entryIds.length,
+        ),
+      );
+    }
 
     // If persistence failed, revert to original order
     if (!success) {
@@ -461,4 +571,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
+  final IAnalyticsService _analyticsService;
 }

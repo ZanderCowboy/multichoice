@@ -133,7 +133,7 @@ class _VerticalHomeState extends State<_VerticalHome> {
                     },
                   ),
                   const SliverPadding(
-                    padding: right12,
+                    padding: horizontal6,
                     sliver: SliverToBoxAdapter(
                       child: NewTab(),
                     ),

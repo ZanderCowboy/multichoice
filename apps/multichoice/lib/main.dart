@@ -1,11 +1,10 @@
-import 'dart:async';
 import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/bootstrap/bootstrap.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/bootstrap.dart';
 import 'package:multichoice/crashlytics_setup.dart';
 import 'package:window_size/window_size.dart';
 
@@ -30,5 +29,5 @@ void main() async {
   }
 
   runApp(Multichoice());
-  unawaited(initializeNonCriticalServices());
+  // unawaited(initializeNonCriticalServices());
 }

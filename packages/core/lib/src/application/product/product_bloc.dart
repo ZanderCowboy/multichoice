@@ -14,11 +14,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(
     this._productTourController,
     this._tutorialRepository,
+    this._analyticsService,
   ) : super(ProductState.initial()) {
     on<ProductEvent>((event, emit) async {
       switch (event) {
         case OnInit():
           final currentStep = await _productTourController.currentStep;
+          await _analyticsService.logEvent(
+            TutorialEventData(
+              page: AnalyticsPage.tutorial,
+              action: AnalyticsAction.open,
+              step: currentStep,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -31,6 +39,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         case OnNextStep():
           await _productTourController.nextStep();
           final currentStep = await _productTourController.currentStep;
+          await _analyticsService.logEvent(
+            TutorialEventData(
+              page: AnalyticsPage.tutorial,
+              action: AnalyticsAction.next,
+              step: currentStep,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -44,6 +59,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         case OnPreviousStep():
           await _productTourController.previousStep();
           final currentStep = await _productTourController.currentStep;
+          await _analyticsService.logEvent(
+            TutorialEventData(
+              page: AnalyticsPage.tutorial,
+              action: AnalyticsAction.previous,
+              step: currentStep,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -55,6 +77,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           break;
         case OnSkipTour():
           await _productTourController.completeTour();
+          await _analyticsService.logEvent(
+            const TutorialEventData(
+              page: AnalyticsPage.tutorial,
+              action: AnalyticsAction.skip,
+              step: ProductTourStep.noneCompleted,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -68,6 +97,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(state.copyWith(isLoading: true));
 
           await _productTourController.resetTour();
+          await _analyticsService.logEvent(
+            const TutorialEventData(
+              page: AnalyticsPage.tutorial,
+              action: AnalyticsAction.reset,
+              step: ProductTourStep.reset,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -79,6 +115,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           break;
         case OnLoadData():
           final tabs = await _tutorialRepository.loadTutorialData();
+          await _analyticsService.logEvent(
+            CrudEventData(
+              page: AnalyticsPage.tutorial,
+              entity: AnalyticsEntity.tab,
+              action: AnalyticsAction.open,
+              itemCount: tabs.length,
+            ),
+          );
 
           emit(
             state.copyWith(
@@ -102,4 +146,5 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   final IProductTourController _productTourController;
   final ITutorialRepository _tutorialRepository;
+  final IAnalyticsService _analyticsService;
 }

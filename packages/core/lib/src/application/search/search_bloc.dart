@@ -11,7 +11,10 @@ part 'search_bloc.g.dart';
 
 @Injectable()
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc(this._searchRepository) : super(SearchState.initial()) {
+  SearchBloc(
+    this._searchRepository,
+    this._analyticsService,
+  ) : super(SearchState.initial()) {
     on<SearchEvent>((event, emit) async {
       switch (event) {
         case Search(:final query):
@@ -45,6 +48,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
                 query: query,
               ),
             );
+            await _analyticsService.logEvent(
+              SearchEventData(
+                page: AnalyticsPage.search,
+                action: AnalyticsAction.search,
+                queryLength: query.length,
+                resultCount: results.length,
+              ),
+            );
           } catch (e) {
             emit(
               state.copyWith(
@@ -63,6 +74,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
           try {
             final results = await _searchRepository.search(state.query);
+            await _analyticsService.logEvent(
+              SearchEventData(
+                page: AnalyticsPage.search,
+                action: AnalyticsAction.search,
+                queryLength: state.query.length,
+                resultCount: results.length,
+              ),
+            );
             emit(
               state.copyWith(
                 results: results,
@@ -83,4 +102,5 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   final ISearchRepository _searchRepository;
+  final IAnalyticsService _analyticsService;
 }

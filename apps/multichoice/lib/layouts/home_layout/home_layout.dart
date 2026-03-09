@@ -84,11 +84,9 @@ class HomeLayout extends StatelessWidget {
           );
         }
       },
-      child: Center(
-        child: appLayout.isLayoutVertical
-            ? const _VerticalHome()
-            : const _HorizontalHome(),
-      ),
+      child: appLayout.isLayoutVertical
+          ? const _VerticalHome()
+          : const _HorizontalHome(),
     );
   }
 }

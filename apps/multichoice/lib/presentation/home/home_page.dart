@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+﻿import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
+import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -27,29 +28,6 @@ part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 part 'widgets/search_button.dart';
-
-@RoutePage()
-class HomePageWrapper extends StatelessWidget {
-  const HomePageWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => coreSl<ProductBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => coreSl<SearchBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => coreSl<DetailsBloc>(),
-        ),
-      ],
-      child: const HomePage(),
-    );
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -86,73 +64,90 @@ class _HomePageState extends State<_HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // this ShowCaseWidget is here to fix an issue where it complains
-    // about ShowCaseView context not being available
-    // ignore: deprecated_member_use
-    return ShowCaseWidget(
-      builder: (context) => BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-            previous.isEditMode != current.isEditMode,
-        builder: (context, state) {
-          return PopScope(
-            canPop: !state.isEditMode && !_isDrawerOpen,
-            onPopInvokedWithResult: (didPop, _) {
-              if (didPop) return;
+    return AnalyticsPageTracker(
+      page: AnalyticsPage.home,
+      // this ShowCaseWidget is here to fix an issue where it complains
+      // about ShowCaseView context not being available
+      // ignore: deprecated_member_use
+      child: ShowCaseWidget(
+        builder: (context) => BlocBuilder<HomeBloc, HomeState>(
+          buildWhen: (previous, current) =>
+              previous.isEditMode != current.isEditMode,
+          builder: (context, state) {
+            return PopScope(
+              canPop: !state.isEditMode && !_isDrawerOpen,
+              onPopInvokedWithResult: (didPop, _) {
+                if (didPop) return;
 
-              if (_isDrawerOpen) {
-                Navigator.of(context).pop();
-                return;
-              }
+                if (_isDrawerOpen) {
+                  Navigator.of(context).pop();
+                  return;
+                }
 
-              if (state.isEditMode) {
-                context.read<HomeBloc>().add(
-                  const HomeEvent.onToggleEditMode(),
-                );
-              }
-            },
-            child: Scaffold(
-              key: scaffoldKey,
-              onDrawerChanged: (isOpened) {
-                if (_isDrawerOpen == isOpened) return;
-                setState(() {
-                  _isDrawerOpen = isOpened;
-                });
+                if (state.isEditMode) {
+                  context.read<HomeBloc>().add(
+                    const HomeEvent.onToggleEditMode(),
+                  );
+                }
               },
-              appBar: AppBar(
-                title: const Text('Multichoice'),
-                actions: [
-                  const EditModeButton(),
-                  AnimatedOpacity(
+              child: Scaffold(
+                key: scaffoldKey,
+                onDrawerChanged: (isOpened) {
+                  if (_isDrawerOpen == isOpened) return;
+                  setState(() {
+                    _isDrawerOpen = isOpened;
+                  });
+                },
+                appBar: AppBar(
+                  title: const Text('Multichoice'),
+                  actions: [
+                    const EditModeButton(),
+                    AnimatedOpacity(
+                      opacity: state.isEditMode ? 0.35 : 1,
+                      duration: const Duration(milliseconds: 180),
+                      child: IgnorePointer(
+                        ignoring: state.isEditMode,
+                        child: const SearchButton(),
+                      ),
+                    ),
+                  ],
+                  leading: AnimatedOpacity(
                     opacity: state.isEditMode ? 0.35 : 1,
                     duration: const Duration(milliseconds: 180),
                     child: IgnorePointer(
                       ignoring: state.isEditMode,
-                      child: const SearchButton(),
-                    ),
-                  ),
-                ],
-                leading: AnimatedOpacity(
-                  opacity: state.isEditMode ? 0.35 : 1,
-                  duration: const Duration(milliseconds: 180),
-                  child: IgnorePointer(
-                    ignoring: state.isEditMode,
-                    child: IconButton(
-                      onPressed: () {
-                        scaffoldKey.currentState?.openDrawer();
-                      },
-                      tooltip: TooltipEnums.settings.tooltip,
-                      icon: const Icon(Icons.settings_outlined),
+                      child: IconButton(
+                        onPressed: () async {
+                          await coreSl<IAnalyticsService>().logEvent(
+                            const UiActionEventData(
+                              page: AnalyticsPage.home,
+                              button: AnalyticsButton.settings,
+                              action: AnalyticsAction.open,
+                            ),
+                          );
+                          scaffoldKey.currentState?.openDrawer();
+                        },
+                        tooltip: TooltipEnums.settings.tooltip,
+                        icon: const Icon(Icons.settings_outlined),
+                      ),
                     ),
                   ),
                 ),
+                drawer: const HomeDrawer(),
+                body: const Column(
+                  children: [
+                    ImportDataBanner(),
+                    Expanded(
+                      child: SafeArea(
+                        child: HomeLayout(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              drawer: const HomeDrawer(),
-              body: const SafeArea(
-                child: HomeLayout(),
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

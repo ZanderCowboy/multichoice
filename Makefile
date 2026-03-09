@@ -21,3 +21,15 @@ clean:
 # Plain Rebuild
 mr:
 	cd "$(WORKDIR)" && melos rebuild:all
+
+# Enable DebugView for Firebase Analytics
+debug_view:
+	cd "$(WORKDIR)" && adb shell setprop debug.firebase.analytics.app co.za.zanderkotze.multichoice
+
+# Kill crashed emulator processes
+kill_emulator:
+	taskkill /F /IM qemu-system-x86_64.exe 2>NUL || taskkill /F /IM emulator.exe 2>NUL || echo "No emulator processes found"
+
+# Launch emulator
+launch_emulator:
+	flutter emulators --launch Pixel_9_36.1

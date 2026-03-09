@@ -18,14 +18,25 @@ class CollectionTab extends StatelessWidget {
       onTap: isEditMode
           ? null
           : () async {
-              await context.router.push(
-                DetailsPageRoute(
-                  result: SearchResult(isTab: true, item: tab, matchScore: 0),
-                  onBack: () {
-                    context.router.pop();
-                  },
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.tab,
+                  action: AnalyticsAction.open,
+                  tabId: tab.id,
                 ),
               );
+
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    result: SearchResult(isTab: true, item: tab, matchScore: 0),
+                    onBack: () {
+                      context.router.pop();
+                    },
+                  ),
+                );
+              }
             },
       onLongPress: () async {
         final bloc = context.read<HomeBloc>();

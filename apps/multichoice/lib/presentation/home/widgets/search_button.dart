@@ -7,6 +7,16 @@ class SearchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () async {
+        await coreSl<IAnalyticsService>().logEvent(
+          const UiActionEventData(
+            page: AnalyticsPage.home,
+            button: AnalyticsButton.search,
+            action: AnalyticsAction.open,
+          ),
+        );
+
+        if (!context.mounted) return;
+
         await context.router.push(
           SearchPageRoute(
             onBack: () {

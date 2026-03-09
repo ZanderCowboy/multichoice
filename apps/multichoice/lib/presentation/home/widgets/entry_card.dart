@@ -22,19 +22,30 @@ class EntryCard extends StatelessWidget {
       onTap: isEditMode
           ? null
           : () async {
-              await context.router.push(
-                DetailsPageRoute(
-                  // TODO: Change type to be dynamic
-                  result: SearchResult(
-                    isTab: false,
-                    item: entry,
-                    matchScore: 0,
-                  ),
-                  onBack: () {
-                    context.router.pop();
-                  },
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.entry,
+                  action: AnalyticsAction.open,
+                  tabId: entry.tabId,
+                  entryId: entry.id,
                 ),
               );
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    // TODO: Change type to be dynamic
+                    result: SearchResult(
+                      isTab: false,
+                      item: entry,
+                      matchScore: 0,
+                    ),
+                    onBack: () {
+                      context.router.pop();
+                    },
+                  ),
+                );
+              }
             },
       onDoubleTap: isEditMode ? null : onDoubleTap,
       // Disable onLongPress during edit mode so ReorderableGridDragStartListener can work

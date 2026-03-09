@@ -17,6 +17,9 @@ abstract class IAppStorageService {
   Future<bool> get isPermissionsChecked;
   Future<void> setIsPermissionsChecked(bool isChecked);
 
+  Future<bool> get isImportDataBannerDismissed;
+  Future<void> setIsImportDataBannerDismissed(bool isDismissed);
+
   /// Clears all storage data by resetting all values to their defaults.
   /// This method should only be used in debug mode.
   Future<void> clearAllData();
