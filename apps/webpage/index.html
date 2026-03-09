@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Multichoice – Organize your reading lists, to-dos and collections in one beautiful app." />
+  <title>Multichoice</title>
+
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #4f6af0;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --radius: 16px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px 24px 0;
+    }
+
+    header img.logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 48px 24px 0;
+      gap: 16px;
+    }
+
+    .hero p.tagline {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    /* ── PLAY BUTTON ── */
+    #play-btn-wrapper {
+      margin-top: 12px;
+    }
+
+    #play-btn-wrapper a {
+      display: inline-block;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    #play-btn-wrapper a:hover {
+      transform: scale(1.04);
+      opacity: 0.9;
+    }
+
+    #play-btn-wrapper img {
+      height: 60px;
+    }
+
+    /* ── SCREENSHOTS ── */
+    .screenshots {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 56px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .screenshots figure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screenshots img {
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      width: 220px;
+      object-fit: cover;
+    }
+
+    .screenshots figcaption {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      background: var(--surface);
+      padding: 56px 24px;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 36px;
+    }
+
+    .features ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .features li {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      min-width: 220px;
+      flex: 1 1 220px;
+      max-width: 260px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .features li span {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <img class="logo" src="assets/icon.png" alt="Multichoice app icon" />
+    <h1>Multichoice</h1>
+  </header>
+
+  <!-- Hero section -->
+  <section class="hero">
+    <p class="tagline">
+      Organize your reading lists, to-dos, and collections in one beautifully
+      simple app. Create tabs, add entries, and take control of what matters to
+      you – all offline.
+    </p>
+
+    <div id="play-btn-wrapper">
+      <!-- href is updated at runtime by Firebase Remote Config -->
+      <a id="play-link" href="https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice"
+        target="_blank" rel="noopener noreferrer">
+        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+          alt="Get it on Google Play" />
+      </a>
+    </div>
+  </section>
+
+  <!-- Screenshots -->
+  <section class="screenshots" aria-label="App screenshots">
+    <figure>
+      <img src="assets/screenshot_home_dark.png" alt="Home view – dark theme" loading="lazy" />
+      <figcaption>Home · Dark</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/screenshot_home_light.png" alt="Home view – light theme" loading="lazy" />
+      <figcaption>Home · Light</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/screenshot_details.png" alt="Item details view" loading="lazy" />
+      <figcaption>Item Details</figcaption>
+    </figure>
+  </section>
+
+  <!-- Feature highlights -->
+  <section class="features">
+    <h2>✨ Why Multichoice?</h2>
+    <ul>
+      <li><span>📋</span>Create and manage multiple tabs for any category</li>
+      <li><span>🌗</span>Gorgeous dark &amp; light themes</li>
+      <li><span>🔍</span>Instant search across all your entries</li>
+      <li><span>📤</span>Export &amp; import for easy backups</li>
+      <li><span>📴</span>Fully offline – your data stays on your device</li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      &copy; <span id="year"></span> Multichoice &nbsp;·&nbsp;
+      <a href="https://github.com/ZanderCowboy/multichoice" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+
+  <!-- Firebase SDK (Remote Config) -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js';
+    import {
+      getRemoteConfig,
+      fetchAndActivate,
+      getString,
+    } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-remote-config.js';
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Firebase project configuration (public, non-secret values)
+    const firebaseConfig = {
+      apiKey: '%%FIREBASE_API_KEY%%',
+      authDomain: '%%FIREBASE_AUTH_DOMAIN%%',
+      projectId: '%%FIREBASE_PROJECT_ID%%',
+      storageBucket: '%%FIREBASE_STORAGE_BUCKET%%',
+      messagingSenderId: '%%FIREBASE_MESSAGING_SENDER_ID%%',
+      appId: '%%FIREBASE_APP_ID%%',
+    };
+
+    const PLAY_STORE_KEY = 'play_store_url';
+    const FALLBACK_URL =
+      'https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice';
+
+    async function applyRemoteConfig() {
+      try {
+        const app = initializeApp(firebaseConfig);
+        const rc = getRemoteConfig(app);
+
+        rc.settings = {
+          minimumFetchIntervalMillis: 3_600_000, // 1 hour
+          fetchTimeoutMillis: 10_000,
+        };
+
+        rc.defaultConfig = {
+          [PLAY_STORE_KEY]: FALLBACK_URL,
+        };
+
+        await fetchAndActivate(rc);
+
+        const url = getString(rc, PLAY_STORE_KEY) || FALLBACK_URL;
+        document.getElementById('play-link').href = url;
+      } catch (err) {
+        // Remote Config unavailable – fallback URL is already set in the HTML
+        console.warn('Remote Config unavailable, using fallback URL.', err);
+      }
+    }
+
+    applyRemoteConfig();
+  </script>
+
+</body>
+
+</html>
