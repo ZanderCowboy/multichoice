@@ -29,5 +29,4 @@ void main() async {
   }
 
   runApp(Multichoice());
-  // unawaited(initializeNonCriticalServices());
 }
