@@ -42,17 +42,19 @@ class _SearchBody extends StatelessWidget {
                   ),
                 );
 
-                await context.router.push(
-                  DetailsPageRoute(
-                    result: result,
-                    onBack: () {
-                      context.read<SearchBloc>().add(
-                        const SearchEvent.refresh(),
-                      );
-                      context.router.pop();
-                    },
-                  ),
-                );
+                if (context.mounted) {
+                  await context.router.push(
+                    DetailsPageRoute(
+                      result: result,
+                      onBack: () {
+                        context.read<SearchBloc>().add(
+                          const SearchEvent.refresh(),
+                        );
+                        context.router.pop();
+                      },
+                    ),
+                  );
+                }
               },
               onEdit: () async {
                 await onEdit(result);

@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 part of '../home_page.dart';
 
 class SearchButton extends StatelessWidget {
@@ -16,6 +14,9 @@ class SearchButton extends StatelessWidget {
             action: AnalyticsAction.open,
           ),
         );
+
+        if (!context.mounted) return;
+
         await context.router.push(
           SearchPageRoute(
             onBack: () {

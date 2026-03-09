@@ -33,19 +33,21 @@ class EntryCard extends StatelessWidget {
                   entryId: entry.id,
                 ),
               );
-              await context.router.push(
-                DetailsPageRoute(
-                  // TODO: Change type to be dynamic
-                  result: SearchResult(
-                    isTab: false,
-                    item: entry,
-                    matchScore: 0,
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    // TODO: Change type to be dynamic
+                    result: SearchResult(
+                      isTab: false,
+                      item: entry,
+                      matchScore: 0,
+                    ),
+                    onBack: () {
+                      context.router.pop();
+                    },
                   ),
-                  onBack: () {
-                    context.router.pop();
-                  },
-                ),
-              );
+                );
+              }
             },
       onDoubleTap: isEditMode ? null : onDoubleTap,
       // Disable onLongPress during edit mode so ReorderableGridDragStartListener can work

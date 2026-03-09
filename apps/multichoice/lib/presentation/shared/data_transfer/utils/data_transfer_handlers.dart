@@ -81,7 +81,7 @@ Future<void> handleExport({
       source: 'export',
     ),
   );
-  showMessage('File saved successfully!');
+  if (context.mounted) showMessage('File saved successfully!');
 }
 
 Future<void> _handleImportFeedback({

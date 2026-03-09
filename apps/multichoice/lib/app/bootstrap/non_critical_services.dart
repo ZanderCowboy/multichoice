@@ -9,13 +9,12 @@ import 'package:models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> initializeNonCriticalServices() async {
-  // Run Remote Config setup after first frame to avoid blocking startup.
+  // Run Remote Config fetch after first frame to avoid blocking startup.
   try {
     final firebaseService = coreSl<IFirebaseService>();
-    await firebaseService.initialize();
     await firebaseService.fetchAndActivate();
   } catch (e) {
-    log('Error initializing Firebase Remote Config: $e');
+    log('Error fetching and activating Firebase Remote Config: $e');
     // Continue app startup even if Remote Config fails
   }
 
@@ -50,4 +49,10 @@ Future<void> initializeNonCriticalServices() async {
   } catch (e) {
     log('Error initializing Firebase Analytics properties: $e');
   }
+}
+
+Future<void> initializeCriticalServices() async {
+  // Ensure Remote Config is initialized before sync feature flag checks.
+  final firebaseService = coreSl<IFirebaseService>();
+  await firebaseService.initialize();
 }

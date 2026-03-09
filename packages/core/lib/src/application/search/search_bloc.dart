@@ -40,20 +40,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
           try {
             final results = await _searchRepository.search(query);
-            await _analyticsService.logEvent(
-              SearchEventData(
-                page: AnalyticsPage.search,
-                action: AnalyticsAction.search,
-                queryLength: query.length,
-                resultCount: results.length,
-              ),
-            );
             emit(
               state.copyWith(
                 results: results,
                 isLoading: false,
                 errorMessage: null,
                 query: query,
+              ),
+            );
+            await _analyticsService.logEvent(
+              SearchEventData(
+                page: AnalyticsPage.search,
+                action: AnalyticsAction.search,
+                queryLength: query.length,
+                resultCount: results.length,
               ),
             );
           } catch (e) {

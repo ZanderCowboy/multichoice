@@ -12,7 +12,11 @@ Future<void> bootstrap() async {
   await setupFirebase();
 
   await configureCoreDependencies();
-  await initializeNonCriticalServices();
+  await initializeCriticalServices();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    unawaited(initializeNonCriticalServices());
+  });
 }
 
 Future<void> setupFirebase() async {

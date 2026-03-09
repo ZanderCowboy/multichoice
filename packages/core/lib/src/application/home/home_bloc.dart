@@ -77,11 +77,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Log collection and item counts for analytics
     if (tabs.isNotEmpty) {
-      var totalEntries = 0;
-      for (final tab in tabs) {
-        final entries = await _entryRepository.readEntries(tabId: tab.id);
-        totalEntries += entries.length;
-      }
+      final entries = await _entryRepository.readAllEntries();
 
       await _analyticsService.logEvent(
         CrudEventData(
@@ -97,7 +93,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           page: AnalyticsPage.home,
           entity: AnalyticsEntity.entry,
           action: AnalyticsAction.open,
-          itemCount: totalEntries,
+          itemCount: entries.length,
         ),
       );
     }

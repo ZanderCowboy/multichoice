@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 part of '../home_page.dart';
 
 class CollectionTab extends StatelessWidget {
@@ -28,14 +26,17 @@ class CollectionTab extends StatelessWidget {
                   tabId: tab.id,
                 ),
               );
-              await context.router.push(
-                DetailsPageRoute(
-                  result: SearchResult(isTab: true, item: tab, matchScore: 0),
-                  onBack: () {
-                    context.router.pop();
-                  },
-                ),
-              );
+
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    result: SearchResult(isTab: true, item: tab, matchScore: 0),
+                    onBack: () {
+                      context.router.pop();
+                    },
+                  ),
+                );
+              }
             },
       onLongPress: () async {
         final bloc = context.read<HomeBloc>();

@@ -21,14 +21,6 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     on<FeedbackEvent>((event, emit) async {
       switch (event) {
         case SubmitFeedback(:final feedback):
-          await _analyticsService.logEvent(
-            FeedbackEventData(
-              page: AnalyticsPage.feedback,
-              action: AnalyticsAction.submit,
-              category: feedback.category,
-              rating: feedback.rating,
-            ),
-          );
           emit(
             state.copyWith(
               feedback: feedback,
@@ -36,6 +28,14 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               isSuccess: false,
               isError: false,
               errorMessage: null,
+            ),
+          );
+          await _analyticsService.logEvent(
+            FeedbackEventData(
+              page: AnalyticsPage.feedback,
+              action: AnalyticsAction.submit,
+              category: feedback.category,
+              rating: feedback.rating,
             ),
           );
 
