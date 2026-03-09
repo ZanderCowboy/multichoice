@@ -4,7 +4,6 @@ on:
     push:
         branches:
             - main
-            - 269-feat-create-webpage-pointing-to-playstore
         paths:
             - apps/landing_page/**
             - .github/workflows/pages_workflow.yml
