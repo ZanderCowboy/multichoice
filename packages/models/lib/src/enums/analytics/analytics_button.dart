@@ -8,7 +8,13 @@ enum AnalyticsButton {
   exportData('export_data'),
   submitFeedback('submit_feedback'),
   home('home'),
-  back('back')
+  goHome('go_home'),
+  back('back'),
+  followTutorial('follow_tutorial'),
+  continueTutorial('continue_tutorial'),
+  layout('layout_switch'),
+  theme('theme_switch'),
+  about('about'),
   ;
 
   const AnalyticsButton(this.key);

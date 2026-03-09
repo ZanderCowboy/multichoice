@@ -42,6 +42,14 @@ class _LightDarkModeButtonState extends State<LightDarkModeButton> {
         setState(() {
           _isDark = !_isDark;
         });
+        await coreSl<IAnalyticsService>().logEvent(
+          UiActionEventData(
+            page: AnalyticsPage.settings,
+            button: AnalyticsButton.theme,
+            action: AnalyticsAction.tap,
+            source: _isDark ? 'dark_mode' : 'light_mode',
+          ),
+        );
         context.read<AppTheme>().themeMode = _isDark
             ? ThemeMode.dark
             : ThemeMode.light;

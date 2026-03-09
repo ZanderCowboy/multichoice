@@ -1,5 +1,6 @@
 enum AnalyticsPage {
   home('home'),
+  settings('settings'),
   search('search'),
   details('details'),
   editTab('edit_tab'),

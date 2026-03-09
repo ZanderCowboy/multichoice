@@ -31,6 +31,14 @@ class HorizontalVerticalLayoutButton extends StatelessWidget {
         );
       }),
       onChanged: (value) async {
+        await coreSl<IAnalyticsService>().logEvent(
+          UiActionEventData(
+            page: AnalyticsPage.settings,
+            button: AnalyticsButton.layout,
+            action: AnalyticsAction.tap,
+            source: value ? 'vertical_layout' : 'horizontal_layout',
+          ),
+        );
         await appLayout.setLayoutVertical(isVertical: value);
       },
     );

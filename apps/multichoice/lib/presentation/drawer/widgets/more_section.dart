@@ -71,6 +71,14 @@ class MoreSection extends StatelessWidget {
           leading: const Icon(Icons.info_outline),
           title: const Text('About'),
           onTap: () async {
+            await coreSl<IAnalyticsService>().logEvent(
+              const UiActionEventData(
+                page: AnalyticsPage.settings,
+                button: AnalyticsButton.about,
+                action: AnalyticsAction.open,
+                source: 'about',
+              ),
+            );
             final appVersion = await coreSl<IAppInfoService>().getAppVersion();
 
             if (!context.mounted) return;

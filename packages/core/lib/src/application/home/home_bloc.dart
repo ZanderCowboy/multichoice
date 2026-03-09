@@ -74,6 +74,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleGetTabs(Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));
     final tabs = await _tabsRepository.readTabs();
+
+    // Log collection and item counts for analytics
+    if (tabs.isNotEmpty) {
+      var totalEntries = 0;
+      for (final tab in tabs) {
+        final entries = await _entryRepository.readEntries(tabId: tab.id);
+        totalEntries += entries.length;
+      }
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.open,
+          itemCount: tabs.length,
+        ),
+      );
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.open,
+          itemCount: totalEntries,
+        ),
+      );
+    }
+
     emit(state.copyWith(tabs: tabs, isLoading: false));
   }
 

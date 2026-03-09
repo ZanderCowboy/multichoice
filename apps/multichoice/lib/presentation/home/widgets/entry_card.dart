@@ -22,6 +22,15 @@ class EntryCard extends StatelessWidget {
       onTap: isEditMode
           ? null
           : () async {
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.entry,
+                  action: AnalyticsAction.open,
+                  tabId: entry.tabId,
+                  entryId: entry.id,
+                ),
+              );
               await context.router.push(
                 DetailsPageRoute(
                   // TODO: Change type to be dynamic

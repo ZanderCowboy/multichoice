@@ -18,6 +18,14 @@ class CollectionTab extends StatelessWidget {
       onTap: isEditMode
           ? null
           : () async {
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.tab,
+                  action: AnalyticsAction.open,
+                  tabId: tab.id,
+                ),
+              );
               await context.router.push(
                 DetailsPageRoute(
                   result: SearchResult(isTab: true, item: tab, matchScore: 0),

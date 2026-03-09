@@ -21,3 +21,7 @@ clean:
 # Plain Rebuild
 mr:
 	cd "$(WORKDIR)" && melos rebuild:all
+
+# Enable DebugView for Firebase Analytics
+debug_view:
+	cd "$(WORKDIR)" && adb shell setprop debug.firebase.analytics.app co.za.zanderkotze.multichoice

@@ -116,7 +116,14 @@ class _HomePageState extends State<_HomePage> {
                     child: IgnorePointer(
                       ignoring: state.isEditMode,
                       child: IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await coreSl<IAnalyticsService>().logEvent(
+                            const UiActionEventData(
+                              page: AnalyticsPage.home,
+                              button: AnalyticsButton.settings,
+                              action: AnalyticsAction.open,
+                            ),
+                          );
                           scaffoldKey.currentState?.openDrawer();
                         },
                         tooltip: TooltipEnums.settings.tooltip,

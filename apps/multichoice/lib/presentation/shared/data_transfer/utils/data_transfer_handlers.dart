@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
 import 'package:multichoice/presentation/shared/data_transfer/widgets/file_name_dialog.dart';
@@ -71,6 +73,14 @@ Future<void> handleExport({
 
   final fileBytes = service.convertToBytes(jsonString);
   await service.saveFile(fileName, fileBytes);
+  await coreSl<IAnalyticsService>().logEvent(
+    const UiActionEventData(
+      page: AnalyticsPage.dataTransfer,
+      button: AnalyticsButton.exportData,
+      action: AnalyticsAction.success,
+      source: 'export',
+    ),
+  );
   showMessage('File saved successfully!');
 }
 
@@ -90,11 +100,27 @@ Future<void> _handleImportFeedback({
   if (!context.mounted) return;
 
   if (result) {
+    await coreSl<IAnalyticsService>().logEvent(
+      UiActionEventData(
+        page: AnalyticsPage.dataTransfer,
+        button: AnalyticsButton.importData,
+        action: AnalyticsAction.success,
+        source: shouldAppend ? 'append' : 'replace',
+      ),
+    );
     onImportSuccess.call();
     showMessage('Data imported successfully');
     context.router.popUntilRoot();
     scaffoldKey.currentState?.closeDrawer();
   } else {
+    await coreSl<IAnalyticsService>().logEvent(
+      const UiActionEventData(
+        page: AnalyticsPage.dataTransfer,
+        button: AnalyticsButton.importData,
+        action: AnalyticsAction.failure,
+        source: 'import',
+      ),
+    );
     showMessage('Failed to import data');
   }
 }
