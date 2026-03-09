@@ -9,6 +9,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
+import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
@@ -133,8 +134,15 @@ class _HomePageState extends State<_HomePage> {
                   ),
                 ),
                 drawer: const HomeDrawer(),
-                body: const SafeArea(
-                  child: HomeLayout(),
+                body: const Column(
+                  children: [
+                    ImportDataBanner(),
+                    Expanded(
+                      child: SafeArea(
+                        child: HomeLayout(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
