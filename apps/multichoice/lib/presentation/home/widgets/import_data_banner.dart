@@ -124,7 +124,7 @@ class _PillBanner extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: context.theme.appColors.primaryLight?.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: borderCircular24,
         ),
         child: Row(
           children: [
