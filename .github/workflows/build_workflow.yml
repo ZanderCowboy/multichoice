@@ -89,6 +89,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
       - name: Download Android Keystore File
         id: android_keystore
         uses: timheuer/base64-to-file@v1.2.4
@@ -126,18 +138,6 @@ jobs:
 
           print('google-services.json decoded and parsed successfully.')
           PY
-
-      - name: Set up Flutter and Java
-        uses: ./.github/actions/setup-flutter-with-java
-
-      - name: Melos Coverage for Core
-        run: melos coverage:core
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
 
       ###############################################
       # Build APK

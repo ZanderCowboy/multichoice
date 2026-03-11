@@ -140,6 +140,24 @@ jobs:
         uses: actions/checkout@v6
 
       ##############################################
+      # Set up Flutter and Java
+      ##############################################
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
+
+      ##############################################
       # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
       ##############################################
       - name: Download Android Keystore File
@@ -179,24 +197,6 @@ jobs:
 
           print('google-services.json decoded and parsed successfully.')
           PY
-
-      ##############################################
-      # Set up Flutter and Java
-      ##############################################
-      - name: Set up Flutter and Java
-        uses: ./.github/actions/setup-flutter-with-java
-
-      ##############################################
-      # Melos Coverage for Core
-      ##############################################
-      - name: Melos Coverage for Core
-        run: melos coverage:core
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
 
       ##############################################
       # Build APK
