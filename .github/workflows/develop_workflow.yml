@@ -14,8 +14,8 @@ name: develop-workflow
 on:
   pull_request:
     branches: ["develop"]
-    types:
-      - closed
+    # types:
+    #   - closed
   workflow_dispatch:
 
 concurrency:
@@ -25,7 +25,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -68,14 +68,14 @@ jobs:
       ##############################################
       # Version Management
       ##############################################
-      - name: Version Management
-        id: version_management
-        uses: ./.github/actions/version-management
-        with:
-          github_token: ${{ steps.generate_token.outputs.token }}
-          pubspec_path: apps/multichoice/pubspec.yaml
-          branch_name: develop
-          bump_type: ${{ steps.check_labels.outputs.bump_type }}
+      # - name: Version Management
+      #   id: version_management
+      #   uses: ./.github/actions/version-management
+      #   with:
+      #     github_token: ${{ steps.generate_token.outputs.token }}
+      #     pubspec_path: apps/multichoice/pubspec.yaml
+      #     branch_name: develop
+      #     bump_type: ${{ steps.check_labels.outputs.bump_type }}
 
   build:
     name: Builds Android App
@@ -91,24 +91,6 @@ jobs:
       ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v6
-
-      ##############################################
-      # Set up Flutter and Java
-      ##############################################
-      - name: Set up Flutter and Java
-        uses: ./.github/actions/setup-flutter-with-java
-
-      ##############################################
-      # Melos Coverage for Core
-      ##############################################
-      - name: Melos Coverage for Core
-        run: melos coverage:core
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
 
       ##############################################
       # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
@@ -137,10 +119,37 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
-      - name: Create google-services.json file
+      - name: Create and Validate google-services.json file
         working-directory: apps/multichoice/android/app/
         run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
+          set -euo pipefail
+          printf '%s' "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
+          python3 - <<'PY'
+          import json
+
+          with open('google-services.json', encoding='utf-8') as f:
+              json.load(f)
+
+          print('google-services.json decoded and parsed successfully.')
+          PY
+
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
+
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
 
       ##############################################
       # Build APK
@@ -183,22 +192,22 @@ jobs:
       ##############################################
       # Upload APK to Firebase App Distribution
       ##############################################
-      - name: Upload APK to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
-          releaseNotesFile: ./CHANGELOG.md
-          debug: true
+      # - name: Upload APK to Firebase App Distribution
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
+      #   with:
+      #     appId: ${{ secrets.APP_ID }}
+      #     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+      #     groups: testers
+      #     file: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+      #     releaseNotesFile: ./CHANGELOG.md
+      #     debug: true
 
       ##############################################
       # Create New Tag
       ##############################################
-      - name: Create New Tag
-        uses: ./.github/actions/create-git-tag
-        with:
-          version_number: ${{ needs.preBuild.outputs.version_number }}
-          tag_strategy: "full"
-          allowed_formats: "both"
+      # - name: Create New Tag
+      #   uses: ./.github/actions/create-git-tag
+      #   with:
+      #     version_number: ${{ needs.preBuild.outputs.version_number }}
+      #     tag_strategy: "full"
+      #     allowed_formats: "both"
