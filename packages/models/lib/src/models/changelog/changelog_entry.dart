@@ -21,9 +21,6 @@ class ChangelogEntry extends Equatable {
   Map<String, dynamic> toJson() => _$ChangelogEntryToJson(this);
 
   @override
-  String toString() => 'ChangelogEntry(date: $date, changes: $changes)';
-
-  @override
   List<Object?> get props => [
     date,
     changes,

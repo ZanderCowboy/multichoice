@@ -9,10 +9,12 @@ alwaysApply: false
 This rule file demonstrates rules that apply only to test files.
 
 ## Usage
+
 - Targets all test files using multiple glob patterns
 - Ensures consistent testing practices across the project
 
 ## Testing Conventions
+
 1. **Test File Naming**
    - Unit tests: `*_test.dart` or `*.test.dart`
    - Widget tests: `*_widget_test.dart`
@@ -34,6 +36,7 @@ This rule file demonstrates rules that apply only to test files.
    - Don't test implementation details
 
 ## Test Organization
+
 - Place tests next to the code they test
 - Use `test/` directory for test files
 - Mirror the source directory structure in tests

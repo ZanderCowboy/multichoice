@@ -1,3 +1,5 @@
+# Create PR command
+
 Create a pull request by pushing the branch and creating the PR with appropriate labels and description.
 
 **Note**: Commits should already be created. If you need to create commits, use `.cursor/commands/commit.md` first.

@@ -1,3 +1,5 @@
+# Commit Command
+
 Always create smaller, logical commits from staged and unstaged changes. Group files by functionality and create separate commits for each group. Never create a single large commit - always break changes into multiple smaller commits.
 
 ## Process

@@ -11,6 +11,7 @@ This rule file demonstrates rules for UI and widget development.
 ## Widget Conventions
 
 ### Page Structure
+
 - Place `Scaffold` and `AppBar` in parent class
 - Keep main body in private child class (e.g., `_HomePage`)
 - Example:
@@ -29,12 +30,14 @@ class _HomePage extends StatelessWidget { ... }
 ```
 
 ### Constants Usage
+
 - **Spacing**: Use `spacing_constants.dart` for all spacing values
 - **Borders**: Use `border_constants.dart` for `BorderRadius.circular()`
 - **All UI constants**: Check `/constants` folder first
 - If constant doesn't exist, add it to appropriate file in `/constants`
 
 ### Widget Modularity
+
 - Break large widgets into smaller, modular classes
 - Create separate files for modular classes
 - Use `part`/`part of` for file linkage
@@ -42,6 +45,7 @@ class _HomePage extends StatelessWidget { ... }
 - Place modular classes in `/widgets` folder
 
 ### Testing UI
+
 - Use keys from `widget_keys.dart` for consistency
 - Test user interactions, not implementation
 - Keep widget tests focused and fast

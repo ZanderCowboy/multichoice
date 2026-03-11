@@ -35,10 +35,6 @@ class EntryDTO extends Equatable {
   Map<String, dynamic> toJson() => _$EntryDTOToJson(this);
 
   @override
-  String toString() =>
-      'EntryDTO(id: $id, tabId: $tabId, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
-
-  @override
   List<Object?> get props => [
     id,
     tabId,

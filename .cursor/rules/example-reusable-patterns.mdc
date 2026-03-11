@@ -13,6 +13,7 @@ This rule file documents reusable patterns that can be referenced when creating 
 When creating a new service, use this pattern:
 
 ### Interface File (`interfaces/i_<service_name>_service.dart`)
+
 ```dart
 abstract class I<ServiceName>Service {
   Future<Result<T>> methodName();
@@ -20,6 +21,7 @@ abstract class I<ServiceName>Service {
 ```
 
 ### Implementation File (`implementations/<service_name>_service.dart`)
+
 ```dart
 @injectable
 class <ServiceName>Service implements I<ServiceName>Service {

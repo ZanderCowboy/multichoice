@@ -68,10 +68,8 @@ class EntryRepository implements IEntryRepository {
       final entryIds = tab?.entryIds ?? [];
 
       final converter = EntryMapper();
-      
-      // Optimize: Use bulk read instead of individual gets
       final entries = await db.entrys.getAll(entryIds);
-      
+
       // Filter out null entries and convert to DTOs while preserving order
       final entriesDTO = entries
           .where((entry) => entry != null)

@@ -458,8 +458,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Store the original tabs for rollback if needed
     final originalTabs = tabs;
-
-    // Create a mutable copy of the tabs list
     final updatedTabs = List<TabsDTO>.from(tabs);
 
     // Adjust newIndex if moving down
@@ -505,7 +503,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = state.tabs;
     if (tabs == null) return;
 
-    // Find the tab
     final tabIndex = tabs.indexWhere((t) => t.id == tabId);
     if (tabIndex == -1) return;
 
@@ -515,8 +512,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Store the original tabs for rollback if needed
     final originalTabs = tabs;
-
-    // Create a mutable copy of the entries list
     final updatedEntries = List<EntryDTO>.from(entries);
 
     // Adjust newIndex based on source widget type

@@ -39,10 +39,6 @@ class FeedbackModel extends Equatable {
   Map<String, dynamic> toJson() => _$FeedbackModelToJson(this);
 
   @override
-  String toString() =>
-      'FeedbackModel(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';
-
-  @override
   List<Object?> get props => [
     id,
     message,

@@ -4,7 +4,7 @@ This directory contains rules and plans that help Cursor AI understand your proj
 
 ## Directory Structure
 
-```
+```md
 .cursor/
 ├── rules/          # AI assistant rules and guidelines
 ├── plans/          # Project plans and feature documentation

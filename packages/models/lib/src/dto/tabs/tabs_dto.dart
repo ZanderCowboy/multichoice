@@ -42,10 +42,6 @@ class TabsDTO extends Equatable {
   Map<String, dynamic> toJson() => _$TabsDTOToJson(this);
 
   @override
-  String toString() =>
-      'TabsDTO(id: $id, title: $title, subtitle: $subtitle, timestamp: $timestamp, entries: $entries, order: $order, isFirst: $isFirst)';
-
-  @override
   List<Object?> get props => [
     id,
     title,

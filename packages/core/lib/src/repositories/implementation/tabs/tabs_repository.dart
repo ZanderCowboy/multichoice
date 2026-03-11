@@ -84,8 +84,6 @@ class TabsRepository implements ITabsRepository {
       for (final tab in tabs) {
         final tabDTO = tabsConverter.convert<Tabs, TabsDTO>(tab);
         final entryIds = tab.entryIds ?? [];
-
-        // Optimize: Use bulk read instead of individual gets
         final entries = await db.entrys.getAll(entryIds);
 
         // Log if there are null entries (data integrity issue)
@@ -149,7 +147,6 @@ class TabsRepository implements ITabsRepository {
       final dto = TabsMapper().convert<Tabs, TabsDTO>(result);
       final entryIds = result.entryIds ?? [];
 
-      // Optimize: Use bulk read instead of individual gets
       final entries = await db.entrys.getAll(entryIds);
       final entriesDTO = entries
           .where((entry) => entry != null)
@@ -262,7 +259,6 @@ class TabsRepository implements ITabsRepository {
   Future<bool> updateTabsOrder(List<int> tabIds) async {
     try {
       return await db.writeTxn(() async {
-        // Optimize: Use bulk read instead of individual gets
         final tabs = await db.tabs.getAll(tabIds);
         final updatedTabs = <Tabs>[];
 
@@ -274,7 +270,6 @@ class TabsRepository implements ITabsRepository {
           }
         }
 
-        // Optimize: Use bulk write instead of individual puts
         await db.tabs.putAll(updatedTabs);
         return true;
       });

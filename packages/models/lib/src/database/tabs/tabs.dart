@@ -43,10 +43,6 @@ class Tabs extends Equatable {
   Id get id => uuid.fastHash();
 
   @override
-  String toString() =>
-      'Tabs(uuid: $uuid, title: $title, subtitle: $subtitle, timestamp: $timestamp, entryIds: $entryIds, order: $order)';
-
-  @override
   List<Object?> get props => [
     uuid,
     title,
