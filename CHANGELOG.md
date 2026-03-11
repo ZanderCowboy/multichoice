@@ -1,3 +1,7 @@
-# 301 - Fix google-services.json missing from workflows
+# Multiple builds
 
-- Fix builds failing due to missing `google-services.json` file
+- 279: Ensure tutorial feature works correctly
+- 180: Implement Firebase analytics
+- 269: Landing page for Multichoice
+- 301: Fix bug with google-services.json
+- Fix `check-version-labels` action
