@@ -186,16 +186,48 @@ jobs:
 
       - name: Create and Validate google-services.json file
         working-directory: apps/multichoice/android/app/
+        env:
+          ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
+          ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
         run: |
           set -euo pipefail
           printf '%s' "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
           python3 - <<'PY'
           import json
+          import os
 
           with open('google-services.json', encoding='utf-8') as f:
-            json.load(f)
+            config = json.load(f)
 
-          print('google-services.json decoded and parsed successfully.')
+          package_name = 'co.za.zanderkotze.multichoice'
+          matching_clients = [
+            client for client in config.get('client', [])
+            if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == package_name
+          ]
+
+          if not matching_clients:
+            raise SystemExit(f'google-services.json does not contain package {package_name}.')
+
+          client = matching_clients[0]
+          mobilesdk_app_id = client.get('client_info', {}).get('mobilesdk_app_id')
+          if mobilesdk_app_id != os.environ['ANDROID_APP_ID']:
+            raise SystemExit(
+              'ANDROID_APP_ID secret does not match google-services.json '
+              f'({os.environ["ANDROID_APP_ID"]} != {mobilesdk_app_id}).'
+            )
+
+          api_keys = client.get('api_key', [])
+          if not api_keys:
+            raise SystemExit('google-services.json does not contain an Android API key.')
+
+          current_api_key = api_keys[0].get('current_key')
+          if current_api_key != os.environ['ANDROID_API_KEY']:
+            raise SystemExit(
+              'ANDROID_API_KEY secret does not match google-services.json '
+              f'({os.environ["ANDROID_API_KEY"]} != {current_api_key}).'
+            )
+
+          print('google-services.json parsed and validated successfully.')
           PY
 
       ##############################################
