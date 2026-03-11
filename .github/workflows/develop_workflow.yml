@@ -158,7 +158,7 @@ jobs:
         env:
           FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
           FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-        run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        run: flutter build apk --release --build-name=1  --build-number=1
         working-directory: apps/multichoice/
 
       ##############################################
@@ -177,7 +177,7 @@ jobs:
         env:
           FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
           FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        run: flutter build appbundle --release --build-name=1  --build-number=1
         working-directory: apps/multichoice/
 
       ##############################################
