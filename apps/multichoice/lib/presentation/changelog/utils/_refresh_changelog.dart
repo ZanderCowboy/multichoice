@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catches_without_on_clauses
+
 part of '../changelog_page.dart';
 
 Future<void> _refreshChangelog(BuildContext context) async {
