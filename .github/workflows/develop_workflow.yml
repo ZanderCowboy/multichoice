@@ -111,7 +111,7 @@ jobs:
           fail_ci_if_error: true
 
       ##############################################
-      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
       ##############################################
       - name: Download Android Keystore File
         id: android_keystore
@@ -136,6 +136,11 @@ jobs:
           echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
+
+      - name: Create google-services.json file
+        working-directory: apps/multichoice/android/app/
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
 
       ##############################################
       # Build APK

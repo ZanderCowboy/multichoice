@@ -1,5 +1,3 @@
-# 269 - Feature - Landing Page for Multichoice
+# 301 - Fix google-services.json missing from workflows
 
-- Create landing page using HTML and CSS
-- Update firebase_config_keys
-- Create pages_workflow.yml
+- Fix builds failing due to missing `google-services.json` file
