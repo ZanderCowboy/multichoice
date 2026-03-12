@@ -5,6 +5,10 @@ class MoreSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isChangelogEnabled = coreSl<IFirebaseService>().isEnabled(
+      FirebaseConfigKeys.enableChangelogPage,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,13 +64,14 @@ class MoreSection extends StatelessWidget {
             await context.router.push(const FeedbackPageRoute());
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.history),
-          title: const Text('Changelog'),
-          onTap: () async {
-            await context.router.push(const ChangelogPageRoute());
-          },
-        ),
+        if (isChangelogEnabled)
+          ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('Changelog'),
+            onTap: () async {
+              await context.router.push(const ChangelogPageRoute());
+            },
+          ),
         ListTile(
           leading: const Icon(Icons.info_outline),
           title: const Text('About'),
