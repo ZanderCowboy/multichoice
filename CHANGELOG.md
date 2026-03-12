@@ -1,4 +1,3 @@
-# Fix App Not Loading
+# Release Candidate
 
-- Check if it's a json issue?
-- Help
+- v0.6.0
