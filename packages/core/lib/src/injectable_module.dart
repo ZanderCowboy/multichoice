@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:models/models.dart' show TabsSchema, EntrySchema;
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
 

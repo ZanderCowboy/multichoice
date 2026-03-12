@@ -4,7 +4,10 @@ enum StorageKeys {
   isCompleted('_productTourIsCompleted'),
   isLayoutVertical('_isLayoutVertical'),
   isExistingUser('_isExistingUser'),
-  isPermissionsChecked('_isPermissionsChecked');
+  isPermissionsChecked('_isPermissionsChecked'),
+  analyticsUserId('_analyticsUserId'),
+  isImportDataBannerDismissed('_isImportDataBannerDismissed')
+  ;
 
   const StorageKeys(this.key);
 

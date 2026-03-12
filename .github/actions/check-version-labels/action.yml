@@ -25,31 +25,30 @@ runs:
     - name: Check Version Labels
       id: check_labels
       shell: bash
+      env:
+        LABELS: ${{ inputs.labels }}
+        ALLOWED_LABELS: ${{ inputs.allowed_labels }}
+        NO_BUILD_LABEL: ${{ inputs.no_build_label }}
       run: |
         set -e
-        
-        # Set input variables
-        LABELS='${{ inputs.labels }}'
-        ALLOWED_LABELS='${{ inputs.allowed_labels }}'
-        NO_BUILD_LABEL='${{ inputs.no_build_label }}'
-        
+
         echo "LABELS: $LABELS"
         echo "ALLOWED_LABELS: $ALLOWED_LABELS"
         echo "NO_BUILD_LABEL: $NO_BUILD_LABEL"
-        
+
         # Validate JSON format
         if ! echo "$LABELS" | jq empty 2>/dev/null; then
           echo "::error::Invalid JSON format in labels"
           exit 1
         fi
 
-        # Convert allowed labels to jq filter
-        ALLOWED_LABELS_FILTER=$(echo "$ALLOWED_LABELS" | tr ',' '|')
-        echo "ALLOWED_LABELS_FILTER: $ALLOWED_LABELS_FILTER"
-        
         # Check for valid version labels (excluding no-build)
-        VALID_LABELS=$(echo "$LABELS" | jq -r ".[] | select(.name | IN(\"$ALLOWED_LABELS_FILTER\")) | .name" 2>/dev/null || echo "")
-        
+        VALID_LABELS=$(echo "$LABELS" | jq -r --arg allowed "$ALLOWED_LABELS" --arg no_build "$NO_BUILD_LABEL" '
+          ($allowed | split(",")) as $allowed_labels
+          | [.[]?.name | select(. != $no_build) | select(. as $label | $allowed_labels | index($label))]
+          | .[]
+        ' 2>/dev/null || echo "")
+
         if [[ -z "$VALID_LABELS" ]]; then
           echo "bump_type=none" >> $GITHUB_OUTPUT
           echo "********** Bumping build number only **********"
@@ -82,4 +81,4 @@ runs:
               exit 1 
               ;;
           esac
-        fi 
+        fi

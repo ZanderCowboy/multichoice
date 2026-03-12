@@ -51,7 +51,9 @@ class AppVersion extends StatelessWidget {
               onLongPress: kDebugMode ? () => _clearStorageData(context) : null,
               child: Text(
                 'V${snapshot.data}',
-                style: context.theme.appTextTheme.bodyMedium,
+                style: context.theme.appTextTheme.bodySmall?.copyWith(
+                  fontSize: 9,
+                ),
               ),
             );
           }

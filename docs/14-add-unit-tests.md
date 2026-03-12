@@ -1,4 +1,4 @@
-# [Wrtie Unit Tests](https://github.com/ZanderCowboy/multichoice/issues/14)
+# [Write Unit Tests](https://github.com/ZanderCowboy/multichoice/issues/14)
 
 ## Coverage
 

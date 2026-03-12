@@ -13,7 +13,7 @@ import 'shared/export.dart';
 /// - manages tabs by editing or deleting them,
 /// - manages entries by editing or deleting them,
 /// - finishes by clearing all data,
-/// - and exists.
+/// - and exits.
 ///
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

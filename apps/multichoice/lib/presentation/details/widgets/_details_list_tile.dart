@@ -20,10 +20,14 @@ class _DetailsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: context.theme.appColors.primary?.withValues(alpha: 0.2),
+      tileColor: context.theme.appColors.secondary?.withValues(alpha: 0.1),
       contentPadding: horizontal16,
+      visualDensity: VisualDensity.compact,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderCircular12,
+      ),
       title: !isEditing
-          ? Text(
+          ? SelectableText(
               title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -35,15 +39,18 @@ class _DetailsListTile extends StatelessWidget {
           ? TextFormField(
               controller: controller,
               decoration: InputDecoration(
+                alignLabelWithHint: true,
                 labelText: labelText,
-                border: OutlineInputBorder(
-                  borderRadius: borderCircular12,
-                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
                 isDense: true,
               ),
               onChanged: onChanged,
+              maxLines: 3,
+              textAlignVertical: TextAlignVertical.top,
             )
-          : Text(
+          : SelectableText(
               subtitle ?? '',
               style: TextStyle(
                 fontSize: 16,

@@ -2,7 +2,7 @@ import 'package:core/src/repositories/implementation/entry/entry_repository.dart
 import 'package:core/src/repositories/implementation/search/search_repository.dart';
 import 'package:core/src/repositories/implementation/tabs/tabs_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:models/models.dart';
 
 import '../../../../injection.dart';
@@ -90,8 +90,10 @@ void main() {
     test('should find results in both title and subtitle', () async {
       final result = await searchRepository.search('subtitle');
 
-      expect(result.length,
-          4); // Should find all items with 'subtitle' in either title or subtitle
+      expect(
+        result.length,
+        4,
+      ); // Should find all items with 'subtitle' in either title or subtitle
       expect(result.any((r) => r.item.title == 'Test Tab'), true);
       expect(result.any((r) => r.item.title == 'Another Tab'), true);
       expect(result.any((r) => r.item.title == 'Test Entry'), true);

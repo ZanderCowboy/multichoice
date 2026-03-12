@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class NewEntry extends HookWidget {
+class NewEntry extends StatefulWidget {
   const NewEntry({
     required this.tabId,
     super.key,
@@ -9,18 +9,37 @@ class NewEntry extends HookWidget {
   final int tabId;
 
   @override
+  State<NewEntry> createState() => _NewEntryState();
+}
+
+class _NewEntryState extends State<NewEntry> {
+  late final TextEditingController _titleTextController;
+  late final TextEditingController _subtitleTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleTextController = TextEditingController();
+    _subtitleTextController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleTextController.dispose();
+    _subtitleTextController.dispose();
+    super.dispose();
+  }
+
+  Future<void> onPressed() async {
+    Navigator.of(context).pop();
+    await Future.microtask(() {
+      _titleTextController.clear();
+      _subtitleTextController.clear();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final titleTextController = useTextEditingController();
-    final subtitleTextController = useTextEditingController();
-
-    void onPressed() {
-      Navigator.of(context).pop();
-      Future.microtask(() {
-        titleTextController.clear();
-        subtitleTextController.clear();
-      });
-    }
-
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final homeBloc = context.read<HomeBloc>();
@@ -35,8 +54,8 @@ class NewEntry extends HookWidget {
                 text: TextSpan(
                   text: 'Add New Entry',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        fontSize: 24,
-                      ),
+                    fontSize: 24,
+                  ),
                 ),
               ),
               content: BlocProvider.value(
@@ -44,28 +63,28 @@ class NewEntry extends HookWidget {
                 child: BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
                     return ReusableForm(
-                      titleController: titleTextController,
-                      subtitleController: subtitleTextController,
-                      onTitleChanged: (value) => context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onChangedEntryTitle(value)),
-                      onTitleTap: () => context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onGetTab(tabId)),
+                      titleController: _titleTextController,
+                      subtitleController: _subtitleTextController,
+                      onTitleChanged: (value) => context.read<HomeBloc>().add(
+                        HomeEvent.onChangedEntryTitle(value),
+                      ),
+                      onTitleTap: () => context.read<HomeBloc>().add(
+                        HomeEvent.onGetTab(widget.tabId),
+                      ),
                       onSubtitleChanged: (value) => context
                           .read<HomeBloc>()
                           .add(HomeEvent.onChangedEntrySubtitle(value)),
-                      onCancel: () {
+                      onCancel: () async {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
-                        onPressed();
+                          const HomeEvent.onPressedCancel(),
+                        );
+                        await onPressed();
                       },
-                      onAdd: () {
+                      onAdd: () async {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedAddEntry(),
-                            );
-                        onPressed();
+                          const HomeEvent.onPressedAddEntry(),
+                        );
+                        await onPressed();
                       },
                       isValid: state.isValid,
                     );

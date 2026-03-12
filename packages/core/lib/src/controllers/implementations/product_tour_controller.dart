@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
+import 'utils/product_tour_step_storage_codec.dart';
+
 @Singleton(as: IProductTourController)
 class ProductTourController implements IProductTourController {
   ProductTourController(
@@ -16,46 +18,70 @@ class ProductTourController implements IProductTourController {
 
   @override
   Future<ProductTourStep> get currentStep async {
-    final currentStep = await _appStorageService.currentStep;
+    final storedStep = await _appStorageService.currentStep;
     final isCompleted = await _appStorageService.isCompleted;
 
     if (isCompleted) {
       return ProductTourStep.noneCompleted;
     }
 
-    if (currentStep < 0) {
+    if (storedStep < 0) {
       return ProductTourStep.welcomePopup;
     }
 
-    return ProductTourStep.values[currentStep];
+    final normalizedStepValue =
+        ProductTourStepStorageCodec.normalizeStoredStepToStableValue(
+          storedStep,
+        );
+
+    if (normalizedStepValue == null) {
+      return ProductTourStep.welcomePopup;
+    }
+
+    final normalizedStoredStep =
+        ProductTourStepStorageCodec.encodeStableStepValue(normalizedStepValue);
+
+    if (storedStep != normalizedStoredStep) {
+      await _appStorageService.setCurrentStep(normalizedStoredStep);
+    }
+
+    return ProductTourStep.fromValue(normalizedStepValue) ??
+        ProductTourStep.welcomePopup;
   }
 
   @override
   Future<void> nextStep() async {
     final current = await currentStep;
-    final nextStepIndex = current.index + 1;
+    final nextStep = ProductTourStep.fromValue(current.value + 1);
 
-    if (nextStepIndex < ProductTourStep.values.length - 2) {
-      await _appStorageService.setCurrentStep(nextStepIndex);
-    } else {
-      if (nextStepIndex == ProductTourStep.values.length - 2) {
-        await completeTour();
-      } else {
-        throw Exception('No more steps available in the product tour.');
-      }
+    if (nextStep != null && nextStep.value >= 0) {
+      await _appStorageService.setCurrentStep(
+        ProductTourStepStorageCodec.encodeStableStepValue(nextStep.value),
+      );
+      return;
     }
+
+    if (current == ProductTourStep.thanksPopup) {
+      await completeTour();
+      return;
+    }
+
+    throw Exception('No more steps available in the product tour.');
   }
 
   @override
   Future<void> previousStep({BuildContext? context}) async {
     final current = await currentStep;
-    final previousStepIndex = current.index - 1;
+    final previousStep = ProductTourStep.fromValue(current.value - 1);
 
-    if (previousStepIndex >= 0) {
-      await _appStorageService.setCurrentStep(previousStepIndex);
-    } else {
-      throw Exception('No previous step available in the product tour.');
+    if (previousStep != null && previousStep.value >= 0) {
+      await _appStorageService.setCurrentStep(
+        ProductTourStepStorageCodec.encodeStableStepValue(previousStep.value),
+      );
+      return;
     }
+
+    throw Exception('No previous step available in the product tour.');
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/theme/app_palette.dart';
@@ -12,7 +14,7 @@ part 'theme_extension/_light_app_colors.dart';
 part 'theme_extension/_light_text_theme.dart';
 
 class AppTheme with ChangeNotifier {
-  final _prefs = coreSl<SharedPreferences>();
+  final SharedPreferences _prefs = coreSl<SharedPreferences>();
 
   ThemeMode _themeMode = ThemeMode.system;
 
@@ -25,12 +27,12 @@ class AppTheme with ChangeNotifier {
     _themeMode = themeMode;
 
     final isDarkMode = themeMode == ThemeMode.dark;
-    _prefs.setBool('isDarkMode', isDarkMode);
+    unawaited(_prefs.setBool('isDarkMode', isDarkMode));
 
     notifyListeners();
   }
 
-  static final light = () {
+  static final ThemeData light = () {
     final defaultTheme = ThemeData.light();
 
     return defaultTheme.copyWith(
@@ -55,6 +57,23 @@ class AppTheme with ChangeNotifier {
         ),
         iconColor: _lightAppColors.primary,
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _lightAppColors.secondary;
+          }
+
+          return _lightAppColors.ternary?.withValues(alpha: 0.7);
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _lightAppColors.primary;
+          }
+
+          return _lightAppColors.primaryLight?.withValues(alpha: 0.8);
+        }),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+      ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor: WidgetStatePropertyAll(
@@ -72,7 +91,7 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
         titleTextStyle: AppTypography.titleMedium,
@@ -86,9 +105,9 @@ class AppTheme with ChangeNotifier {
           color: AppPalette.grey.geyser,
         ),
         centerTitle: true,
-        color: _lightAppColors.foreground,
+        backgroundColor: _lightAppColors.foreground,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         margin: vertical12horizontal4,
         elevation: 7,
         shadowColor: Colors.white,
@@ -133,7 +152,7 @@ class AppTheme with ChangeNotifier {
     );
   }();
 
-  static final dark = () {
+  static final ThemeData dark = () {
     final defaultTheme = ThemeData.dark();
 
     return defaultTheme.copyWith(
@@ -178,7 +197,7 @@ class AppTheme with ChangeNotifier {
           ),
         ),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
@@ -192,9 +211,9 @@ class AppTheme with ChangeNotifier {
           color: AppPalette.paletteTwo.sanJuan,
         ),
         centerTitle: true,
-        color: _darkAppColors.foreground,
+        backgroundColor: _darkAppColors.foreground,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         margin: vertical12horizontal4,
         elevation: 7,
         shadowColor: _darkAppColors.black,
@@ -214,10 +233,28 @@ class AppTheme with ChangeNotifier {
         ),
         iconColor: _darkAppColors.white,
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _darkAppColors.secondary;
+          }
+
+          return _darkAppColors.ternary?.withValues(alpha: 0.85);
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return _darkAppColors.primary;
+          }
+
+          return _darkAppColors.primaryLight?.withValues(alpha: 0.9);
+        }),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+      ),
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          foregroundColor:
-              WidgetStatePropertyAll(AppPalette.paletteTwo.sanJuan),
+          foregroundColor: WidgetStatePropertyAll(
+            AppPalette.paletteTwo.sanJuan,
+          ),
           padding: const WidgetStatePropertyAll(EdgeInsets.zero),
           side: const WidgetStatePropertyAll(BorderSide.none),
         ),
