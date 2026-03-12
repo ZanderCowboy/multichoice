@@ -105,22 +105,57 @@ runs:
         version_suffix="${{ inputs.version_suffix }}"
 
         echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
-
+        
         # Extract version parts for comparison
         current_version_part=$(echo "$current_version" | cut -d'+' -f1)
         current_build_number=$(echo "$current_version" | cut -d'+' -f2)
-
+        
         # Validate current version format
         if ! echo "$current_version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
           echo "::error::Invalid version format: $current_version_part"
           exit 1
         fi
-
+        
         if ! echo "$current_build_number" | grep -qE '^[0-9]+$'; then
           echo "::error::Invalid build number: $current_build_number"
           exit 1
         fi
-
+        
+        # Function to handle version conflicts
+        handle_version_conflict() {
+          local max_retries=3
+          local retry_count=0
+          
+          while [[ $retry_count -lt $max_retries ]]; do
+            echo "Attempt $((retry_count + 1)) of $max_retries to resolve version conflict"
+            
+            # Fetch latest changes
+            git fetch origin ${{ inputs.branch_name }}
+            git reset --hard origin/${{ inputs.branch_name }}
+            
+            # Get updated version
+            updated_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
+            if [[ "$updated_version" != "$current_version" ]]; then
+              echo "Version was updated by another process: $updated_version"
+              current_version="$updated_version"
+              current_version_part=$(echo "$current_version" | cut -d'+' -f1)
+              current_build_number=$(echo "$current_version" | cut -d'+' -f2)
+              break
+            fi
+            
+            retry_count=$((retry_count + 1))
+            if [[ $retry_count -lt $max_retries ]]; then
+              echo "Waiting 5 seconds before retry..."
+              sleep 5
+            fi
+          done
+          
+          if [[ $retry_count -eq $max_retries ]]; then
+            echo "::error::Failed to resolve version conflict after $max_retries attempts"
+            exit 1
+          fi
+        }
+        
         # Compare versions (handle case where latest_tag might be 0.0.0)
         if [[ "$latest_tag" == "0.0.0" ]] || [[ "$current_version" > "$latest_tag" ]]; then
           echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
@@ -133,7 +168,13 @@ runs:
               sed -i "s/version: .*/version: $new_version/" ${{ inputs.pubspec_path }}
               git add ${{ inputs.pubspec_path }}
               git commit -m "Add $version_suffix suffix to version $new_version [skip ci]"
-              git push origin HEAD:${{ inputs.branch_name }}
+              
+              # Try to push, handle conflicts
+              if ! git push origin HEAD:${{ inputs.branch_name }}; then
+                echo "Push failed, attempting to resolve version conflict..."
+                handle_version_conflict
+              fi
+              
               current_version="$new_version"
               current_version_part="$new_version_part"
             fi
@@ -222,10 +263,15 @@ runs:
             exit 1
           }
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          git push origin HEAD:${{ inputs.branch_name }} || {
-            echo "::error::Failed to push version bump to ${{ inputs.branch_name }}"
-            exit 1
-          }
+          
+          # Try to push, handle conflicts
+          if ! git push origin HEAD:${{ inputs.branch_name }}; then
+            echo "Push failed, attempting to resolve version conflict..."
+            handle_version_conflict
+            # Re-run version bumping logic with updated version
+            echo "Re-running version bumping with updated version: $current_version"
+            exit 1  # This will trigger a retry of the action
+          fi
 
           echo "version_part=$new_version" >> $GITHUB_OUTPUT
           echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
