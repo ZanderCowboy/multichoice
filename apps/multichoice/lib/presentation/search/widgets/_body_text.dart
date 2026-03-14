@@ -19,7 +19,7 @@ class _BodyText extends StatelessWidget {
           gap16,
           Text(
             state.query.isEmpty
-                ? 'Start typing to search for tabs and entries'
+                ? 'Start typing to search for collection and items'
                 : 'No results found',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
