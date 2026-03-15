@@ -11,5 +11,5 @@ analyzer:
     flutter_style_todos: ignore
   exclude:
     - lib/generated/**
-    - lib/**.g.dart
-    - lib/**.auto_mappr.dart
+    - "**/*.g.dart"
+    - "**/*.auto_mappr.dart"

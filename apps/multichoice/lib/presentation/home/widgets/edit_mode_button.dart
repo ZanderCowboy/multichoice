@@ -27,7 +27,9 @@ class EditModeButton extends StatelessWidget {
                 ),
               );
             }
-            // ignore: use_build_context_synchronously
+
+            if (!context.mounted) return;
+
             context.read<HomeBloc>().add(
               const HomeEvent.onToggleEditMode(),
             );

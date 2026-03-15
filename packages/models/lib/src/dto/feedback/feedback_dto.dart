@@ -46,10 +46,6 @@ class FeedbackDTO extends Equatable {
   Map<String, dynamic> toJson() => _$FeedbackDTOToJson(this);
 
   @override
-  String toString() =>
-      'FeedbackDTO(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';
-
-  @override
   List<Object?> get props => [
     id,
     message,

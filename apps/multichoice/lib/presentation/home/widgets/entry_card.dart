@@ -48,7 +48,8 @@ class EntryCard extends StatelessWidget {
               }
             },
       onDoubleTap: isEditMode ? null : onDoubleTap,
-      // Disable onLongPress during edit mode so ReorderableGridDragStartListener can work
+
+      /// Disable onLongPress during edit mode so ReorderableGridDragStartListener can work
       onLongPress: isEditMode
           ? null
           : () async {

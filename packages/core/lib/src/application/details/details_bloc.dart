@@ -18,178 +18,184 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     required this.tabsRepository,
     required this.entryRepository,
   }) : super(DetailsState.initial()) {
-    on<DetailsEvent>((event, emit) async {
-      final isTab =
-          state.parent == null && state.children != null && state.tabId != null;
-      final isEntry =
-          state.parent != null &&
-          state.children == null &&
-          state.entryId != null;
+    on<DetailsEvent>(
+      (event, emit) async {
+        final isTab =
+            state.parent == null &&
+            state.children != null &&
+            state.tabId != null;
+        final isEntry =
+            state.parent != null &&
+            state.children == null &&
+            state.entryId != null;
 
-      switch (event) {
-        case OnPopulateDetails(:final result):
-          emit(state.copyWith(isLoading: true));
+        switch (event) {
+          case OnPopulateDetails(:final result):
+            emit(state.copyWith(isLoading: true));
 
-          if (result.isTab) {
-            final tab = result.item as TabsDTO;
-            final children = await entryRepository.readEntries(tabId: tab.id);
+            if (result.isTab) {
+              final tab = result.item as TabsDTO;
+              final children = await entryRepository.readEntries(tabId: tab.id);
 
-            emit(
-              DetailsState.initial().copyWith(
-                title: tab.title,
-                subtitle: tab.subtitle,
-                timestamp: tab.timestamp,
-                allChildren: children,
-                children: children,
-                tabId: tab.id,
-              ),
-            );
-          } else {
-            final entry = result.item as EntryDTO;
-            final parentTab = await tabsRepository.getTab(tabId: entry.tabId);
+              emit(
+                DetailsState.initial().copyWith(
+                  title: tab.title,
+                  subtitle: tab.subtitle,
+                  timestamp: tab.timestamp,
+                  allChildren: children,
+                  children: children,
+                  tabId: tab.id,
+                ),
+              );
+            } else {
+              final entry = result.item as EntryDTO;
+              final parentTab = await tabsRepository.getTab(tabId: entry.tabId);
 
-            emit(
-              DetailsState.initial().copyWith(
-                title: entry.title,
-                subtitle: entry.subtitle,
-                timestamp: entry.timestamp,
-                parent: parentTab,
-                entryId: entry.id,
-                tabId: parentTab.id,
-              ),
-            );
-          }
-        case OnChangeTitleDetails(:final value):
-          emit(
-            state.copyWith(
-              title: value,
-              // TODO: Add validation
-              isValid: value.trim().isNotEmpty,
-            ),
-          );
-        case OnChangeSubtitleDetails(:final value):
-          emit(
-            state.copyWith(
-              subtitle: value,
-              // TODO: Add validation
-            ),
-          );
-        case OnToggleEditModeDetails():
-          if (!state.isEditingMode) {
-            emit(
-              state.copyWith(
-                isEditingMode: true,
-              ),
-            );
-            return;
-          }
-
-          /// We're exiting edit mode, need to revert changes
-          if (isTab) {
-            final tab = await tabsRepository.getTab(tabId: state.tabId!);
-            final children = await entryRepository.readEntries(
-              tabId: state.tabId!,
-            );
-            emit(
-              state.copyWith(
-                title: tab.title,
-                subtitle: tab.subtitle,
-                allChildren: children,
-                children: children,
-                deleteChildren: <int>[],
-                isEditingMode: false,
-              ),
-            );
-          } else if (isEntry) {
-            final entry = await entryRepository.getEntry(
-              entryId: state.entryId!,
-            );
-            emit(
-              state.copyWith(
-                title: entry.title,
-                subtitle: entry.subtitle,
-                isEditingMode: false,
-              ),
-            );
-          }
-        case OnDeleteChildDetails(:final id):
-          final updatedDeleteChildren = List<int>.from(
-            state.deleteChildren ?? <int>[],
-          );
-          final baseChildren = List<EntryDTO>.from(
-            state.allChildren ?? state.children ?? <EntryDTO>[],
-          );
-
-          if (updatedDeleteChildren.contains(id)) {
-            updatedDeleteChildren.remove(id);
-          } else {
-            updatedDeleteChildren.add(id);
-          }
-
-          final updatedChildren = baseChildren
-              .where((entry) => !updatedDeleteChildren.contains(entry.id))
-              .toList();
-
-          emit(
-            state.copyWith(
-              deleteChildren: updatedDeleteChildren,
-              children: updatedChildren,
-            ),
-          );
-        case OnDeleteDetails():
-          emit(state.copyWith(isLoading: true));
-
-          bool deleteSuccess = false;
-          if (isTab) {
-            deleteSuccess = await tabsRepository.deleteTab(tabId: state.tabId!);
-          } else if (isEntry) {
-            deleteSuccess = await entryRepository.deleteEntry(
-              tabId: state.tabId!,
-              entryId: state.entryId!,
-            );
-          }
-
-          // Only mark as deleted if the operation succeeded
-          emit(
-            state.copyWith(
-              isLoading: false,
-              isDeleted: deleteSuccess,
-            ),
-          );
-
-        // TODO: If deleteSuccess is false, show error message to user
-        case OnSubmitDetails():
-          emit(
-            state.copyWith(
-              isLoading: true,
-              isEditingMode: false,
-            ),
-          );
-
-          if (isTab) {
-            await tabsRepository.updateTab(
-              id: state.tabId!,
-              title: state.title,
-              subtitle: state.subtitle,
-            );
-
-            for (final id in state.deleteChildren ?? <int>[]) {
-              await entryRepository.deleteEntry(
-                tabId: state.tabId!,
-                entryId: id,
+              emit(
+                DetailsState.initial().copyWith(
+                  title: entry.title,
+                  subtitle: entry.subtitle,
+                  timestamp: entry.timestamp,
+                  parent: parentTab,
+                  entryId: entry.id,
+                  tabId: parentTab.id,
+                ),
               );
             }
-          } else if (isEntry) {
-            await entryRepository.updateEntry(
-              id: state.entryId!,
-              tabId: state.parent!.id,
-              title: state.title,
-              subtitle: state.subtitle,
+          case OnChangeTitleDetails(:final value):
+            emit(
+              state.copyWith(
+                title: value,
+                // TODO: Add validation
+                isValid: value.trim().isNotEmpty,
+              ),
             );
-          }
+          case OnChangeSubtitleDetails(:final value):
+            emit(
+              state.copyWith(
+                subtitle: value,
+                // TODO: Add validation
+              ),
+            );
+          case OnToggleEditModeDetails():
+            if (!state.isEditingMode) {
+              emit(
+                state.copyWith(
+                  isEditingMode: true,
+                ),
+              );
+              return;
+            }
 
-          emit(state.copyWith(isLoading: false));
-      }
-    });
+            /// We're exiting edit mode, need to revert changes
+            if (isTab) {
+              final tab = await tabsRepository.getTab(tabId: state.tabId!);
+              final children = await entryRepository.readEntries(
+                tabId: state.tabId!,
+              );
+              emit(
+                state.copyWith(
+                  title: tab.title,
+                  subtitle: tab.subtitle,
+                  allChildren: children,
+                  children: children,
+                  deleteChildren: <int>[],
+                  isEditingMode: false,
+                ),
+              );
+            } else if (isEntry) {
+              final entry = await entryRepository.getEntry(
+                entryId: state.entryId!,
+              );
+              emit(
+                state.copyWith(
+                  title: entry.title,
+                  subtitle: entry.subtitle,
+                  isEditingMode: false,
+                ),
+              );
+            }
+          case OnDeleteChildDetails(:final id):
+            final updatedDeleteChildren = List<int>.from(
+              state.deleteChildren ?? <int>[],
+            );
+            final baseChildren = List<EntryDTO>.from(
+              state.allChildren ?? state.children ?? <EntryDTO>[],
+            );
+
+            if (updatedDeleteChildren.contains(id)) {
+              updatedDeleteChildren.remove(id);
+            } else {
+              updatedDeleteChildren.add(id);
+            }
+
+            final updatedChildren = baseChildren
+                .where((entry) => !updatedDeleteChildren.contains(entry.id))
+                .toList();
+
+            emit(
+              state.copyWith(
+                deleteChildren: updatedDeleteChildren,
+                children: updatedChildren,
+              ),
+            );
+          case OnDeleteDetails():
+            emit(state.copyWith(isLoading: true));
+
+            bool deleteSuccess = false;
+            if (isTab) {
+              deleteSuccess = await tabsRepository.deleteTab(
+                tabId: state.tabId!,
+              );
+            } else if (isEntry) {
+              deleteSuccess = await entryRepository.deleteEntry(
+                tabId: state.tabId!,
+                entryId: state.entryId!,
+              );
+            }
+
+            // Only mark as deleted if the operation succeeded
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isDeleted: deleteSuccess,
+              ),
+            );
+
+          // TODO: If deleteSuccess is false, show error message to user
+          case OnSubmitDetails():
+            emit(
+              state.copyWith(
+                isLoading: true,
+                isEditingMode: false,
+              ),
+            );
+
+            if (isTab) {
+              await tabsRepository.updateTab(
+                id: state.tabId!,
+                title: state.title,
+                subtitle: state.subtitle,
+              );
+
+              for (final id in state.deleteChildren ?? <int>[]) {
+                await entryRepository.deleteEntry(
+                  tabId: state.tabId!,
+                  entryId: id,
+                );
+              }
+            } else if (isEntry) {
+              await entryRepository.updateEntry(
+                id: state.entryId!,
+                tabId: state.parent!.id,
+                title: state.title,
+                subtitle: state.subtitle,
+              );
+            }
+
+            emit(state.copyWith(isLoading: false));
+        }
+      },
+    );
   }
 }

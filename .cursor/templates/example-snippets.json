@@ -1,7 +1,6 @@
 {
   "_comment": "Example snippets you can add to .vscode/snippets.code-snippets",
   "_instructions": "Copy the snippets you want into your snippets.code-snippets file",
-  
   "Service Interface": {
     "scope": "dart",
     "prefix": "iservice",
@@ -12,7 +11,6 @@
     ],
     "description": "Create a service interface"
   },
-  
   "Service Implementation": {
     "scope": "dart",
     "prefix": "service",
@@ -34,7 +32,6 @@
     ],
     "description": "Create a service implementation"
   },
-  
   "Flutter Page": {
     "scope": "dart",
     "prefix": "fpage",
@@ -64,7 +61,6 @@
     ],
     "description": "Create a Flutter page with scaffold"
   },
-  
   "Freezed Model": {
     "scope": "dart",
     "prefix": "fmodel",
@@ -87,7 +83,6 @@
     ],
     "description": "Create a Freezed model"
   },
-  
   "Repository Interface": {
     "scope": "dart",
     "prefix": "irepo",
@@ -102,7 +97,6 @@
     ],
     "description": "Create a repository interface"
   },
-  
   "Stateless Widget": {
     "scope": "dart",
     "prefix": "swidget",
@@ -121,7 +115,6 @@
     ],
     "description": "Create a stateless widget"
   },
-  
   "Stateful Widget": {
     "scope": "dart",
     "prefix": "fwidget",
@@ -142,7 +135,6 @@
     ],
     "description": "Create a stateful widget"
   },
-  
   "Result Type": {
     "scope": "dart",
     "prefix": "result",

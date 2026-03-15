@@ -16,21 +16,25 @@ This demonstrates advanced glob pattern usage.
 ## Glob Pattern Features
 
 ### Inclusion Patterns
+
 - `packages/**/*.dart` - All Dart files in packages directory
 - `apps/**/lib/features/**/*.dart` - All Dart files in feature directories
 
 ### Exclusion Patterns (using `!`)
+
 - `!**/*.g.dart` - Exclude generated files
 - `!**/*.freezed.dart` - Exclude Freezed generated files
 - `!**/*.mocks.dart` - Exclude mock files
 
 ## Use Cases
+
 - Apply rules to source files but not generated files
 - Target specific directory structures
 - Exclude test files or build artifacts
 - Create rules for specific package types
 
 ## Pattern Examples
+
 ```yaml
 globs:
   # Include patterns
