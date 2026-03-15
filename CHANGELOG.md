@@ -6,3 +6,4 @@
 - Update search body for empty search
   - Change tabs and entries to collections and items
 - In horizontal mode, menu is hidden behind OS navigation bar
+- Update AndroidManifest with permission `com.google.android.gms.permission.AD_ID`
