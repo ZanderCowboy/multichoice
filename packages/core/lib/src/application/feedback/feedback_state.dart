@@ -1,4 +1,4 @@
-part of 'feedback_bloc.dart';
+wpart of 'feedback_bloc.dart';
 
 @CopyWith()
 class FeedbackState extends Equatable {

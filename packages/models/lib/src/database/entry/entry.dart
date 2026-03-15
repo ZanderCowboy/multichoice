@@ -39,11 +39,5 @@ class Entry extends Equatable {
   Id get id => uuid.fastHash();
 
   @override
-  List<Object?> get props => [
-    uuid,
-    tabId,
-    title,
-    subtitle,
-    timestamp,
-  ];
+  List<Object?> get props => [uuid, tabId, title, subtitle, timestamp];
 }
