@@ -7,10 +7,7 @@ part 'changelog_entry.g.dart';
 @CopyWith()
 @JsonSerializable()
 class ChangelogEntry extends Equatable {
-  const ChangelogEntry({
-    required this.date,
-    required this.changes,
-  });
+  const ChangelogEntry({required this.date, required this.changes});
 
   factory ChangelogEntry.fromJson(Map<String, dynamic> json) =>
       _$ChangelogEntryFromJson(json);
@@ -21,8 +18,5 @@ class ChangelogEntry extends Equatable {
   Map<String, dynamic> toJson() => _$ChangelogEntryToJson(this);
 
   @override
-  List<Object?> get props => [
-    date,
-    changes,
-  ];
+  List<Object?> get props => [date, changes];
 }

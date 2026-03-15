@@ -23,9 +23,5 @@ class SearchResult extends Equatable {
   Map<String, dynamic> toJson() => _$SearchResultToJson(this);
 
   @override
-  List<Object?> get props => [
-    isTab,
-    item,
-    matchScore,
-  ];
+  List<Object?> get props => [isTab, item, matchScore];
 }
