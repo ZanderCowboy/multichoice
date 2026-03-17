@@ -1,21 +1,38 @@
 ---
-# This workflow is triggered on pull request closure for the 'main' branch from 'rc'.
-# It is responsible for building the Android app, running tests, and uploading artifacts.
-# It also manages versioning by removing RC suffix from tags and versions.
+# This workflow is manually triggered.
+# It builds the Android app, uploads artifacts, publishes to Play, tags the release,
+# and can optionally create a GitHub release.
 #
-# The versioning works as follows:
-# - If the pull request is merged and has an RC suffix, it will remove the RC suffix from the version.
-#   For example, if the current version is 1.0.0-RC+5, it will become 1.0.0+5.
-#   and a new tag will be created without RC suffix and build number.
-#   For example, if the current tag is v2.4.1-RC+125, it will become v2.4.1.
+# Versioning works as follows:
+# - Reads the latest RC tag matching: vX.Y.Z-RC+N
+# - Bumps semantic version based on input: patch, minor, or major
+# - Always increments build number by 1
+#   Example: v2.4.1-RC+125 with release_type=minor -> v2.5.0+126
+# - Creates a version-only tag from the finalized version (for example, v2.5.0)
 #
 name: main-workflow
 on:
-  pull_request:
-    branches: ["main"]
-    types:
-      - closed
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Semantic version bump type"
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+      target_branch:
+        description: "Branch to build and update"
+        required: true
+        type: string
+        default: main
+      skip_github_release:
+        description: "Skip creating a GitHub Release"
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,7 +41,6 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && (github.event.pull_request.head.ref == 'rc' || contains(github.event.pull_request.labels.*.name, 'prod'))
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -42,6 +58,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ inputs.target_branch }}
 
       ##############################################
       # Get Current Version From Latest Tag
@@ -49,6 +66,8 @@ jobs:
       - name: Get Current Version From Latest Tag
         id: get_current_version
         shell: bash
+        env:
+          RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
           # Get the latest tag
           latest_tag=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' | head -n1)
@@ -74,7 +93,7 @@ jobs:
 
           new_build_number=$((build_number + 1))
 
-          # Remove RC suffix to get clean version
+          # Remove RC suffix to get base version
           version_without_rc=${version_part_RC%-RC*}
 
           # Validate the extracted version
@@ -88,16 +107,43 @@ jobs:
             exit 1
           fi
 
-          echo "version_without_rc=$version_without_rc" >> $GITHUB_OUTPUT
+          IFS='.' read -r major minor patch <<< "$version_without_rc"
+          case "$RELEASE_TYPE" in
+            major)
+              major=$((major + 1))
+              minor=0
+              patch=0
+              ;;
+            minor)
+              minor=$((minor + 1))
+              patch=0
+              ;;
+            patch)
+              patch=$((patch + 1))
+              ;;
+            *)
+              echo "::error::Invalid release_type: $RELEASE_TYPE"
+              exit 1
+              ;;
+          esac
+
+          bumped_version="$major.$minor.$patch"
+
+          if ! echo "$bumped_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid bumped version: $bumped_version"
+            exit 1
+          fi
+
+          echo "version_without_rc=$bumped_version" >> $GITHUB_OUTPUT
           echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
           echo "updated build number: $new_build_number"
-          echo "version_with_build=$version_without_rc+$new_build_number" >> $GITHUB_OUTPUT
-          echo "full version: $version_without_rc+$new_build_number"
-          echo "current_version=$version_without_rc" >> $GITHUB_OUTPUT
-          echo "Current version name: $version_without_rc"
+          echo "version_with_build=$bumped_version+$new_build_number" >> $GITHUB_OUTPUT
+          echo "full version: $bumped_version+$new_build_number"
+          echo "current_version=$bumped_version" >> $GITHUB_OUTPUT
+          echo "Current version name: $bumped_version"
 
-          echo "Version without RC suffix: $version_without_rc+$new_build_number"
-          echo "Current version: $version_without_rc"
+          echo "Version without RC suffix: $bumped_version+$new_build_number"
+          echo "Current version: $bumped_version"
 
       ##############################################
       # Generate GitHub App Token
@@ -118,8 +164,8 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           repository: ${{ github.repository }}
           file_path: apps/multichoice/pubspec.yaml
-          commit_message: "Remove RC suffix from version ${{ steps.get_current_version.outputs.version_with_build }} [skip ci]"
-          branch_name: main
+          commit_message: "Release version ${{ steps.get_current_version.outputs.version_with_build }} [skip ci]"
+          branch_name: ${{ inputs.target_branch }}
           version_with_build: ${{ steps.get_current_version.outputs.version_with_build }}
 
   build:
@@ -132,12 +178,15 @@ jobs:
       statuses: write
     outputs:
       tag_version: ${{ steps.create_tag.outputs.tag_version }}
+      build_number: ${{ needs.preBuild.outputs.build_number }}
     steps:
       ##############################################
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
 
       ##############################################
       # Set up Flutter and Java
@@ -278,7 +327,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "co.za.zanderkotze.multichoice"
           track: "production"
-          releaseName: ${{ steps.create_tag.outputs.tag_version }}
+          releaseName: ${{ needs.preBuild.outputs.version_part }}
           status: "completed"
 
       ##############################################
@@ -298,13 +347,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: needs.build.outputs.tag_version != ''
+    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release
     steps:
       ##############################################
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
 
       ##############################################
       # Download APK Artifact
@@ -337,7 +388,7 @@ jobs:
             - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
 
             ### 🔧 Technical Details
-            - Build Number: ${{ needs.preBuild.outputs.build_number }}
+            - Build Number: ${{ needs.build.outputs.build_number }}
             - Platform: Android
 
             ### 📋 Release Notes
