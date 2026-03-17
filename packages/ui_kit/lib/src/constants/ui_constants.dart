@@ -6,17 +6,18 @@ const elevatedButtonMinimumSize = Size(96, 48);
 const entryCardMinimumHeight = 90.0;
 const entryCardMinimumWidth = 0.0;
 const tabCardMinimumWidth = 120.0;
-const double tabsHeightConstant = 1.15;
+const double tabsHeightConstant = 1.2;
+
+/// Threshold in pixels for showing the scroll-to-start indicator button.
+const double scrollToStartThreshold = 12.0;
 const double tabsHeightConstantHori = 4;
-const double tabsWidthConstantMobile = 3.65;
-const double tabsWidthConstantDesktop = 8;
+const double tabsWidthConstant = 2.75;
 
 /// Vertical
 
 /// Horizontal
 const horizontalTabsHeaderFactor = 6.10;
-
-const _mobileScreenWidth = 450;
+const horizontalTabHeightFactor = 4.1;
 
 class UIConstants {
   UIConstants();
@@ -53,9 +54,6 @@ class UIConstants {
 
   static double vertTabWidth(BuildContext context) {
     final mediaWidth = _getScreenWidth(context);
-    final tabsWidthConstant = mediaWidth > _mobileScreenWidth
-        ? tabsWidthConstantDesktop
-        : tabsWidthConstantMobile;
 
     final tabsWidth = mediaWidth / tabsWidthConstant;
 
@@ -64,7 +62,7 @@ class UIConstants {
 
   /// Horizontal Layout
   static double horiTabHeight(BuildContext context) {
-    return _getScreenHeight(context) / 4.1;
+    return _getScreenHeight(context) / horizontalTabHeightFactor;
   }
 
   /// This controls the size for the header section in Horizontal mode

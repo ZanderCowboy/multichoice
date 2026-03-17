@@ -39,6 +39,7 @@ class _BaseCard extends StatelessWidget {
       label: semanticLabel,
       child: Card(
         elevation: elevation,
+        surfaceTintColor: Colors.transparent,
         margin: margin,
         color: color,
         shape: shape,

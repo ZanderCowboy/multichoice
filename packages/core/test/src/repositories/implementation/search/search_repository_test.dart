@@ -90,8 +90,10 @@ void main() {
     test('should find results in both title and subtitle', () async {
       final result = await searchRepository.search('subtitle');
 
-      expect(result.length,
-          4); // Should find all items with 'subtitle' in either title or subtitle
+      expect(
+        result.length,
+        4,
+      ); // Should find all items with 'subtitle' in either title or subtitle
       expect(result.any((r) => r.item.title == 'Test Tab'), true);
       expect(result.any((r) => r.item.title == 'Another Tab'), true);
       expect(result.any((r) => r.item.title == 'Test Entry'), true);

@@ -37,8 +37,11 @@ class SearchRepository implements ISearchRepository {
 
         final tabResults = tabs.map((tab) {
           final dto = TabsMapper().convert<Tabs, TabsDTO>(tab);
-          final score =
-              _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
+          final score = _calculateMatchScore(
+            dto.title,
+            dto.subtitle,
+            normalizedQuery,
+          );
           return SearchResult(
             isTab: true,
             item: dto,
@@ -48,8 +51,11 @@ class SearchRepository implements ISearchRepository {
 
         final entryResults = entries.map((entry) {
           final dto = EntryMapper().convert<Entry, EntryDTO>(entry);
-          final score =
-              _calculateMatchScore(dto.title, dto.subtitle, normalizedQuery);
+          final score = _calculateMatchScore(
+            dto.title,
+            dto.subtitle,
+            normalizedQuery,
+          );
           return SearchResult(
             isTab: false,
             item: dto,

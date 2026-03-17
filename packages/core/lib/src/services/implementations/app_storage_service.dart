@@ -59,8 +59,9 @@ class AppStorageService implements IAppStorageService {
 
   @override
   Future<bool> get isLayoutVertical async {
-    final isVertical =
-        _sharedPreferences.getBool(StorageKeys.isLayoutVertical.key);
+    final isVertical = _sharedPreferences.getBool(
+      StorageKeys.isLayoutVertical.key,
+    );
     return isVertical ?? false;
   }
 
@@ -74,8 +75,9 @@ class AppStorageService implements IAppStorageService {
 
   @override
   Future<bool> get isExistingUser async {
-    final isExisting =
-        _sharedPreferences.getBool(StorageKeys.isExistingUser.key);
+    final isExisting = _sharedPreferences.getBool(
+      StorageKeys.isExistingUser.key,
+    );
     return isExisting ?? false;
   }
 
@@ -89,8 +91,9 @@ class AppStorageService implements IAppStorageService {
 
   @override
   Future<bool> get isPermissionsChecked async {
-    final isChecked =
-        _sharedPreferences.getBool(StorageKeys.isPermissionsChecked.key);
+    final isChecked = _sharedPreferences.getBool(
+      StorageKeys.isPermissionsChecked.key,
+    );
     return isChecked ?? false;
   }
 
@@ -103,6 +106,22 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<bool> get isImportDataBannerDismissed async {
+    final isDismissed = _sharedPreferences.getBool(
+      StorageKeys.isImportDataBannerDismissed.key,
+    );
+    return isDismissed ?? false;
+  }
+
+  @override
+  Future<void> setIsImportDataBannerDismissed(bool isDismissed) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isImportDataBannerDismissed.key,
+      isDismissed,
+    );
+  }
+
+  @override
   Future<void> clearAllData() async {
     if (!kDebugMode) return;
 
@@ -111,5 +130,6 @@ class AppStorageService implements IAppStorageService {
     await setIsLayoutVertical(false);
     await setIsExistingUser(false);
     await setIsPermissionsChecked(false);
+    await setIsImportDataBannerDismissed(false);
   }
 }

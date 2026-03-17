@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:models/src/dto/extensions/string.dart';
@@ -6,9 +7,9 @@ import 'package:models/src/dto/extensions/string.dart';
 part 'entry.g.dart';
 
 @CopyWith()
-@Collection(ignore: {'copyWith'})
+@Collection(ignore: {'copyWith', 'props'})
 @JsonSerializable()
-class Entry {
+class Entry extends Equatable {
   const Entry({
     required this.uuid,
     required this.tabId,
@@ -38,25 +39,5 @@ class Entry {
   Id get id => uuid.fastHash();
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Entry &&
-          runtimeType == other.runtimeType &&
-          uuid == other.uuid &&
-          tabId == other.tabId &&
-          title == other.title &&
-          subtitle == other.subtitle &&
-          timestamp == other.timestamp;
-
-  @override
-  int get hashCode =>
-      uuid.hashCode ^
-      tabId.hashCode ^
-      title.hashCode ^
-      subtitle.hashCode ^
-      timestamp.hashCode;
-
-  @override
-  String toString() =>
-      'Entry(uuid: $uuid, tabId: $tabId, title: $title, subtitle: $subtitle, timestamp: $timestamp)';
+  List<Object?> get props => [uuid, tabId, title, subtitle, timestamp];
 }

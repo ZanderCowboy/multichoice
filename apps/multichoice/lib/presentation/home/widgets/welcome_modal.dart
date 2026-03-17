@@ -1,4 +1,6 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:models/models.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
@@ -40,11 +42,31 @@ class WelcomeModal extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: onGoHome,
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.home,
+                          button: AnalyticsButton.goHome,
+                          action: AnalyticsAction.tap,
+                          source: 'welcome_modal',
+                        ),
+                      );
+                      onGoHome();
+                    },
                     child: const Text('Go Home'),
                   ),
                   ElevatedButton(
-                    onPressed: onFollowTutorial,
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.home,
+                          button: AnalyticsButton.followTutorial,
+                          action: AnalyticsAction.tap,
+                          source: 'tutorial',
+                        ),
+                      );
+                      onFollowTutorial();
+                    },
                     child: const Text('Follow Tutorial'),
                   ),
                 ],

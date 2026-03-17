@@ -57,6 +57,13 @@ ShowcaseData _getProductTourData(ProductTourStep step) {
           coreSl<ProductBloc>().add(const ProductEvent.nextStep());
         },
       );
+    case ProductTourStep.showEditAndSearch:
+      return ShowcaseData(
+        description: 'Tap here to enter edit mode and search',
+        onTargetClick: () {
+          coreSl<ProductBloc>().add(const ProductEvent.nextStep());
+        },
+      );
     case ProductTourStep.showSettings:
       return ShowcaseData(
         description: 'Tap here to access settings and more options here.',

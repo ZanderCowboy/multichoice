@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
+import 'package:core/src/services/implementations/noop_analytics_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
@@ -13,7 +14,10 @@ void main() {
 
   setUp(() {
     mockSearchRepository = MockSearchRepository();
-    searchBloc = SearchBloc(mockSearchRepository);
+    searchBloc = SearchBloc(
+      mockSearchRepository,
+      const NoopAnalyticsService(),
+    );
   });
 
   tearDown(() {
@@ -51,6 +55,7 @@ void main() {
               subtitle: 'Test Subtitle',
               timestamp: fixedDate,
               entries: [],
+              order: 0,
             ),
             matchScore: 0.8,
           ),
@@ -168,6 +173,7 @@ void main() {
               subtitle: 'Updated Subtitle',
               timestamp: fixedDate,
               entries: [],
+              order: 0,
             ),
             matchScore: 0.9,
           ),

@@ -1,11 +1,9 @@
-# 243 - Isar URL Changed
+# Release Candidate
 
-- Update GitHub workflows from Flutter 3.27.x to 3.38.x
-- Remove dependency on FVM from settings.json
-- Multiple linting issues
-- Complete major upgrade on multiple packages
-- BREAKING: Change from `isar` to `isar_community` and `isar_flutter_libs` to `isar_community_flutter_libs`
-- Update imports after `isar` update
-- Update `tests` in `core`
-- Introduce `copy_with_extension` and remove `freezed_annotation` from `models`
-- Update `docs`
+- v0.6.0
+- Move Codecov from staging_workflow to linting_workflow
+- Changelog not loading, data model issues
+- Update search body for empty search
+  - Change tabs and entries to collections and items
+- In horizontal mode, menu is hidden behind OS navigation bar
+- Update AndroidManifest with permission `com.google.android.gms.permission.AD_ID`

@@ -12,84 +12,81 @@ class MenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return MenuAnchor(
-          consumeOutsideTap: true,
-          builder: (_, menuController, child) {
-            return IconButton(
-              onPressed: () {
-                if (menuController.isOpen) {
-                  menuController.close();
-                } else {
-                  menuController.open();
-                }
-              },
-              icon: const Icon(Icons.more_vert_outlined),
-              iconSize: 18,
-              color: context.theme.appColors.ternary,
-              padding: zeroPadding,
-              visualDensity: VisualDensity.compact,
-            );
-          },
-          menuChildren: [
-            MenuItemButton(
-              onPressed: () async {
+        final appColors = context.theme.appColors;
+        final menuTextStyle = Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: appColors.foreground);
+        final menuIconColor = appColors.foreground;
+
+        Widget buildMenuItem({
+          required IconData icon,
+          required String label,
+        }) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: menuIconColor,
+              ),
+              gap8,
+              Text(label, style: menuTextStyle),
+            ],
+          );
+        }
+
+        return PopupMenuButton<MenuItems>(
+          onSelected: (item) async {
+            switch (item) {
+              case MenuItems.edit:
                 context.read<HomeBloc>().add(HomeEvent.onUpdateTabId(tab.id));
                 await context.router.push(EditTabPageRoute(ctx: context));
-              },
-              child: Text(MenuItems.edit.name),
-            ),
-            MenuItemButton(
-              onPressed: tab.entries.isNotEmpty
-                  ? () {
-                      CustomDialog<AlertDialog>.show(
-                        context: context,
-                        title: RichText(
-                          text: TextSpan(
-                            text: 'Delete all entries of ',
-                            style: DefaultTextStyle.of(
-                              context,
-                            ).style.copyWith(fontSize: 24),
-                            children: [
-                              TextSpan(
-                                text: tab.title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '?',
-                                style: DefaultTextStyle.of(
-                                  context,
-                                ).style.copyWith(fontSize: 24),
-                              ),
-                            ],
+              case MenuItems.deleteEntries:
+                CustomDialog<AlertDialog>.show(
+                  context: context,
+                  title: RichText(
+                    text: TextSpan(
+                      text: 'Delete all entries of ',
+                      style: DefaultTextStyle.of(
+                        context,
+                      ).style.copyWith(fontSize: 24),
+                      children: [
+                        TextSpan(
+                          text: tab.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        content: Text(
-                          'Are you sure you want to delete all the entries of ${tab.title}?',
+                        TextSpan(
+                          text: '?',
+                          style: DefaultTextStyle.of(
+                            context,
+                          ).style.copyWith(fontSize: 24),
                         ),
-                        actions: [
-                          OutlinedButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<HomeBloc>().add(
-                                HomeEvent.onPressedDeleteAllEntries(tab.id),
-                              );
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Delete Entries'),
-                          ),
-                        ],
-                      );
-                    }
-                  : null,
-              child: Text(MenuItems.deleteEntries.name),
-            ),
-            MenuItemButton(
-              onPressed: () {
+                      ],
+                    ),
+                  ),
+                  content: Text(
+                    'Are you sure you want to delete all the entries of ${tab.title}?',
+                  ),
+                  actions: [
+                    OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(
+                          HomeEvent.onPressedDeleteAllEntries(tab.id),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Delete Entries'),
+                    ),
+                  ],
+                );
+              case MenuItems.delete:
                 deleteModal(
                   context: context,
                   title: tab.title,
@@ -105,10 +102,42 @@ class MenuWidget extends StatelessWidget {
                     Navigator.of(context).pop();
                   },
                 );
-              },
-              child: Text(MenuItems.delete.name),
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem<MenuItems>(
+              value: MenuItems.edit,
+              textStyle: menuTextStyle,
+              child: buildMenuItem(
+                icon: Icons.edit_outlined,
+                label: MenuItems.edit.name,
+              ),
+            ),
+            PopupMenuItem<MenuItems>(
+              value: MenuItems.deleteEntries,
+              enabled: tab.entries.isNotEmpty,
+              textStyle: menuTextStyle,
+              child: buildMenuItem(
+                icon: Icons.delete_sweep_outlined,
+                label: MenuItems.deleteEntries.name,
+              ),
+            ),
+            PopupMenuItem<MenuItems>(
+              value: MenuItems.delete,
+              textStyle: menuTextStyle,
+              child: buildMenuItem(
+                icon: Icons.delete_outline,
+                label: MenuItems.delete.name,
+              ),
             ),
           ],
+          icon: Icon(
+            Icons.more_vert_outlined,
+            color: appColors.ternary,
+          ),
+          iconSize: 18,
+          color: appColors.background,
+          padding: zeroPadding,
         );
       },
     );

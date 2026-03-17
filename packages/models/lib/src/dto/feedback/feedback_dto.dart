@@ -1,11 +1,12 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'feedback_dto.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class FeedbackDTO {
+class FeedbackDTO extends Equatable {
   const FeedbackDTO({
     required this.id,
     required this.message,
@@ -45,35 +46,16 @@ class FeedbackDTO {
   Map<String, dynamic> toJson() => _$FeedbackDTOToJson(this);
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is FeedbackDTO &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          message == other.message &&
-          rating == other.rating &&
-          deviceInfo == other.deviceInfo &&
-          appVersion == other.appVersion &&
-          timestamp == other.timestamp &&
-          userId == other.userId &&
-          userEmail == other.userEmail &&
-          category == other.category &&
-          status == other.status;
-
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      message.hashCode ^
-      rating.hashCode ^
-      deviceInfo.hashCode ^
-      appVersion.hashCode ^
-      timestamp.hashCode ^
-      userId.hashCode ^
-      userEmail.hashCode ^
-      category.hashCode ^
-      status.hashCode;
-
-  @override
-  String toString() =>
-      'FeedbackDTO(id: $id, message: $message, rating: $rating, deviceInfo: $deviceInfo, appVersion: $appVersion, timestamp: $timestamp, userId: $userId, userEmail: $userEmail, category: $category, status: $status)';
+  List<Object?> get props => [
+    id,
+    message,
+    rating,
+    deviceInfo,
+    appVersion,
+    timestamp,
+    userId,
+    userEmail,
+    category,
+    status,
+  ];
 }

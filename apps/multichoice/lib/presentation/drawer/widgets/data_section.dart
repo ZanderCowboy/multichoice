@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 part of 'export.dart';
 
 class DataSection extends StatelessWidget {
@@ -40,10 +42,17 @@ class DataSection extends StatelessWidget {
                               child: const Text('No, cancel'),
                             ),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                await coreSl<IAnalyticsService>().logEvent(
+                                  const CrudEventData(
+                                    page: AnalyticsPage.settings,
+                                    entity: AnalyticsEntity.allTabs,
+                                    action: AnalyticsAction.delete,
+                                  ),
+                                );
                                 context.read<HomeBloc>().add(
-                                      const HomeEvent.onPressedDeleteAll(),
-                                    );
+                                  const HomeEvent.onPressedDeleteAll(),
+                                );
                                 Navigator.of(context).pop();
                               },
                               child: const Text('Yes, delete'),
@@ -74,8 +83,8 @@ class DataSection extends StatelessWidget {
               DataTransferScreenRoute(
                 onCallback: () {
                   context.read<HomeBloc>().add(
-                        const HomeEvent.onGetTabs(),
-                      );
+                    const HomeEvent.onGetTabs(),
+                  );
                 },
               ),
             ),
