@@ -2,7 +2,7 @@ name: multichoice
 description: "The application for the Multichoice repo"
 publish_to: "none"
 
-version: 0.7.1+224
+version: 0.7.2+224
 
 environment:
   sdk: ">=3.10.8 <4.0.0"
