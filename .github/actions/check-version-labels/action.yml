@@ -5,10 +5,14 @@ inputs:
   labels:
     description: "JSON string of PR labels"
     required: true
-  allowed_labels:
-    description: "Comma-separated list of allowed version labels"
-    required: true
-    default: "major,minor,patch"
+  feature_label:
+    description: "Label that maps to a minor bump"
+    required: false
+    default: "feature"
+  bug_label:
+    description: "Label that maps to a patch bump"
+    required: false
+    default: "bug"
   no_build_label:
     description: "Label that indicates no build should be performed"
     required: false
@@ -27,13 +31,15 @@ runs:
       shell: bash
       env:
         LABELS: ${{ inputs.labels }}
-        ALLOWED_LABELS: ${{ inputs.allowed_labels }}
+        FEATURE_LABEL: ${{ inputs.feature_label }}
+        BUG_LABEL: ${{ inputs.bug_label }}
         NO_BUILD_LABEL: ${{ inputs.no_build_label }}
       run: |
         set -e
 
         echo "LABELS: $LABELS"
-        echo "ALLOWED_LABELS: $ALLOWED_LABELS"
+        echo "FEATURE_LABEL: $FEATURE_LABEL"
+        echo "BUG_LABEL: $BUG_LABEL"
         echo "NO_BUILD_LABEL: $NO_BUILD_LABEL"
 
         # Validate JSON format
@@ -42,43 +48,20 @@ runs:
           exit 1
         fi
 
-        # Check for valid version labels (excluding no-build)
-        VALID_LABELS=$(echo "$LABELS" | jq -r --arg allowed "$ALLOWED_LABELS" --arg no_build "$NO_BUILD_LABEL" '
-          ($allowed | split(",")) as $allowed_labels
-          | [.[]?.name | select(. != $no_build) | select(. as $label | $allowed_labels | index($label))]
-          | .[]
-        ' 2>/dev/null || echo "")
+        has_no_build=$(echo "$LABELS" | jq -r --arg no_build "$NO_BUILD_LABEL" 'map(.name) | index($no_build) != null')
+        has_feature=$(echo "$LABELS" | jq -r --arg feature "$FEATURE_LABEL" 'map(.name) | index($feature) != null')
+        has_bug=$(echo "$LABELS" | jq -r --arg bug "$BUG_LABEL" 'map(.name) | index($bug) != null')
 
-        if [[ -z "$VALID_LABELS" ]]; then
-          echo "bump_type=none" >> $GITHUB_OUTPUT
-          echo "********** Bumping build number only **********"
+        if [[ "$has_no_build" == "true" ]]; then
+          echo "bump_type=none" >> "$GITHUB_OUTPUT"
+          echo "********** no-build label present, skipping semantic bump **********"
+        elif [[ "$has_feature" == "true" ]]; then
+          echo "bump_type=minor" >> "$GITHUB_OUTPUT"
+          echo "********** feature label present, bumping minor **********"
+        elif [[ "$has_bug" == "true" ]]; then
+          echo "bump_type=patch" >> "$GITHUB_OUTPUT"
+          echo "********** bug label present, bumping patch **********"
         else
-          LABEL_COUNT=$(echo "$VALID_LABELS" | wc -l)
-          echo "Found $LABEL_COUNT valid labels: $VALID_LABELS"
-          
-          # If multiple labels are found, error out
-          if [[ $LABEL_COUNT -gt 1 ]]; then
-            echo "::error::Multiple version labels found ($VALID_LABELS). Please use exactly one of: $ALLOWED_LABELS, or neither"
-            exit 1
-          fi
-
-          # Set the bump type based on the single valid label
-          case "$VALID_LABELS" in
-            "major") 
-              echo "bump_type=major" >> $GITHUB_OUTPUT
-              echo "********** Bumping version with label: major **********"
-              ;;
-            "minor") 
-              echo "bump_type=minor" >> $GITHUB_OUTPUT
-              echo "********** Bumping version with label: minor **********"
-              ;;
-            "patch") 
-              echo "bump_type=patch" >> $GITHUB_OUTPUT
-              echo "********** Bumping version with label: patch **********"
-              ;;
-            *) 
-              echo "::error::Unexpected label: $VALID_LABELS" 
-              exit 1 
-              ;;
-          esac
+          echo "bump_type=none" >> "$GITHUB_OUTPUT"
+          echo "********** no feature/bug label found, bumping build only **********"
         fi
