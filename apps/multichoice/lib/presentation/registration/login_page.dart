@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_or_username_field.dart';
+import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/login_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -55,8 +56,8 @@ class _LoginPageState extends State<LoginPage> {
           if (!_hasRequestedPrefill) {
             _hasRequestedPrefill = true;
             context.read<RegistrationBloc>().add(
-                  const RegistrationEvent.prefillRequested(),
-                );
+              const RegistrationEvent.prefillRequested(),
+            );
           }
           _syncControllersFromState(state);
           if (state.isSuccess) {
@@ -75,7 +76,8 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         buildWhen: (previous, current) =>
-            previous.email != current.email || previous.password != current.password,
+            previous.email != current.email ||
+            previous.password != current.password,
         builder: (context, state) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _syncControllersFromState(state);
@@ -148,27 +150,23 @@ class _LoginPageContent extends StatelessWidget {
                 if (!isModal) gap24,
                 EmailOrUsernameField(
                   controller: emailOrUsernameController,
-                  onChanged: (value) => context
-                      .read<RegistrationBloc>()
-                      .add(
-                        RegistrationEvent.fieldsChanged(
-                          field: RegistrationField.email,
-                          value: value,
-                        ),
-                      ),
+                  onChanged: (value) => context.read<RegistrationBloc>().add(
+                    RegistrationEvent.fieldsChanged(
+                      field: RegistrationField.email,
+                      value: value,
+                    ),
+                  ),
                 ),
                 gap16,
                 PasswordField(
                   controller: passwordController,
                   validatePolicy: false,
-                  onChanged: (value) => context
-                      .read<RegistrationBloc>()
-                      .add(
-                        RegistrationEvent.fieldsChanged(
-                          field: RegistrationField.password,
-                          value: value,
-                        ),
-                      ),
+                  onChanged: (value) => context.read<RegistrationBloc>().add(
+                    RegistrationEvent.fieldsChanged(
+                      field: RegistrationField.password,
+                      value: value,
+                    ),
+                  ),
                 ),
                 gap8,
                 Align(
@@ -180,9 +178,9 @@ class _LoginPageContent extends StatelessWidget {
                     child: Text(
                       'Forgot Password?',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: context.theme.appColors.primary,
-                            decoration: TextDecoration.underline,
-                          ),
+                        color: context.theme.appColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
@@ -193,19 +191,43 @@ class _LoginPageContent extends StatelessWidget {
                       : () {
                           if (formKey.currentState!.validate()) {
                             context.read<RegistrationBloc>().add(
-                                  const RegistrationEvent.signInClicked(),
-                                );
+                              const RegistrationEvent.signInClicked(),
+                            );
                           }
                         },
                   isLoading: state.isLoading,
+                ),
+                gap16,
+                Row(
+                  children: [
+                    const Expanded(child: Divider()),
+                    Padding(
+                      padding: horizontal16,
+                      child: Text(
+                        'or',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    const Expanded(child: Divider()),
+                  ],
+                ),
+                gap16,
+                GoogleSignInButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Coming soon')),
+                    );
+                  },
                 ),
                 gap16,
                 Center(
                   child: RichText(
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       children: [
                         const TextSpan(text: "Don't have an account? "),
                         TextSpan(
