@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
@@ -18,6 +19,7 @@ import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -77,86 +79,107 @@ class _HomePageState extends State<_HomePage> {
           buildWhen: (previous, current) =>
               previous.isEditMode != current.isEditMode,
           builder: (context, state) {
-            return PopScope(
-              canPop: !state.isEditMode && !_isDrawerOpen,
-              onPopInvokedWithResult: (didPop, _) {
-                if (didPop) return;
+            return Consumer<AuthNotifier>(
+              builder: (context, _, _) {
+                final isLoggedIn =
+                    coreSl.isRegistered<Session>() &&
+                    coreSl<Session>().isUserLoggedIn();
+                return PopScope(
+                  canPop: !state.isEditMode && !_isDrawerOpen,
+                  onPopInvokedWithResult: (didPop, _) {
+                    if (didPop) return;
 
-                if (_isDrawerOpen) {
-                  Navigator.of(context).pop();
-                  return;
-                }
+                    if (_isDrawerOpen) {
+                      Navigator.of(context).pop();
+                      return;
+                    }
 
-                if (state.isEditMode) {
-                  context.read<HomeBloc>().add(
-                    const HomeEvent.onToggleEditMode(),
-                  );
-                }
-              },
-              child: Scaffold(
-                key: scaffoldKey,
-                onDrawerChanged: (isOpened) {
-                  if (_isDrawerOpen == isOpened) return;
-                  setState(() {
-                    _isDrawerOpen = isOpened;
-                  });
-                },
-                appBar: AppBar(
-                  title: const Text('Multichoice'),
-                  actions: [
-                    const EditModeButton(),
-                    AnimatedOpacity(
-                      opacity: state.isEditMode ? 0.35 : 1,
-                      duration: const Duration(milliseconds: 180),
-                      child: IgnorePointer(
-                        ignoring: state.isEditMode,
-                        child: const SearchButton(),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        showLoginModal(context);
-                      },
-                      child: const Text('Sign In'),
-                      style: ButtonStyle(
-                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
-                      ),
-                    ),
-                  ],
-                  leading: AnimatedOpacity(
-                    opacity: state.isEditMode ? 0.35 : 1,
-                    duration: const Duration(milliseconds: 180),
-                    child: IgnorePointer(
-                      ignoring: state.isEditMode,
-                      child: IconButton(
-                        onPressed: () async {
-                          await coreSl<IAnalyticsService>().logEvent(
-                            const UiActionEventData(
-                              page: AnalyticsPage.home,
-                              button: AnalyticsButton.settings,
-                              action: AnalyticsAction.open,
+                    if (state.isEditMode) {
+                      context.read<HomeBloc>().add(
+                        const HomeEvent.onToggleEditMode(),
+                      );
+                    }
+                  },
+                  child: Scaffold(
+                    key: scaffoldKey,
+                    onDrawerChanged: (isOpened) {
+                      if (_isDrawerOpen == isOpened) return;
+                      setState(() {
+                        _isDrawerOpen = isOpened;
+                      });
+                    },
+                    appBar: AppBar(
+                      title: const Text('Multichoice'),
+                      actions: [
+                        const EditModeButton(),
+                        AnimatedOpacity(
+                          opacity: state.isEditMode ? 0.35 : 1,
+                          duration: const Duration(milliseconds: 180),
+                          child: IgnorePointer(
+                            ignoring: state.isEditMode,
+                            child: const SearchButton(),
+                          ),
+                        ),
+                        if (isLoggedIn)
+                          IconButton(
+                            onPressed: () async {
+                              await context.router.push(
+                                const ProfilePageRoute(),
+                              );
+                            },
+                            tooltip: 'Profile',
+                            icon: const Icon(Icons.person_outline),
+                            style: ButtonStyle(
+                              padding: WidgetStatePropertyAll(EdgeInsets.zero),
                             ),
-                          );
-                          scaffoldKey.currentState?.openDrawer();
-                        },
-                        tooltip: TooltipEnums.settings.tooltip,
-                        icon: const Icon(Icons.settings_outlined),
+                          )
+                        else
+                          TextButton(
+                            onPressed: () async {
+                              showLoginModal(context);
+                            },
+                            child: const Text('Sign In'),
+                            style: ButtonStyle(
+                              padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                            ),
+                          ),
+                      ],
+                      leading: AnimatedOpacity(
+                        opacity: state.isEditMode ? 0.35 : 1,
+                        duration: const Duration(milliseconds: 180),
+                        child: IgnorePointer(
+                          ignoring: state.isEditMode,
+                          child: IconButton(
+                            onPressed: () async {
+                              await coreSl<IAnalyticsService>().logEvent(
+                                const UiActionEventData(
+                                  page: AnalyticsPage.home,
+                                  button: AnalyticsButton.settings,
+                                  action: AnalyticsAction.open,
+                                ),
+                              );
+                              scaffoldKey.currentState?.openDrawer();
+                            },
+                            tooltip: TooltipEnums.settings.tooltip,
+                            icon: const Icon(Icons.settings_outlined),
+                          ),
+                        ),
                       ),
+                    ),
+                    drawer: const HomeDrawer(),
+                    body: const Column(
+                      children: [
+                        ImportDataBanner(),
+                        Expanded(
+                          child: SafeArea(
+                            child: HomeLayout(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                drawer: const HomeDrawer(),
-                body: const Column(
-                  children: [
-                    ImportDataBanner(),
-                    Expanded(
-                      child: SafeArea(
-                        child: HomeLayout(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                );
+              },
             );
           },
         ),

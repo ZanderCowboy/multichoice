@@ -1,8 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
+import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:multichoice/presentation/registration/widgets/signup_button.dart';
 import 'package:multichoice/presentation/registration/widgets/username_field.dart';
@@ -82,6 +85,30 @@ class _SignupPageState extends State<SignupPage> {
                   isLoading: _isLoading,
                 ),
                 gap16,
+                Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: horizontal16,
+                      child: Text(
+                        'or',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                gap16,
+                GoogleSignInButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Coming soon')),
+                    );
+                  },
+                ),
+                gap16,
                 Center(
                   child: RichText(
                     text: TextSpan(
@@ -100,7 +127,7 @@ class _SignupPageState extends State<SignupPage> {
                             ..onTap = () async {
                               if (!_isLoading) {
                                 await context.router.replace(
-                                  const LoginPageRoute(),
+                                  LoginPageRoute(),
                                 );
                               }
                             },

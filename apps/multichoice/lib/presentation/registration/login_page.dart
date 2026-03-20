@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_or_username_field.dart';
+import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/login_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -103,6 +104,30 @@ class _LoginPageState extends State<LoginPage> {
             LoginButton(
               onPressed: () => _onSignIn(context),
               isLoading: _isLoading,
+            ),
+            gap16,
+            Row(
+              children: [
+                const Expanded(child: Divider()),
+                Padding(
+                  padding: horizontal16,
+                  child: Text(
+                    'or',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ),
+                const Expanded(child: Divider()),
+              ],
+            ),
+            gap16,
+            GoogleSignInButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Coming soon')),
+                );
+              },
             ),
             gap16,
             Center(
