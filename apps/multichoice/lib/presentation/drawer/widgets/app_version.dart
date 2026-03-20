@@ -49,8 +49,11 @@ class AppVersion extends StatelessWidget {
               snapshot.hasData) {
             return GestureDetector(
               onLongPress: kDebugMode ? () => _clearStorageData(context) : null,
+              onDoubleTap: kDebugMode
+                  ? () => context.router.push(const DebugPageRoute())
+                  : null,
               child: Text(
-                'V${snapshot.data}',
+                'v${snapshot.data}',
                 style: context.theme.appTextTheme.bodySmall?.copyWith(
                   fontSize: 9,
                 ),

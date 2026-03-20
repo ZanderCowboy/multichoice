@@ -1,4 +1,6 @@
-﻿import 'package:auto_route/auto_route.dart';
+// ignore_for_file: sort_child_properties_last, prefer_const_constructors
+
+import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
+import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
@@ -108,6 +111,15 @@ class _HomePageState extends State<_HomePage> {
                       child: IgnorePointer(
                         ignoring: state.isEditMode,
                         child: const SearchButton(),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        showLoginModal(context);
+                      },
+                      child: const Text('Sign In'),
+                      style: ButtonStyle(
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
                       ),
                     ),
                   ],

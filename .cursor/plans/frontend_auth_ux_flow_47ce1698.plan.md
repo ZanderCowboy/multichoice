@@ -4,25 +4,25 @@ overview: Implement frontend-only authentication UX across login/signup/forgot/r
 todos:
   - id: wire-auth-routes
     content: Add login/signup/forgot/reset routes in app_router and regenerate auto_route outputs
-    status: pending
+    status: completed
   - id: implement-auth-widgets
     content: Implement reusable email/username/password fields with validators and password policy helper
-    status: pending
+    status: completed
   - id: build-signup-page
     content: Create register page form, mock submit success, feedback, and home navigation
-    status: pending
+    status: completed
   - id: build-login-modal-and-page
     content: Implement login page plus modal entry and forgot/signup navigation actions
-    status: pending
+    status: completed
   - id: build-forgot-reset-flow
     content: Implement forgot-password and reset-password screens with prepopulate and mock success transitions
-    status: pending
+    status: completed
   - id: add-drawer-logout
     content: Add bottom logout action in HomeDrawer with feedback and navigation to login
-    status: pending
+    status: completed
   - id: lint-and-verify
     content: Run lint checks on edited files and fix introduced issues
-    status: pending
+    status: completed
 isProject: false
 ---
 

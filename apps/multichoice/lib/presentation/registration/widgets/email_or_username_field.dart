@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/presentation/registration/widgets/email_field.dart';
+import 'package:multichoice/presentation/registration/widgets/username_field.dart';
 
-class EmailField extends StatelessWidget {
-  const EmailField({
+/// Combined field that accepts either email or username for login.
+class EmailOrUsernameField extends StatelessWidget {
+  const EmailOrUsernameField({
     super.key,
     this.controller,
     this.initialValue,
@@ -22,15 +25,13 @@ class EmailField extends StatelessWidget {
 
   static String? defaultValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email is required';
+      return 'Email or username is required';
     }
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email address';
+    final trimmed = value.trim();
+    if (trimmed.contains('@')) {
+      return EmailField.defaultValidator(value);
     }
-    return null;
+    return UsernameField.defaultValidator(value);
   }
 
   @override
@@ -38,10 +39,11 @@ class EmailField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       initialValue: initialValue,
-      decoration: decoration ??
+      decoration:
+          decoration ??
           const InputDecoration(
-            labelText: 'Email',
-            hintText: 'Enter your email',
+            labelText: 'Email or Username',
+            hintText: 'Enter email or username',
             border: OutlineInputBorder(),
           ),
       keyboardType: TextInputType.emailAddress,

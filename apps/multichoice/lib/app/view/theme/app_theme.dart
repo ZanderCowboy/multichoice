@@ -91,6 +91,14 @@ class AppTheme with ChangeNotifier {
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: _lightAppColors.primary,
+          foregroundColor: _lightAppColors.secondary,
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+          minimumSize: elevatedButtonMinimumSize,
+        ),
+      ),
       dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: borderCircular16),
         alignment: Alignment.center,
@@ -173,6 +181,14 @@ class AppTheme with ChangeNotifier {
           backgroundColor: AppPalette.white,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           textStyle: AppTypography.bodyLarge,
+          minimumSize: elevatedButtonMinimumSize,
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: _darkAppColors.primary,
+          foregroundColor: _darkAppColors.secondary,
+          shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           minimumSize: elevatedButtonMinimumSize,
         ),
       ),
