@@ -1,6 +1,6 @@
 abstract class Session {
-  void storeLoginInfo(String accessToken);
-  bool isUserLoggedIn();
-  String getAccessToken();
-  void deleteLoginInfo();
+  Future<void> storeLoginInfo(String accessToken);
+  Future<bool> isUserLoggedIn();
+  Future<String> getAccessToken();
+  Future<void> deleteLoginInfo();
 }

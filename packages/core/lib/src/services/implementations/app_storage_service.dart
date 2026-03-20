@@ -122,6 +122,19 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<String?> get lastUsedEmail async {
+    return _sharedPreferences.getString(StorageKeys.lastUsedEmail.key);
+  }
+
+  @override
+  Future<void> setLastUsedEmail(String email) async {
+    await _sharedPreferences.setString(
+      StorageKeys.lastUsedEmail.key,
+      email,
+    );
+  }
+
+  @override
   Future<void> clearAllData() async {
     if (!kDebugMode) return;
 
@@ -131,5 +144,6 @@ class AppStorageService implements IAppStorageService {
     await setIsExistingUser(false);
     await setIsPermissionsChecked(false);
     await setIsImportDataBannerDismissed(false);
+    await _sharedPreferences.remove(StorageKeys.lastUsedEmail.key);
   }
 }

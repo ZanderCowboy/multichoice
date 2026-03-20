@@ -15,7 +15,7 @@ class HomeDrawer extends StatelessWidget {
   void _onLogout(BuildContext context) {
     Navigator.of(context).pop();
     if (coreSl.isRegistered<Session>()) {
-      coreSl<Session>().deleteLoginInfo();
+      unawaited(coreSl<Session>().deleteLoginInfo());
     }
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Signed out successfully')),

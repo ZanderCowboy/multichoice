@@ -6,7 +6,8 @@ enum StorageKeys {
   isExistingUser('_isExistingUser'),
   isPermissionsChecked('_isPermissionsChecked'),
   analyticsUserId('_analyticsUserId'),
-  isImportDataBannerDismissed('_isImportDataBannerDismissed')
+  isImportDataBannerDismissed('_isImportDataBannerDismissed'),
+  lastUsedEmail('_lastUsedEmail')
   ;
 
   const StorageKeys(this.key);
