@@ -19,35 +19,13 @@ class SignupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDisabled = !enabled || isLoading || overrideLabel != null;
-
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: isDisabled ? null : onPressed,
-        child: _buildChild(context),
-      ),
+    return AsyncFilledButton(
+      onPressed: onPressed,
+      enabled: enabled,
+      isLoading: isLoading,
+      successLabel: overrideLabel,
+      successIcon: overrideIcon,
+      label: const Text('Sign Up'),
     );
-  }
-
-  Widget _buildChild(BuildContext context) {
-    if (isLoading) {
-      return CircularLoader.tiny();
-    }
-    if (overrideLabel != null) {
-      if (overrideIcon != null) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            overrideIcon!,
-            const SizedBox(width: 8),
-            Text(overrideLabel!),
-          ],
-        );
-      }
-      return Text(overrideLabel!);
-    }
-    return const Text('Sign Up');
   }
 }

@@ -105,14 +105,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             gap24,
             EmailField(controller: _emailController),
             gap24,
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _isLoading || _successMessage != null
-                    ? null
-                    : () => _onResetPassword(context),
-                child: _buildButtonChild(context),
-              ),
+            AsyncFilledButton(
+              onPressed: () => _onResetPassword(context),
+              isLoading: _isLoading,
+              successLabel: _successMessage,
+              flexSuccessLabel: true,
+              successIcon: _successMessage != null
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    )
+                  : null,
+              label: const Text('Send Reset Link'),
             ),
             gap16,
             TextButton(
@@ -138,34 +143,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       ),
     );
-  }
-
-  Widget _buildButtonChild(BuildContext context) {
-    if (_isLoading) {
-      return CircularLoader.tiny();
-    }
-    if (_successMessage != null) {
-      final colorScheme = Theme.of(context).colorScheme;
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 20,
-            color: colorScheme.onPrimary,
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              _successMessage!,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      );
-    }
-    return const Text('Send Reset Link');
   }
 
   Widget _buildCheckEmailContent(BuildContext context) {

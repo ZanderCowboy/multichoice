@@ -17,26 +17,13 @@ class GoogleSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDisabled = !enabled || isLoading || overrideLabel != null;
-    final showIconLayout = overrideLabel == null;
-
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: showIconLayout
-          ? OutlinedButton.icon(
-              onPressed: isDisabled ? null : onPressed,
-              icon: isLoading
-                  ? CircularLoader.tiny()
-                  : const Icon(Icons.g_mobiledata, size: 24),
-              label: const Text('Continue with Google'),
-            )
-          : OutlinedButton(
-              onPressed: null,
-              child: Text(_label),
-            ),
+    return AsyncOutlinedButton(
+      onPressed: onPressed,
+      enabled: enabled,
+      isLoading: isLoading,
+      successLabel: overrideLabel,
+      icon: const Icon(Icons.g_mobiledata, size: 24),
+      label: const Text('Continue with Google'),
     );
   }
-
-  String get _label => overrideLabel ?? 'Continue with Google';
 }

@@ -96,12 +96,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   validator: _confirmValidator,
                 ),
                 gap24,
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: isDisabled ? null : () => _onReset(context),
-                    child: _buildButtonChild(colorScheme),
-                  ),
+                AsyncFilledButton(
+                  onPressed: () => _onReset(context),
+                  isLoading: _isLoading,
+                  successLabel: _successMessage,
+                  successIcon: _successMessage != null
+                      ? Icon(
+                          Icons.check_circle_outline,
+                          size: 20,
+                          color: colorScheme.onPrimary,
+                        )
+                      : null,
+                  label: const Text('Reset Password'),
                 ),
                 gap16,
                 TextButton(
@@ -118,27 +124,5 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         ),
       ),
     );
-  }
-
-  Widget _buildButtonChild(ColorScheme colorScheme) {
-    if (_isLoading) {
-      return CircularLoader.tiny();
-    }
-    if (_successMessage != null) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 20,
-            color: colorScheme.onPrimary,
-          ),
-          const SizedBox(width: 8),
-          Text(_successMessage!),
-        ],
-      );
-    }
-    return const Text('Reset Password');
   }
 }
