@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
@@ -45,6 +46,10 @@ class RegistrationService implements IRegistrationService {
       }
 
       await _session.storeLoginInfo(idToken);
+      await _session.storeUserProfile(
+        email: dto.email,
+        username: dto.username.isNotEmpty ? dto.username : null,
+      );
       await _appStorageService.setLastUsedEmail(dto.email);
 
       return Right(
@@ -83,7 +88,18 @@ class RegistrationService implements IRegistrationService {
       }
 
       await _session.storeLoginInfo(idToken);
-      await _appStorageService.setLastUsedEmail(email);
+
+      final trimmed = email.trim();
+      final resolvedEmail = user.email;
+      await _session.storeUserProfile(
+        email: resolvedEmail ?? (trimmed.contains('@') ? trimmed : null),
+        username: user.displayName ?? (!trimmed.contains('@') ? trimmed : null),
+      );
+      if (resolvedEmail != null && resolvedEmail.isNotEmpty) {
+        await _appStorageService.setLastUsedEmail(resolvedEmail);
+      } else if (trimmed.contains('@')) {
+        await _appStorageService.setLastUsedEmail(trimmed);
+      }
 
       return Right(
         AuthResultDTO(accessToken: idToken, userId: user.uid),
@@ -93,6 +109,105 @@ class RegistrationService implements IRegistrationService {
     } catch (e) {
       return Left(AuthException('Sign in failed: $e'));
     }
+  }
+
+  @override
+  Future<Either<AuthException, AuthResultDTO>> signInWithGoogle() async {
+    try {
+      final googleSignIn = GoogleSignIn(
+        scopes: const ['email', 'profile'],
+      );
+      final account = await googleSignIn.signIn();
+      if (account == null) {
+        return const Left(AuthException('Sign in cancelled'));
+      }
+
+      final googleAuth = await account.authentication;
+      final idToken = googleAuth.idToken;
+      final accessToken = googleAuth.accessToken;
+
+      if (idToken != null &&
+          accessToken != null &&
+          idToken.isNotEmpty &&
+          accessToken.isNotEmpty) {
+        try {
+          final credential = GoogleAuthProvider.credential(
+            accessToken: accessToken,
+            idToken: idToken,
+          );
+          final userCredential = await _auth.signInWithCredential(credential);
+          final user = userCredential.user;
+          if (user == null) {
+            return const Left(AuthException('Sign in failed'));
+          }
+
+          final token = await user.getIdToken();
+          if (token == null) {
+            return const Left(
+              AuthException('Failed to get authentication token'),
+            );
+          }
+
+          await _session.storeLoginInfo(token);
+          final email = user.email ?? account.email;
+          final firebaseName = user.displayName;
+          final googleName = account.displayName;
+          final resolvedName = (firebaseName != null && firebaseName.isNotEmpty)
+              ? firebaseName
+              : ((googleName ?? '').isNotEmpty ? googleName : null);
+          await _session.storeUserProfile(
+            email: email.isNotEmpty ? email : null,
+            username: resolvedName,
+          );
+          if (email.isNotEmpty) {
+            await _appStorageService.setLastUsedEmail(email);
+          }
+
+          return Right(
+            AuthResultDTO(accessToken: token, userId: user.uid),
+          );
+        } catch (_) {
+          return _completeGoogleLocalSession(account);
+        }
+      }
+
+      return _completeGoogleLocalSession(account);
+    } catch (e) {
+      return Left(AuthException('Google sign-in failed: $e'));
+    }
+  }
+
+  Future<Either<AuthException, AuthResultDTO>> _completeGoogleLocalSession(
+    GoogleSignInAccount account,
+  ) async {
+    final syntheticToken = 'google_local_${account.id}';
+    await _session.storeLoginInfo(syntheticToken);
+
+    final email = account.email;
+    final display = account.displayName ?? '';
+    String? username;
+    if (display.isNotEmpty) {
+      username = display;
+    } else if (email.contains('@')) {
+      username = email.split('@').first;
+    } else if (email.isNotEmpty) {
+      username = email;
+    }
+
+    await _session.storeUserProfile(
+      email: email.isNotEmpty ? email : null,
+      username: username,
+    );
+    if (email.isNotEmpty) {
+      await _appStorageService.setLastUsedEmail(email);
+    }
+
+    return Right(
+      AuthResultDTO(
+        accessToken: syntheticToken,
+        userId: account.id,
+      ),
+    );
   }
 
   String _mapFirebaseAuthError(FirebaseAuthException e) {

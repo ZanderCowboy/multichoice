@@ -13,6 +13,7 @@ import 'package:multichoice/generated/assets.gen.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'app_version.dart';
+part 'account_section.dart';
 part 'appearance_section.dart';
 part 'data_section.dart';
 part 'drawer_header_section.dart';

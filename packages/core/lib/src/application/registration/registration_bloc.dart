@@ -44,6 +44,8 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         await _handleSignup(emit);
       case RegistrationSignInClicked():
         await _handleSignIn(emit);
+      case RegistrationGoogleSignInClicked():
+        await _handleGoogleSignIn(emit);
       case RegistrationCancelClicked():
         emit(RegistrationState.initial());
       case RegistrationPrefillRequested():
@@ -128,6 +130,31 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       email,
       state.password,
     );
+
+    result.fold(
+      (AuthException error) => emit(
+        state.copyWith(
+          isLoading: false,
+          isSuccess: false,
+          isError: true,
+          errorMessage: error.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          isLoading: false,
+          isSuccess: true,
+          isError: false,
+          errorMessage: null,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleGoogleSignIn(Emitter<RegistrationState> emit) async {
+    emit(state.copyWith(isLoading: true, isError: false, errorMessage: null));
+
+    final result = await _registrationRepository.signInWithGoogle();
 
     result.fold(
       (AuthException error) => emit(

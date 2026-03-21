@@ -15,6 +15,8 @@ sealed class RegistrationEvent {
   }) = RegistrationFieldsChanged;
   const factory RegistrationEvent.signupClicked() = RegistrationSignupClicked;
   const factory RegistrationEvent.signInClicked() = RegistrationSignInClicked;
+  const factory RegistrationEvent.googleSignInClicked() =
+      RegistrationGoogleSignInClicked;
   const factory RegistrationEvent.cancelClicked() = RegistrationCancelClicked;
   const factory RegistrationEvent.prefillRequested() =
       RegistrationPrefillRequested;
@@ -40,6 +42,10 @@ final class RegistrationSignupClicked extends RegistrationEvent {
 
 final class RegistrationSignInClicked extends RegistrationEvent {
   const RegistrationSignInClicked();
+}
+
+final class RegistrationGoogleSignInClicked extends RegistrationEvent {
+  const RegistrationGoogleSignInClicked();
 }
 
 final class RegistrationCancelClicked extends RegistrationEvent {

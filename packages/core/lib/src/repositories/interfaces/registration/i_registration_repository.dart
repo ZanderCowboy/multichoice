@@ -9,4 +9,6 @@ abstract class IRegistrationRepository {
     String email,
     String password,
   );
+
+  Future<Either<AuthException, AuthResultDTO>> signInWithGoogle();
 }

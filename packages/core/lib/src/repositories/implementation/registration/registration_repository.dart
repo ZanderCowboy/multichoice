@@ -21,4 +21,8 @@ class RegistrationRepository implements IRegistrationRepository {
     String password,
   ) =>
       _registrationService.signIn(email, password);
+
+  @override
+  Future<Either<AuthException, AuthResultDTO>> signInWithGoogle() =>
+      _registrationService.signInWithGoogle();
 }

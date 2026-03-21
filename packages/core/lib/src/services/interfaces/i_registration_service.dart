@@ -18,4 +18,7 @@ abstract class IRegistrationService {
     String email,
     String password,
   );
+
+  /// Google Sign-In; uses Firebase when available, otherwise stores a local session.
+  Future<Either<AuthException, AuthResultDTO>> signInWithGoogle();
 }

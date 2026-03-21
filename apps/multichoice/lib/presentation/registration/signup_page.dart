@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
@@ -59,6 +60,7 @@ class _SignupPageState extends State<SignupPage> {
           }
           _syncControllersFromState(state);
           if (state.isSuccess) {
+            context.read<AuthNotifier>().notifyAuthChanged();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Registration successful!')),
             );
@@ -192,11 +194,12 @@ class _SignupPageContent extends StatelessWidget {
                     ),
                     gap16,
                     GoogleSignInButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Coming soon')),
-                        );
-                      },
+                      onPressed: state.isLoading
+                          ? null
+                          : () => context.read<RegistrationBloc>().add(
+                              const RegistrationEvent.googleSignInClicked(),
+                            ),
+                      isLoading: state.isLoading,
                     ),
                     gap16,
                     Center(
