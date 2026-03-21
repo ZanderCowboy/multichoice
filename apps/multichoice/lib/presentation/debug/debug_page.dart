@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
@@ -24,30 +25,81 @@ class DebugPage extends StatelessWidget {
           onPressed: () => context.router.maybePop(),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: allPadding16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              gap24,
-              Text(
-                'Debug only – accessible via double-tap on version',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
+      body: const _DebugBody(),
+    );
+  }
+}
+
+class _DebugBody extends StatelessWidget {
+  const _DebugBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: allPadding16,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            gap24,
+            Text(
+              'Debug only – accessible via double-tap or long-press on version',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
               ),
-              gap24,
-              ListTile(
-                leading: const Icon(Icons.lock_reset),
-                title: const Text('Reset Password'),
-                subtitle: const Text('Test reset password flow'),
-                onTap: () => context.router.push(const ResetPasswordPageRoute()),
+            ),
+            gap24,
+            ListTile(
+              leading: const Icon(Icons.dataset),
+              title: const Text('Clear Storage Data'),
+              subtitle: const Text(
+                'Clear any data stored in SharedPreferences',
               ),
-            ],
-          ),
+              onTap: () => _clearStorageData(context),
+            ),
+            gap12,
+            ListTile(
+              leading: const Icon(Icons.lock_reset),
+              title: const Text('Reset Password'),
+              subtitle: const Text('Test reset password flow'),
+              onTap: () => context.router.push(const ResetPasswordPageRoute()),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _clearStorageData(BuildContext context) async {
+    if (!kDebugMode) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Storage Data'),
+        content: const Text(
+          'Are you sure you want to clear all storage data? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      await coreSl<IAppStorageService>().clearAllData();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Storage data cleared successfully')),
+        );
+      }
+    }
   }
 }

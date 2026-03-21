@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +85,7 @@ class _SignupPageState extends State<SignupPage> {
                 gap16,
                 Row(
                   children: [
-                    Expanded(child: Divider()),
+                    const Expanded(child: Divider()),
                     Padding(
                       padding: horizontal16,
                       child: Text(
@@ -97,7 +95,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
-                    Expanded(child: Divider()),
+                    const Expanded(child: Divider()),
                   ],
                 ),
                 gap16,

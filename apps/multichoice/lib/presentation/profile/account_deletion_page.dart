@@ -36,6 +36,7 @@ class AccountDeletionPage extends StatelessWidget {
               ),
               gap24,
               FilledButton(
+                // TODO: Implement Account Deletion
                 onPressed: () {},
                 child: const Text('Request deletion'),
               ),
