@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class TutorialWelcomeModal extends StatelessWidget {
@@ -27,11 +28,11 @@ class TutorialWelcomeModal extends StatelessWidget {
                 ),
               ),
               gap16,
-              const Text(
+              Text(
                 "Let's walk through the main features of Multichoice. "
                 "We'll show you how to create collections and add entries.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               ElevatedButton(

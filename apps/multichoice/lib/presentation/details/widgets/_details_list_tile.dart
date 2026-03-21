@@ -52,8 +52,7 @@ class _DetailsListTile extends StatelessWidget {
             )
           : SelectableText(
               subtitle ?? '',
-              style: TextStyle(
-                fontSize: 16,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
                 color: context.theme.appColors.textTertiary,
               ),
             ),

@@ -39,14 +39,16 @@ class TutorialDrawer extends StatelessWidget {
                       Text(
                         'Multichoice',
                         style: AppTypography.titleLarge.copyWith(
-                          color: Colors.white,
+                          color: context.theme.appColors.textPrimary ??
+                              context.theme.appColors.white,
                         ),
                       ),
                       gap4,
                       Text(
                         'Welcome back!',
                         style: AppTypography.subtitleMedium.copyWith(
-                          color: Colors.white70,
+                          color: context.theme.appColors.textSecondary ??
+                              context.theme.appColors.textTertiary,
                         ),
                       ),
                     ],

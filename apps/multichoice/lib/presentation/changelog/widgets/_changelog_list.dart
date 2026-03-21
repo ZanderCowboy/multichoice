@@ -36,22 +36,13 @@ class _ChangelogList extends StatelessWidget {
                         children: [
                           Text(
                             'Version $version',
-                            style:
-                                context.theme.appTextTheme.titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ) ??
-                                Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: context.theme.appTextTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           gap4,
                           Text(
                             changelogEntry.date,
-                            style:
-                                context.theme.appTextTheme.bodySmall ??
+                            style: context.theme.appTextTheme.bodySmall ??
                                 Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -68,12 +59,8 @@ class _ChangelogList extends StatelessWidget {
                       children: [
                         Text(
                           '• ',
-                          style:
-                              context.theme.appTextTheme.bodyMedium?.copyWith(
-                                color: context.theme.appColors.textTertiary,
-                                fontWeight: FontWeight.bold,
-                              ) ??
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          style: context.theme.appTextTheme.bodyMedium
+                              ?.copyWith(
                                 color: context.theme.appColors.textTertiary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -81,13 +68,8 @@ class _ChangelogList extends StatelessWidget {
                         Expanded(
                           child: Text(
                             change,
-                            style:
-                                context.theme.appTextTheme.bodyMedium?.copyWith(
-                                  color: context.theme.appColors.textTertiary,
-                                ) ??
-                                Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
+                            style: context.theme.appTextTheme.bodyMedium
+                                ?.copyWith(
                                   color: context.theme.appColors.textTertiary,
                                 ),
                           ),

@@ -25,4 +25,15 @@ final _darkTextTheme = AppTextExtension(
     color: AppPalette.geyserTone2,
   ),
   bodySmall: null,
+  denseTitle: AppTypography.titleSmall.copyWith(
+    color: AppPalette.primary5,
+    fontSize: 16,
+    letterSpacing: 0.3,
+    height: 1,
+  ),
+  denseSubtitle: AppTypography.bodySmall.copyWith(
+    color: AppPalette.primary5,
+    letterSpacing: 0.5,
+    height: 1.25,
+  ),
 );

@@ -53,6 +53,9 @@ class ReusableForm extends StatelessWidget {
         appColors.textSecondary ??
         appColors.textPrimary ??
         Colors.white;
+    final baseDecoration = const InputDecoration(
+      alignLabelWithHint: true,
+    ).applyDefaults(inputTheme);
 
     return Form(
       child: SingleChildScrollView(
@@ -64,9 +67,10 @@ class ReusableForm extends StatelessWidget {
               onChanged: onTitleChanged,
               onTap: onTitleTap,
               textAlignVertical: TextAlignVertical.top,
-              style: TextStyle(color: textColor),
-              decoration: const InputDecoration(
-                alignLabelWithHint: true,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Title',
                 hintText: 'Title',
               ),
@@ -78,9 +82,10 @@ class ReusableForm extends StatelessWidget {
               onChanged: onSubtitleChanged,
               onTap: onSubtitleTap,
               textAlignVertical: TextAlignVertical.top,
-              style: TextStyle(color: textColor),
-              decoration: const InputDecoration(
-                alignLabelWithHint: true,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Subtitle',
                 hintText: 'Subtitle',
               ),

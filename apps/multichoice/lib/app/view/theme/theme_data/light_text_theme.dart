@@ -23,4 +23,15 @@ final _lightTextTheme = AppTextExtension(
     color: _lightAppColors.textSecondary,
   ),
   bodySmall: null,
+  denseTitle: AppTypography.titleSmall.copyWith(
+    color: _lightAppColors.textSecondary,
+    fontSize: 16,
+    letterSpacing: 0.3,
+    height: 1,
+  ),
+  denseSubtitle: AppTypography.bodySmall.copyWith(
+    color: _lightAppColors.textSecondary,
+    letterSpacing: 0.5,
+    height: 1.25,
+  ),
 );

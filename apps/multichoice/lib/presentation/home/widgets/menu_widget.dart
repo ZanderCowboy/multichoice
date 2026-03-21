@@ -27,7 +27,6 @@ class MenuWidget extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 18,
                 color: menuIconColor,
               ),
               gap8,
@@ -135,7 +134,6 @@ class MenuWidget extends StatelessWidget {
             Icons.more_vert_outlined,
             color: appColors.textTertiary,
           ),
-          iconSize: 18,
           color: appColors.scaffoldBackground,
           padding: zeroPadding,
         );

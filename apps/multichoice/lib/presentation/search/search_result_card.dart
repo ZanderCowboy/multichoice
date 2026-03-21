@@ -50,22 +50,14 @@ class SearchResultCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontSize: 16,
-                        letterSpacing: 0.3,
-                        height: 1,
-                      ),
+                      style: context.theme.appTextTheme.denseTitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                     gap4,
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12,
-                        letterSpacing: 0.5,
-                        height: 1.25,
-                      ),
+                      style: context.theme.appTextTheme.denseSubtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                     ),

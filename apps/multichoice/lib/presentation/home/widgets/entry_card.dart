@@ -114,12 +114,7 @@ class EntryCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           entry.title,
-                          style: context.theme.appTextTheme.titleSmall
-                              ?.copyWith(
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                height: 1,
-                              ),
+                          style: context.theme.appTextTheme.denseTitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -129,11 +124,7 @@ class EntryCard extends StatelessWidget {
                   gap4,
                   Text(
                     entry.subtitle,
-                    style: context.theme.appTextTheme.subtitleSmall?.copyWith(
-                      fontSize: 12,
-                      letterSpacing: 0.5,
-                      height: 1.25,
-                    ),
+                    style: context.theme.appTextTheme.denseSubtitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),

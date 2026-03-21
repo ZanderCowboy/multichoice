@@ -114,10 +114,7 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style: context.theme.appTextTheme.titleMedium
-                              ?.copyWith(
-                                fontSize: 16,
-                              ),
+                          style: context.theme.appTextTheme.denseTitle,
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
@@ -127,8 +124,7 @@ class _HorizontalTab extends StatelessWidget {
                           padding: left4,
                           child: Text(
                             tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium
-                                ?.copyWith(fontSize: 12),
+                            style: context.theme.appTextTheme.denseSubtitle,
                           ),
                         ),
                       const Expanded(child: SizedBox()),
