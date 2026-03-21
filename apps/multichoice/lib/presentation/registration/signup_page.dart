@@ -74,9 +74,13 @@ class _SignupPageState extends State<SignupPage> {
     final signupInputTheme = theme.inputDecorationTheme.copyWith(
       labelStyle: TextStyle(color: colorScheme.onSurface),
       floatingLabelStyle: TextStyle(color: colorScheme.onSurface),
-      hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.72)),
+      hintStyle: TextStyle(
+        color: colorScheme.onSurface.withValues(alpha: 0.72),
+      ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.35)),
+        borderSide: BorderSide(
+          color: colorScheme.onSurface.withValues(alpha: 0.35),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: colorScheme.primary),
@@ -152,9 +156,10 @@ class _SignupPageState extends State<SignupPage> {
                     Center(
                       child: RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                           children: [
                             const TextSpan(text: 'Already have an account? '),
                             TextSpan(

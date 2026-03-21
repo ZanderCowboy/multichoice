@@ -28,7 +28,7 @@ class CircularLoader extends StatelessWidget {
   final StrokeCap? strokeCap;
   final bool shouldCenter;
 
-  /// Creates a small loader (20x20 with 2px stroke)
+  /// Creates a tiny loader (20x20 with 2px stroke)
   factory CircularLoader.tiny({
     Key? key,
     double? value,

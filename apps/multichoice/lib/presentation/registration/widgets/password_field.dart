@@ -83,8 +83,14 @@ class _PasswordFieldState extends State<PasswordField> {
         : appColors.error ?? Colors.red;
   }
 
-  /// Full policy (length, upper/lower/digit/special). Used for success styling;
-  /// [validatePolicy] / [_validator] may be looser (e.g. login: non-empty only).
+  /// Returns true if the password meets the full strength policy:
+  /// - At least 8 characters
+  /// - 1 uppercase letter
+  /// - 1 lowercase letter
+  /// - 1 number
+  /// - 1 special character
+  ///
+  /// Used only for policy success styling;
   bool get _meetsPolicy {
     final trimmed = _currentPassword.trim();
     return trimmed.isNotEmpty && PasswordValidator.isValid(trimmed);
