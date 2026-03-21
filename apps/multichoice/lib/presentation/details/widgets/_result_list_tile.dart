@@ -22,7 +22,7 @@ class _ResultListTile extends StatelessWidget {
         borderRadius: borderCircular8,
       ),
       margin: margin,
-      color: context.theme.appColors.secondary,
+      color: context.theme.appColors.iconColor,
       child: Padding(
         padding: internalPadding,
         child: Row(

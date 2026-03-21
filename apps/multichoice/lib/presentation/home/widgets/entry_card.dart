@@ -63,12 +63,12 @@ class EntryCard extends StatelessWidget {
         padding: isLayoutVertical ? allPadding2 : allPadding4,
         child: Card(
           elevation: 3,
-          shadowColor: context.theme.appColors.primary,
+          shadowColor: context.theme.appColors.accent,
           shape: RoundedRectangleBorder(
             borderRadius: borderCircular5,
           ),
           margin: EdgeInsets.zero,
-          color: context.theme.appColors.secondary,
+          color: context.theme.appColors.cardBackground,
           child: Padding(
             padding: allPadding4,
             child: SizedBox(
@@ -88,7 +88,7 @@ class EntryCard extends StatelessWidget {
                                   child: Icon(
                                     Icons.unfold_more,
                                     size: 24,
-                                    color: context.theme.appColors.ternary,
+                                    color: context.theme.appColors.textTertiary,
                                   ),
                                 )
                               : ReorderableGridDelayedDragStartListener(
@@ -96,7 +96,7 @@ class EntryCard extends StatelessWidget {
                                   child: Icon(
                                     Icons.open_with,
                                     size: 24,
-                                    color: context.theme.appColors.ternary,
+                                    color: context.theme.appColors.textTertiary,
                                   ),
                                 ),
                         )
@@ -108,7 +108,7 @@ class EntryCard extends StatelessWidget {
                                 ? Icons.unfold_more
                                 : Icons.open_with,
                             size: 24,
-                            color: context.theme.appColors.ternary,
+                            color: context.theme.appColors.textTertiary,
                           ),
                         ),
                       Expanded(

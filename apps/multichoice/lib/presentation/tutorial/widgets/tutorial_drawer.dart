@@ -14,7 +14,7 @@ class TutorialDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: MediaQuery.sizeOf(context).width,
-      backgroundColor: context.theme.appColors.background,
+      backgroundColor: context.theme.appColors.scaffoldBackground,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

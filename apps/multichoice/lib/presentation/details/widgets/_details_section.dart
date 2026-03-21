@@ -48,7 +48,7 @@ class _DetailsSectionState extends State<_DetailsSection> {
           elevation: 2,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           margin: horizontal12 + top12 + bottom6,
-          color: context.theme.appColors.primary,
+          color: context.theme.appColors.iconColor,
           child: Padding(
             padding: allPadding8,
             child: Column(

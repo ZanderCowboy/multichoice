@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.email_outlined),
                   title: const Text('Email'),
                   subtitle: const Text('—'),
-                  tileColor: context.theme.appColors.background,
+                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -42,7 +42,7 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.person_outline),
                   title: const Text('Username'),
                   subtitle: const Text('—'),
-                  tileColor: context.theme.appColors.background,
+                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -53,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                   title: const Text('Change Password'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {},
-                  tileColor: context.theme.appColors.background,
+                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -69,7 +69,7 @@ class ProfilePage extends StatelessWidget {
                   onTap: () async {
                     await context.router.push(const AccountDeletionPageRoute());
                   },
-                  tileColor: context.theme.appColors.background,
+                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -151,9 +151,9 @@ class _ShineCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.white.withValues(alpha: 0.0),
+                        Colors.white.withValues(alpha: 0),
                         Colors.white.withValues(alpha: 0.22),
-                        Colors.white.withValues(alpha: 0.0),
+                        Colors.white.withValues(alpha: 0),
                       ],
                     ),
                   ),

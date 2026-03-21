@@ -30,7 +30,7 @@ class SearchResultCard extends StatelessWidget {
         borderRadius: borderCircular5,
       ),
       margin: allPadding4,
-      color: context.theme.appColors.secondary,
+      color: context.theme.appColors.cardBackground,
       child: InkWell(
         borderRadius: borderCircular5,
         onTap: onTap,
@@ -41,7 +41,7 @@ class SearchResultCard extends StatelessWidget {
               Icon(
                 isTab ? Icons.calendar_view_month : Icons.crop_landscape,
                 size: 24,
-                color: context.theme.appColors.primary,
+                color: context.theme.appColors.iconColor,
               ),
               gap8,
               Expanded(

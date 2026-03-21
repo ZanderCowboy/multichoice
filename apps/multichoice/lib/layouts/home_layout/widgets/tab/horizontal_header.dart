@@ -29,7 +29,7 @@ class HorizontalHeader extends StatelessWidget {
                     child: Icon(
                       Icons.unfold_more,
                       size: 28,
-                      color: context.theme.appColors.ternary,
+                      color: context.theme.appColors.textTertiary,
                     ),
                   ),
                 )
@@ -38,7 +38,7 @@ class HorizontalHeader extends StatelessWidget {
                   child: Icon(
                     Icons.unfold_more,
                     size: 28,
-                    color: context.theme.appColors.ternary,
+                    color: context.theme.appColors.textTertiary,
                   ),
                 ),
               Padding(

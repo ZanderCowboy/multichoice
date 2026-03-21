@@ -94,7 +94,7 @@ class _HorizontalTab extends StatelessWidget {
 
     return Card(
       margin: allPadding4,
-      color: context.theme.appColors.primary,
+      color: context.theme.appColors.linkColor,
       child: Padding(
         padding: allPadding2,
         child: SizedBox(
@@ -146,7 +146,7 @@ class _HorizontalTab extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
-                  color: context.theme.appColors.secondaryLight,
+                  color: context.theme.appColors.textTertiary,
                   thickness: 2,
                   indent: 4,
                   endIndent: 4,

@@ -6,10 +6,10 @@ final ThemeData _dark = () {
   return defaultTheme.copyWith(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: _darkAppColors.white,
+        foregroundColor: _darkAppColors.outlinedButtonForeground,
         textStyle: AppTypography.bodyLarge,
         side: BorderSide(
-          color: _darkAppColors.white ?? Colors.white,
+          color: _darkAppColors.outlinedButtonBorder ?? Colors.white,
         ),
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: outlinedButtonMinimumSize,
@@ -17,8 +17,8 @@ final ThemeData _dark = () {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: AppPalette.primary0,
-        backgroundColor: AppPalette.white,
+        foregroundColor: _darkAppColors.filledButtonForeground,
+        backgroundColor: _darkAppColors.filledButtonBackground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         textStyle: AppTypography.bodyLarge,
         minimumSize: elevatedButtonMinimumSize,
@@ -26,23 +26,23 @@ final ThemeData _dark = () {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: _darkAppColors.primary,
-        foregroundColor: _darkAppColors.secondary,
+        backgroundColor: _darkAppColors.filledButtonBackground,
+        foregroundColor: _darkAppColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: const WidgetStatePropertyAll(
-          AppPalette.sanJuanTone2,
+        foregroundColor: WidgetStatePropertyAll(
+          _darkAppColors.textButtonForeground,
         ),
-        backgroundColor: const WidgetStatePropertyAll(
-          AppPalette.geyserLightTone1,
+        backgroundColor: WidgetStatePropertyAll(
+          _darkAppColors.textButtonBackground,
         ),
         textStyle: WidgetStatePropertyAll(
           AppTypography.bodyLarge.copyWith(
-            color: AppPalette.sanJuanTone2,
+            color: _darkAppColors.textButtonForeground,
           ),
         ),
         shape: WidgetStatePropertyAll(
@@ -60,14 +60,15 @@ final ThemeData _dark = () {
       titleTextStyle: AppTypography.titleMedium,
       contentTextStyle: AppTypography.bodyMedium,
       actionsPadding: allPadding12,
+      backgroundColor: _darkAppColors.modalBackground,
     ),
-    scaffoldBackgroundColor: _darkAppColors.background,
+    scaffoldBackgroundColor: _darkAppColors.scaffoldBackground,
     appBarTheme: AppBarTheme(
       titleTextStyle: AppTypography.titleMedium.copyWith(
-        color: AppPalette.sanJuanTone2,
+        color: _darkAppColors.textPrimary,
       ),
       centerTitle: true,
-      backgroundColor: _darkAppColors.foreground,
+      backgroundColor: _darkAppColors.appBarBackground,
     ),
     cardTheme: CardThemeData(
       margin: vertical12horizontal4,
@@ -106,18 +107,16 @@ final ThemeData _dark = () {
       }),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     ),
-    iconButtonTheme: const IconButtonThemeData(
+    iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(
-          AppPalette.sanJuanTone2,
-        ),
-        padding: WidgetStatePropertyAll(EdgeInsets.zero),
-        side: WidgetStatePropertyAll(BorderSide.none),
+        foregroundColor: WidgetStatePropertyAll(_darkAppColors.iconColor),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        side: const WidgetStatePropertyAll(BorderSide.none),
       ),
     ),
-    iconTheme: const IconThemeData(
+    iconTheme: IconThemeData(
       size: 18,
-      color: AppPalette.sanJuanTone2,
+      color: _darkAppColors.iconColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: const TextStyle(color: AppPalette.white),

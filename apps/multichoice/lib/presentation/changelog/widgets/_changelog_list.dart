@@ -21,7 +21,7 @@ class _ChangelogList extends StatelessWidget {
             borderRadius: borderCircular12,
           ),
           margin: bottom12,
-          color: context.theme.appColors.primary,
+          color: context.theme.appColors.linkColor,
           child: Padding(
             padding: allPadding16,
             child: Column(
@@ -70,11 +70,11 @@ class _ChangelogList extends StatelessWidget {
                           '• ',
                           style:
                               context.theme.appTextTheme.bodyMedium?.copyWith(
-                                color: context.theme.appColors.ternary,
+                                color: context.theme.appColors.textTertiary,
                                 fontWeight: FontWeight.bold,
                               ) ??
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: context.theme.appColors.ternary,
+                                color: context.theme.appColors.textTertiary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -83,12 +83,12 @@ class _ChangelogList extends StatelessWidget {
                             change,
                             style:
                                 context.theme.appTextTheme.bodyMedium?.copyWith(
-                                  color: context.theme.appColors.ternary,
+                                  color: context.theme.appColors.textTertiary,
                                 ) ??
                                 Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
-                                  color: context.theme.appColors.ternary,
+                                  color: context.theme.appColors.textTertiary,
                                 ),
                           ),
                         ),

@@ -6,9 +6,11 @@ final ThemeData _light = () {
   return defaultTheme.copyWith(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: _lightAppColors.primary,
+        foregroundColor: _lightAppColors.outlinedButtonForeground,
         textStyle: TextStyle(color: _lightAppColors.background),
-        side: BorderSide(color: _lightAppColors.primary ?? Colors.white),
+        side: BorderSide(
+          color: _lightAppColors.outlinedButtonBorder ?? Colors.white,
+        ),
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: outlinedButtonMinimumSize,
       ),
@@ -45,10 +47,21 @@ final ThemeData _light = () {
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStatePropertyAll(
-          _lightAppColors.black,
+          _lightAppColors.textButtonForeground,
         ),
-        backgroundColor: const WidgetStatePropertyAll(
-          AppPalette.geyserLightTone1,
+        backgroundColor: WidgetStatePropertyAll(
+          _lightAppColors.textButtonBackground,
+        ),
+        textStyle: WidgetStatePropertyAll(
+          AppTypography.bodyLarge.copyWith(
+            color: _lightAppColors.textButtonForeground,
+          ),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: borderCircular12),
+        ),
+        minimumSize: const WidgetStatePropertyAll(
+          elevatedButtonMinimumSize,
         ),
       ),
     ),
@@ -61,8 +74,8 @@ final ThemeData _light = () {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: _lightAppColors.primary,
-        foregroundColor: _lightAppColors.secondary,
+        backgroundColor: _lightAppColors.filledButtonBackground,
+        foregroundColor: _lightAppColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),
@@ -73,15 +86,15 @@ final ThemeData _light = () {
       titleTextStyle: AppTypography.titleMedium,
       contentTextStyle: AppTypography.bodyMedium,
       actionsPadding: allPadding12,
-      backgroundColor: _lightAppColors.secondary,
+      backgroundColor: _lightAppColors.modalBackground,
     ),
-    scaffoldBackgroundColor: _lightAppColors.background,
+    scaffoldBackgroundColor: _lightAppColors.scaffoldBackground,
     appBarTheme: AppBarTheme(
       titleTextStyle: AppTypography.titleMedium.copyWith(
-        color: AppPalette.geyserTone1,
+        color: _lightAppColors.iconColor,
       ),
       centerTitle: true,
-      backgroundColor: _lightAppColors.foreground,
+      backgroundColor: _lightAppColors.appBarBackground,
     ),
     cardTheme: CardThemeData(
       margin: vertical12horizontal4,
@@ -110,16 +123,16 @@ final ThemeData _light = () {
         borderSide: const BorderSide(color: Colors.white),
       ),
     ),
-    iconButtonTheme: const IconButtonThemeData(
+    iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(AppPalette.geyserTone1),
-        padding: WidgetStatePropertyAll(EdgeInsets.zero),
-        side: WidgetStatePropertyAll(BorderSide.none),
+        foregroundColor: WidgetStatePropertyAll(_lightAppColors.iconColor),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        side: const WidgetStatePropertyAll(BorderSide.none),
       ),
     ),
     iconTheme: IconThemeData(
       size: 18,
-      color: _lightAppColors.primary,
+      color: _lightAppColors.iconColor,
     ),
     extensions: [
       _lightAppColors,

@@ -122,7 +122,7 @@ class _SignupPageState extends State<SignupPage> {
                           TextSpan(
                             text: 'Sign In',
                             style: TextStyle(
-                              color: context.theme.appColors.primary,
+                              color: context.theme.appColors.linkColor,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()

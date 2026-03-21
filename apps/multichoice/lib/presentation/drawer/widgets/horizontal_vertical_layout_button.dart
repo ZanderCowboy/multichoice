@@ -15,8 +15,8 @@ class HorizontalVerticalLayoutButton extends StatelessWidget {
       key: context.keys.layoutSwitch,
       title: const Text('Horizontal / Vertical Layout'),
       value: appLayout.isLayoutVertical,
-      activeThumbColor: context.theme.appColors.secondary,
-      inactiveThumbColor: context.theme.appColors.secondary,
+      activeThumbColor: context.theme.appColors.accent,
+      inactiveThumbColor: context.theme.appColors.accent,
       thumbIcon: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return const Icon(

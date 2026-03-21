@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   'Forgot Password?',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: context.theme.appColors.primary,
+                    color: context.theme.appColors.linkColor,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextSpan(
                       text: 'Sign Up',
                       style: TextStyle(
-                        color: context.theme.appColors.primary,
+                        color: context.theme.appColors.linkColor,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
