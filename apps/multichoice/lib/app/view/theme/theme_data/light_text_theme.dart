@@ -6,21 +6,32 @@ final _lightTextTheme = AppTextExtension(
   h1: null,
   titleLarge: null,
   titleMedium: AppTypography.titleMedium.copyWith(
-    color: AppPalette.grey.bigStone,
+    color: _lightAppColors.textPrimary,
   ),
   titleSmall: AppTypography.titleSmall.copyWith(
-    color: AppPalette.grey.geyser,
+    color: _lightAppColors.textSecondary,
   ),
   subtitleLarge: null,
   subtitleMedium: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.grey.bigStone,
+    color: _lightAppColors.textPrimary,
   ),
   subtitleSmall: AppTypography.subtitleSmall.copyWith(
-    color: AppPalette.grey.geyser,
+    color: _lightAppColors.textSecondary,
   ),
   bodyLarge: AppTypography.bodyLarge,
   bodyMedium: AppTypography.bodyMedium.copyWith(
-    color: AppPalette.grey.geyser,
+    color: _lightAppColors.textSecondary,
   ),
   bodySmall: null,
+  denseTitle: AppTypography.titleSmall.copyWith(
+    color: _lightAppColors.textSecondary,
+    fontSize: 16,
+    letterSpacing: 0.3,
+    height: 1,
+  ),
+  denseSubtitle: AppTypography.bodySmall.copyWith(
+    color: _lightAppColors.textSecondary,
+    letterSpacing: 0.5,
+    height: 1.25,
+  ),
 );

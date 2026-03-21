@@ -40,7 +40,7 @@ class Multichoice extends StatelessWidget {
         routerConfig: _appRouter.config(),
         builder: (context, child) => ColoredBox(
           color:
-              context.theme.appColors.foreground ??
+              context.theme.appColors.appBarBackground ??
               Theme.of(context).scaffoldBackgroundColor,
           child: child ?? const SizedBox.shrink(),
         ),
