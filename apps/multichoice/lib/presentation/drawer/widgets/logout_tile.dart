@@ -22,6 +22,7 @@ class LogoutTile extends StatelessWidget {
 
   void _onLogout(BuildContext context) {
     Navigator.of(context).pop();
+    context.read<AuthNotifier>().clearDebugLoggedInOverride();
     if (coreSl.isRegistered<Session>()) {
       coreSl<Session>().deleteLoginInfo();
     }

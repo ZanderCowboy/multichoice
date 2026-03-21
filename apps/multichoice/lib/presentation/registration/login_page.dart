@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/registration/widgets/email_or_username_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/login_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
+import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -47,6 +50,11 @@ class _LoginPageState extends State<LoginPage> {
 
     if (!context.mounted) return;
     setState(() => _isLoading = false);
+
+    if (coreSl.isRegistered<Session>()) {
+      coreSl<Session>().storeLoginInfo('debug-access-token');
+    }
+    context.read<AuthNotifier>().notifyAuthChanged();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Signed in successfully!')),

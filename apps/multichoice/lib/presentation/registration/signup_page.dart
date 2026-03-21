@@ -63,80 +63,162 @@ class _SignupPageState extends State<SignupPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: allPadding16,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                gap24,
-                EmailField(controller: _emailController),
-                gap16,
-                UsernameField(controller: _usernameController),
-                gap16,
-                PasswordField(
-                  controller: _passwordController,
-                  showRequirements: true,
-                ),
-                gap24,
-                SignupButton(
-                  onPressed: () => _onSignup(context),
-                  isLoading: _isLoading,
-                ),
-                gap16,
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: horizontal16,
-                      child: Text(
-                        'or',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          child: _ShineCard(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  gap8,
+                  EmailField(controller: _emailController),
+                  gap16,
+                  UsernameField(controller: _usernameController),
+                  gap16,
+                  PasswordField(
+                    controller: _passwordController,
+                    showRequirements: true,
+                  ),
+                  gap24,
+                  SignupButton(
+                    onPressed: () => _onSignup(context),
+                    isLoading: _isLoading,
+                  ),
+                  gap16,
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: horizontal16,
+                        child: Text(
+                          'or',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                         ),
                       ),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-                gap16,
-                GoogleSignInButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Coming soon')),
-                    );
-                  },
-                ),
-                gap16,
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      children: [
-                        const TextSpan(text: 'Already have an account? '),
-                        TextSpan(
-                          text: 'Sign In',
-                          style: TextStyle(
-                            color: context.theme.appColors.primary,
-                            decoration: TextDecoration.underline,
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  gap16,
+                  GoogleSignInButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Coming soon')),
+                      );
+                    },
+                  ),
+                  gap16,
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        children: [
+                          const TextSpan(text: 'Already have an account? '),
+                          TextSpan(
+                            text: 'Sign In',
+                            style: TextStyle(
+                              color: context.theme.appColors.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                if (!_isLoading) {
+                                  await context.router.replace(
+                                    LoginPageRoute(),
+                                  );
+                                }
+                              },
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              if (!_isLoading) {
-                                await context.router.replace(
-                                  LoginPageRoute(),
-                                );
-                              }
-                            },
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShineCard extends StatelessWidget {
+  const _ShineCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderCircular16,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: borderCircular16,
+        child: Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    colorScheme.surface,
+                    colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                  ],
+                ),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.16),
+                ),
+              ),
+              child: child,
+            ),
+            // Positioned(
+            //   top: -42,
+            //   left: -84,
+            //   child: Transform.rotate(
+            //     angle: -0.55,
+            //     child: Container(
+            //       width: 260,
+            //       height: 96,
+            //       decoration: BoxDecoration(
+            //         gradient: LinearGradient(
+            //           colors: [
+            //             Colors.white.withValues(alpha: 0),
+            //             Colors.white.withValues(alpha: 0.22),
+            //             Colors.white.withValues(alpha: 0),
+            //             // ?context.theme.appColors.background?.withValues(
+            //             //   alpha: 0,
+            //             // ),
+            //             // ?context.theme.appColors.background?.withValues(
+            //             //   alpha: 0.22,
+            //             // ),
+            //             // ?context.theme.appColors.background?.withValues(
+            //             //   alpha: 0,
+            //             // ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       ),
     );

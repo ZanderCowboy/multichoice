@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class SignupButton extends StatelessWidget {
   const SignupButton({
@@ -18,13 +19,7 @@ class SignupButton extends StatelessWidget {
       width: double.infinity,
       child: FilledButton(
         onPressed: enabled && !isLoading ? onPressed : null,
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Text('Sign Up'),
+        child: isLoading ? CircularLoader.tiny() : const Text('Sign Up'),
       ),
     );
   }

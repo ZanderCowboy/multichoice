@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
@@ -15,9 +14,7 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<AuthNotifier>();
-    final isLoggedIn =
-        coreSl.isRegistered<Session>() && coreSl<Session>().isUserLoggedIn();
+    final isLoggedIn = context.watch<AuthNotifier>().isUserLoggedIn;
 
     return Drawer(
       width: MediaQuery.sizeOf(context).width,

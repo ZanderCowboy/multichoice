@@ -19,10 +19,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Consumer<AuthNotifier>(
-          builder: (context, _, _) {
-            final isLoggedIn =
-                coreSl.isRegistered<Session>() &&
-                coreSl<Session>().isUserLoggedIn();
+          builder: (context, authNotifier, _) {
+            final isLoggedIn = authNotifier.isUserLoggedIn;
 
             return AppBar(
               title: const Text('Multichoice'),

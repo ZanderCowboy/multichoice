@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({
@@ -20,11 +21,7 @@ class GoogleSignInButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: enabled && !isLoading ? onPressed : null,
         icon: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+            ? CircularLoader.tiny()
             : const Icon(Icons.g_mobiledata, size: 24),
         label: const Text('Continue with Google'),
       ),

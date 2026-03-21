@@ -29,7 +29,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.prePopulatedEmail != null && widget.prePopulatedEmail!.isNotEmpty) {
+    if (widget.prePopulatedEmail != null &&
+        widget.prePopulatedEmail!.isNotEmpty) {
       _emailController.text = widget.prePopulatedEmail!;
     }
   }
@@ -56,7 +57,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Reset link sent! Check your email or open your mail app.'),
+        content: Text(
+          'Reset link sent! Check your email or open your mail app.',
+        ),
       ),
     );
   }
@@ -76,7 +79,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       ),
       body: SafeArea(
-        child: _emailSent ? _buildCheckEmailContent(context) : _buildForm(context),
+        child: _emailSent
+            ? _buildCheckEmailContent(context)
+            : _buildForm(context),
       ),
     );
   }
@@ -100,23 +105,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: _isLoading
-                    ? null
-                    : () => _onResetPassword(context),
+                onPressed: _isLoading ? null : () => _onResetPassword(context),
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? CircularLoader.tiny()
                     : const Text('Send Reset Link'),
               ),
             ),
             gap16,
             TextButton(
-              onPressed: _isLoading
-                  ? null
-                  : () => _onGoToResetPage(context),
+              onPressed: _isLoading ? null : () => _onGoToResetPage(context),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,9 +122,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   Text(
                     '(temp - for testing)',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      fontStyle: FontStyle.italic,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -158,8 +155,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           gap12,
           Text(
-              "We've sent a password reset link to ${_emailController.text}. "
-              'Open your email app or check your inbox.',
+            "We've sent a password reset link to ${_emailController.text}. "
+            'Open your email app or check your inbox.',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
