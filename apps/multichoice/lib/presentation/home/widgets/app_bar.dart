@@ -10,6 +10,7 @@ import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:provider/provider.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -48,15 +49,22 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   )
                 else
-                  TextButton(
-                    onPressed: () async {
-                      showLoginModal(context);
-                    },
-                    style: const ButtonStyle(
-                      padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                  SizedBox(
+                    height: 32,
+                    width: 72,
+                    child: TextButton(
+                      onPressed: () async {
+                        showLoginModal(context);
+                      },
+                      style: const ButtonStyle(
+                        padding: WidgetStatePropertyAll(
+                          EdgeInsets.zero,
+                        ),
+                      ),
+                      child: const Text('Sign In'),
                     ),
-                    child: const Text('Sign In'),
                   ),
+                gap12,
               ],
               leading: AnimatedOpacity(
                 opacity: state.isEditMode ? 0.35 : 1,

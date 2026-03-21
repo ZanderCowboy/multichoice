@@ -21,6 +21,7 @@ class PasswordField extends StatefulWidget {
     this.showErrorText = false,
     this.validatePolicy = true,
     this.onValidityChanged,
+    this.suffixIconAreaWidth = 92,
   });
 
   final TextEditingController? controller;
@@ -36,6 +37,10 @@ class PasswordField extends StatefulWidget {
   final bool showErrorText;
   final bool validatePolicy;
   final ValueChanged<bool>? onValidityChanged;
+
+  /// Horizontal space reserved for the info + visibility controls so the field
+  /// width stays stable when the eye icon appears.
+  final double suffixIconAreaWidth;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -69,8 +74,30 @@ class _PasswordFieldState extends State<PasswordField> {
     required bool hasInput,
     required bool isSatisfied,
   }) {
-    if (!hasInput) return context.theme.appColors.white ?? Colors.white;
-    return isSatisfied ? Colors.green : Colors.red;
+    final appColors = context.theme.appColors;
+    if (!hasInput) {
+      return appColors.textPrimary ?? appColors.white ?? Colors.white;
+    }
+    return isSatisfied
+        ? appColors.success ?? Colors.green
+        : appColors.error ?? Colors.red;
+  }
+
+  /// Full policy (length, upper/lower/digit/special). Used for success styling;
+  /// [validatePolicy] / [_validator] may be looser (e.g. login: non-empty only).
+  bool get _meetsPolicy {
+    final trimmed = _currentPassword.trim();
+    return trimmed.isNotEmpty && PasswordValidator.isValid(trimmed);
+  }
+
+  Color _policyBorderColor({
+    required Color successColor,
+    required Color inactiveColor,
+    required Color errorColor,
+  }) {
+    final trimmed = _currentPassword.trim();
+    if (trimmed.isEmpty) return inactiveColor;
+    return PasswordValidator.isValid(trimmed) ? successColor : errorColor;
   }
 
   List<InlineSpan> _buildTooltipRequirements() {
@@ -94,10 +121,13 @@ class _PasswordFieldState extends State<PasswordField> {
   }
 
   Color _infoIconColor() {
+    final appColors = context.theme.appColors;
     if (_currentPassword.trim().isEmpty) {
-      return context.theme.appColors.white ?? Colors.white;
+      return appColors.textPrimary ?? appColors.white ?? Colors.white;
     }
-    return _isValidPassword ? Colors.green : Colors.red;
+    return _meetsPolicy
+        ? appColors.success ?? Colors.green
+        : appColors.error ?? Colors.red;
   }
 
   String? _validator(String? value) {
@@ -115,6 +145,31 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = context.theme.appColors;
+    final inputTheme = Theme.of(context).inputDecorationTheme;
+    final textColor =
+        inputTheme.labelStyle?.color ??
+        inputTheme.hintStyle?.color ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
+        appColors.black ??
+        Colors.black;
+    final successColor = appColors.success ?? Colors.green;
+    final errorColor = appColors.error ?? Colors.red;
+    final inactiveBorderColor =
+        inputTheme.enabledBorder?.borderSide.color ??
+        appColors.textSecondary ??
+        appColors.accent ??
+        Colors.deepPurple;
+    final disabledBorderColor = appColors.disabled ?? Colors.blue;
+    final hasPasswordInput = _currentPassword.trim().isNotEmpty;
+    final suffixWidth = widget.suffixIconAreaWidth;
+    final policyBorderColor = _policyBorderColor(
+      successColor: successColor,
+      inactiveColor: inactiveBorderColor,
+      errorColor: errorColor,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -122,81 +177,89 @@ class _PasswordFieldState extends State<PasswordField> {
         TextFormField(
           controller: widget.controller,
           initialValue: widget.initialValue,
+          style: TextStyle(color: textColor),
           decoration: (widget.decoration ?? const InputDecoration()).copyWith(
             label: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.password,
-                  color: context.theme.appColors.black,
+                  color: appColors.iconColor ?? textColor,
                 ),
                 gap4,
                 Text(
                   'Password',
                   style: TextStyle(
-                    color: context.theme.appColors.black,
+                    color: textColor,
                   ),
                 ),
               ],
             ),
-            // labelText: 'Email label',
-            // labelStyle: TextStyle(
-            //   color: Colors.black,
-            // ),
             floatingLabelStyle: TextStyle(
-              color: context.theme.appColors.black,
+              color: textColor,
             ),
-            // floatingLabelBehavior: FloatingLabelBehavior.values[0],
-            hintText: 'Enter your email',
+            hintText: 'Enter your password',
             hintStyle: TextStyle(
-              color: context.theme.appColors.black,
+              color: textColor,
             ),
-            // helperText: 'Helper Text',
-            // maintainLabelSize: true,
-            // prefixIcon: Icon(Icons.telegram),
-            // counterText: 'Counter Text',
+
             errorMaxLines: 3,
             errorStyle: widget.showErrorText
                 ? null
                 : const TextStyle(fontSize: 0, height: 0),
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.black,
-              ),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: policyBorderColor),
             ),
-            // errorText: 'Error Text',
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.green,
-              ),
+              borderSide: BorderSide(color: policyBorderColor),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.redAccent,
+                color: errorColor,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.red,
-              ),
+              borderSide: BorderSide(color: errorColor),
             ),
-            disabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blue,
-              ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: disabledBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: _isValidPassword ? Colors.green : Colors.deepPurple,
-              ),
+              borderSide: BorderSide(color: policyBorderColor),
             ),
-            suffixIconConstraints: const BoxConstraints(minWidth: 88),
+            suffixIconConstraints: BoxConstraints(
+              minWidth: suffixWidth,
+              maxWidth: suffixWidth,
+              minHeight: 48,
+            ),
             suffixIcon: Padding(
               padding: const EdgeInsets.only(right: 4),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  if (hasPasswordInput)
+                    IconButton(
+                      constraints: const BoxConstraints.tightFor(
+                        width: 40,
+                        height: 40,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                      padding: zeroPadding,
+                      icon: Icon(
+                        _obscureText
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        setState(() => _obscureText = !_obscureText);
+                      },
+                    )
+                  else
+                    // const SizedBox(width: 40, height: 40),
+                    const SizedBox.shrink(),
                   Tooltip(
                     key: _passwordRequirementsTooltipKey,
                     triggerMode: TooltipTriggerMode.manual,
@@ -210,7 +273,7 @@ class _PasswordFieldState extends State<PasswordField> {
                         TextSpan(
                           text: 'Password requirements\n',
                           style: TextStyle(
-                            color: context.theme.appColors.white,
+                            color: appColors.textPrimary ?? appColors.white,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -235,28 +298,11 @@ class _PasswordFieldState extends State<PasswordField> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    constraints: const BoxConstraints.tightFor(
-                      width: 40,
-                      height: 40,
-                    ),
-                    visualDensity: VisualDensity.compact,
-                    padding: zeroPadding,
-                    icon: Icon(
-                      _obscureText
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      size: 20,
-                    ),
-                    onPressed: () {
-                      setState(() => _obscureText = !_obscureText);
-                    },
-                  ),
                 ],
               ),
             ),
           ),
-          cursorColor: context.theme.appColors.black,
+          cursorColor: textColor,
           keyboardType: TextInputType.visiblePassword,
           obscureText: _obscureText,
           obscuringCharacter: '*',

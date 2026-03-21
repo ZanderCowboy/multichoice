@@ -26,12 +26,20 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+/// Duration to show success message on button before navigating.
+const _successMessageDuration = Duration(milliseconds: 1000);
+
+/// Duration to show "Coming soon" on Google button before resetting.
+const _comingSoonDuration = Duration(milliseconds: 1000);
+
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailOrUsernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  String? _signInSuccessMessage;
+  String? _googleOverrideLabel;
 
   @override
   void dispose() {
@@ -49,21 +57,30 @@ class _LoginPageState extends State<LoginPage> {
     await Future<void>.delayed(const Duration(milliseconds: 500));
 
     if (!context.mounted) return;
-    setState(() => _isLoading = false);
+    setState(() {
+      _isLoading = false;
+      _signInSuccessMessage = 'Signed in successfully!';
+    });
 
     if (coreSl.isRegistered<Session>()) {
       coreSl<Session>().storeLoginInfo('debug-access-token');
     }
     context.read<AuthNotifier>().notifyAuthChanged();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Signed in successfully!')),
-    );
+    await Future<void>.delayed(_successMessageDuration);
+    if (!context.mounted) return;
     if (widget.isModal) {
       Navigator.of(context).pop();
       return;
     }
     context.router.popUntilRoot();
+  }
+
+  Future<void> _onGoogleSignIn() async {
+    setState(() => _googleOverrideLabel = 'Coming soon');
+    await Future<void>.delayed(_comingSoonDuration);
+    if (!mounted) return;
+    setState(() => _googleOverrideLabel = null);
   }
 
   void _onForgotPassword(BuildContext context) {
@@ -80,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final content = SingleChildScrollView(
-      padding: allPadding16,
+      padding: allPadding4,
       child: Form(
         key: _formKey,
         child: Column(
@@ -98,7 +115,9 @@ class _LoginPageState extends State<LoginPage> {
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: _isLoading ? null : () => _onForgotPassword(context),
+                onTap: _isLoading || _signInSuccessMessage != null
+                    ? null
+                    : () => _onForgotPassword(context),
                 child: Text(
                   'Forgot Password?',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -112,6 +131,14 @@ class _LoginPageState extends State<LoginPage> {
             LoginButton(
               onPressed: () => _onSignIn(context),
               isLoading: _isLoading,
+              overrideLabel: _signInSuccessMessage,
+              overrideIcon: _signInSuccessMessage != null
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    )
+                  : null,
             ),
             gap16,
             Row(
@@ -122,8 +149,8 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text(
                     'or',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 const Expanded(child: Divider()),
@@ -131,11 +158,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             gap16,
             GoogleSignInButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Coming soon')),
-                );
-              },
+              onPressed: _onGoogleSignIn,
+              overrideLabel: _googleOverrideLabel,
             ),
             gap16,
             Center(
@@ -154,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          if (!_isLoading) {
+                          if (!_isLoading && _signInSuccessMessage == null) {
                             unawaited(
                               context.router.push(const SignupPageRoute()),
                             );

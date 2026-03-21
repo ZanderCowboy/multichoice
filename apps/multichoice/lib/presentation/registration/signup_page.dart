@@ -17,6 +17,12 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
+/// Duration to show success message on button before navigating.
+const _successMessageDuration = Duration(milliseconds: 1000);
+
+/// Duration to show "Coming soon" on Google button before resetting.
+const _comingSoonDuration = Duration(milliseconds: 1000);
+
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -24,6 +30,8 @@ class _SignupPageState extends State<SignupPage> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  String? _signupSuccessMessage;
+  String? _googleOverrideLabel;
 
   @override
   void dispose() {
@@ -42,16 +50,39 @@ class _SignupPageState extends State<SignupPage> {
     await Future<void>.delayed(const Duration(milliseconds: 500));
 
     if (!context.mounted) return;
-    setState(() => _isLoading = false);
+    setState(() {
+      _isLoading = false;
+      _signupSuccessMessage = 'Registration successful!';
+    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registration successful!')),
-    );
+    await Future<void>.delayed(_successMessageDuration);
+    if (!context.mounted) return;
     context.router.popUntilRoot();
+  }
+
+  Future<void> _onGoogleSignIn() async {
+    setState(() => _googleOverrideLabel = 'Coming soon');
+    await Future<void>.delayed(_comingSoonDuration);
+    if (!mounted) return;
+    setState(() => _googleOverrideLabel = null);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final signupInputTheme = theme.inputDecorationTheme.copyWith(
+      labelStyle: TextStyle(color: colorScheme.onSurface),
+      floatingLabelStyle: TextStyle(color: colorScheme.onSurface),
+      hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.72)),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.35)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primary),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
@@ -64,81 +95,90 @@ class _SignupPageState extends State<SignupPage> {
         child: SingleChildScrollView(
           padding: allPadding16,
           child: _ShineCard(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  gap8,
-                  EmailField(controller: _emailController),
-                  gap16,
-                  UsernameField(controller: _usernameController),
-                  gap16,
-                  PasswordField(
-                    controller: _passwordController,
-                    showRequirements: true,
-                  ),
-                  gap24,
-                  SignupButton(
-                    onPressed: () => _onSignup(context),
-                    isLoading: _isLoading,
-                  ),
-                  gap16,
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: horizontal16,
-                        child: Text(
-                          'or',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  gap16,
-                  GoogleSignInButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Coming soon')),
-                      );
-                    },
-                  ),
-                  gap16,
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        children: [
-                          const TextSpan(text: 'Already have an account? '),
-                          TextSpan(
-                            text: 'Sign In',
-                            style: TextStyle(
-                              color: context.theme.appColors.linkColor,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                if (!_isLoading) {
-                                  await context.router.replace(
-                                    LoginPageRoute(),
-                                  );
-                                }
-                              },
+            child: Theme(
+              data: theme.copyWith(inputDecorationTheme: signupInputTheme),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    gap8,
+                    EmailField(controller: _emailController),
+                    gap16,
+                    UsernameField(controller: _usernameController),
+                    gap16,
+                    PasswordField(
+                      controller: _passwordController,
+                      showRequirements: true,
+                    ),
+                    gap24,
+                    SignupButton(
+                      onPressed: () => _onSignup(context),
+                      isLoading: _isLoading,
+                      overrideLabel: _signupSuccessMessage,
+                      overrideIcon: _signupSuccessMessage != null
+                          ? Icon(
+                              Icons.check_circle_outline,
+                              size: 20,
+                              color: colorScheme.onPrimary,
+                            )
+                          : null,
+                    ),
+                    gap16,
+                    Row(
+                      children: [
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: horizontal16,
+                          child: Text(
+                            'or',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
-                        ],
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+                    gap16,
+                    GoogleSignInButton(
+                      onPressed: _onGoogleSignIn,
+                      overrideLabel: _googleOverrideLabel,
+                    ),
+                    gap16,
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          children: [
+                            const TextSpan(text: 'Already have an account? '),
+                            TextSpan(
+                              text: 'Sign In',
+                              style: TextStyle(
+                                color: context.theme.appColors.linkColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  if (!_isLoading &&
+                                      _signupSuccessMessage == null) {
+                                    await context.router.replace(
+                                      LoginPageRoute(),
+                                    );
+                                  }
+                                },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

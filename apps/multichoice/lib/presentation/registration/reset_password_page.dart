@@ -4,6 +4,9 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:ui_kit/ui_kit.dart';
 
+/// Duration to show success message on button before navigating.
+const _successMessageDuration = Duration(milliseconds: 1000);
+
 @RoutePage()
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -18,6 +21,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _confirmPasswordController = TextEditingController();
 
   bool _isLoading = false;
+  String? _successMessage;
 
   @override
   void dispose() {
@@ -45,16 +49,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     await Future<void>.delayed(const Duration(milliseconds: 500));
 
     if (!context.mounted) return;
-    setState(() => _isLoading = false);
+    setState(() {
+      _isLoading = false;
+      _successMessage = 'Password reset successfully!';
+    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Password reset successfully!')),
-    );
-    context.router.popUntilRouteWithName(LoginPageRoute.name);
+    await Future<void>.delayed(_successMessageDuration);
+    if (!context.mounted) return;
+    context.router.popUntilRouteWithName(HomePageWrapperRoute.name);
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDisabled = _isLoading || _successMessage != null;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reset Password'),
@@ -90,15 +99,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _isLoading ? null : () => _onReset(context),
-                    child: _isLoading
-                        ? CircularLoader.tiny()
-                        : const Text('Reset Password'),
+                    onPressed: isDisabled ? null : () => _onReset(context),
+                    child: _buildButtonChild(colorScheme),
                   ),
                 ),
                 gap16,
                 TextButton(
-                  onPressed: _isLoading
+                  onPressed: isDisabled
                       ? null
                       : () => context.router.popUntilRouteWithName(
                           LoginPageRoute.name,
@@ -111,5 +118,27 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildButtonChild(ColorScheme colorScheme) {
+    if (_isLoading) {
+      return CircularLoader.tiny();
+    }
+    if (_successMessage != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 20,
+            color: colorScheme.onPrimary,
+          ),
+          const SizedBox(width: 8),
+          Text(_successMessage!),
+        ],
+      );
+    }
+    return const Text('Reset Password');
   }
 }

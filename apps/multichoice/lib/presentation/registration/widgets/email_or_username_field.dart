@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/username_field.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 /// Combined field that accepts either email or username for login.
 class EmailOrUsernameField extends StatefulWidget {
@@ -43,6 +45,14 @@ class EmailOrUsernameField extends StatefulWidget {
 class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
   bool _hasTyped = false;
   bool _isValidInput = false;
+  late bool _isEmailInput;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialInput = widget.controller?.text ?? widget.initialValue ?? '';
+    _isEmailInput = initialInput.trim().contains('@');
+  }
 
   String? _validator(String? value) {
     final trimmedValue = value?.trim() ?? '';
@@ -56,18 +66,61 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = context.theme.appColors;
+    final inputTheme = Theme.of(context).inputDecorationTheme;
+    final textColor =
+        inputTheme.labelStyle?.color ??
+        inputTheme.hintStyle?.color ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
+        appColors.black ??
+        Colors.black;
+    final successColor = appColors.success ?? Colors.green;
+    final inactiveBorderColor =
+        inputTheme.enabledBorder?.borderSide.color ??
+        appColors.textSecondary ??
+        appColors.accent ??
+        Colors.deepPurple;
+
     return TextFormField(
       controller: widget.controller,
       initialValue: widget.initialValue,
+      style: TextStyle(color: textColor),
       decoration:
           widget.decoration ??
           InputDecoration(
-            labelText: 'Email or Username',
+            label: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _isEmailInput ? Icons.email_outlined : Icons.person_outline,
+                  color: appColors.iconColor ?? textColor,
+                ),
+                gap4,
+                Text(
+                  'Email or Username',
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
+              ],
+            ),
             hintText: 'Enter email or username',
-            border: const OutlineInputBorder(),
+            labelStyle: TextStyle(color: textColor),
+            floatingLabelStyle: TextStyle(color: textColor),
+            hintStyle: TextStyle(color: textColor),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: textColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: _isValidInput ? successColor : inactiveBorderColor,
+              ),
+            ),
+            errorStyle: const TextStyle(fontWeight: FontWeight.bold),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: _isValidInput ? Colors.green : Colors.deepPurple,
+                color: _isValidInput ? successColor : inactiveBorderColor,
               ),
             ),
           ),
@@ -86,6 +139,13 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
         }
 
         final trimmed = value.trim();
+        final isEmailInput = trimmed.contains('@');
+        if (_isEmailInput != isEmailInput) {
+          setState(() {
+            _isEmailInput = isEmailInput;
+          });
+        }
+
         final isValid = trimmed.isNotEmpty && _validator(trimmed) == null;
         if (_isValidInput != isValid) {
           setState(() {

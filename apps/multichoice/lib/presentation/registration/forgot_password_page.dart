@@ -20,11 +20,14 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  /// Duration to show success message on button before switching to check email.
+  static const _successMessageDuration = Duration(milliseconds: 1000);
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
   bool _isLoading = false;
   bool _emailSent = false;
+  String? _successMessage;
 
   @override
   void initState() {
@@ -52,16 +55,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     if (!context.mounted) return;
     setState(() {
       _isLoading = false;
-      _emailSent = true;
+      _successMessage =
+          'Reset link sent! Check your email or open your mail app.';
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Reset link sent! Check your email or open your mail app.',
-        ),
-      ),
-    );
+    await Future<void>.delayed(_successMessageDuration);
+    if (!context.mounted) return;
+    setState(() {
+      _successMessage = null;
+      _emailSent = true;
+    });
   }
 
   void _onGoToResetPage(BuildContext context) {
@@ -105,15 +108,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: _isLoading ? null : () => _onResetPassword(context),
-                child: _isLoading
-                    ? CircularLoader.tiny()
-                    : const Text('Send Reset Link'),
+                onPressed: _isLoading || _successMessage != null
+                    ? null
+                    : () => _onResetPassword(context),
+                child: _buildButtonChild(context),
               ),
             ),
             gap16,
             TextButton(
-              onPressed: _isLoading ? null : () => _onGoToResetPage(context),
+              onPressed: _isLoading || _successMessage != null
+                  ? null
+                  : () => _onGoToResetPage(context),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,6 +138,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildButtonChild(BuildContext context) {
+    if (_isLoading) {
+      return CircularLoader.tiny();
+    }
+    if (_successMessage != null) {
+      final colorScheme = Theme.of(context).colorScheme;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 20,
+            color: colorScheme.onPrimary,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              _successMessage!,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      );
+    }
+    return const Text('Send Reset Link');
   }
 
   Widget _buildCheckEmailContent(BuildContext context) {

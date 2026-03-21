@@ -59,9 +59,28 @@ class _UsernameFieldState extends State<UsernameField> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = context.theme.appColors;
+    final inputTheme = Theme.of(context).inputDecorationTheme;
+    final textColor =
+        inputTheme.labelStyle?.color ??
+        inputTheme.hintStyle?.color ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
+        appColors.black ??
+        Colors.black;
+    final successColor = appColors.success ?? Colors.green;
+    final errorColor = appColors.error ?? Colors.red;
+    final inactiveBorderColor =
+        inputTheme.enabledBorder?.borderSide.color ??
+        appColors.textSecondary ??
+        appColors.accent ??
+        Colors.deepPurple;
+    final disabledBorderColor = appColors.disabled ?? Colors.blue;
+
     return TextFormField(
       controller: widget.controller,
       initialValue: widget.initialValue,
+      style: TextStyle(color: textColor),
       decoration:
           widget.decoration ??
           InputDecoration(
@@ -70,13 +89,13 @@ class _UsernameFieldState extends State<UsernameField> {
               children: [
                 Icon(
                   Icons.person,
-                  color: context.theme.appColors.black,
+                  color: appColors.iconColor ?? textColor,
                 ),
                 gap4,
                 Text(
                   'Username',
                   style: TextStyle(
-                    color: context.theme.appColors.black,
+                    color: textColor,
                   ),
                 ),
               ],
@@ -86,12 +105,13 @@ class _UsernameFieldState extends State<UsernameField> {
             //   color: Colors.black,
             // ),
             floatingLabelStyle: TextStyle(
-              color: context.theme.appColors.black,
+              color: textColor,
             ),
             // floatingLabelBehavior: FloatingLabelBehavior.values[0],
             hintText: widget.hintText,
+            errorStyle: TextStyle(fontWeight: FontWeight.bold),
             hintStyle: TextStyle(
-              color: context.theme.appColors.black,
+              color: textColor,
             ),
             // helperText: 'Helper Text',
             // maintainLabelSize: true,
@@ -99,31 +119,31 @@ class _UsernameFieldState extends State<UsernameField> {
             // counterText: 'Counter Text',
             border: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.black,
+                color: textColor,
               ),
             ),
             // errorText: 'Error Text',
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.green,
+                color: _isValidUsername ? successColor : inactiveBorderColor,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.redAccent,
+                color: errorColor,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(color: errorColor),
             ),
             disabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.blue,
+                color: disabledBorderColor,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: _isValidUsername ? Colors.green : Colors.deepPurple,
+                color: _isValidUsername ? successColor : inactiveBorderColor,
               ),
             ),
           ),
