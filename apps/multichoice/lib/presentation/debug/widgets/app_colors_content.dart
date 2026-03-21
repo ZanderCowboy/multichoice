@@ -17,22 +17,6 @@ const _colorNames = [
   'success',
   'enabled',
   'disabled',
-  'filledButtonBackground',
-  'filledButtonForeground',
-  'outlinedButtonForeground',
-  'outlinedButtonBorder',
-  'textButtonForeground',
-  'textButtonBackground',
-  'scaffoldBackground',
-  'cardBackground',
-  'modalBackground',
-  'appBarBackground',
-  'textPrimary',
-  'textSecondary',
-  'textTertiary',
-  'iconColor',
-  'linkColor',
-  'accent',
 ];
 
 class AppColorsContent extends StatelessWidget {
