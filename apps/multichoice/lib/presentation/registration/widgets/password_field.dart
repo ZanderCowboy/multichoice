@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
@@ -331,16 +331,6 @@ class _PasswordFieldState extends State<PasswordField> {
           },
           validator: _validator,
         ),
-        // if (widget.showRequirements) ...[
-        //   const SizedBox(height: 8),
-        //   Text(
-        //     'Password requirements: 1 lower case, 1 upper case, 1 number, '
-        //     '1 special character, 8 minimum characters.',
-        //     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        //       color: Theme.of(context).colorScheme.onSurfaceVariant,
-        //     ),
-        //   ),
-        // ],
       ],
     );
   }

@@ -100,29 +100,19 @@ class _UsernameFieldState extends State<UsernameField> {
                 ),
               ],
             ),
-            // labelText: 'Email label',
-            // labelStyle: TextStyle(
-            //   color: Colors.black,
-            // ),
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            // floatingLabelBehavior: FloatingLabelBehavior.values[0],
             hintText: widget.hintText,
             errorStyle: TextStyle(fontWeight: FontWeight.bold),
             hintStyle: TextStyle(
               color: textColor,
             ),
-            // helperText: 'Helper Text',
-            // maintainLabelSize: true,
-            // prefixIcon: Icon(Icons.telegram),
-            // counterText: 'Counter Text',
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 color: textColor,
               ),
             ),
-            // errorText: 'Error Text',
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: _isValidUsername ? successColor : inactiveBorderColor,

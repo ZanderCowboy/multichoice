@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_redundant_argument_values
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
@@ -96,22 +96,13 @@ class _EmailFieldState extends State<EmailField> {
                 ),
               ],
             ),
-            // labelText: 'Email label',
-            // labelStyle: TextStyle(
-            //   color: Colors.black,
-            // ),
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            // floatingLabelBehavior: FloatingLabelBehavior.values[0],
             hintText: 'Enter your email',
             hintStyle: TextStyle(
               color: textColor,
             ),
-            // helperText: 'Helper Text',
-            // maintainLabelSize: true,
-            // prefixIcon: Icon(Icons.telegram),
-            // counterText: 'Counter Text',
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 color: textColor,
