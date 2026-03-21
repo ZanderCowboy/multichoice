@@ -28,6 +28,36 @@ class CircularLoader extends StatelessWidget {
   final StrokeCap? strokeCap;
   final bool shouldCenter;
 
+  /// Creates a tiny loader (20x20 with 2px stroke)
+  factory CircularLoader.tiny({
+    Key? key,
+    double? value,
+    Color? backgroundColor,
+    Color? color,
+    Animation<Color?>? valueColor,
+    double strokeWidth = 2.0,
+    double strokeAlign = CircularProgressIndicator.strokeAlignCenter,
+    String? semanticsLabel,
+    String? semanticsValue,
+    StrokeCap? strokeCap,
+    bool shouldCenter = true,
+  }) {
+    return CircularLoader._(
+      key: key,
+      size: 20.0,
+      strokeWidth: strokeWidth,
+      value: value,
+      backgroundColor: backgroundColor,
+      color: color,
+      valueColor: valueColor,
+      strokeAlign: strokeAlign,
+      semanticsLabel: semanticsLabel,
+      semanticsValue: semanticsValue,
+      strokeCap: strokeCap,
+      shouldCenter: shouldCenter,
+    );
+  }
+
   /// Creates a small loader (32x32 with 4px stroke)
   factory CircularLoader.small({
     Key? key,

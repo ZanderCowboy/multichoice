@@ -1,10 +1,12 @@
 import 'package:core/src/services/interfaces/i_login_service.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@LazySingleton(as: Session)
 class SessionImpl extends Session {
   SessionImpl(this.sharedPref);
 
-  SharedPreferences sharedPref;
+  final SharedPreferences sharedPref;
 
   @override
   void storeLoginInfo(String accessToken) {
