@@ -16,7 +16,7 @@ class AuthNotifier extends ChangeNotifier {
 
   bool? get debugLoggedInOverride => _debugLoggedInOverride;
 
-  void setDebugLoggedInOverride(bool value) {
+  void setDebugLoggedInOverride({required bool value}) {
     _debugLoggedInOverride = value;
     notifyListeners();
   }

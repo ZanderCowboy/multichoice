@@ -46,7 +46,7 @@ class DebugToolsContent extends StatelessWidget {
                   : 'Using stored session state',
             ),
             value: authNotifier.isUserLoggedIn,
-            onChanged: authNotifier.setDebugLoggedInOverride,
+            onChanged: (value) => authNotifier.setDebugLoggedInOverride,
           ),
           if (authNotifier.hasDebugOverride)
             TextButton.icon(
