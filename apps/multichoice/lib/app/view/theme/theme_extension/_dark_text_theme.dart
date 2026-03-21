@@ -6,23 +6,23 @@ final _darkTextTheme = AppTextExtension(
   h1: null,
   titleLarge: null,
   titleMedium: AppTypography.titleMedium.copyWith(
-    color: AppPalette.paletteTwo.geyser,
+    color: AppPalette.geyserTone2,
   ),
   titleSmall: AppTypography.titleSmall.copyWith(
-    color: AppPalette.paletteTwo.primary5,
+    color: AppPalette.primary5,
   ),
   subtitleLarge: null,
   subtitleMedium: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.paletteTwo.geyser,
+    color: AppPalette.geyserTone2,
   ),
   subtitleSmall: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.paletteTwo.primary5,
+    color: AppPalette.primary5,
   ),
   bodyLarge: AppTypography.bodyLarge.copyWith(
-    color: AppPalette.paletteTwo.primary5,
+    color: AppPalette.primary5,
   ),
   bodyMedium: AppTypography.bodyMedium.copyWith(
-    color: AppPalette.paletteTwo.geyser,
+    color: AppPalette.geyserTone2,
   ),
   bodySmall: null,
 );

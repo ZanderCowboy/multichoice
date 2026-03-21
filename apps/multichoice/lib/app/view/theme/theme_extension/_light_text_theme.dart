@@ -6,21 +6,21 @@ final _lightTextTheme = AppTextExtension(
   h1: null,
   titleLarge: null,
   titleMedium: AppTypography.titleMedium.copyWith(
-    color: AppPalette.grey.bigStone,
+    color: AppPalette.bigStoneTone1,
   ),
   titleSmall: AppTypography.titleSmall.copyWith(
-    color: AppPalette.grey.geyser,
+    color: AppPalette.geyserTone1,
   ),
   subtitleLarge: null,
   subtitleMedium: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.grey.bigStone,
+    color: AppPalette.bigStoneTone1,
   ),
   subtitleSmall: AppTypography.subtitleSmall.copyWith(
-    color: AppPalette.grey.geyser,
+    color: AppPalette.geyserTone1,
   ),
   bodyLarge: AppTypography.bodyLarge,
   bodyMedium: AppTypography.bodyMedium.copyWith(
-    color: AppPalette.grey.geyser,
+    color: AppPalette.geyserTone1,
   ),
   bodySmall: null,
 );

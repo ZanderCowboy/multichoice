@@ -1,13 +1,13 @@
 part of '../app_theme.dart';
 
 final _darkAppColors = AppColorsExtension(
-  primary: AppPalette.paletteTwo.primary5,
-  primaryLight: AppPalette.grey.geyserLight.withValues(alpha: 0.2),
-  secondary: AppPalette.paletteTwo.primary10,
-  secondaryLight: AppPalette.paletteTwo.slateGrayLight,
-  ternary: AppPalette.paletteTwo.sanJuan,
-  foreground: AppPalette.paletteTwo.primary15,
-  background: AppPalette.paletteTwo.primary0,
+  primary: AppPalette.primary5,
+  primaryLight: AppPalette.geyserLightTone1.withValues(alpha: 0.2),
+  secondary: AppPalette.primary10,
+  secondaryLight: AppPalette.slateGrayLight,
+  ternary: AppPalette.sanJuanTone2,
+  foreground: AppPalette.primary15,
+  background: AppPalette.primary0,
   white: AppPalette.white,
   black: AppPalette.black,
   error: null,
