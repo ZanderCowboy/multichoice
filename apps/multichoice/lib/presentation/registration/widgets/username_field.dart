@@ -1,8 +1,8 @@
-// ignore_for_file: avoid_redundant_argument_values, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
-import 'package:multichoice/app/view/theme/theme_extension/app_theme_extension.dart';
+import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class UsernameField extends StatefulWidget {

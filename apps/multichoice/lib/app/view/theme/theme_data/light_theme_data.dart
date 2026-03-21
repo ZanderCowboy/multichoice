@@ -1,4 +1,4 @@
-part of 'app_theme.dart';
+part of '../app_theme.dart';
 
 final ThemeData _light = () {
   final defaultTheme = ThemeData.light();
@@ -21,11 +21,11 @@ final ThemeData _light = () {
     ),
     listTileTheme: ListTileThemeData(
       tileColor: _lightAppColors.background,
-      textColor: _lightAppColors.primary,
+      textColor: _lightAppColors.textPrimary,
       leadingAndTrailingTextStyle: TextStyle(
-        color: _lightAppColors.primary,
+        color: _lightAppColors.textPrimary,
       ),
-      iconColor: _lightAppColors.primary,
+      iconColor: _lightAppColors.iconColor,
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -67,7 +67,7 @@ final ThemeData _light = () {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: _lightAppColors.secondary,
+        foregroundColor: _lightAppColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),

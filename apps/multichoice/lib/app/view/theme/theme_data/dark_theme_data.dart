@@ -1,4 +1,4 @@
-part of 'app_theme.dart';
+part of '../app_theme.dart';
 
 final ThemeData _dark = () {
   final defaultTheme = ThemeData.dark();

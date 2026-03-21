@@ -8,12 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
 import 'package:ui_kit/ui_kit.dart';
 
-part 'theme_extension/_dark_app_colors.dart';
-part 'theme_extension/_dark_text_theme.dart';
-part 'theme_extension/_light_app_colors.dart';
-part 'theme_extension/_light_text_theme.dart';
-part 'dark_app_theme.dart';
-part 'light_app_theme.dart';
+part 'theme_data/dark_colors.dart';
+part 'theme_data/dark_text_theme.dart';
+part 'theme_data/dark_theme_data.dart';
+part 'theme_data/light_colors.dart';
+part 'theme_data/light_text_theme.dart';
+part 'theme_data/light_theme_data.dart';
 
 class AppTheme with ChangeNotifier {
   final SharedPreferences _prefs = coreSl<SharedPreferences>();
