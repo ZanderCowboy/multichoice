@@ -33,8 +33,8 @@ class AccountDeletionPage extends StatelessWidget {
 
     if (confirmed != true || !context.mounted) return;
 
-    if (coreSl.isRegistered<Session>()) {
-      await coreSl<Session>().deleteLoginInfo();
+    if (coreSl.isRegistered<ILoginService>()) {
+      await coreSl<ILoginService>().deleteLoginInfo();
     }
     if (!context.mounted) return;
     context.read<AuthNotifier>().notifyAuthChanged();

@@ -9,12 +9,12 @@ import 'package:models/models.dart';
 class RegistrationService implements IRegistrationService {
   RegistrationService(
     this._auth,
-    this._session,
+    this._loginService,
     this._appStorageService,
   );
 
   final FirebaseAuth _auth;
-  final Session _session;
+  final ILoginService _loginService;
   final IAppStorageService _appStorageService;
 
   @override
@@ -45,8 +45,8 @@ class RegistrationService implements IRegistrationService {
         );
       }
 
-      await _session.storeLoginInfo(idToken);
-      await _session.storeUserProfile(
+      await _loginService.storeLoginInfo(idToken);
+      await _loginService.storeUserProfile(
         email: dto.email,
         username: dto.username.isNotEmpty ? dto.username : null,
       );
@@ -87,11 +87,11 @@ class RegistrationService implements IRegistrationService {
         );
       }
 
-      await _session.storeLoginInfo(idToken);
+      await _loginService.storeLoginInfo(idToken);
 
       final trimmed = email.trim();
       final resolvedEmail = user.email;
-      await _session.storeUserProfile(
+      await _loginService.storeUserProfile(
         email: resolvedEmail ?? (trimmed.contains('@') ? trimmed : null),
         username: user.displayName ?? (!trimmed.contains('@') ? trimmed : null),
       );
@@ -148,14 +148,14 @@ class RegistrationService implements IRegistrationService {
             );
           }
 
-          await _session.storeLoginInfo(token);
+          await _loginService.storeLoginInfo(token);
           final email = user.email ?? account.email;
           final firebaseName = user.displayName;
           final googleName = account.displayName;
           final resolvedName = (firebaseName != null && firebaseName.isNotEmpty)
               ? firebaseName
               : ((googleName ?? '').isNotEmpty ? googleName : null);
-          await _session.storeUserProfile(
+          await _loginService.storeUserProfile(
             email: email.isNotEmpty ? email : null,
             username: resolvedName,
           );
@@ -181,7 +181,7 @@ class RegistrationService implements IRegistrationService {
     GoogleSignInAccount account,
   ) async {
     final syntheticToken = 'google_local_${account.id}';
-    await _session.storeLoginInfo(syntheticToken);
+    await _loginService.storeLoginInfo(syntheticToken);
 
     final email = account.email;
     final display = account.displayName ?? '';
@@ -194,7 +194,7 @@ class RegistrationService implements IRegistrationService {
       username = email;
     }
 
-    await _session.storeUserProfile(
+    await _loginService.storeUserProfile(
       email: email.isNotEmpty ? email : null,
       username: username,
     );

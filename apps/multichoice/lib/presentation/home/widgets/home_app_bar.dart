@@ -13,8 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 Future<bool> _homeSessionIsLoggedIn() async {
-  if (!coreSl.isRegistered<Session>()) return false;
-  return coreSl<Session>().isUserLoggedIn();
+  if (!coreSl.isRegistered<ILoginService>()) return false;
+  return coreSl<ILoginService>().isUserLoggedIn();
 }
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {

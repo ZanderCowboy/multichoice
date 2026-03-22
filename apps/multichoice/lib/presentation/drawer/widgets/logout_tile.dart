@@ -21,8 +21,8 @@ class LogoutTile extends StatelessWidget {
   Future<void> _onLogout(BuildContext context) async {
     Navigator.of(context).pop();
     context.read<AuthNotifier>().clearDebugLoggedInOverride();
-    if (coreSl.isRegistered<Session>()) {
-      await coreSl<Session>().deleteLoginInfo();
+    if (coreSl.isRegistered<ILoginService>()) {
+      await coreSl<ILoginService>().deleteLoginInfo();
     }
     if (!context.mounted) return;
     context.read<AuthNotifier>().notifyAuthChanged();

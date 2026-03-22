@@ -7,9 +7,9 @@ const _loginStatusKey = 'login_status';
 const _profileEmailKey = 'profile_email';
 const _profileUsernameKey = 'profile_username';
 
-@LazySingleton(as: Session)
-class SessionImpl extends Session {
-  SessionImpl(this._secureStorage);
+@LazySingleton(as: ILoginService)
+class LoginService extends ILoginService {
+  LoginService(this._secureStorage);
 
   final FlutterSecureStorage _secureStorage;
 

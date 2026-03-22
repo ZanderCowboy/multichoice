@@ -1,4 +1,4 @@
-abstract class Session {
+abstract class ILoginService {
   Future<void> storeLoginInfo(String accessToken);
   Future<bool> isUserLoggedIn();
   Future<String> getAccessToken();

@@ -14,8 +14,8 @@ class AuthNotifier extends ChangeNotifier {
   Future<bool> get isUserLoggedIn async {
     final override = _debugLoggedInOverride;
     if (override != null) return override;
-    return coreSl.isRegistered<Session>() &&
-        await coreSl<Session>().isUserLoggedIn();
+    return coreSl.isRegistered<ILoginService>() &&
+        await coreSl<ILoginService>().isUserLoggedIn();
   }
 
   bool? get debugLoggedInOverride => _debugLoggedInOverride;

@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadProfile() async {
-    if (!coreSl.isRegistered<Session>()) {
+    if (!coreSl.isRegistered<ILoginService>()) {
       if (mounted) {
         setState(() {
           _loaded = true;
@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
 
-    final session = coreSl<Session>();
+    final session = coreSl<ILoginService>();
     var email = await session.getProfileEmail();
     final username = await session.getProfileUsername();
     if (email == null || email.isEmpty) {
@@ -137,8 +137,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 gap24,
                 OutlinedButton.icon(
                   onPressed: () async {
-                    if (coreSl.isRegistered<Session>()) {
-                      await coreSl<Session>().deleteLoginInfo();
+                    if (coreSl.isRegistered<ILoginService>()) {
+                      await coreSl<ILoginService>().deleteLoginInfo();
                     }
                     if (!context.mounted) return;
                     context.read<AuthNotifier>().notifyAuthChanged();

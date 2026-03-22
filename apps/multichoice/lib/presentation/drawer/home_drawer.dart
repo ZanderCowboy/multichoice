@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 Future<bool> _drawerSessionLoggedIn() async {
-  if (!coreSl.isRegistered<Session>()) return false;
-  return coreSl<Session>().isUserLoggedIn();
+  if (!coreSl.isRegistered<ILoginService>()) return false;
+  return coreSl<ILoginService>().isUserLoggedIn();
 }
 
 class HomeDrawer extends StatelessWidget {
@@ -19,8 +19,8 @@ class HomeDrawer extends StatelessWidget {
 
   void _onLogout(BuildContext context) {
     Navigator.of(context).pop();
-    if (coreSl.isRegistered<Session>()) {
-      unawaited(coreSl<Session>().deleteLoginInfo());
+    if (coreSl.isRegistered<ILoginService>()) {
+      unawaited(coreSl<ILoginService>().deleteLoginInfo());
     }
     context.read<AuthNotifier>().notifyAuthChanged();
     ScaffoldMessenger.of(context).showSnackBar(
