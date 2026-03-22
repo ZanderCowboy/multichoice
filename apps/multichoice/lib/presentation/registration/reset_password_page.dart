@@ -74,14 +74,52 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 gap24,
                 PasswordField(
                   controller: _newPasswordController,
-                  labelText: 'New Password',
+                  customLabel: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.password,
+                        color: context.appColorsTheme.iconColor,
+                      ),
+                      gap4,
+                      Text(
+                        'New Password',
+                        style: TextStyle(
+                          color: context
+                              .theme
+                              .inputDecorationTheme
+                              .labelStyle
+                              ?.color,
+                        ),
+                      ),
+                    ],
+                  ),
                   hintText: 'Enter new password',
                   showRequirements: true,
                 ),
                 gap16,
                 PasswordField(
                   controller: _confirmPasswordController,
-                  labelText: 'Confirm Password',
+                  customLabel: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.password,
+                        color: context.appColorsTheme.iconColor,
+                      ),
+                      gap4,
+                      Text(
+                        'Confirm Password',
+                        style: TextStyle(
+                          color: context
+                              .theme
+                              .inputDecorationTheme
+                              .labelStyle
+                              ?.color,
+                        ),
+                      ),
+                    ],
+                  ),
                   hintText: 'Re-enter password',
                   validatePolicy: false,
                   validator: _confirmValidator,

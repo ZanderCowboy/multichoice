@@ -20,6 +20,8 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  /// Duration to show success message on button before switching to check email.
+  static const _successMessageDuration = Duration(milliseconds: 1000);
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
@@ -57,6 +59,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           'Reset link sent! Check your email or open your mail app.';
     });
 
+    await Future<void>.delayed(_successMessageDuration);
     if (!context.mounted) return;
     setState(() {
       _successMessage = null;
