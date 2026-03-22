@@ -32,7 +32,6 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.email_outlined),
                   title: const Text('Email'),
                   subtitle: const Text('—'),
-                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -42,7 +41,6 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.person_outline),
                   title: const Text('Username'),
                   subtitle: const Text('—'),
-                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -52,8 +50,9 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.lock_outline),
                   title: const Text('Change Password'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
-                  tileColor: context.theme.appColors.scaffoldBackground,
+                  onTap: () async {
+                    await context.router.push(const ResetPasswordPageRoute());
+                  },
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -69,7 +68,6 @@ class ProfilePage extends StatelessWidget {
                   onTap: () async {
                     await context.router.push(const AccountDeletionPageRoute());
                   },
-                  tileColor: context.theme.appColors.scaffoldBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: borderCircular12,
                   ),
@@ -124,7 +122,7 @@ class _ShineCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: allPadding20,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,

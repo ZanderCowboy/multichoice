@@ -110,11 +110,11 @@ final ThemeData _darkThemeData = () {
     ),
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(
-        color: _darkColors.appBarBackground,
+        color: _darkColors.primaryLight,
         borderRadius: borderCircular8,
       ),
       textStyle: _AppTypography.body2.copyWith(
-        color: _darkColors.textPrimary,
+        color: _darkColors.ternary,
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(
@@ -153,14 +153,14 @@ final ThemeData _darkThemeData = () {
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _darkColors.secondary;
+          return _darkColors.foreground;
         }
 
         return _darkColors.ternary?.withValues(alpha: 0.85);
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _darkColors.primary;
+          return _darkColors.foreground;
         }
 
         return _darkColors.primaryLight?.withValues(alpha: 0.9);

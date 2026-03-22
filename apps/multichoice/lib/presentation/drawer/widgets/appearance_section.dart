@@ -13,9 +13,6 @@ class AppearanceSection extends StatelessWidget {
           child: Text(
             'Appearance',
             style: context.appTextTheme.titleSmall!.copyWith(
-              color:
-                  context.theme.appColors.textSecondary ??
-                  context.theme.appColors.textTertiary,
               letterSpacing: 1.1,
             ),
           ),

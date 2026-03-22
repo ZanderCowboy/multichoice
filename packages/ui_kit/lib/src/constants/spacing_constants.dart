@@ -41,6 +41,8 @@ const allPadding16 = EdgeInsets.all(16);
 
 const allPadding18 = EdgeInsets.all(18);
 
+const allPadding20 = EdgeInsets.all(20);
+
 const allPadding24 = EdgeInsets.all(24);
 
 const vertical4 = EdgeInsets.symmetric(vertical: 4);

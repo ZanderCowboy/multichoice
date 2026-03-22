@@ -138,7 +138,7 @@ class _DetailsView extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: context.theme.appColors.textTertiary,
+          color: context.appColorsTheme.ternary,
         ),
       ),
     );

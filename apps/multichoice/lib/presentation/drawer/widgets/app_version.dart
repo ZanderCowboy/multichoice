@@ -23,10 +23,8 @@ class AppVersion extends StatelessWidget {
                         () => context.router.push(const DebugPageRoute())
                   : null,
               child: Text(
-                'V${snapshot.data}',
-                style: context.theme.appTextTheme.bodySmall?.copyWith(
-                  fontSize: 9,
-                ),
+                'v${snapshot.data}',
+                style: context.theme.appTextTheme.bodyMedium,
               ),
             );
           }

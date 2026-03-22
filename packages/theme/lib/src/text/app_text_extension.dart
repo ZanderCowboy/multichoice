@@ -21,6 +21,12 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
     required this.bodySmall,
     required this.denseTitle,
     required this.denseSubtitle,
+    required this.denseBody,
+    required this.denseHeading,
+    required this.contrastTitle,
+    required this.contrastSubtitle,
+    required this.contrastBody,
+    required this.contrastHeading,
     required this.hyperlink,
   });
 
@@ -30,28 +36,46 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
   final TextStyle? headingMedium;
   @override
   final TextStyle? headingSmall;
+
   @override
   final TextStyle? titleLarge;
   @override
   final TextStyle? titleMedium;
   @override
   final TextStyle? titleSmall;
+
   @override
   final TextStyle? subtitleLarge;
   @override
   final TextStyle? subtitleMedium;
   @override
   final TextStyle? subtitleSmall;
+
   @override
   final TextStyle? bodyLarge;
   @override
   final TextStyle? bodyMedium;
   @override
   final TextStyle? bodySmall;
+
   @override
   final TextStyle? denseTitle;
   @override
   final TextStyle? denseSubtitle;
+  @override
+  final TextStyle? denseBody;
+  @override
+  final TextStyle? denseHeading;
+
+  @override
+  final TextStyle? contrastTitle;
+  @override
+  final TextStyle? contrastSubtitle;
+  @override
+  final TextStyle? contrastBody;
+  @override
+  final TextStyle? contrastHeading;
+
   @override
   final TextStyle? hyperlink;
 }

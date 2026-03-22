@@ -20,19 +20,16 @@ class _DetailsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: context.theme.appColors.cardBackground?.withValues(alpha: 0.1),
+      tileColor: context.appColorsTheme.secondary?.withValues(alpha: 0.1),
       contentPadding: horizontal16,
       visualDensity: VisualDensity.compact,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular12,
       ),
       title: !isEditing
-          ? SelectableText(
+          ? Text(
               title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: context.theme.appColors.textTertiary,
-              ),
+              style: context.appTextTheme.denseTitle,
             )
           : null,
       subtitle: isEditing
@@ -41,6 +38,7 @@ class _DetailsListTile extends StatelessWidget {
               decoration: InputDecoration(
                 alignLabelWithHint: true,
                 labelText: labelText,
+                labelStyle: context.appTextTheme.bodyMedium,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -52,9 +50,7 @@ class _DetailsListTile extends StatelessWidget {
             )
           : SelectableText(
               subtitle ?? '',
-              style: context.theme.appTextTheme.bodyLarge?.copyWith(
-                color: context.theme.appColors.textTertiary,
-              ),
+              style: context.appTextTheme.bodyMedium,
             ),
     );
   }

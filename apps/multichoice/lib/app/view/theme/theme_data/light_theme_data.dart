@@ -91,14 +91,14 @@ final ThemeData _light = () {
           return _lightColors.secondary;
         }
 
-        return _lightColors.ternary?.withValues(alpha: 0.7);
+        return _lightColors.primary;
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _lightColors.primary;
+          return _lightColors.foreground;
         }
 
-        return _lightColors.primaryLight?.withValues(alpha: 0.8);
+        return _lightColors.primary;
       }),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     ),
@@ -140,11 +140,11 @@ final ThemeData _light = () {
     ),
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(
-        color: _lightColors.appBarBackground,
+        color: _lightColors.primaryLight,
         borderRadius: borderCircular8,
       ),
       textStyle: _AppTypography.body2.copyWith(
-        color: _lightColors.iconColor,
+        color: _lightColors.ternary,
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(

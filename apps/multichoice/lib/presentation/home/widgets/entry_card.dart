@@ -63,12 +63,11 @@ class EntryCard extends StatelessWidget {
         padding: isLayoutVertical ? allPadding2 : allPadding4,
         child: Card(
           elevation: 3,
-          shadowColor: context.theme.appColors.accent,
           shape: RoundedRectangleBorder(
             borderRadius: borderCircular5,
           ),
           margin: EdgeInsets.zero,
-          color: context.theme.appColors.cardBackground,
+          color: context.appColorsTheme.secondary,
           child: Padding(
             padding: allPadding4,
             child: SizedBox(
@@ -88,7 +87,7 @@ class EntryCard extends StatelessWidget {
                                   child: Icon(
                                     Icons.unfold_more,
                                     size: 24,
-                                    color: context.theme.appColors.textTertiary,
+                                    color: context.appColorsTheme.textTertiary,
                                   ),
                                 )
                               : ReorderableGridDelayedDragStartListener(
@@ -96,7 +95,7 @@ class EntryCard extends StatelessWidget {
                                   child: Icon(
                                     Icons.open_with,
                                     size: 24,
-                                    color: context.theme.appColors.textTertiary,
+                                    color: context.appColorsTheme.textTertiary,
                                   ),
                                 ),
                         )
@@ -108,13 +107,13 @@ class EntryCard extends StatelessWidget {
                                 ? Icons.unfold_more
                                 : Icons.open_with,
                             size: 24,
-                            color: context.theme.appColors.textTertiary,
+                            color: context.appColorsTheme.textTertiary,
                           ),
                         ),
                       Expanded(
                         child: Text(
                           entry.title,
-                          style: context.theme.appTextTheme.denseTitle,
+                          style: context.appTextTheme.contrastSubtitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -124,7 +123,7 @@ class EntryCard extends StatelessWidget {
                   gap4,
                   Text(
                     entry.subtitle,
-                    style: context.theme.appTextTheme.denseSubtitle,
+                    style: context.appTextTheme.contrastBody,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),

@@ -25,7 +25,7 @@ final _darkColors = AppColorsExtension(
   modalBackground: _AppPalette.primary15,
   appBarBackground: _AppPalette.primary15,
   textPrimary: _AppPalette.sanJuanTone2,
-  textSecondary: _AppPalette.primary10,
+  textSecondary: _AppPalette.primary5,
   textTertiary: _AppPalette.slateGrayLight,
   iconColor: _AppPalette.sanJuanTone2,
   linkColor: _AppPalette.primary10,

@@ -15,6 +15,7 @@ class PasswordField extends StatefulWidget {
     this.validator,
     this.autofocus = false,
     this.enabled = true,
+    this.customLabel,
     this.labelText = 'Password',
     this.hintText = 'Enter password',
     this.showRequirements = false,
@@ -22,7 +23,7 @@ class PasswordField extends StatefulWidget {
     this.validatePolicy = true,
     this.onValidityChanged,
     this.suffixIconAreaWidth = 92,
-  });
+  }); // TODO: Add assertion
 
   final TextEditingController? controller;
   final String? initialValue;
@@ -31,8 +32,9 @@ class PasswordField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final bool autofocus;
   final bool enabled;
+  final Widget? customLabel;
   final String labelText;
-  final String hintText;
+  final String? hintText;
   final bool showRequirements;
   final bool showErrorText;
   final bool validatePolicy;
@@ -129,7 +131,7 @@ class _PasswordFieldState extends State<PasswordField> {
   Color _infoIconColor() {
     final appColors = context.theme.appColors;
     if (_currentPassword.trim().isEmpty) {
-      return appColors.textPrimary ?? appColors.white ?? Colors.white;
+      return appColors.ternary ?? Colors.white;
     }
     return _meetsPolicy
         ? appColors.success ?? Colors.green
@@ -185,26 +187,28 @@ class _PasswordFieldState extends State<PasswordField> {
           initialValue: widget.initialValue,
           style: TextStyle(color: textColor),
           decoration: (widget.decoration ?? const InputDecoration()).copyWith(
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.password,
-                  color: appColors.iconColor ?? textColor,
+            label:
+                widget.customLabel ??
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.password,
+                      color: appColors.iconColor ?? textColor,
+                    ),
+                    gap4,
+                    Text(
+                      'Password',
+                      style: TextStyle(
+                        color: textColor,
+                      ),
+                    ),
+                  ],
                 ),
-                gap4,
-                Text(
-                  'Password',
-                  style: TextStyle(
-                    color: textColor,
-                  ),
-                ),
-              ],
-            ),
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            hintText: 'Enter your password',
+            hintText: widget.hintText ?? 'Enter your password',
             hintStyle: TextStyle(
               color: textColor,
             ),
@@ -264,46 +268,44 @@ class _PasswordFieldState extends State<PasswordField> {
                       },
                     )
                   else
-                    // const SizedBox(width: 40, height: 40),
                     const SizedBox.shrink(),
-                  Tooltip(
-                    key: _passwordRequirementsTooltipKey,
-                    triggerMode: TooltipTriggerMode.manual,
-                    preferBelow: false,
-                    decoration: BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    richMessage: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Password requirements\n',
-                          style: TextStyle(
-                            color: appColors.textPrimary ?? appColors.white,
-                            fontWeight: FontWeight.w600,
+                  if (widget.showRequirements)
+                    Tooltip(
+                      key: _passwordRequirementsTooltipKey,
+                      triggerMode: TooltipTriggerMode.manual,
+                      preferBelow: true,
+                      richMessage: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Password requirements\n',
+                            style: TextStyle(
+                              color: appColors.textPrimary ?? appColors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
+                          ..._buildTooltipRequirements(),
+                        ],
+                      ),
+                      child: IconButton(
+                        constraints: const BoxConstraints.tightFor(
+                          width: 40,
+                          height: 40,
                         ),
-                        ..._buildTooltipRequirements(),
-                      ],
-                    ),
-                    child: IconButton(
-                      constraints: const BoxConstraints.tightFor(
-                        width: 40,
-                        height: 40,
+                        visualDensity: VisualDensity.compact,
+                        padding: zeroPadding,
+                        onPressed: () {
+                          _passwordRequirementsTooltipKey.currentState
+                              ?.ensureTooltipVisible();
+                        },
+                        icon: Icon(
+                          Icons.info_outline,
+                          size: 20,
+                          color: _infoIconColor(),
+                        ),
                       ),
-                      visualDensity: VisualDensity.compact,
-                      padding: zeroPadding,
-                      onPressed: () {
-                        _passwordRequirementsTooltipKey.currentState
-                            ?.ensureTooltipVisible();
-                      },
-                      icon: Icon(
-                        Icons.info_outline,
-                        size: 20,
-                        color: _infoIconColor(),
-                      ),
-                    ),
-                  ),
+                    )
+                  else
+                    const SizedBox.shrink(),
                 ],
               ),
             ),

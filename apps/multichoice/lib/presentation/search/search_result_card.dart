@@ -25,12 +25,11 @@ class SearchResultCard extends StatelessWidget {
     // TODO: Create a reusable card widget for search results and details.
     return Card(
       elevation: 3,
-      shadowColor: Colors.grey[400],
+      // shadowColor: Colors.grey[400],
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular5,
       ),
       margin: allPadding4,
-      color: context.theme.appColors.cardBackground,
       child: InkWell(
         borderRadius: borderCircular5,
         onTap: onTap,
@@ -41,7 +40,6 @@ class SearchResultCard extends StatelessWidget {
               Icon(
                 isTab ? Icons.calendar_view_month : Icons.crop_landscape,
                 size: 24,
-                color: context.theme.appColors.iconColor,
               ),
               gap8,
               Expanded(

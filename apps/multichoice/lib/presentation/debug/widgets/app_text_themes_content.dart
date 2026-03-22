@@ -18,6 +18,12 @@ const _textStyleNames = [
   'bodySmall',
   'denseTitle',
   'denseSubtitle',
+  'denseBody',
+  'denseHeading',
+  'contrastTitle',
+  'contrastSubtitle',
+  'contrastBody',
+  'contrastHeading',
   'hyperlink',
 ];
 
@@ -118,6 +124,12 @@ class _TextThemeSection extends StatelessWidget {
       'bodySmall' => t.bodySmall,
       'denseTitle' => t.denseTitle,
       'denseSubtitle' => t.denseSubtitle,
+      'denseBody' => t.denseBody,
+      'denseHeading' => t.denseHeading,
+      'contrastTitle' => t.contrastTitle,
+      'contrastSubtitle' => t.contrastSubtitle,
+      'contrastBody' => t.contrastBody,
+      'contrastHeading' => t.contrastHeading,
       'hyperlink' => t.hyperlink,
       _ => null,
     };
