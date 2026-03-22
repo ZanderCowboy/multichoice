@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_catches_without_on_clauses
 
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ReusableForm extends StatelessWidget {
@@ -44,6 +45,18 @@ class ReusableForm extends StatelessWidget {
   }
 
   Widget _buildForm(BuildContext context, bool isTitleNotEmpty) {
+    final appColors = context.theme.appColors;
+    final inputTheme = Theme.of(context).inputDecorationTheme;
+    final textColor =
+        inputTheme.labelStyle?.color ??
+        inputTheme.hintStyle?.color ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
+        Colors.white;
+    final baseDecoration = const InputDecoration(
+      alignLabelWithHint: true,
+    ).applyDefaults(inputTheme);
+
     return Form(
       child: SingleChildScrollView(
         child: Column(
@@ -54,9 +67,10 @@ class ReusableForm extends StatelessWidget {
               onChanged: onTitleChanged,
               onTap: onTitleTap,
               textAlignVertical: TextAlignVertical.top,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                alignLabelWithHint: true,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Title',
                 hintText: 'Title',
               ),
@@ -68,9 +82,10 @@ class ReusableForm extends StatelessWidget {
               onChanged: onSubtitleChanged,
               onTap: onSubtitleTap,
               textAlignVertical: TextAlignVertical.top,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                alignLabelWithHint: true,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Subtitle',
                 hintText: 'Subtitle',
               ),

@@ -1,12 +1,7 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:auto_route/auto_route.dart';
-import 'package:core/core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
@@ -22,12 +17,21 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
+/// Duration to show success message on button before navigating.
+const _successMessageDuration = Duration(milliseconds: 1000);
+
+/// Duration to show "Coming soon" on Google button before resetting.
+const _comingSoonDuration = Duration(milliseconds: 1000);
+
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _hasRequestedPrefill = false;
+
+  bool _isLoading = false;
+  String? _signupSuccessMessage;
+  String? _googleOverrideLabel;
 
   @override
   void dispose() {
@@ -37,75 +41,52 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  void _syncControllersFromState(RegistrationState state) {
-    if (_emailController.text != state.email) {
-      _emailController.text = state.email;
-      _emailController.selection = TextSelection.collapsed(
-        offset: _emailController.text.length,
-      );
-    }
+  Future<void> _onSignup(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    // Mock success - replace with backend call later
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+
+    if (!context.mounted) return;
+    setState(() {
+      _isLoading = false;
+      _signupSuccessMessage = 'Registration successful!';
+    });
+
+    await Future<void>.delayed(_successMessageDuration);
+    if (!context.mounted) return;
+    context.router.popUntilRoot();
+  }
+
+  Future<void> _onGoogleSignIn() async {
+    setState(() => _googleOverrideLabel = 'Coming soon');
+    await Future<void>.delayed(_comingSoonDuration);
+    if (!mounted) return;
+    setState(() => _googleOverrideLabel = null);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => coreSl<RegistrationBloc>(),
-      child: BlocConsumer<RegistrationBloc, RegistrationState>(
-        listener: (context, state) {
-          if (!_hasRequestedPrefill) {
-            _hasRequestedPrefill = true;
-            context.read<RegistrationBloc>().add(
-              const RegistrationEvent.prefillRequested(),
-            );
-          }
-          _syncControllersFromState(state);
-          if (state.isSuccess) {
-            context.read<AuthNotifier>().notifyAuthChanged();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Registration successful!')),
-            );
-            context.router.popUntilRoot();
-          } else if (state.isError && state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
-          }
-        },
-        buildWhen: (previous, current) =>
-            previous.email != current.email ||
-            previous.username != current.username ||
-            previous.password != current.password,
-        builder: (context, state) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _syncControllersFromState(state);
-          });
-          return _SignupPageContent(
-            formKey: _formKey,
-            emailController: _emailController,
-            usernameController: _usernameController,
-            passwordController: _passwordController,
-          );
-        },
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final signupInputTheme = theme.inputDecorationTheme.copyWith(
+      labelStyle: TextStyle(color: colorScheme.onSurface),
+      floatingLabelStyle: TextStyle(color: colorScheme.onSurface),
+      hintStyle: TextStyle(
+        color: colorScheme.onSurface.withValues(alpha: 0.72),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: colorScheme.onSurface.withValues(alpha: 0.35),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primary),
       ),
     );
-  }
-}
 
-class _SignupPageContent extends StatelessWidget {
-  const _SignupPageContent({
-    required this.formKey,
-    required this.emailController,
-    required this.usernameController,
-    required this.passwordController,
-  });
-
-  final GlobalKey<FormState> formKey;
-  final TextEditingController emailController;
-  final TextEditingController usernameController;
-  final TextEditingController passwordController;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
@@ -117,66 +98,40 @@ class _SignupPageContent extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: allPadding16,
-          child: Form(
-            key: formKey,
-            child: BlocBuilder<RegistrationBloc, RegistrationState>(
-              buildWhen: (p, c) =>
-                  p.isLoading != c.isLoading || p.isError != c.isError,
-              builder: (context, state) {
-                return Column(
+          child: _ShineCard(
+            child: Theme(
+              data: theme.copyWith(inputDecorationTheme: signupInputTheme),
+              child: Form(
+                key: _formKey,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    gap24,
-                    EmailField(
-                      controller: emailController,
-                      onChanged: (value) =>
-                          context.read<RegistrationBloc>().add(
-                            RegistrationEvent.fieldsChanged(
-                              field: RegistrationField.email,
-                              value: value,
-                            ),
-                          ),
-                    ),
+                    gap8,
+                    EmailField(controller: _emailController),
                     gap16,
-                    UsernameField(
-                      controller: usernameController,
-                      onChanged: (value) =>
-                          context.read<RegistrationBloc>().add(
-                            RegistrationEvent.fieldsChanged(
-                              field: RegistrationField.username,
-                              value: value,
-                            ),
-                          ),
-                    ),
+                    UsernameField(controller: _usernameController),
                     gap16,
                     PasswordField(
-                      controller: passwordController,
+                      controller: _passwordController,
                       showRequirements: true,
-                      onChanged: (value) =>
-                          context.read<RegistrationBloc>().add(
-                            RegistrationEvent.fieldsChanged(
-                              field: RegistrationField.password,
-                              value: value,
-                            ),
-                          ),
                     ),
                     gap24,
                     SignupButton(
-                      onPressed: state.isLoading
-                          ? null
-                          : () {
-                              if (formKey.currentState!.validate()) {
-                                context.read<RegistrationBloc>().add(
-                                  const RegistrationEvent.signupClicked(),
-                                );
-                              }
-                            },
-                      isLoading: state.isLoading,
+                      onPressed: () => _onSignup(context),
+                      isLoading: _isLoading,
+                      overrideLabel: _signupSuccessMessage,
+                      overrideIcon: _signupSuccessMessage != null
+                          ? Icon(
+                              Icons.check_circle_outline,
+                              size: 20,
+                              color: colorScheme.onPrimary,
+                            )
+                          : null,
                     ),
                     gap16,
                     Row(
                       children: [
-                        Expanded(child: Divider()),
+                        const Expanded(child: Divider()),
                         Padding(
                           padding: horizontal16,
                           child: Text(
@@ -189,17 +144,13 @@ class _SignupPageContent extends StatelessWidget {
                                 ),
                           ),
                         ),
-                        Expanded(child: Divider()),
+                        const Expanded(child: Divider()),
                       ],
                     ),
                     gap16,
                     GoogleSignInButton(
-                      onPressed: state.isLoading
-                          ? null
-                          : () => context.read<RegistrationBloc>().add(
-                              const RegistrationEvent.googleSignInClicked(),
-                            ),
-                      isLoading: state.isLoading,
+                      onPressed: _onGoogleSignIn,
+                      overrideLabel: _googleOverrideLabel,
                     ),
                     gap16,
                     Center(
@@ -210,18 +161,17 @@ class _SignupPageContent extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
                           children: [
-                            const TextSpan(
-                              text: 'Already have an account? ',
-                            ),
+                            const TextSpan(text: 'Already have an account? '),
                             TextSpan(
                               text: 'Sign In',
                               style: TextStyle(
-                                color: context.theme.appColors.primary,
+                                color: context.theme.appColors.linkColor,
                                 decoration: TextDecoration.underline,
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
-                                  if (!state.isLoading) {
+                                  if (!_isLoading &&
+                                      _signupSuccessMessage == null) {
                                     await context.router.replace(
                                       LoginPageRoute(),
                                     );
@@ -233,10 +183,58 @@ class _SignupPageContent extends StatelessWidget {
                       ),
                     ),
                   ],
-                );
-              },
+                ),
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShineCard extends StatelessWidget {
+  const _ShineCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderCircular16,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: borderCircular16,
+        child: Stack(
+          children: [
+            Container(
+              padding: allPadding20,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    colorScheme.primary,
+                    colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                  ],
+                ),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.16),
+                ),
+              ),
+              child: child,
+            ),
+          ],
         ),
       ),
     );

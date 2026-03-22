@@ -6,4 +6,4 @@ export 'engine/widget_keys.dart';
 export 'extensions/extension_getters.dart';
 export 'view/layout/app_layout.dart';
 export 'view/multichoice.dart';
-export 'view/theme/theme_extension/app_theme_extension.dart';
+export 'view/theme/extensions/app_theme_extension.dart';

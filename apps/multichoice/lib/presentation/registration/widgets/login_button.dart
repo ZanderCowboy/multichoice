@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({
@@ -6,27 +7,26 @@ class LoginButton extends StatelessWidget {
     super.key,
     this.enabled = true,
     this.isLoading = false,
+    this.overrideLabel,
+    this.overrideIcon,
   });
 
   final VoidCallback? onPressed;
   final bool isLoading;
   final bool enabled;
+  final String? overrideLabel;
+  final Widget? overrideIcon;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
+    return AsyncFilledButton(
+      onPressed: onPressed,
+      enabled: enabled,
+      isLoading: isLoading,
+      successLabel: overrideLabel,
+      successIcon: overrideIcon,
       height: 52,
-      child: FilledButton(
-        onPressed: enabled && !isLoading ? onPressed : null,
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Text('Sign In'),
-      ),
+      label: const Text('Sign In'),
     );
   }
 }

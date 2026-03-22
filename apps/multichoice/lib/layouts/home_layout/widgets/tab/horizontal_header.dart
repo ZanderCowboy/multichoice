@@ -29,7 +29,7 @@ class HorizontalHeader extends StatelessWidget {
                     child: Icon(
                       Icons.unfold_more,
                       size: 28,
-                      color: context.theme.appColors.ternary,
+                      color: context.appColorsTheme.textTertiary,
                     ),
                   ),
                 )
@@ -38,15 +38,15 @@ class HorizontalHeader extends StatelessWidget {
                   child: Icon(
                     Icons.unfold_more,
                     size: 28,
-                    color: context.theme.appColors.ternary,
+                    color: context.appColorsTheme.textTertiary,
                   ),
                 ),
               Padding(
                 padding: left4,
                 child: Text(
                   tab.title,
-                  style: context.theme.appTextTheme.titleMedium?.copyWith(
-                    fontSize: 16,
+                  style: context.appTextTheme.titleMedium?.copyWith(
+                    fontSize: 18,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 5,
@@ -60,8 +60,9 @@ class HorizontalHeader extends StatelessWidget {
                     padding: left4,
                     child: Text(
                       tab.subtitle,
-                      style: context.theme.appTextTheme.subtitleMedium
-                          ?.copyWith(fontSize: 12),
+                      style: context.appTextTheme.subtitleMedium?.copyWith(
+                        fontSize: 12,
+                      ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 5,
                     ),

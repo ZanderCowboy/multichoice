@@ -1,10 +1,33 @@
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 
 /// Triggers UI rebuilds when auth state changes (login/logout).
-/// Pair with a keyed async session check so the UI refreshes after login/logout.
+/// Supports an optional debug override for manual UI testing.
 class AuthNotifier extends ChangeNotifier {
+  bool? _debugLoggedInOverride;
+
   /// Bumps when auth changes so keyed `FutureBuilder` session checks re-run.
   int authEpoch = 0;
+
+  bool get hasDebugOverride => _debugLoggedInOverride != null;
+
+  bool get isUserLoggedIn {
+    final override = _debugLoggedInOverride;
+    if (override != null) return override;
+    return coreSl.isRegistered<Session>() && coreSl<Session>().isUserLoggedIn();
+  }
+
+  bool? get debugLoggedInOverride => _debugLoggedInOverride;
+
+  void setDebugLoggedInOverride({required bool value}) {
+    _debugLoggedInOverride = value;
+    notifyListeners();
+  }
+
+  void clearDebugLoggedInOverride() {
+    _debugLoggedInOverride = null;
+    notifyListeners();
+  }
 
   void notifyAuthChanged() {
     authEpoch++;

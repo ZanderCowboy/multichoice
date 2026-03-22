@@ -25,11 +25,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   bool _isLoading = false;
   bool _emailSent = false;
+  String? _successMessage;
 
   @override
   void initState() {
     super.initState();
-    if (widget.prePopulatedEmail != null && widget.prePopulatedEmail!.isNotEmpty) {
+    if (widget.prePopulatedEmail != null &&
+        widget.prePopulatedEmail!.isNotEmpty) {
       _emailController.text = widget.prePopulatedEmail!;
     }
   }
@@ -51,14 +53,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     if (!context.mounted) return;
     setState(() {
       _isLoading = false;
-      _emailSent = true;
+      _successMessage =
+          'Reset link sent! Check your email or open your mail app.';
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Reset link sent! Check your email or open your mail app.'),
-      ),
-    );
+    if (!context.mounted) return;
+    setState(() {
+      _successMessage = null;
+      _emailSent = true;
+    });
   }
 
   void _onGoToResetPage(BuildContext context) {
@@ -76,7 +79,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       ),
       body: SafeArea(
-        child: _emailSent ? _buildCheckEmailContent(context) : _buildForm(context),
+        child: _emailSent
+            ? _buildCheckEmailContent(context)
+            : _buildForm(context),
       ),
     );
   }
@@ -92,29 +97,28 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             gap24,
             Text(
               "Enter your email and we'll send you a link to reset your password.",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.appTextTheme.bodyLarge,
             ),
             gap24,
             EmailField(controller: _emailController),
             gap24,
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _isLoading
-                    ? null
-                    : () => _onResetPassword(context),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Send Reset Link'),
-              ),
+            AsyncFilledButton(
+              onPressed: () => _onResetPassword(context),
+              isLoading: _isLoading,
+              successLabel: _successMessage,
+              flexSuccessLabel: true,
+              successIcon: _successMessage != null
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      size: 20,
+                      color: context.appColorsTheme.primary,
+                    )
+                  : null,
+              label: const Text('Send Reset Link'),
             ),
             gap16,
             TextButton(
-              onPressed: _isLoading
+              onPressed: _isLoading || _successMessage != null
                   ? null
                   : () => _onGoToResetPage(context),
               child: Column(
@@ -124,10 +128,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const Text('I have the reset link, go to Reset Password'),
                   Text(
                     '(temp - for testing)',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                    style: context.appTextTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: context.appColorsTheme.secondary,
+                    ),
                   ),
                 ],
               ),
@@ -145,10 +149,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           gap24,
-          Icon(
+          const Icon(
             Icons.mark_email_read_outlined,
             size: 64,
-            color: Theme.of(context).colorScheme.primary,
           ),
           gap24,
           Text(
@@ -158,9 +161,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           gap12,
           Text(
-              "We've sent a password reset link to ${_emailController.text}. "
-              'Open your email app or check your inbox.',
-            style: Theme.of(context).textTheme.bodyLarge,
+            "We've sent a password reset link to ${_emailController.text}. "
+            'Open your email app or check your inbox.',
+            style: context.appTextTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
           gap24,

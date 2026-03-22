@@ -28,3 +28,4 @@ This rule file demonstrates how to create rules that **always apply** to every c
 - All tests must pass before merging
 - Code reviews are required for all PRs
 - Keep functions under 50 lines when possible
+- **Always use constants where possible** – Prefer `const` constructors, `final` variables, and named constants over literals for magic numbers, strings, and repeated values

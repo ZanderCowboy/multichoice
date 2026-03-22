@@ -15,8 +15,7 @@ class MenuWidget extends StatelessWidget {
         final appColors = context.theme.appColors;
         final menuTextStyle = Theme.of(
           context,
-        ).textTheme.bodyMedium?.copyWith(color: appColors.foreground);
-        final menuIconColor = appColors.foreground;
+        ).textTheme.bodyMedium?.copyWith(color: appColors.textPrimary);
 
         Widget buildMenuItem({
           required IconData icon,
@@ -28,10 +27,15 @@ class MenuWidget extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: menuIconColor,
+                color: appColors.textPrimary,
               ),
               gap8,
-              Text(label, style: menuTextStyle),
+              Text(
+                label,
+                style: context.appTextTheme.bodyMedium?.copyWith(
+                  color: appColors.textPrimary,
+                ),
+              ),
             ],
           );
         }
@@ -135,8 +139,7 @@ class MenuWidget extends StatelessWidget {
             Icons.more_vert_outlined,
             color: appColors.ternary,
           ),
-          iconSize: 18,
-          color: appColors.background,
+          color: appColors.scaffoldBackground,
           padding: zeroPadding,
         );
       },

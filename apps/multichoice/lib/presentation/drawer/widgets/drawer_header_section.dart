@@ -34,16 +34,12 @@ class DrawerHeaderSection extends StatelessWidget {
                     children: [
                       Text(
                         'Multichoice',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: Colors.white,
-                        ),
+                        style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(
                         asyncSnapshot.data ?? 'Welcome back!',
-                        style: AppTypography.subtitleMedium.copyWith(
-                          color: Colors.white70,
-                        ),
+                        style: context.appTextTheme.subtitleMedium,
                       ),
                     ],
                   ),

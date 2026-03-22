@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/export.dart';
+import 'package:multichoice/presentation/debug/widgets/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -24,30 +25,86 @@ class DebugPage extends StatelessWidget {
           onPressed: () => context.router.maybePop(),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: allPadding16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              gap24,
-              Text(
-                'Debug only – accessible via double-tap on version',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
+      body: const _DebugBody(),
+    );
+  }
+}
+
+class _DebugBody extends StatefulWidget {
+  const _DebugBody();
+
+  @override
+  State<_DebugBody> createState() => _DebugBodyState();
+}
+
+class _DebugBodyState extends State<_DebugBody> {
+  DebugView _selectedView = DebugView.debugTools;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: allPadding16,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Debug only – accessible via double-tap or long-press on version',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
               ),
-              gap24,
-              ListTile(
-                leading: const Icon(Icons.lock_reset),
-                title: const Text('Reset Password'),
-                subtitle: const Text('Test reset password flow'),
-                onTap: () => context.router.push(const ResetPasswordPageRoute()),
-              ),
-            ],
-          ),
+            ),
+            gap12,
+            DebugOptionSelector(
+              selectedView: _selectedView,
+              onSelect: (view) => setState(() => _selectedView = view),
+            ),
+            gap16,
+            Expanded(
+              child: switch (_selectedView) {
+                DebugView.debugTools => DebugToolsContent(
+                  onClearStorage: _clearStorageData,
+                ),
+                DebugView.appColors => const AppColorsContent(),
+                DebugView.appTextThemes => const AppTextThemesContent(),
+              },
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _clearStorageData(BuildContext context) async {
+    if (!kDebugMode) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Storage Data'),
+        content: const Text(
+          'Are you sure you want to clear all storage data? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      await coreSl<IAppStorageService>().clearAllData();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Storage data cleared successfully')),
+        );
+      }
+    }
   }
 }

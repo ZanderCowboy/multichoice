@@ -14,7 +14,7 @@ class _NoChangelog extends StatelessWidget {
             Icon(
               Icons.info_outline,
               size: 64,
-              color: context.theme.appColors.ternary,
+              color: context.theme.appColors.textTertiary,
             ),
             gap16,
             Text(

@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
@@ -31,11 +32,11 @@ class WelcomeModal extends StatelessWidget {
                 ),
               ),
               gap16,
-              const Text(
+              Text(
                 'Multichoice helps you organize your thoughts and ideas into customizable collections. '
                 'Would you like to follow a quick tutorial to learn how to use the app?',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               Row(

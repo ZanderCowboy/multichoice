@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ContinueTourModal extends StatelessWidget {
@@ -29,12 +30,12 @@ class ContinueTourModal extends StatelessWidget {
                 ),
               ),
               gap16,
-              const Text(
+              Text(
                 'You have already started the Multichoice tutorial. '
                 'Would you like to continue from where you left off, '
                 'or finish the tutorial now?',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               Row(

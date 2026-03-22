@@ -90,9 +90,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () => _onReset(context),
+                    onPressed: _isLoading ? null : () => _onReset(context),
                     child: _isLoading
                         ? const SizedBox(
                             height: 20,
@@ -106,7 +104,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 TextButton(
                   onPressed: _isLoading
                       ? null
-                      : () => context.router.popUntilRouteWithName(LoginPageRoute.name),
+                      : () => context.router.popUntilRouteWithName(
+                          LoginPageRoute.name,
+                        ),
                   child: const Text('Back to Sign In'),
                 ),
               ],
