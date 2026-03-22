@@ -33,8 +33,8 @@ class Multichoice extends StatelessWidget {
       ],
       builder: (context, child) => MaterialApp.router(
         title: 'Multichoice',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
+        theme: AppTheme.lightThemeData,
+        darkTheme: AppTheme.darkThemeData,
         themeMode: context.watch<AppTheme>().themeMode,
         debugShowCheckedModeBanner: false,
         routerConfig: _appRouter.config(),

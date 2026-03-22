@@ -1,72 +1,115 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: unused_field
 
-abstract class AppTypography {
-  static const body1 = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
+part of 'app_theme.dart';
+
+/// Base text styles for the app: **font size and weight only**.
+///
+/// Colors and letter spacing are applied in the theme text extension (see
+/// `light_text_theme.dart` / `dark_text_theme.dart`). Prefer
+/// `Theme.of(context).extension<...>()` for themed text, and use these
+/// constants when you need the raw scale (e.g. one-off [TextStyle.copyWith]).
+abstract class _AppTypography {
+  /// Heading
+  static const heading1 = TextStyle(
+    fontSize: 48,
+    fontWeight: FontWeight.w500,
   );
-
-  static const body2 = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.normal,
+  static const heading2 = TextStyle(
+    fontSize: 42,
+    fontWeight: FontWeight.w500,
   );
-
-  static const h1 = TextStyle(
-    fontSize: 96,
-    fontWeight: FontWeight.w300,
+  static const heading3 = TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.w500,
   );
-
-  static const h2 = TextStyle(
-    fontSize: 72,
+  static const heading4 = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w500,
+  );
+  static const heading5 = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+  );
+  static const heading6 = TextStyle(
+    fontSize: 24,
     fontWeight: FontWeight.w500,
   );
 
-  static const titleLarge = TextStyle(
-    fontSize: 36,
+  /// Title
+  static const title1 = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+  );
+  static const title2 = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w500,
+  );
+  static const title3 = TextStyle(
+    fontSize: 20,
     fontWeight: FontWeight.w400,
   );
-
-  static const titleMedium = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
-  );
-
-  static const titleSmall = TextStyle(
+  static const title4 = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w300,
   );
-
-  static const subtitleLarge = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w500,
+  static const title5 = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w200,
   );
-
-  static const subtitleMedium = TextStyle(
+  static const title6 = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.w300,
+    fontWeight: FontWeight.w200,
   );
 
-  static const subtitleSmall = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w300,
+  /// Subtitle
+  static const subtitle1 = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
   );
-
-  static const bodyVeryLarge = TextStyle();
-
-  static const bodyLarge = TextStyle(
+  static const subtitle2 = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
   );
-
-  static const bodyMedium = TextStyle(
+  static const subtitle3 = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.w300,
   );
-
-  static const bodySmall = TextStyle(
+  static const subtitle4 = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w300,
   );
+  static const subtitle5 = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w200,
+  );
+  static const subtitle6 = TextStyle(
+    fontSize: 8,
+    fontWeight: FontWeight.w200,
+  );
 
-  static const bodyVerySmall = TextStyle();
+  /// Body
+  static const body1 = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+  static const body2 = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+  static const body3 = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+  );
+  static const body4 = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w300,
+  );
+  static const body5 = TextStyle(
+    fontSize: 8,
+    fontWeight: FontWeight.w200,
+  );
+  static const body6 = TextStyle(
+    fontSize: 6,
+    fontWeight: FontWeight.w200,
+  );
 }

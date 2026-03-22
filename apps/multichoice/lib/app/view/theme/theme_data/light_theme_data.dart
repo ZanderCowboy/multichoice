@@ -6,10 +6,10 @@ final ThemeData _light = () {
   return defaultTheme.copyWith(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: _lightAppColors.outlinedButtonForeground,
-        textStyle: TextStyle(color: _lightAppColors.background),
+        foregroundColor: _lightColors.outlinedButtonForeground,
+        textStyle: TextStyle(color: _lightColors.background),
         side: BorderSide(
-          color: _lightAppColors.outlinedButtonBorder ?? Colors.white,
+          color: _lightColors.outlinedButtonBorder ?? Colors.white,
         ),
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: outlinedButtonMinimumSize,
@@ -20,41 +20,41 @@ final ThemeData _light = () {
       selectionHandleColor: Colors.grey,
     ),
     listTileTheme: ListTileThemeData(
-      tileColor: _lightAppColors.background,
-      textColor: _lightAppColors.textPrimary,
+      tileColor: _lightColors.background,
+      textColor: _lightColors.textPrimary,
       leadingAndTrailingTextStyle: TextStyle(
-        color: _lightAppColors.textPrimary,
+        color: _lightColors.textPrimary,
       ),
-      iconColor: _lightAppColors.iconColor,
+      iconColor: _lightColors.iconColor,
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _lightAppColors.secondary;
+          return _lightColors.secondary;
         }
 
-        return _lightAppColors.ternary?.withValues(alpha: 0.7);
+        return _lightColors.ternary?.withValues(alpha: 0.7);
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _lightAppColors.primary;
+          return _lightColors.primary;
         }
 
-        return _lightAppColors.primaryLight?.withValues(alpha: 0.8);
+        return _lightColors.primaryLight?.withValues(alpha: 0.8);
       }),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStatePropertyAll(
-          _lightAppColors.textButtonForeground,
+          _lightColors.textButtonForeground,
         ),
         backgroundColor: WidgetStatePropertyAll(
-          _lightAppColors.textButtonBackground,
+          _lightColors.textButtonBackground,
         ),
         textStyle: WidgetStatePropertyAll(
-          AppTypography.bodyLarge.copyWith(
-            color: _lightAppColors.textButtonForeground,
+          _AppTypography.body2.copyWith(
+            color: _lightColors.textButtonForeground,
           ),
         ),
         shape: WidgetStatePropertyAll(
@@ -67,15 +67,15 @@ final ThemeData _light = () {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: _lightAppColors.filledButtonForeground,
+        foregroundColor: _lightColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: _lightAppColors.filledButtonBackground,
-        foregroundColor: _lightAppColors.filledButtonForeground,
+        backgroundColor: _lightColors.filledButtonBackground,
+        foregroundColor: _lightColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),
@@ -83,18 +83,18 @@ final ThemeData _light = () {
     dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(borderRadius: borderCircular16),
       alignment: Alignment.center,
-      titleTextStyle: AppTypography.titleMedium,
-      contentTextStyle: AppTypography.bodyMedium,
+      titleTextStyle: _AppTypography.title3,
+      contentTextStyle: _AppTypography.body3,
       actionsPadding: allPadding12,
-      backgroundColor: _lightAppColors.modalBackground,
+      backgroundColor: _lightColors.modalBackground,
     ),
-    scaffoldBackgroundColor: _lightAppColors.scaffoldBackground,
+    scaffoldBackgroundColor: _lightColors.scaffoldBackground,
     appBarTheme: AppBarTheme(
-      titleTextStyle: AppTypography.titleMedium.copyWith(
-        color: _lightAppColors.iconColor,
+      titleTextStyle: _AppTypography.title3.copyWith(
+        color: _lightColors.iconColor,
       ),
       centerTitle: true,
-      backgroundColor: _lightAppColors.appBarBackground,
+      backgroundColor: _lightColors.appBarBackground,
     ),
     cardTheme: CardThemeData(
       margin: vertical12horizontal4,
@@ -108,7 +108,7 @@ final ThemeData _light = () {
       bodyMedium: _lightTextTheme.bodyMedium,
     ),
     inputDecorationTheme: InputDecorationTheme(
-      labelStyle: const TextStyle(color: AppPalette.white),
+      labelStyle: const TextStyle(color: _AppPalette.white),
       hintStyle: const TextStyle(
         color: Colors.white,
         fontSize: 18,
@@ -125,17 +125,17 @@ final ThemeData _light = () {
     ),
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(_lightAppColors.iconColor),
+        foregroundColor: WidgetStatePropertyAll(_lightColors.iconColor),
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
         side: const WidgetStatePropertyAll(BorderSide.none),
       ),
     ),
     iconTheme: IconThemeData(
       size: 18,
-      color: _lightAppColors.iconColor,
+      color: _lightColors.iconColor,
     ),
     extensions: [
-      _lightAppColors,
+      _lightColors,
       _lightTextTheme,
     ],
   );

@@ -7,9 +7,9 @@ part 'app_text_extension.tailor.dart';
 class AppTextExtension extends ThemeExtension<AppTextExtension>
     with _$AppTextExtensionTailorMixin {
   AppTextExtension({
-    required this.body1,
-    required this.body2,
-    required this.h1,
+    required this.headingLarge,
+    required this.headingMedium,
+    required this.headingSmall,
     required this.titleLarge,
     required this.titleMedium,
     required this.titleSmall,
@@ -21,14 +21,15 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
     required this.bodySmall,
     required this.denseTitle,
     required this.denseSubtitle,
+    required this.hyperlink,
   });
 
   @override
-  final TextStyle? h1;
+  final TextStyle? headingLarge;
   @override
-  final TextStyle? body1;
+  final TextStyle? headingMedium;
   @override
-  final TextStyle? body2;
+  final TextStyle? headingSmall;
   @override
   final TextStyle? titleLarge;
   @override
@@ -51,4 +52,6 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
   final TextStyle? denseTitle;
   @override
   final TextStyle? denseSubtitle;
+  @override
+  final TextStyle? hyperlink;
 }

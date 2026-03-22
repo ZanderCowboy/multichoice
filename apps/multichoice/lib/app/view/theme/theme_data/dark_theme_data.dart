@@ -1,15 +1,15 @@
 part of '../app_theme.dart';
 
-final ThemeData _dark = () {
+final ThemeData _darkThemeData = () {
   final defaultTheme = ThemeData.dark();
 
   return defaultTheme.copyWith(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: _darkAppColors.outlinedButtonForeground,
-        textStyle: AppTypography.bodyLarge,
+        foregroundColor: _darkColors.outlinedButtonForeground,
+        textStyle: _AppTypography.body2,
         side: BorderSide(
-          color: _darkAppColors.outlinedButtonBorder ?? Colors.white,
+          color: _darkColors.outlinedButtonBorder ?? Colors.white,
         ),
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: outlinedButtonMinimumSize,
@@ -17,17 +17,17 @@ final ThemeData _dark = () {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: _darkAppColors.filledButtonForeground,
-        backgroundColor: _darkAppColors.filledButtonBackground,
+        foregroundColor: _darkColors.filledButtonForeground,
+        backgroundColor: _darkColors.filledButtonBackground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
-        textStyle: AppTypography.bodyLarge,
+        textStyle: _AppTypography.body2,
         minimumSize: elevatedButtonMinimumSize,
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: _darkAppColors.filledButtonBackground,
-        foregroundColor: _darkAppColors.filledButtonForeground,
+        backgroundColor: _darkColors.filledButtonBackground,
+        foregroundColor: _darkColors.filledButtonForeground,
         shape: RoundedRectangleBorder(borderRadius: borderCircular12),
         minimumSize: elevatedButtonMinimumSize,
       ),
@@ -35,14 +35,14 @@ final ThemeData _dark = () {
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStatePropertyAll(
-          _darkAppColors.textButtonForeground,
+          _darkColors.textButtonForeground,
         ),
         backgroundColor: WidgetStatePropertyAll(
-          _darkAppColors.textButtonBackground,
+          _darkColors.textButtonBackground,
         ),
         textStyle: WidgetStatePropertyAll(
-          AppTypography.bodyLarge.copyWith(
-            color: _darkAppColors.textButtonForeground,
+          _AppTypography.body2.copyWith(
+            color: _darkColors.textButtonForeground,
           ),
         ),
         shape: WidgetStatePropertyAll(
@@ -57,23 +57,23 @@ final ThemeData _dark = () {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: borderCircular16),
       alignment: Alignment.center,
-      titleTextStyle: AppTypography.titleMedium,
-      contentTextStyle: AppTypography.bodyMedium,
+      titleTextStyle: _AppTypography.title3,
+      contentTextStyle: _AppTypography.body3,
       actionsPadding: allPadding12,
-      backgroundColor: _darkAppColors.modalBackground,
+      backgroundColor: _darkColors.modalBackground,
     ),
-    scaffoldBackgroundColor: _darkAppColors.scaffoldBackground,
+    scaffoldBackgroundColor: _darkColors.scaffoldBackground,
     appBarTheme: AppBarTheme(
-      titleTextStyle: AppTypography.titleMedium.copyWith(
-        color: _darkAppColors.textPrimary,
+      titleTextStyle: _AppTypography.title3.copyWith(
+        color: _darkColors.textPrimary,
       ),
       centerTitle: true,
-      backgroundColor: _darkAppColors.appBarBackground,
+      backgroundColor: _darkColors.appBarBackground,
     ),
     cardTheme: CardThemeData(
       margin: vertical12horizontal4,
       elevation: 7,
-      shadowColor: _darkAppColors.black,
+      shadowColor: _darkColors.black,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular12,
       ),
@@ -83,43 +83,43 @@ final ThemeData _dark = () {
       bodyMedium: _darkTextTheme.bodyMedium,
     ),
     listTileTheme: ListTileThemeData(
-      tileColor: _darkAppColors.background,
-      textColor: _darkAppColors.white,
+      tileColor: _darkColors.background,
+      textColor: _darkColors.white,
       leadingAndTrailingTextStyle: TextStyle(
-        color: _darkAppColors.white,
+        color: _darkColors.white,
       ),
-      iconColor: _darkAppColors.white,
+      iconColor: _darkColors.white,
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _darkAppColors.secondary;
+          return _darkColors.secondary;
         }
 
-        return _darkAppColors.ternary?.withValues(alpha: 0.85);
+        return _darkColors.ternary?.withValues(alpha: 0.85);
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _darkAppColors.primary;
+          return _darkColors.primary;
         }
 
-        return _darkAppColors.primaryLight?.withValues(alpha: 0.9);
+        return _darkColors.primaryLight?.withValues(alpha: 0.9);
       }),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     ),
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(_darkAppColors.iconColor),
+        foregroundColor: WidgetStatePropertyAll(_darkColors.iconColor),
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
         side: const WidgetStatePropertyAll(BorderSide.none),
       ),
     ),
     iconTheme: IconThemeData(
       size: 18,
-      color: _darkAppColors.iconColor,
+      color: _darkColors.iconColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
-      labelStyle: const TextStyle(color: AppPalette.white),
+      labelStyle: const TextStyle(color: _AppPalette.white),
       hintStyle: const TextStyle(
         color: Colors.white,
         fontSize: 18,
@@ -139,7 +139,7 @@ final ThemeData _dark = () {
       selectionHandleColor: Colors.grey,
     ),
     extensions: [
-      _darkAppColors,
+      _darkColors,
       _darkTextTheme,
     ],
   );

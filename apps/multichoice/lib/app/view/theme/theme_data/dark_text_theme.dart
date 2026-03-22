@@ -1,39 +1,67 @@
 part of '../app_theme.dart';
 
 final _darkTextTheme = AppTextExtension(
-  body1: AppTypography.body1.copyWith(color: _darkAppColors.background),
-  body2: AppTypography.body2,
-  h1: null,
-  titleLarge: null,
-  titleMedium: AppTypography.titleMedium.copyWith(
-    color: AppPalette.geyserTone2,
+  /// Heading
+  headingLarge: _AppTypography.heading2.copyWith(
+    color: _darkColors.accent,
   ),
-  titleSmall: AppTypography.titleSmall.copyWith(
-    color: AppPalette.primary5,
+  headingMedium: _AppTypography.heading4.copyWith(
+    color: _darkColors.accent,
   ),
-  subtitleLarge: null,
-  subtitleMedium: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.geyserTone2,
+  headingSmall: _AppTypography.heading6.copyWith(
+    color: _darkColors.accent,
   ),
-  subtitleSmall: AppTypography.subtitleMedium.copyWith(
-    color: AppPalette.primary5,
+
+  /// Title
+  titleLarge: _AppTypography.title2.copyWith(
+    color: _darkColors.accent,
   ),
-  bodyLarge: AppTypography.bodyLarge.copyWith(
-    color: AppPalette.primary5,
+  titleMedium: _AppTypography.title3.copyWith(
+    color: _darkColors.accent,
   ),
-  bodyMedium: AppTypography.bodyMedium.copyWith(
-    color: AppPalette.geyserTone2,
+  titleSmall: _AppTypography.title4.copyWith(
+    color: _darkColors.primary,
   ),
-  bodySmall: null,
-  denseTitle: AppTypography.titleSmall.copyWith(
-    color: AppPalette.primary5,
+
+  /// Subtitle
+  subtitleLarge: _AppTypography.subtitle1.copyWith(
+    color: _darkColors.accent,
+  ),
+  subtitleMedium: _AppTypography.subtitle3.copyWith(
+    color: _darkColors.accent,
+  ),
+  subtitleSmall: _AppTypography.subtitle4.copyWith(
+    color: _darkColors.primary,
+  ),
+
+  /// Body
+  bodyLarge: _AppTypography.body2.copyWith(
+    color: _darkColors.primary,
+  ),
+  bodyMedium: _AppTypography.body3.copyWith(
+    color: _darkColors.accent,
+  ),
+  bodySmall: _AppTypography.body4.copyWith(
+    color: _darkColors.accent,
+  ),
+
+  /// Dense Title
+  denseTitle: _AppTypography.title4.copyWith(
+    color: _darkColors.primary,
     fontSize: 16,
     letterSpacing: 0.3,
     height: 1,
   ),
-  denseSubtitle: AppTypography.bodySmall.copyWith(
-    color: AppPalette.primary5,
+
+  /// Dense Subtitle
+  denseSubtitle: _AppTypography.body4.copyWith(
+    color: _darkColors.primary,
     letterSpacing: 0.5,
     height: 1.25,
+  ),
+
+  /// Assorted
+  hyperlink: _AppTypography.body4.copyWith(
+    color: _darkColors.accent,
   ),
 );
