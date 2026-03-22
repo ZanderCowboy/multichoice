@@ -13,7 +13,7 @@ class AccountSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'Account',
-            style: AppTypography.titleSmall.copyWith(
+            style: context.appTextTheme.titleSmall?.copyWith(
               color: Colors.white70,
               letterSpacing: 1.1,
             ),

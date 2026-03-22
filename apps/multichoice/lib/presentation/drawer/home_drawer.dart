@@ -1,11 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
@@ -29,7 +26,12 @@ class HomeDrawer extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Signed out successfully')),
     );
-    unawaited(Future<void>.microtask(() => showLoginModal(context)));
+    unawaited(
+      Future<void>.microtask(() {
+        if (!context.mounted) return;
+        showLoginModal(context);
+      }),
+    );
   }
 
   @override

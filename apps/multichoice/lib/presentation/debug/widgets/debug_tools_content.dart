@@ -37,16 +37,27 @@ class DebugToolsContent extends StatelessWidget {
             onTap: () => context.router.push(const ResetPasswordPageRoute()),
           ),
           gap12,
-          SwitchListTile(
-            secondary: const Icon(Icons.person_outline),
-            title: const Text('Force Logged In (debug)'),
-            subtitle: Text(
-              authNotifier.hasDebugOverride
-                  ? 'Manual override active'
-                  : 'Using stored session state',
-            ),
-            value: authNotifier.isUserLoggedIn,
-            onChanged: (value) => authNotifier.setDebugLoggedInOverride,
+          FutureBuilder<bool>(
+            future: authNotifier.isUserLoggedIn,
+            builder: (context, snapshot) {
+              final sessionLoggedIn = snapshot.data ?? false;
+              final value = authNotifier.hasDebugOverride
+                  ? (authNotifier.debugLoggedInOverride ?? false)
+                  : sessionLoggedIn;
+              return SwitchListTile(
+                secondary: const Icon(Icons.person_outline),
+                title: const Text('Force Logged In (debug)'),
+                subtitle: Text(
+                  authNotifier.hasDebugOverride
+                      ? 'Manual override active'
+                      : 'Using stored session state',
+                ),
+                value: value,
+                onChanged: (newValue) => authNotifier.setDebugLoggedInOverride(
+                  value: newValue,
+                ),
+              );
+            },
           ),
           if (authNotifier.hasDebugOverride)
             TextButton.icon(

@@ -1,5 +1,3 @@
-// ignore_for_file: sort_child_properties_last, prefer_const_constructors
-
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
@@ -9,18 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
-import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
-import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -34,11 +29,6 @@ part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
 part 'widgets/search_button.dart';
-
-Future<bool> _homeSessionIsLoggedIn() async {
-  if (!coreSl.isRegistered<Session>()) return false;
-  return coreSl<Session>().isUserLoggedIn();
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -85,22 +75,15 @@ class _HomePageState extends State<_HomePage> {
           buildWhen: (previous, current) =>
               previous.isEditMode != current.isEditMode,
           builder: (context, state) {
-            return Consumer<AuthNotifier>(
-              builder: (context, auth, _) {
-                return FutureBuilder<bool>(
-                  key: ValueKey(auth.authEpoch),
-                  future: _homeSessionIsLoggedIn(),
-                  builder: (context, snapshot) {
-                    final isLoggedIn = snapshot.data ?? false;
-                    return PopScope(
-                  canPop: !state.isEditMode && !_isDrawerOpen,
-                  onPopInvokedWithResult: (didPop, _) {
-                    if (didPop) return;
+            return PopScope(
+              canPop: !state.isEditMode && !_isDrawerOpen,
+              onPopInvokedWithResult: (didPop, _) {
+                if (didPop) return;
 
-                    if (_isDrawerOpen) {
-                      Navigator.of(context).pop();
-                      return;
-                    }
+                if (_isDrawerOpen) {
+                  Navigator.of(context).pop();
+                  return;
+                }
 
                 if (state.isEditMode) {
                   context.read<HomeBloc>().add(

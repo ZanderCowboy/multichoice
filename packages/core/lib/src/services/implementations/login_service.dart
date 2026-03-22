@@ -1,7 +1,6 @@
 import 'package:core/src/services/interfaces/i_login_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:injectable/injectable.dart';
 
 const _accessTokenKey = 'access_token';
 const _loginStatusKey = 'login_status';

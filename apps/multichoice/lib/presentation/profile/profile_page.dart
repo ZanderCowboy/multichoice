@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
               if (!_loaded)
                 const Center(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
+                    padding: allPadding24,
                     child: CircularProgressIndicator(),
                   ),
                 )
