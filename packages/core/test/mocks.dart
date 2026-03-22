@@ -39,5 +39,8 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IChangelogRepository>(as: #MockChangelogRepository),
   MockSpec<FirebaseRemoteConfig>(as: #MockFirebaseRemoteConfig),
   MockSpec<FirebaseAnalytics>(as: #MockFirebaseAnalytics),
+  MockSpec<IRegistrationRepository>(as: #MockRegistrationRepository),
+  MockSpec<IRegistrationService>(as: #MockRegistrationService),
+  MockSpec<IPasswordService>(as: #MockPasswordService),
 ])
 void main() {}
