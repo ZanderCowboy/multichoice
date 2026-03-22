@@ -99,8 +99,8 @@ class _HorizontalHomeState extends State<_HorizontalHome> {
         // Normal mode
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
-          color: context.theme.appColors.ternary,
-          backgroundColor: context.theme.appColors.background,
+          color: context.theme.appColors.textTertiary,
+          backgroundColor: context.theme.appColors.scaffoldBackground,
           child: CustomScrollView(
             controller: _scrollController,
             scrollBehavior: CustomScrollBehaviour(),

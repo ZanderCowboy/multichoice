@@ -100,7 +100,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             gap24,
             Text(
               "Enter your email and we'll send you a link to reset your password.",
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.appTextTheme.bodyLarge,
             ),
             gap24,
             EmailField(controller: _emailController),
@@ -114,7 +114,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ? Icon(
                       Icons.check_circle_outline,
                       size: 20,
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: context.appColorsTheme.primary,
                     )
                   : null,
               label: const Text('Send Reset Link'),
@@ -131,9 +131,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const Text('I have the reset link, go to Reset Password'),
                   Text(
                     '(temp - for testing)',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: context.appTextTheme.bodySmall?.copyWith(
                       fontStyle: FontStyle.italic,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.appColorsTheme.secondary,
                     ),
                   ),
                 ],
@@ -152,10 +152,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           gap24,
-          Icon(
+          const Icon(
             Icons.mark_email_read_outlined,
             size: 64,
-            color: context.theme.appColors.background,
           ),
           gap24,
           Text(
@@ -167,7 +166,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           Text(
             "We've sent a password reset link to ${_emailController.text}. "
             'Open your email app or check your inbox.',
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: context.appTextTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
           gap24,

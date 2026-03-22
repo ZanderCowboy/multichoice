@@ -120,10 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                     : () => _onForgotPassword(context),
                 child: Text(
                   'Forgot Password?',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: context.theme.appColors.background,
-                    decoration: TextDecoration.underline,
-                  ),
+                  style: context.appTextTheme.hyperlink,
                 ),
               ),
             ),
@@ -148,9 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: horizontal16,
                   child: Text(
                     'or',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                    style: context.appTextTheme.contrastBody,
                   ),
                 ),
                 const Expanded(child: Divider()),
@@ -165,17 +160,15 @@ class _LoginPageState extends State<LoginPage> {
             Center(
               child: RichText(
                 text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+                  style: context.appTextTheme.contrastBody,
                   children: [
-                    const TextSpan(text: "Don't have an account? "),
+                    TextSpan(
+                      text: "Don't have an account? ",
+                      style: context.appTextTheme.bodyMedium,
+                    ),
                     TextSpan(
                       text: 'Sign Up',
-                      style: TextStyle(
-                        color: context.theme.appColors.background,
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: context.appTextTheme.hyperlink,
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           if (!_isLoading && _signInSuccessMessage == null) {

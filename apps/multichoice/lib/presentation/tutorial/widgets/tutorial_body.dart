@@ -94,7 +94,7 @@ class _HorizontalTab extends StatelessWidget {
 
     return Card(
       margin: allPadding4,
-      color: context.theme.appColors.primary,
+      color: context.theme.appColors.linkColor,
       child: Padding(
         padding: allPadding2,
         child: SizedBox(
@@ -114,10 +114,7 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style: context.theme.appTextTheme.titleMedium
-                              ?.copyWith(
-                                fontSize: 16,
-                              ),
+                          style: context.theme.appTextTheme.denseTitle,
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
@@ -127,8 +124,7 @@ class _HorizontalTab extends StatelessWidget {
                           padding: left4,
                           child: Text(
                             tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium
-                                ?.copyWith(fontSize: 12),
+                            style: context.theme.appTextTheme.denseSubtitle,
                           ),
                         ),
                       const Expanded(child: SizedBox()),
@@ -146,7 +142,7 @@ class _HorizontalTab extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
-                  color: context.theme.appColors.secondaryLight,
+                  color: context.theme.appColors.textTertiary,
                   thickness: 2,
                   indent: 4,
                   endIndent: 4,

@@ -1,8 +1,7 @@
-#333 - Implement Signup And Login Pages Only
+#340 - Rework Theming
 
-- Add sign-in, sign-up, forgot password, and reset password flows plus reusable registration widgets and validators
-- Add `AuthNotifier`, `Session` DI registration, and `i_login_service` export for auth state and persisted login
-- Add profile and account deletion pages; home app bar Sign In / Profile, drawer profile and logout, and login modal
-- Add debug page (tools, optional app colors view, auth debug override) and open it from app version in debug builds
-- Add `AsyncFilledButton`, `AsyncOutlinedButton`, and `CircularLoader.tiny` in ui_kit with tests
-- Register auth, profile, and related routes in the app router
+- Split theme data into `theme_data/` (light/dark colors, text themes, `ThemeData`) and simplify `AppPalette` to flat static colors
+- Add `AppColorsExtension` and `AppTextExtension` in theme package; update extension getters for theme access
+- Refactor `AppTypography` and wire typography via theme extensions instead of direct `AppTypography` usage
+- Add debug tools: app colors viewer and app text themes viewer, accessible from debug page
+- Update home, details, drawer, changelog, and shared widgets to use new theme extensions

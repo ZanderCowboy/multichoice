@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/extensions/extension_getters.dart';
+import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class UsernameField extends StatefulWidget {
@@ -63,14 +64,16 @@ class _UsernameFieldState extends State<UsernameField> {
     final textColor =
         inputTheme.labelStyle?.color ??
         inputTheme.hintStyle?.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
         appColors.black ??
         Colors.black;
     final successColor = appColors.success ?? Colors.green;
     final errorColor = appColors.error ?? Colors.red;
     final inactiveBorderColor =
         inputTheme.enabledBorder?.borderSide.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.accent ??
         Colors.deepPurple;
     final disabledBorderColor = appColors.disabled ?? Colors.blue;
 
@@ -86,7 +89,7 @@ class _UsernameFieldState extends State<UsernameField> {
               children: [
                 Icon(
                   Icons.person,
-                  color: appColors.background ?? textColor,
+                  color: appColors.iconColor ?? textColor,
                 ),
                 gap4,
                 Text(

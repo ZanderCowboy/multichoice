@@ -187,7 +187,8 @@ class CircularLoader extends StatelessWidget {
       child: CircularProgressIndicator(
         value: value,
         backgroundColor: backgroundColor,
-        valueColor: valueColor ??
+        valueColor:
+            valueColor ??
             (color != null ? AlwaysStoppedAnimation<Color>(color!) : null),
         strokeWidth: strokeWidth,
         strokeAlign: strokeAlign,

@@ -71,13 +71,15 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
     final textColor =
         inputTheme.labelStyle?.color ??
         inputTheme.hintStyle?.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
         appColors.black ??
         Colors.black;
     final successColor = appColors.success ?? Colors.green;
     final inactiveBorderColor =
         inputTheme.enabledBorder?.borderSide.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.accent ??
         Colors.deepPurple;
 
     return TextFormField(
@@ -92,7 +94,7 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
               children: [
                 Icon(
                   _isEmailInput ? Icons.email_outlined : Icons.person_outline,
-                  color: appColors.background ?? textColor,
+                  color: appColors.iconColor ?? textColor,
                 ),
                 gap4,
                 Text(

@@ -95,7 +95,7 @@ class _DetailsView extends StatelessWidget {
                       const _DetailsSection(),
                       Divider(
                         thickness: 1.5,
-                        color: context.theme.appColors.primary,
+                        color: context.theme.appColors.iconColor,
                       ),
                     ],
                   ),
@@ -138,7 +138,7 @@ class _DetailsView extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: context.theme.appColors.ternary,
+          color: context.appColorsTheme.ternary,
         ),
       ),
     );

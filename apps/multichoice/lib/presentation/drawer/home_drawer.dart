@@ -18,7 +18,6 @@ class HomeDrawer extends StatelessWidget {
 
     return Drawer(
       width: MediaQuery.sizeOf(context).width,
-      backgroundColor: context.theme.appColors.background,
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
