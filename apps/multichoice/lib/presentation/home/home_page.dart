@@ -9,7 +9,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
-import 'package:multichoice/presentation/home/widgets/app_bar.dart';
+import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
