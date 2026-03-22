@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
 
-import '../../../../mocks.mocks.dart';
+import '../../../mocks.mocks.dart';
 
 void main() {
   late FeedbackRepository repository;
@@ -18,8 +18,9 @@ void main() {
     mockQuerySnapshot = MockQuerySnapshot();
 
     when(mockFirestore.collection('feedback')).thenReturn(mockCollection);
-    when(mockCollection.orderBy('timestamp', descending: true))
-        .thenReturn(mockCollection);
+    when(
+      mockCollection.orderBy('timestamp', descending: true),
+    ).thenReturn(mockCollection);
 
     repository = FeedbackRepository(mockFirestore);
   });
@@ -87,8 +88,9 @@ void main() {
         final result = await repository.submitFeedback(feedbackWithEmptyFields);
         expect(result.isRight(), true);
 
-        final capturedData =
-            verify(mockCollection.add(captureAny)).captured.first;
+        final capturedData = verify(
+          mockCollection.add(captureAny),
+        ).captured.first;
         expect(capturedData['userEmail'], isNull);
         expect(capturedData['category'], isNull);
         expect(capturedData['userId'], isNull);
@@ -130,8 +132,9 @@ void main() {
         when(mockDocs[1].data()).thenReturn(mockData2);
 
         when(mockQuerySnapshot.docs).thenReturn(mockDocs);
-        when(mockCollection.snapshots())
-            .thenAnswer((_) => Stream.value(mockQuerySnapshot));
+        when(
+          mockCollection.snapshots(),
+        ).thenAnswer((_) => Stream.value(mockQuerySnapshot));
 
         final stream = repository.getFeedback();
         final feedbackList = await stream.first;
@@ -147,8 +150,9 @@ void main() {
 
       test('handles empty documents in stream', () async {
         when(mockQuerySnapshot.docs).thenReturn([]);
-        when(mockCollection.snapshots())
-            .thenAnswer((_) => Stream.value(mockQuerySnapshot));
+        when(
+          mockCollection.snapshots(),
+        ).thenAnswer((_) => Stream.value(mockQuerySnapshot));
 
         final stream = repository.getFeedback();
         final feedbackList = await stream.first;
@@ -157,8 +161,9 @@ void main() {
       });
 
       test('handles stream errors', () async {
-        when(mockCollection.snapshots())
-            .thenAnswer((_) => Stream.error(Exception('Stream error')));
+        when(
+          mockCollection.snapshots(),
+        ).thenAnswer((_) => Stream.error(Exception('Stream error')));
 
         final stream = repository.getFeedback();
         expect(stream, emitsError(isA<Exception>()));

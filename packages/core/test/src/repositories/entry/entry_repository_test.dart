@@ -5,7 +5,7 @@ import 'package:isar_community/isar.dart';
 import 'package:models/models.dart';
 import 'package:clock/clock.dart';
 
-import '../../../../injection.dart';
+import '../../../injection.dart';
 
 void main() {
   late TabsRepository tabsRepository;
@@ -48,31 +48,33 @@ void main() {
       expect(result, entry.id);
     });
 
-    test('should update entryIds for the tab when addEntry is called',
-        () async {
-      // Arrange
-      await db.writeTxn(() => db.clear());
-      await tabsRepository.addTab(
-        title: 'not a title',
-        subtitle: 'not a subtitle',
-      );
-      final tabs = await db.tabs.where().findAll();
-      final tab = tabs.firstWhere((e) => e.title == 'not a title');
+    test(
+      'should update entryIds for the tab when addEntry is called',
+      () async {
+        // Arrange
+        await db.writeTxn(() => db.clear());
+        await tabsRepository.addTab(
+          title: 'not a title',
+          subtitle: 'not a subtitle',
+        );
+        final tabs = await db.tabs.where().findAll();
+        final tab = tabs.firstWhere((e) => e.title == 'not a title');
 
-      // Act
-      await entryRepository.addEntry(
-        tabId: tab.id,
-        title: 'slayer',
-        subtitle: 'you go queen',
-      );
+        // Act
+        await entryRepository.addEntry(
+          tabId: tab.id,
+          title: 'slayer',
+          subtitle: 'you go queen',
+        );
 
-      // Assert
-      final entries = await db.entrys.where().findAll();
-      final newTabs = await db.tabs.where().findAll();
-      final newTab = newTabs.firstWhere((e) => e.id == tab.id);
-      expect(entries.length, 1);
-      expect(newTab.entryIds?.length, 1);
-    });
+        // Assert
+        final entries = await db.entrys.where().findAll();
+        final newTabs = await db.tabs.where().findAll();
+        final newTab = newTabs.firstWhere((e) => e.id == tab.id);
+        expect(entries.length, 1);
+        expect(newTab.entryIds?.length, 1);
+      },
+    );
 
     test('should throw an IsarError when addEntry is called', () async {
       // Arrange
@@ -168,41 +170,44 @@ void main() {
     });
 
     test(
-        'should return List<EntryDTO> when readEntries is called for a given tabId',
-        () async {
-      // Arrange
-      final tabs = await db.tabs.where().findAll();
-      final tab = tabs.first;
-      final tabOne = tabs.firstWhere((e) => e.title == 'another t');
-      final entries = await db.entrys.where().findAll();
+      'should return List<EntryDTO> when readEntries is called for a given tabId',
+      () async {
+        // Arrange
+        final tabs = await db.tabs.where().findAll();
+        final tab = tabs.first;
+        final tabOne = tabs.firstWhere((e) => e.title == 'another t');
+        final entries = await db.entrys.where().findAll();
 
-      final entriesDTO = <EntryDTO>[
-        EntryDTO.empty().copyWith(
-          id: entries.firstWhere((e) => e.title == 'entry title').id,
-          tabId: tabOne.id,
-          title: 'entry title',
-          subtitle: 'entry subtitle',
-          timestamp:
-              entries.firstWhere((e) => e.title == 'entry title').timestamp ??
-                  DateTime.now(),
-        ),
-        EntryDTO.empty().copyWith(
-          id: entries.firstWhere((e) => e.title == 'wonderful day').id,
-          tabId: tabOne.id,
-          title: 'wonderful day',
-          subtitle: 'have a laugh',
-          timestamp:
-              entries.firstWhere((e) => e.title == 'wonderful day').timestamp ??
-                  DateTime.now(),
-        ),
-      ];
+        final entriesDTO = <EntryDTO>[
+          EntryDTO.empty().copyWith(
+            id: entries.firstWhere((e) => e.title == 'entry title').id,
+            tabId: tabOne.id,
+            title: 'entry title',
+            subtitle: 'entry subtitle',
+            timestamp:
+                entries.firstWhere((e) => e.title == 'entry title').timestamp ??
+                DateTime.now(),
+          ),
+          EntryDTO.empty().copyWith(
+            id: entries.firstWhere((e) => e.title == 'wonderful day').id,
+            tabId: tabOne.id,
+            title: 'wonderful day',
+            subtitle: 'have a laugh',
+            timestamp:
+                entries
+                    .firstWhere((e) => e.title == 'wonderful day')
+                    .timestamp ??
+                DateTime.now(),
+          ),
+        ];
 
-      // Act
-      final result = await entryRepository.readEntries(tabId: tab.id);
+        // Act
+        final result = await entryRepository.readEntries(tabId: tab.id);
 
-      // Assert
-      expect(result, entriesDTO);
-    });
+        // Assert
+        expect(result, entriesDTO);
+      },
+    );
   });
 
   group('EntryRepository - readAllEntries', () {
@@ -238,56 +243,60 @@ void main() {
       );
     });
 
-    test('should return List<EntryDTO> when readAllEntries is called',
-        () async {
-      // Arrange
-      final tabs = await db.tabs.where().findAll();
-      final tempTab = tabs.firstWhere((e) => e.title == 'title');
-      await entryRepository.addEntry(
-        tabId: tempTab.id,
-        title: 'fernando',
-        subtitle: 'say my name',
-      );
-
-      final tab = tabs.firstWhere((e) => e.title == 'another t');
-      final entries = await db.entrys.where().findAll();
-
-      final entriesDTO = <EntryDTO>[
-        EntryDTO.empty().copyWith(
-          id: entries.firstWhere((e) => e.title == 'entry title').id,
-          tabId: tab.id,
-          title: 'entry title',
-          subtitle: 'entry subtitle',
-          timestamp:
-              entries.firstWhere((e) => e.title == 'entry title').timestamp ??
-                  DateTime.now(),
-        ),
-        EntryDTO.empty().copyWith(
-          id: entries.firstWhere((e) => e.title == 'wonderful day').id,
-          tabId: tab.id,
-          title: 'wonderful day',
-          subtitle: 'have a laugh',
-          timestamp:
-              entries.firstWhere((e) => e.title == 'wonderful day').timestamp ??
-                  DateTime.now(),
-        ),
-        EntryDTO.empty().copyWith(
-          id: entries.firstWhere((e) => e.title == 'fernando').id,
+    test(
+      'should return List<EntryDTO> when readAllEntries is called',
+      () async {
+        // Arrange
+        final tabs = await db.tabs.where().findAll();
+        final tempTab = tabs.firstWhere((e) => e.title == 'title');
+        await entryRepository.addEntry(
           tabId: tempTab.id,
           title: 'fernando',
           subtitle: 'say my name',
-          timestamp:
-              entries.firstWhere((e) => e.title == 'fernando').timestamp ??
-                  DateTime.now(),
-        ),
-      ];
+        );
 
-      // Act
-      final result = await entryRepository.readAllEntries();
+        final tab = tabs.firstWhere((e) => e.title == 'another t');
+        final entries = await db.entrys.where().findAll();
 
-      // Assert
-      expect(result, entriesDTO);
-    });
+        final entriesDTO = <EntryDTO>[
+          EntryDTO.empty().copyWith(
+            id: entries.firstWhere((e) => e.title == 'entry title').id,
+            tabId: tab.id,
+            title: 'entry title',
+            subtitle: 'entry subtitle',
+            timestamp:
+                entries.firstWhere((e) => e.title == 'entry title').timestamp ??
+                DateTime.now(),
+          ),
+          EntryDTO.empty().copyWith(
+            id: entries.firstWhere((e) => e.title == 'wonderful day').id,
+            tabId: tab.id,
+            title: 'wonderful day',
+            subtitle: 'have a laugh',
+            timestamp:
+                entries
+                    .firstWhere((e) => e.title == 'wonderful day')
+                    .timestamp ??
+                DateTime.now(),
+          ),
+          EntryDTO.empty().copyWith(
+            id: entries.firstWhere((e) => e.title == 'fernando').id,
+            tabId: tempTab.id,
+            title: 'fernando',
+            subtitle: 'say my name',
+            timestamp:
+                entries.firstWhere((e) => e.title == 'fernando').timestamp ??
+                DateTime.now(),
+          ),
+        ];
+
+        // Act
+        final result = await entryRepository.readAllEntries();
+
+        // Assert
+        expect(result, entriesDTO);
+      },
+    );
   });
 
   group('EntryRepository - updateEntry', () {
@@ -426,34 +435,36 @@ void main() {
       expect(result, true);
     });
 
-    test('should update Tabs and Entries DB when deleteEntry is called',
-        () async {
-      // Arrange
-      final entries = await db.entrys.where().findAll();
-      final entry = entries.firstWhere((e) => e.title == 'entry title');
-      final entryTwo = entries.firstWhere((e) => e.title == 'wonderful day');
-      final entriesDTO = <EntryDTO>[
-        EntryDTO.empty().copyWith(
-          id: entryTwo.id,
-          tabId: entryTwo.tabId,
-          title: 'wonderful day',
-          subtitle: 'have a laugh',
-          timestamp: entryTwo.timestamp ?? DateTime.now(),
-        ),
-      ];
+    test(
+      'should update Tabs and Entries DB when deleteEntry is called',
+      () async {
+        // Arrange
+        final entries = await db.entrys.where().findAll();
+        final entry = entries.firstWhere((e) => e.title == 'entry title');
+        final entryTwo = entries.firstWhere((e) => e.title == 'wonderful day');
+        final entriesDTO = <EntryDTO>[
+          EntryDTO.empty().copyWith(
+            id: entryTwo.id,
+            tabId: entryTwo.tabId,
+            title: 'wonderful day',
+            subtitle: 'have a laugh',
+            timestamp: entryTwo.timestamp ?? DateTime.now(),
+          ),
+        ];
 
-      // Act
-      await entryRepository.deleteEntry(
-        tabId: entry.tabId,
-        entryId: entry.id,
-      );
+        // Act
+        await entryRepository.deleteEntry(
+          tabId: entry.tabId,
+          entryId: entry.id,
+        );
 
-      // Assert
-      final tab = await tabsRepository.getTab(tabId: entryTwo.tabId);
-      final tabResult = tab.entries.length;
-      expect(await entryRepository.readAllEntries(), entriesDTO);
-      expect(tabResult, 1);
-    });
+        // Assert
+        final tab = await tabsRepository.getTab(tabId: entryTwo.tabId);
+        final tabResult = tab.entries.length;
+        expect(await entryRepository.readAllEntries(), entriesDTO);
+        expect(tabResult, 1);
+      },
+    );
   });
 
   group('EntryRepository - deleteEntries', () {
@@ -504,20 +515,21 @@ void main() {
     });
 
     test(
-        'should delete all entries for a given tab when deleteEntries is called',
-        () async {
-      // Arrange
-      final tabs = await db.tabs.where().findAll();
-      final tab = tabs.firstWhere((e) => e.title == 'test');
+      'should delete all entries for a given tab when deleteEntries is called',
+      () async {
+        // Arrange
+        final tabs = await db.tabs.where().findAll();
+        final tab = tabs.firstWhere((e) => e.title == 'test');
 
-      // Act
-      await entryRepository.deleteEntries(tabId: tab.id);
+        // Act
+        await entryRepository.deleteEntries(tabId: tab.id);
 
-      // Assert
-      final newTabs = await db.tabs.where().findAll();
-      final newTab = newTabs.firstWhere((e) => e.title == 'test');
-      final tabResult = newTab.entryIds;
-      expect(tabResult, null);
-    });
+        // Assert
+        final newTabs = await db.tabs.where().findAll();
+        final newTab = newTabs.firstWhere((e) => e.title == 'test');
+        final tabResult = newTab.entryIds;
+        expect(tabResult, null);
+      },
+    );
   });
 }

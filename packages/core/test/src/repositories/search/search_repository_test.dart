@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:isar_community/isar.dart';
 import 'package:models/models.dart';
 
-import '../../../../injection.dart';
+import '../../../injection.dart';
 
 void main() {
   late SearchRepository searchRepository;
