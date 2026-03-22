@@ -29,9 +29,7 @@ class RegistrationService implements IRegistrationService {
 
       final user = credential.user;
       if (user == null) {
-        return const Left(
-          AuthException('User creation failed'),
-        );
+        return const Left(AuthException.userCreationFailed());
       }
 
       if (dto.username.isNotEmpty) {
@@ -40,9 +38,7 @@ class RegistrationService implements IRegistrationService {
 
       final idToken = await user.getIdToken();
       if (idToken == null) {
-        return const Left(
-          AuthException('Failed to get authentication token'),
-        );
+        return const Left(AuthException.tokenUnavailable());
       }
 
       await _loginService.storeLoginInfo(idToken);
@@ -56,9 +52,9 @@ class RegistrationService implements IRegistrationService {
         AuthResultDTO(accessToken: idToken, userId: user.uid),
       );
     } on FirebaseAuthException catch (e) {
-      return Left(AuthException(_mapFirebaseAuthError(e)));
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
     } catch (e) {
-      return Left(AuthException('Sign up failed: $e'));
+      return Left(AuthException.signUpFailed(e));
     }
   }
 
@@ -75,16 +71,12 @@ class RegistrationService implements IRegistrationService {
 
       final user = credential.user;
       if (user == null) {
-        return const Left(
-          AuthException('Sign in failed'),
-        );
+        return const Left(AuthException.signInFailed());
       }
 
       final idToken = await user.getIdToken();
       if (idToken == null) {
-        return const Left(
-          AuthException('Failed to get authentication token'),
-        );
+        return const Left(AuthException.tokenUnavailable());
       }
 
       await _loginService.storeLoginInfo(idToken);
@@ -105,9 +97,9 @@ class RegistrationService implements IRegistrationService {
         AuthResultDTO(accessToken: idToken, userId: user.uid),
       );
     } on FirebaseAuthException catch (e) {
-      return Left(AuthException(_mapFirebaseAuthError(e)));
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
     } catch (e) {
-      return Left(AuthException('Sign in failed: $e'));
+      return Left(AuthException.emailSignInFailed(e));
     }
   }
 
@@ -119,62 +111,80 @@ class RegistrationService implements IRegistrationService {
       );
       final account = await googleSignIn.signIn();
       if (account == null) {
-        return const Left(AuthException('Sign in cancelled'));
+        return const Left(AuthException.signInCancelled());
       }
 
       final googleAuth = await account.authentication;
-      final idToken = googleAuth.idToken;
-      final accessToken = googleAuth.accessToken;
-
-      if (idToken != null &&
-          accessToken != null &&
-          idToken.isNotEmpty &&
-          accessToken.isNotEmpty) {
-        try {
-          final credential = GoogleAuthProvider.credential(
-            accessToken: accessToken,
-            idToken: idToken,
-          );
-          final userCredential = await _auth.signInWithCredential(credential);
-          final user = userCredential.user;
-          if (user == null) {
-            return const Left(AuthException('Sign in failed'));
-          }
-
-          final token = await user.getIdToken();
-          if (token == null) {
-            return const Left(
-              AuthException('Failed to get authentication token'),
-            );
-          }
-
-          await _loginService.storeLoginInfo(token);
-          final email = user.email ?? account.email;
-          final firebaseName = user.displayName;
-          final googleName = account.displayName;
-          final resolvedName = (firebaseName != null && firebaseName.isNotEmpty)
-              ? firebaseName
-              : ((googleName ?? '').isNotEmpty ? googleName : null);
-          await _loginService.storeUserProfile(
-            email: email.isNotEmpty ? email : null,
-            username: resolvedName,
-          );
-          if (email.isNotEmpty) {
-            await _appStorageService.setLastUsedEmail(email);
-          }
-
-          return Right(
-            AuthResultDTO(accessToken: token, userId: user.uid),
-          );
-        } catch (_) {
-          return _completeGoogleLocalSession(account);
-        }
+      if (_hasUsableGoogleTokens(googleAuth)) {
+        return _signInWithGoogleViaFirebase(account, googleAuth);
       }
 
       return _completeGoogleLocalSession(account);
     } catch (e) {
-      return Left(AuthException('Google sign-in failed: $e'));
+      return Left(AuthException.googleSignInFailed(e));
     }
+  }
+
+  static bool _hasUsableGoogleTokens(GoogleSignInAuthentication auth) {
+    final idToken = auth.idToken;
+    final accessToken = auth.accessToken;
+    return idToken != null &&
+        accessToken != null &&
+        idToken.isNotEmpty &&
+        accessToken.isNotEmpty;
+  }
+
+  Future<Either<AuthException, AuthResultDTO>> _signInWithGoogleViaFirebase(
+    GoogleSignInAccount account,
+    GoogleSignInAuthentication googleAuth,
+  ) async {
+    try {
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+      if (user == null) {
+        return const Left(AuthException.signInFailed());
+      }
+
+      final token = await user.getIdToken();
+      if (token == null) {
+        return const Left(AuthException.tokenUnavailable());
+      }
+
+      await _loginService.storeLoginInfo(token);
+      final email = user.email ?? account.email;
+      final resolvedName = _firstNonEmptyDisplayName(
+        user.displayName,
+        account.displayName,
+      );
+      await _loginService.storeUserProfile(
+        email: email.isNotEmpty ? email : null,
+        username: resolvedName,
+      );
+      if (email.isNotEmpty) {
+        await _appStorageService.setLastUsedEmail(email);
+      }
+
+      return Right(
+        AuthResultDTO(accessToken: token, userId: user.uid),
+      );
+    } catch (_) {
+      return _completeGoogleLocalSession(account);
+    }
+  }
+
+  /// Prefers [primary] when non-empty, otherwise [secondary] if non-empty.
+  static String? _firstNonEmptyDisplayName(String? primary, String? secondary) {
+    if (primary != null && primary.isNotEmpty) {
+      return primary;
+    }
+    if (secondary != null && secondary.isNotEmpty) {
+      return secondary;
+    }
+    return null;
   }
 
   Future<Either<AuthException, AuthResultDTO>> _completeGoogleLocalSession(

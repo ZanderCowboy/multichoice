@@ -96,7 +96,7 @@ void main() {
       final result = await service.signUp(dto);
 
       expect(result, const Left<AuthException, AuthResultDTO>(
-        AuthException('User creation failed'),
+        AuthException.userCreationFailed(),
       ));
       verifyNever(mockLogin.storeLoginInfo(any));
     });
@@ -119,7 +119,7 @@ void main() {
       final result = await service.signUp(dto);
 
       expect(result, const Left<AuthException, AuthResultDTO>(
-        AuthException('Failed to get authentication token'),
+        AuthException.tokenUnavailable(),
       ));
     });
 
@@ -260,7 +260,7 @@ void main() {
       expect(
         result,
         const Left<AuthException, AuthResultDTO>(
-          AuthException('Sign in failed'),
+          AuthException.signInFailed(),
         ),
       );
     });
@@ -280,7 +280,7 @@ void main() {
       expect(
         result,
         const Left<AuthException, AuthResultDTO>(
-          AuthException('Failed to get authentication token'),
+          AuthException.tokenUnavailable(),
         ),
       );
     });
