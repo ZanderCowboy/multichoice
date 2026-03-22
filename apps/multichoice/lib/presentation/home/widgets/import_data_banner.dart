@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 /// A dismissable banner that prompts users to import data when they have
@@ -141,7 +140,7 @@ class _PillBanner extends StatelessWidget {
                 children: [
                   Text(
                     'No collections yet?',
-                    style: AppTypography.bodyMedium.copyWith(
+                    style: context.appTextTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: context.theme.appColors.textPrimary,
                     ),
@@ -151,7 +150,7 @@ class _PillBanner extends StatelessWidget {
                     onTap: handleImportTap,
                     child: Text(
                       'Import data or create a new collection',
-                      style: AppTypography.bodySmall.copyWith(
+                      style: context.appTextTheme.denseSubtitle!.copyWith(
                         color: context.theme.appColors.linkColor,
                         decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w600,
@@ -221,7 +220,7 @@ class _DefaultBanner extends StatelessWidget {
               children: [
                 Text(
                   'No collections yet',
-                  style: AppTypography.bodyMedium.copyWith(
+                  style: context.appTextTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
                     color: context.theme.appColors.textPrimary,
                   ),
@@ -231,7 +230,7 @@ class _DefaultBanner extends StatelessWidget {
                   onTap: handleImportTap,
                   child: Text(
                     'Import data or create a new collection',
-                    style: AppTypography.bodySmall.copyWith(
+                    style: context.appTextTheme.denseSubtitle!.copyWith(
                       color: context.theme.appColors.linkColor,
                       decoration: TextDecoration.underline,
                     ),

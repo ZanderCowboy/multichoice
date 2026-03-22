@@ -16,7 +16,7 @@ class MoreSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'More',
-            style: AppTypography.titleSmall.copyWith(
+            style: context.appTextTheme.titleSmall!.copyWith(
               color:
                   context.theme.appColors.textSecondary ??
                   context.theme.appColors.textTertiary,
