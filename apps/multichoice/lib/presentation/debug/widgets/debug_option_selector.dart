@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ui_kit/ui_kit.dart';
 
-enum DebugView { debugTools, appColors }
+enum DebugView { debugTools, appColors, appTextThemes }
 
 class DebugOptionSelector extends StatelessWidget {
   const DebugOptionSelector({
@@ -15,18 +14,24 @@ class DebugOptionSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
       children: [
         _OptionChip(
           label: 'Debug Tools',
           isSelected: selectedView == DebugView.debugTools,
           onTap: () => onSelect(DebugView.debugTools),
         ),
-        gap12,
         _OptionChip(
           label: 'App Colors',
           isSelected: selectedView == DebugView.appColors,
           onTap: () => onSelect(DebugView.appColors),
+        ),
+        _OptionChip(
+          label: 'App Text Themes',
+          isSelected: selectedView == DebugView.appTextThemes,
+          onTap: () => onSelect(DebugView.appTextThemes),
         ),
       ],
     );
