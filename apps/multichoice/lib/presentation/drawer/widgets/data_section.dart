@@ -14,9 +14,7 @@ class DataSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'Data',
-            style: AppTypography.titleSmall.copyWith(
-              color: context.theme.appColors.textSecondary ??
-                  context.theme.appColors.textTertiary,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
@@ -24,7 +22,10 @@ class DataSection extends StatelessWidget {
         BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             return ListTile(
-              title: const Text('Delete All Data'),
+              title: Text(
+                'Delete All Data',
+                style: context.appTextTheme.denseTitle,
+              ),
               trailing: IconButton(
                 key: context.keys.deleteAllDataButton,
                 onPressed: state.tabs != null && state.tabs!.isNotEmpty
@@ -77,7 +78,10 @@ class DataSection extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text('Import / Export Data'),
+          title: Text(
+            'Import / Export Data',
+            style: context.appTextTheme.denseTitle,
+          ),
           trailing: IconButton(
             key: context.keys.importExportDataButton,
             onPressed: () => context.router.push(

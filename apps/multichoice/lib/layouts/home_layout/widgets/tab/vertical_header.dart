@@ -50,14 +50,14 @@ class VerticalHeader extends StatelessWidget {
                 children: [
                   Text(
                     tab.title,
-                    style: context.theme.appTextTheme.denseTitle,
+                    style: context.appTextTheme.contrastTitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),
                   if (tab.subtitle.isNotEmpty)
                     Text(
                       tab.subtitle,
-                      style: context.theme.appTextTheme.denseSubtitle,
+                      style: context.appTextTheme.contrastSubtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                     ),

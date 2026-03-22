@@ -66,6 +66,7 @@ class _DebugBodyState extends State<_DebugBody> {
                   onClearStorage: _clearStorageData,
                 ),
                 DebugView.appColors => const AppColorsContent(),
+                DebugView.appTextThemes => const AppTextThemesContent(),
               },
             ),
           ],

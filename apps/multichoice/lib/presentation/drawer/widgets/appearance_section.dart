@@ -12,9 +12,7 @@ class AppearanceSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'Appearance',
-            style: AppTypography.titleSmall.copyWith(
-              color: context.theme.appColors.textSecondary ??
-                  context.theme.appColors.textTertiary,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),

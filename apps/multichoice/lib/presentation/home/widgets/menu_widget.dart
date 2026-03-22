@@ -16,7 +16,6 @@ class MenuWidget extends StatelessWidget {
         final menuTextStyle = Theme.of(
           context,
         ).textTheme.bodyMedium?.copyWith(color: appColors.textPrimary);
-        final menuIconColor = appColors.textPrimary;
 
         Widget buildMenuItem({
           required IconData icon,
@@ -27,10 +26,16 @@ class MenuWidget extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: menuIconColor,
+                size: 18,
+                color: appColors.textPrimary,
               ),
               gap8,
-              Text(label, style: menuTextStyle),
+              Text(
+                label,
+                style: context.appTextTheme.bodyMedium?.copyWith(
+                  color: appColors.textPrimary,
+                ),
+              ),
             ],
           );
         }

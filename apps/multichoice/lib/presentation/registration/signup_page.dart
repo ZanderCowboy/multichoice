@@ -218,13 +218,13 @@ class _ShineCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: allPadding20,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    colorScheme.surface,
+                    colorScheme.primary,
                     colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
                   ],
                 ),
@@ -234,35 +234,6 @@ class _ShineCard extends StatelessWidget {
               ),
               child: child,
             ),
-            // Positioned(
-            //   top: -42,
-            //   left: -84,
-            //   child: Transform.rotate(
-            //     angle: -0.55,
-            //     child: Container(
-            //       width: 260,
-            //       height: 96,
-            //       decoration: BoxDecoration(
-            //         gradient: LinearGradient(
-            //           colors: [
-            //             Colors.white.withValues(alpha: 0),
-            //             Colors.white.withValues(alpha: 0.22),
-            //             Colors.white.withValues(alpha: 0),
-            //             // ?context.theme.appColors.background?.withValues(
-            //             //   alpha: 0,
-            //             // ),
-            //             // ?context.theme.appColors.background?.withValues(
-            //             //   alpha: 0.22,
-            //             // ),
-            //             // ?context.theme.appColors.background?.withValues(
-            //             //   alpha: 0,
-            //             // ),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

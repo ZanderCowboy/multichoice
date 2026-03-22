@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
@@ -14,7 +13,6 @@ class TutorialDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: MediaQuery.sizeOf(context).width,
-      backgroundColor: context.theme.appColors.scaffoldBackground,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -38,18 +36,12 @@ class TutorialDrawer extends StatelessWidget {
                     children: [
                       Text(
                         'Multichoice',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: context.theme.appColors.textPrimary ??
-                              context.theme.appColors.white,
-                        ),
+                        style: context.appTextTheme.titleLarge,
                       ),
                       gap4,
                       Text(
                         'Welcome back!',
-                        style: AppTypography.subtitleMedium.copyWith(
-                          color: context.theme.appColors.textSecondary ??
-                              context.theme.appColors.textTertiary,
-                        ),
+                        style: context.appTextTheme.subtitleMedium,
                       ),
                     ],
                   ),

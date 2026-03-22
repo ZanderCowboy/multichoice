@@ -17,12 +17,11 @@ class _ResultListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      shadowColor: Colors.grey[400],
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular8,
       ),
       margin: margin,
-      color: context.theme.appColors.iconColor,
+      color: context.appColorsTheme.secondary,
       child: Padding(
         padding: internalPadding,
         child: Row(
@@ -33,14 +32,14 @@ class _ResultListTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: context.theme.appTextTheme.denseTitle,
+                    style: context.appTextTheme.contrastTitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
                   gap4,
                   Text(
                     subtitle,
-                    style: context.theme.appTextTheme.denseSubtitle,
+                    style: context.appTextTheme.contrastSubtitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),

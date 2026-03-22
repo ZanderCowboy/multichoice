@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/view/theme/app_palette.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme/theme.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -14,6 +12,8 @@ part 'theme_data/dark_theme_data.dart';
 part 'theme_data/light_colors.dart';
 part 'theme_data/light_text_theme.dart';
 part 'theme_data/light_theme_data.dart';
+part 'app_palette.dart';
+part 'app_typography.dart';
 
 class AppTheme with ChangeNotifier {
   final SharedPreferences _prefs = coreSl<SharedPreferences>();
@@ -34,15 +34,11 @@ class AppTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  static final ThemeData light = _light;
-
-  static final ThemeData dark = _dark;
-
-  static AppColorsExtension get lightAppColors => _lightAppColors;
-
-  static AppTextExtension get lightTextTheme => _lightTextTheme;
-
-  static AppColorsExtension get darkAppColors => _darkAppColors;
-
+  static AppColorsExtension get darkAppColors => _darkColors;
   static AppTextExtension get darkTextTheme => _darkTextTheme;
+  static ThemeData get darkThemeData => _darkThemeData;
+
+  static AppColorsExtension get lightAppColors => _lightColors;
+  static AppTextExtension get lightTextTheme => _lightTextTheme;
+  static ThemeData get lightThemeData => _light;
 }

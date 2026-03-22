@@ -16,19 +16,19 @@ class MoreSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'More',
-            style: AppTypography.titleSmall.copyWith(
-              color: context.theme.appColors.textSecondary ??
-                  context.theme.appColors.textTertiary,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
         ListTile(
-          title: const Text('Restart Tutorial'),
+          title: Text(
+            'Restart Tutorial',
+            style: context.appTextTheme.denseTitle,
+          ),
           subtitle: Text(
             'Temporarily switches to demo data to show app features, then restores your original data',
-            style: context.theme.appTextTheme.bodySmall ??
-                Theme.of(context).textTheme.bodySmall,
+            style: context.appTextTheme.bodyMedium,
           ),
           trailing: IconButton(
             onPressed: () async {
@@ -61,7 +61,10 @@ class MoreSection extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
-          title: const Text('Send Feedback'),
+          title: Text(
+            'Send Feedback',
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
             await context.router.push(const FeedbackPageRoute());
           },
@@ -69,14 +72,20 @@ class MoreSection extends StatelessWidget {
         if (isChangelogEnabled)
           ListTile(
             leading: const Icon(Icons.history),
-            title: const Text('Changelog'),
+            title: Text(
+              'Changelog',
+              style: context.appTextTheme.denseTitle,
+            ),
             onTap: () async {
               await context.router.push(const ChangelogPageRoute());
             },
           ),
         ListTile(
           leading: const Icon(Icons.info_outline),
-          title: const Text('About'),
+          title: Text(
+            'About',
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
             await coreSl<IAnalyticsService>().logEvent(
               const UiActionEventData(
