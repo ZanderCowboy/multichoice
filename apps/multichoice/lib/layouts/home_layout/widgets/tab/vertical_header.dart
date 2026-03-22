@@ -28,7 +28,7 @@ class VerticalHeader extends StatelessWidget {
                     child: Icon(
                       Icons.unfold_more,
                       size: 28,
-                      color: context.theme.appColors.ternary,
+                      color: context.theme.appColors.textTertiary,
                     ),
                   ),
                 ),
@@ -40,7 +40,7 @@ class VerticalHeader extends StatelessWidget {
                   child: Icon(
                     Icons.unfold_more,
                     size: 28,
-                    color: context.theme.appColors.ternary,
+                    color: context.theme.appColors.textTertiary,
                   ),
                 ),
               ),
@@ -50,14 +50,14 @@ class VerticalHeader extends StatelessWidget {
                 children: [
                   Text(
                     tab.title,
-                    style: context.theme.appTextTheme.titleMedium,
+                    style: context.theme.appTextTheme.denseTitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),
                   if (tab.subtitle.isNotEmpty)
                     Text(
                       tab.subtitle,
-                      style: context.theme.appTextTheme.subtitleMedium,
+                      style: context.theme.appTextTheme.denseSubtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                     ),

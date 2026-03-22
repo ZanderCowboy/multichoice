@@ -17,16 +17,20 @@ class MoreSection extends StatelessWidget {
           child: Text(
             'More',
             style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+              color:
+                  context.theme.appColors.textSecondary ??
+                  context.theme.appColors.textTertiary,
               letterSpacing: 1.1,
             ),
           ),
         ),
         ListTile(
           title: const Text('Restart Tutorial'),
-          subtitle: const Text(
+          subtitle: Text(
             'Temporarily switches to demo data to show app features, then restores your original data',
-            style: TextStyle(fontSize: 12),
+            style:
+                context.theme.appTextTheme.bodySmall ??
+                Theme.of(context).textTheme.bodySmall,
           ),
           trailing: IconButton(
             onPressed: () async {

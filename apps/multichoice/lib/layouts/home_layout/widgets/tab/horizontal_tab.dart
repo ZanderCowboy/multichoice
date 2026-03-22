@@ -104,7 +104,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+            color: context.theme.appColors.iconColor?.withValues(alpha: 0.8),
             borderRadius: borderCircular12,
           ),
           sliver: SliverMainAxisGroup(
@@ -116,7 +116,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
-                  color: context.theme.appColors.secondaryLight,
+                  color: context.theme.appColors.textTertiary,
                   thickness: 2,
                   width: 8,
                   indent: 0,

@@ -103,8 +103,8 @@ class _VerticalHomeState extends State<_VerticalHome> {
         // Normal mode
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
-          color: context.theme.appColors.ternary,
-          backgroundColor: context.theme.appColors.background,
+          color: context.theme.appColors.textTertiary,
+          backgroundColor: context.theme.appColors.scaffoldBackground,
           // Note: The nested scroll structure (SingleChildScrollView wrapping
           // CustomScrollView) is intentional. RefreshIndicator requires vertical
           // scrolling, but this layout uses horizontal scrolling for tabs.

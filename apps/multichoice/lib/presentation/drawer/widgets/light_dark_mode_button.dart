@@ -36,7 +36,7 @@ class _LightDarkModeButtonState extends State<LightDarkModeButton> {
       value: _isDark,
       activeThumbImage: AssetImage(Assets.images.sleepMode.path),
       thumbColor: WidgetStatePropertyAll(
-        context.theme.appColors.primary,
+        context.theme.appColors.iconColor,
       ),
       inactiveThumbColor: Colors.black,
       inactiveThumbImage: AssetImage(Assets.images.sun.path),

@@ -20,7 +20,7 @@ class _DetailsListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: context.theme.appColors.secondary?.withValues(alpha: 0.1),
+      tileColor: context.theme.appColors.cardBackground?.withValues(alpha: 0.1),
       contentPadding: horizontal16,
       visualDensity: VisualDensity.compact,
       shape: RoundedRectangleBorder(
@@ -31,7 +31,7 @@ class _DetailsListTile extends StatelessWidget {
               title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: context.theme.appColors.ternary,
+                color: context.theme.appColors.textTertiary,
               ),
             )
           : null,
@@ -52,9 +52,8 @@ class _DetailsListTile extends StatelessWidget {
             )
           : SelectableText(
               subtitle ?? '',
-              style: TextStyle(
-                fontSize: 16,
-                color: context.theme.appColors.ternary,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: context.theme.appColors.textTertiary,
               ),
             ),
     );

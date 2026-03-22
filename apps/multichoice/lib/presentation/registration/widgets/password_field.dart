@@ -76,7 +76,7 @@ class _PasswordFieldState extends State<PasswordField> {
   }) {
     final appColors = context.theme.appColors;
     if (!hasInput) {
-      return appColors.background ?? appColors.white ?? Colors.white;
+      return appColors.textPrimary ?? appColors.white ?? Colors.white;
     }
     return isSatisfied
         ? appColors.success ?? Colors.green
@@ -129,7 +129,7 @@ class _PasswordFieldState extends State<PasswordField> {
   Color _infoIconColor() {
     final appColors = context.theme.appColors;
     if (_currentPassword.trim().isEmpty) {
-      return appColors.background ?? appColors.white ?? Colors.white;
+      return appColors.textPrimary ?? appColors.white ?? Colors.white;
     }
     return _meetsPolicy
         ? appColors.success ?? Colors.green
@@ -156,14 +156,16 @@ class _PasswordFieldState extends State<PasswordField> {
     final textColor =
         inputTheme.labelStyle?.color ??
         inputTheme.hintStyle?.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
         appColors.black ??
         Colors.black;
     final successColor = appColors.success ?? Colors.green;
     final errorColor = appColors.error ?? Colors.red;
     final inactiveBorderColor =
         inputTheme.enabledBorder?.borderSide.color ??
-        appColors.background ??
+        appColors.textSecondary ??
+        appColors.accent ??
         Colors.deepPurple;
     final disabledBorderColor = appColors.disabled ?? Colors.blue;
     final hasPasswordInput = _currentPassword.trim().isNotEmpty;
@@ -188,7 +190,7 @@ class _PasswordFieldState extends State<PasswordField> {
               children: [
                 Icon(
                   Icons.password,
-                  color: appColors.background ?? textColor,
+                  color: appColors.iconColor ?? textColor,
                 ),
                 gap4,
                 Text(
@@ -277,7 +279,7 @@ class _PasswordFieldState extends State<PasswordField> {
                         TextSpan(
                           text: 'Password requirements\n',
                           style: TextStyle(
-                            color: appColors.background ?? appColors.white,
+                            color: appColors.textPrimary ?? appColors.white,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
