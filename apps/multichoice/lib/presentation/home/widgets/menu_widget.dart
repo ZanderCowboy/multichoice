@@ -137,7 +137,7 @@ class MenuWidget extends StatelessWidget {
           ],
           icon: Icon(
             Icons.more_vert_outlined,
-            color: appColors.textTertiary,
+            color: appColors.ternary,
           ),
           color: appColors.scaffoldBackground,
           padding: zeroPadding,

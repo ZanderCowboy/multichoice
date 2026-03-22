@@ -57,6 +57,7 @@ class AppTextExtension extends ThemeExtension<AppTextExtension>
   final TextStyle? bodyMedium;
   @override
   final TextStyle? bodySmall;
+
   @override
   final TextStyle? denseTitle;
   @override
