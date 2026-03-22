@@ -66,8 +66,15 @@ class _TextThemeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: backgroundColor ?? Colors.transparent,
+    final bg = backgroundColor;
+    final borderColor = _contrastBorderColor(bg);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border.all(color: borderColor),
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+      ),
       child: Padding(
         padding: allPadding12,
         child: Column(
@@ -115,6 +122,18 @@ class _TextThemeSection extends StatelessWidget {
       _ => null,
     };
   }
+
+  /// Visible outline on both light and dark scaffold backgrounds.
+  static Color _contrastBorderColor(Color? background) {
+    if (background == null) {
+      return Colors.grey;
+    }
+    final luminance = background.computeLuminance();
+
+    return luminance > 0.5
+        ? Colors.black.withValues(alpha: 0.2)
+        : Colors.white.withValues(alpha: 0.22);
+  }
 }
 
 class _TextStylePreview extends StatelessWidget {
@@ -136,7 +155,7 @@ class _TextStylePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.labelSmall;
+    final labelStyle = Theme.of(context).textTheme.labelMedium;
     final displayName = _addBreakOpportunities(name);
 
     return Column(
