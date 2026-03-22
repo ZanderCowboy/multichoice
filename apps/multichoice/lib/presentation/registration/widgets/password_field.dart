@@ -23,7 +23,11 @@ class PasswordField extends StatefulWidget {
     this.validatePolicy = true,
     this.onValidityChanged,
     this.suffixIconAreaWidth = 92,
-  }); // TODO: Add assertion
+  }) : assert(
+         !(controller != null && initialValue != null),
+         'PasswordField: controller and initialValue cannot both be provided. '
+         'If a controller is specified, initialValue must be null per Flutter TextFormField contract.',
+       );
 
   final TextEditingController? controller;
   final String? initialValue;
@@ -33,7 +37,7 @@ class PasswordField extends StatefulWidget {
   final bool autofocus;
   final bool enabled;
   final Widget? customLabel;
-  final String labelText;
+  final String? labelText;
   final String? hintText;
   final bool showRequirements;
   final bool showErrorText;
@@ -198,7 +202,7 @@ class _PasswordFieldState extends State<PasswordField> {
                     ),
                     gap4,
                     Text(
-                      'Password',
+                      widget.labelText ?? 'Password',
                       style: TextStyle(
                         color: textColor,
                       ),

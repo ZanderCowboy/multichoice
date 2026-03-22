@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:theme/theme.dart';
 
 extension ThemeGetter on BuildContext {

@@ -19,8 +19,7 @@ class AppVersion extends StatelessWidget {
                   ? () => context.router.push(const DebugPageRoute())
                   : null,
               onLongPress: kDebugMode
-                  ? () =>
-                        () => context.router.push(const DebugPageRoute())
+                  ? () => context.router.push(const DebugPageRoute())
                   : null,
               child: Text(
                 'v${snapshot.data}',
