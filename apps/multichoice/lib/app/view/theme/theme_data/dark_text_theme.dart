@@ -20,7 +20,7 @@ final _darkTextTheme = AppTextExtension(
     color: _darkColors.accent,
   ),
   titleSmall: _AppTypography.title4.copyWith(
-    color: _darkColors.primary,
+    color: _darkColors.accent,
   ),
 
   /// Subtitle
@@ -31,12 +31,12 @@ final _darkTextTheme = AppTextExtension(
     color: _darkColors.accent,
   ),
   subtitleSmall: _AppTypography.subtitle4.copyWith(
-    color: _darkColors.primary,
+    color: _darkColors.accent,
   ),
 
   /// Body
   bodyLarge: _AppTypography.body2.copyWith(
-    color: _darkColors.primary,
+    color: _darkColors.accent,
   ),
   bodyMedium: _AppTypography.body3.copyWith(
     color: _darkColors.accent,
@@ -47,7 +47,7 @@ final _darkTextTheme = AppTextExtension(
 
   /// Dense Title
   denseTitle: _AppTypography.title4.copyWith(
-    color: _darkColors.primary,
+    color: _darkColors.accent,
     fontSize: 16,
     letterSpacing: 0.3,
     height: 1,
@@ -55,7 +55,7 @@ final _darkTextTheme = AppTextExtension(
 
   /// Dense Subtitle
   denseSubtitle: _AppTypography.body4.copyWith(
-    color: _darkColors.primary,
+    color: _darkColors.accent,
     letterSpacing: 0.5,
     height: 1.25,
   ),

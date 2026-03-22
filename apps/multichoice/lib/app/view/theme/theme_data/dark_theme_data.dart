@@ -1,9 +1,26 @@
 part of '../app_theme.dart';
 
+ColorScheme _darkColorScheme() =>
+    ColorScheme.fromSeed(
+      seedColor: _darkColors.primary!,
+      brightness: Brightness.dark,
+    ).copyWith(
+      primary: _darkColors.primary,
+      onPrimary: _darkColors.filledButtonForeground,
+      secondary: _darkColors.secondary,
+      onSecondary: _darkColors.white ?? _AppPalette.white,
+      surface: _darkColors.scaffoldBackground,
+      onSurface: _darkColors.textPrimary,
+      error: _darkColors.error,
+      onError: _AppPalette.white,
+      surfaceContainerHighest: _darkColors.cardBackground,
+    );
+
 final ThemeData _darkThemeData = () {
   final defaultTheme = ThemeData.dark();
 
   return defaultTheme.copyWith(
+    colorScheme: _darkColorScheme(),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: _darkColors.outlinedButtonForeground,
@@ -71,12 +88,55 @@ final ThemeData _darkThemeData = () {
       backgroundColor: _darkColors.appBarBackground,
     ),
     cardTheme: CardThemeData(
+      color: _darkColors.cardBackground,
+      surfaceTintColor: Colors.transparent,
       margin: vertical12horizontal4,
       elevation: 7,
       shadowColor: _darkColors.black,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular12,
       ),
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: _darkColors.secondary,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: _darkColors.appBarBackground,
+      contentTextStyle: _AppTypography.body2.copyWith(
+        color: _darkColors.textPrimary,
+      ),
+      actionTextColor: _darkColors.linkColor,
+      behavior: SnackBarBehavior.fixed,
+    ),
+    tooltipTheme: TooltipThemeData(
+      decoration: BoxDecoration(
+        color: _darkColors.appBarBackground,
+        borderRadius: borderCircular8,
+      ),
+      textStyle: _AppTypography.body2.copyWith(
+        color: _darkColors.textPrimary,
+      ),
+    ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: _darkColors.modalBackground,
+      textStyle: _AppTypography.body2.copyWith(
+        color: _darkColors.textPrimary,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: _darkColors.background,
+      selectedColor: _darkColors.secondary,
+      labelStyle: _AppTypography.body2.copyWith(
+        color: _darkColors.textPrimary,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: borderCircular12),
+    ),
+    dividerTheme: DividerThemeData(
+      color: _darkColors.textTertiary?.withValues(alpha: 0.5),
+    ),
+    drawerTheme: DrawerThemeData(
+      backgroundColor: _darkColors.scaffoldBackground,
     ),
     textTheme: defaultTheme.textTheme.copyWith(
       titleMedium: _darkTextTheme.titleMedium,

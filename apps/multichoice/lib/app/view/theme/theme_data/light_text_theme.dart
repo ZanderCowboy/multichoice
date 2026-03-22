@@ -14,10 +14,10 @@ final _lightTextTheme = AppTextExtension(
 
   /// Title
   titleLarge: _AppTypography.title2.copyWith(
-    color: _lightColors.textPrimary,
+    color: _lightColors.textSecondary,
   ),
   titleMedium: _AppTypography.title3.copyWith(
-    color: _lightColors.textPrimary,
+    color: _lightColors.textSecondary,
   ),
   titleSmall: _AppTypography.title4.copyWith(
     color: _lightColors.textSecondary,
@@ -25,10 +25,10 @@ final _lightTextTheme = AppTextExtension(
 
   /// Subtitle
   subtitleLarge: _AppTypography.subtitle2.copyWith(
-    color: _lightColors.textPrimary,
+    color: _lightColors.textSecondary,
   ),
   subtitleMedium: _AppTypography.subtitle3.copyWith(
-    color: _lightColors.textPrimary,
+    color: _lightColors.textSecondary,
   ),
   subtitleSmall: _AppTypography.subtitle4.copyWith(
     color: _lightColors.textSecondary,
@@ -36,7 +36,7 @@ final _lightTextTheme = AppTextExtension(
 
   /// Body
   bodyLarge: _AppTypography.body2.copyWith(
-    color: _lightColors.textPrimary,
+    color: _lightColors.textSecondary,
   ),
   bodyMedium: _AppTypography.body3.copyWith(
     color: _lightColors.textSecondary,
@@ -61,7 +61,7 @@ final _lightTextTheme = AppTextExtension(
   ),
 
   /// Assorted
-  hyperlink: _AppTypography.body4.copyWith(
-    color: _lightColors.textSecondary,
+  hyperlink: _AppTypography.body2.copyWith(
+    color: _lightColors.textTertiary,
   ),
 );
