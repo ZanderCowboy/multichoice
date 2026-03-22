@@ -4,9 +4,9 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
-import 'package:provider/provider.dart';
 
 class LogoutTile extends StatelessWidget {
   const LogoutTile({super.key});

@@ -243,7 +243,9 @@ class _DefaultBanner extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.close,
-              color: context.theme.appColors.textPrimary?.withValues(alpha: 0.7),
+              color: context.theme.appColors.textPrimary?.withValues(
+                alpha: 0.7,
+              ),
               size: 20,
             ),
             onPressed: handleDismiss,

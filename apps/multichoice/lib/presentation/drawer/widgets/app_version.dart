@@ -12,20 +12,26 @@ class AppVersion extends StatelessWidget {
       child: FutureBuilder(
         future: appVersion,
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularLoader.small();
+          }
+
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
-            return GestureDetector(
-              onDoubleTap: kDebugMode
-                  ? () => context.router.push(const DebugPageRoute())
-                  : null,
-              onLongPress: kDebugMode
-                  ? () => context.router.push(const DebugPageRoute())
-                  : null,
-              child: Text(
-                'v${snapshot.data}',
-                style: context.theme.appTextTheme.bodyMedium,
-              ),
-            );
+            return kDebugMode
+                ? GestureDetector(
+                    onLongPress: () =>
+                        context.router.push(const DebugPageRoute()),
+                    onDoubleTap: () =>
+                        context.router.push(const DebugPageRoute()),
+                    child: Text(
+                      'v${snapshot.data}',
+                      style: context.appTextTheme.bodyMedium?.copyWith(
+                        fontSize: 9,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
           }
           return const SizedBox.shrink();
         },
