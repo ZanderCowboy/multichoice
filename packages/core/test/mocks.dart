@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:isar_community/isar.dart';
@@ -47,5 +49,9 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<User>(as: #MockFirebaseUser),
   MockSpec<UserCredential>(as: #MockUserCredential),
   MockSpec<ILoginService>(as: #MockLoginService),
+  MockSpec<FlutterSecureStorage>(as: #MockFlutterSecureStorage),
+  MockSpec<GoogleSignIn>(as: #MockGoogleSignIn),
+  MockSpec<GoogleSignInAccount>(as: #MockGoogleSignInAccount),
+  MockSpec<GoogleSignInAuthentication>(as: #MockGoogleSignInAuthentication),
 ])
 void main() {}

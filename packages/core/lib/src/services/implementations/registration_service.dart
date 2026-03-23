@@ -11,11 +11,13 @@ class RegistrationService implements IRegistrationService {
     this._auth,
     this._loginService,
     this._appStorageService,
+    this._googleSignIn,
   );
 
   final FirebaseAuth _auth;
   final ILoginService _loginService;
   final IAppStorageService _appStorageService;
+  final GoogleSignIn _googleSignIn;
 
   @override
   Future<Either<AuthException, AuthResultDTO>> signUp(
@@ -106,10 +108,7 @@ class RegistrationService implements IRegistrationService {
   @override
   Future<Either<AuthException, AuthResultDTO>> signInWithGoogle() async {
     try {
-      final googleSignIn = GoogleSignIn(
-        scopes: const ['email', 'profile'],
-      );
-      final account = await googleSignIn.signIn();
+      final account = await _googleSignIn.signIn();
       if (account == null) {
         return const Left(AuthException.signInCancelled());
       }
