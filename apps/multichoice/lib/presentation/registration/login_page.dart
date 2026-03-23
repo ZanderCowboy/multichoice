@@ -54,12 +54,6 @@ class _LoginPageState extends State<LoginPage> {
       create: (_) => coreSl<RegistrationBloc>(),
       child: BlocConsumer<RegistrationBloc, RegistrationState>(
         listener: (context, state) {
-          if (!_hasRequestedPrefill) {
-            _hasRequestedPrefill = true;
-            context.read<RegistrationBloc>().add(
-              const RegistrationEvent.prefillRequested(),
-            );
-          }
           _syncControllersFromState(state);
           if (state.isSuccess) {
             context.read<AuthNotifier>().notifyAuthChanged();
@@ -82,6 +76,12 @@ class _LoginPageState extends State<LoginPage> {
             previous.password != current.password,
         builder: (context, state) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_hasRequestedPrefill) {
+              _hasRequestedPrefill = true;
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.prefillRequested(),
+              );
+            }
             _syncControllersFromState(state);
           });
           return _LoginPageContent(

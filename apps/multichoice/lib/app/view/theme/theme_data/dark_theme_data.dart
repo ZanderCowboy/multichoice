@@ -110,7 +110,7 @@ final ThemeData _darkThemeData = () {
     ),
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(
-        color: _darkColors.primaryLight,
+        color: _darkColors.primary?.withValues(alpha: 0.2),
         borderRadius: borderCircular8,
       ),
       textStyle: _AppTypography.body2.copyWith(

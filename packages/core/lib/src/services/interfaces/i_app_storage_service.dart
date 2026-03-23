@@ -22,6 +22,7 @@ abstract class IAppStorageService {
 
   Future<String?> get lastUsedEmail;
   Future<void> setLastUsedEmail(String email);
+  Future<void> clearLastUsedEmail();
 
   /// Clears all storage data by resetting all values to their defaults.
   /// This method should only be used in debug mode.

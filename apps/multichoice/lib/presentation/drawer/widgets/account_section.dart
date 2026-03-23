@@ -14,16 +14,17 @@ class AccountSection extends StatelessWidget {
           child: Text(
             'Account',
             style: context.appTextTheme.titleSmall?.copyWith(
-              color: Colors.white70,
               letterSpacing: 1.1,
             ),
           ),
         ),
         ListTile(
           leading: const Icon(Icons.person_outline),
-          title: const Text('Profile'),
+          title: Text(
+            'Profile',
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
-            Navigator.of(context).pop();
             unawaited(context.router.push(const ProfilePageRoute()));
           },
         ),

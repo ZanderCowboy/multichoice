@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
+import 'package:open_mail/open_mail.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -69,6 +72,73 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   void _onGoToResetPage(BuildContext context) {
     unawaited(context.router.push(const ResetPasswordPageRoute()));
+  }
+
+  Future<void> _openEmailApp(BuildContext context) async {
+    final apps = await OpenMail.getMailApps();
+
+    if (apps.isEmpty) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No email apps found on this device'),
+        ),
+      );
+      return;
+    }
+
+    if (apps.length == 1) {
+      final result = await OpenMail.openMailApp();
+      if (!result.didOpen && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open email app')),
+        );
+      }
+      return;
+    }
+
+    // Show picker when multiple email apps are available
+    final selectedApp = await showDialog<MailApp>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Open Email App'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Choose an email app to check your inbox for the password reset link.',
+            ),
+            gap16,
+            SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: apps.length,
+                itemBuilder: (ctx, index) {
+                  final app = apps[index];
+                  return ListTile(
+                    leading: const Icon(Icons.email_outlined),
+                    title: Text(app.name),
+                    onTap: () => Navigator.of(ctx).pop(app),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+
+    if (selectedApp != null) {
+      await OpenMail.openSpecificMailApp(selectedApp.name);
+    }
   }
 
   @override
@@ -173,11 +243,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {
-                // Open default mail app - platform dependent
-                // For now just navigate to reset page as per plan
-                _onGoToResetPage(context);
-              },
+              onPressed: () => _openEmailApp(context),
               icon: const Icon(Icons.open_in_new),
               label: const Text('Open Email App'),
             ),

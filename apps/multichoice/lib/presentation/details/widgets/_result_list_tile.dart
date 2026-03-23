@@ -16,7 +16,9 @@ class _ResultListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular8,
       ),
