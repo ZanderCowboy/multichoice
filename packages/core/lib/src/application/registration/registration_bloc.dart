@@ -32,24 +32,32 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         emit(
           state.copyWith(
             email: field == RegistrationField.email ? value : state.email,
-            username:
-                field == RegistrationField.username ? value : state.username,
-            password:
-                field == RegistrationField.password ? value : state.password,
+            username: field == RegistrationField.username
+                ? value
+                : state.username,
+            password: field == RegistrationField.password
+                ? value
+                : state.password,
             isError: false,
             errorMessage: null,
           ),
         );
+        break;
       case RegistrationSignupClicked():
         await _handleSignup(emit);
+        break;
       case RegistrationSignInClicked():
         await _handleSignIn(emit);
+        break;
       case RegistrationGoogleSignInClicked():
         await _handleGoogleSignIn(emit);
+        break;
       case RegistrationCancelClicked():
         emit(RegistrationState.initial());
+        break;
       case RegistrationPrefillRequested():
         await _handlePrefill(emit);
+        break;
     }
   }
 

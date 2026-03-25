@@ -26,14 +26,21 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+enum _AuthAction { signIn, google }
+
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailOrUsernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _hasRequestedPrefill = false;
+  _AuthAction? _loadingAction;
+  String? _loginButtonMessage;
+  bool _isLoginMessageSuccess = false;
+  Timer? _loginMessageResetTimer;
 
   @override
   void dispose() {
+    _loginMessageResetTimer?.cancel();
     _emailOrUsernameController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -48,6 +55,21 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _showLoginButtonMessage(String message, {required bool isSuccess}) {
+    _loginMessageResetTimer?.cancel();
+    setState(() {
+      _loginButtonMessage = message;
+      _isLoginMessageSuccess = isSuccess;
+    });
+
+    _loginMessageResetTimer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() {
+        _loginButtonMessage = null;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final content = BlocProvider(
@@ -57,23 +79,47 @@ class _LoginPageState extends State<LoginPage> {
           _syncControllersFromState(state);
           if (state.isSuccess) {
             context.read<AuthNotifier>().notifyAuthChanged();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Signed in successfully!')),
-            );
-            if (widget.isModal) {
-              Navigator.of(context).pop();
+            if (_loadingAction == _AuthAction.signIn) {
+              _showLoginButtonMessage(
+                'Signed in successfully!',
+                isSuccess: true,
+              );
+            }
+
+            if (_loadingAction != _AuthAction.google) {
+              Future<void>.delayed(const Duration(milliseconds: 800), () {
+                if (!mounted) return;
+                if (widget.isModal) {
+                  Navigator.of(this.context).pop();
+                } else {
+                  this.context.router.popUntilRoot();
+                }
+              });
             } else {
-              context.router.popUntilRoot();
+              if (widget.isModal) {
+                Navigator.of(context).pop();
+              } else {
+                context.router.popUntilRoot();
+              }
             }
           } else if (state.isError && state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
+            if (_loadingAction == _AuthAction.signIn) {
+              _showLoginButtonMessage(
+                state.errorMessage!,
+                isSuccess: false,
+              );
+            }
+            setState(() => _loadingAction = null);
+          } else if (!state.isLoading) {
+            setState(() => _loadingAction = null);
           }
         },
         buildWhen: (previous, current) =>
             previous.email != current.email ||
-            previous.password != current.password,
+            previous.password != current.password ||
+            previous.isLoading != current.isLoading ||
+            previous.isSuccess != current.isSuccess ||
+            previous.isError != current.isError,
         builder: (context, state) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!_hasRequestedPrefill) {
@@ -89,6 +135,22 @@ class _LoginPageState extends State<LoginPage> {
             emailOrUsernameController: _emailOrUsernameController,
             passwordController: _passwordController,
             isModal: widget.isModal,
+            loadingAction: _loadingAction,
+            isLoading: state.isLoading,
+            loginButtonMessage: _loginButtonMessage,
+            isLoginMessageSuccess: _isLoginMessageSuccess,
+            onLoginPressed: () {
+              setState(() => _loadingAction = _AuthAction.signIn);
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.signInClicked(),
+              );
+            },
+            onGooglePressed: () {
+              setState(() => _loadingAction = _AuthAction.google);
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.googleSignInClicked(),
+              );
+            },
           );
         },
       ),
@@ -117,12 +179,24 @@ class _LoginPageContent extends StatelessWidget {
     required this.emailOrUsernameController,
     required this.passwordController,
     required this.isModal,
+    required this.loadingAction,
+    required this.isLoading,
+    required this.loginButtonMessage,
+    required this.isLoginMessageSuccess,
+    required this.onLoginPressed,
+    required this.onGooglePressed,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController emailOrUsernameController;
   final TextEditingController passwordController;
   final bool isModal;
+  final _AuthAction? loadingAction;
+  final bool isLoading;
+  final String? loginButtonMessage;
+  final bool isLoginMessageSuccess;
+  final VoidCallback onLoginPressed;
+  final VoidCallback onGooglePressed;
 
   void _onForgotPassword(BuildContext context) {
     final email = emailOrUsernameController.text.trim();
@@ -145,6 +219,19 @@ class _LoginPageContent extends StatelessWidget {
           buildWhen: (p, c) =>
               p.isLoading != c.isLoading || p.isError != c.isError,
           builder: (context, state) {
+            final loginErrorColor = Theme.of(context).colorScheme.error;
+            final loginMessageIcon = isLoginMessageSuccess
+                ? Icon(
+                    Icons.check_circle_outline,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  )
+                : Icon(
+                    Icons.error_outline,
+                    size: 20,
+                    color: loginErrorColor,
+                  );
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -174,9 +261,7 @@ class _LoginPageContent extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: state.isLoading
-                        ? null
-                        : () => _onForgotPassword(context),
+                    onTap: isLoading ? null : () => _onForgotPassword(context),
                     child: Text(
                       'Forgot Password?',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -188,16 +273,18 @@ class _LoginPageContent extends StatelessWidget {
                 ),
                 gap16,
                 LoginButton(
-                  onPressed: state.isLoading
+                  onPressed: isLoading
                       ? null
                       : () {
                           if (formKey.currentState!.validate()) {
-                            context.read<RegistrationBloc>().add(
-                              const RegistrationEvent.signInClicked(),
-                            );
+                            onLoginPressed();
                           }
                         },
-                  isLoading: state.isLoading,
+                  isLoading: isLoading && loadingAction == _AuthAction.signIn,
+                  overrideLabel: loginButtonMessage,
+                  overrideIcon: loginButtonMessage != null
+                      ? loginMessageIcon
+                      : null,
                 ),
                 gap16,
                 Row(
@@ -217,12 +304,8 @@ class _LoginPageContent extends StatelessWidget {
                 ),
                 gap16,
                 GoogleSignInButton(
-                  onPressed: state.isLoading
-                      ? null
-                      : () => context.read<RegistrationBloc>().add(
-                          const RegistrationEvent.googleSignInClicked(),
-                        ),
-                  isLoading: state.isLoading,
+                  onPressed: isLoading ? null : onGooglePressed,
+                  isLoading: isLoading && loadingAction == _AuthAction.google,
                 ),
                 gap16,
                 Center(
@@ -241,7 +324,7 @@ class _LoginPageContent extends StatelessWidget {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              if (!state.isLoading) {
+                              if (!isLoading) {
                                 unawaited(
                                   context.router.push(const SignupPageRoute()),
                                 );

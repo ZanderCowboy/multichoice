@@ -46,35 +46,44 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: const SearchButton(),
                       ),
                     ),
-                    if (isLoggedIn)
-                      IconButton(
-                        onPressed: () async {
-                          await context.router.push(
-                            const ProfilePageRoute(),
-                          );
-                        },
-                        tooltip: 'Profile',
-                        icon: const Icon(Icons.person_outline),
-                        style: const ButtonStyle(
-                          padding: WidgetStatePropertyAll(EdgeInsets.zero),
-                        ),
-                      )
-                    else
-                      SizedBox(
-                        height: 32,
-                        width: 72,
-                        child: TextButton(
-                          onPressed: () async {
-                            showLoginModal(context);
-                          },
-                          style: const ButtonStyle(
-                            padding: WidgetStatePropertyAll(
-                              EdgeInsets.zero,
-                            ),
-                          ),
-                          child: const Text('Sign In'),
-                        ),
+                    AnimatedOpacity(
+                      opacity: state.isEditMode ? 0.35 : 1,
+                      duration: const Duration(milliseconds: 180),
+                      child: IgnorePointer(
+                        ignoring: state.isEditMode,
+                        child: isLoggedIn
+                            ? IconButton(
+                                onPressed: () async {
+                                  await context.router.push(
+                                    const ProfilePageRoute(),
+                                  );
+                                },
+                                tooltip: 'Profile',
+                                icon: const Icon(Icons.person_outline),
+                                style: const ButtonStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.zero,
+                                  ),
+                                ),
+                              )
+                            : SizedBox(
+                                height: 32,
+                                width: 72,
+                                child: TextButton(
+                                  onPressed: () async {
+                                    showLoginModal(context);
+                                  },
+                                  style: const ButtonStyle(
+                                    padding: WidgetStatePropertyAll(
+                                      EdgeInsets.zero,
+                                    ),
+                                  ),
+                                  child: const Text('Sign In'),
+                                ),
+                              ),
                       ),
+                    ),
+
                     gap12,
                   ],
                   leading: AnimatedOpacity(
