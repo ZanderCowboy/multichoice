@@ -213,131 +213,140 @@ class _LoginPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: allPadding16,
-      child: Form(
-        key: formKey,
-        child: BlocBuilder<RegistrationBloc, RegistrationState>(
-          buildWhen: (p, c) =>
-              p.isLoading != c.isLoading || p.isError != c.isError,
-          builder: (context, state) {
-            final loginErrorColor = Theme.of(context).colorScheme.error;
-            final loginMessageIcon = isLoginMessageSuccess
-                ? Icon(
-                    Icons.check_circle_outline,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )
-                : Icon(
-                    Icons.error_outline,
-                    size: 20,
-                    color: loginErrorColor,
-                  );
+      child: AutofillGroup(
+        child: Form(
+          key: formKey,
+          child: BlocBuilder<RegistrationBloc, RegistrationState>(
+            buildWhen: (p, c) =>
+                p.isLoading != c.isLoading || p.isError != c.isError,
+            builder: (context, state) {
+              final loginErrorColor = Theme.of(context).colorScheme.error;
+              final loginMessageIcon = isLoginMessageSuccess
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    )
+                  : Icon(
+                      Icons.error_outline,
+                      size: 20,
+                      color: loginErrorColor,
+                    );
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isModal) gap24,
-                EmailOrUsernameField(
-                  controller: emailOrUsernameController,
-                  onChanged: (value) => context.read<RegistrationBloc>().add(
-                    RegistrationEvent.fieldsChanged(
-                      field: RegistrationField.email,
-                      value: value,
-                    ),
-                  ),
-                ),
-                gap16,
-                PasswordField(
-                  controller: passwordController,
-                  validatePolicy: false,
-                  onChanged: (value) => context.read<RegistrationBloc>().add(
-                    RegistrationEvent.fieldsChanged(
-                      field: RegistrationField.password,
-                      value: value,
-                    ),
-                  ),
-                ),
-                gap8,
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: isLoading ? null : () => _onForgotPassword(context),
-                    child: Text(
-                      'Forgot Password?',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: context.theme.appColors.primary,
-                        decoration: TextDecoration.underline,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isModal) gap24,
+                  EmailOrUsernameField(
+                    controller: emailOrUsernameController,
+                    onChanged: (value) => context.read<RegistrationBloc>().add(
+                      RegistrationEvent.fieldsChanged(
+                        field: RegistrationField.email,
+                        value: value,
                       ),
                     ),
                   ),
-                ),
-                gap16,
-                LoginButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          if (formKey.currentState!.validate()) {
-                            onLoginPressed();
-                          }
-                        },
-                  isLoading: isLoading && loadingAction == _AuthAction.signIn,
-                  overrideLabel: loginButtonMessage,
-                  overrideIcon: loginButtonMessage != null
-                      ? loginMessageIcon
-                      : null,
-                ),
-                gap16,
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: horizontal16,
+                  gap16,
+                  PasswordField(
+                    controller: passwordController,
+                    validatePolicy: false,
+                    onChanged: (value) => context.read<RegistrationBloc>().add(
+                      RegistrationEvent.fieldsChanged(
+                        field: RegistrationField.password,
+                        value: value,
+                      ),
+                    ),
+                  ),
+                  gap8,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: isLoading
+                          ? null
+                          : () => _onForgotPassword(context),
                       child: Text(
-                        'or',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        'Forgot Password?',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: context.theme.appColors.primary,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-                gap16,
-                GoogleSignInButton(
-                  onPressed: isLoading ? null : onGooglePressed,
-                  isLoading: isLoading && loadingAction == _AuthAction.google,
-                ),
-                gap16,
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      children: [
-                        const TextSpan(text: "Don't have an account? "),
-                        TextSpan(
-                          text: 'Sign Up',
-                          style: TextStyle(
-                            color: context.theme.appColors.primary,
-                            decoration: TextDecoration.underline,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              if (!isLoading) {
-                                unawaited(
-                                  context.router.push(const SignupPageRoute()),
-                                );
-                              }
-                            },
-                        ),
-                      ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                  gap16,
+                  LoginButton(
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            if (formKey.currentState!.validate()) {
+                              onLoginPressed();
+                            }
+                          },
+                    isLoading: isLoading && loadingAction == _AuthAction.signIn,
+                    overrideLabel: loginButtonMessage,
+                    overrideIcon: loginButtonMessage != null
+                        ? loginMessageIcon
+                        : null,
+                  ),
+                  gap16,
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: horizontal16,
+                        child: Text(
+                          'or',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  gap16,
+                  GoogleSignInButton(
+                    onPressed: isLoading ? null : onGooglePressed,
+                    isLoading: isLoading && loadingAction == _AuthAction.google,
+                  ),
+                  gap16,
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        children: [
+                          const TextSpan(text: "Don't have an account? "),
+                          TextSpan(
+                            text: 'Sign Up',
+                            style: TextStyle(
+                              color: context.theme.appColors.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                if (!isLoading) {
+                                  unawaited(
+                                    context.router.push(
+                                      const SignupPageRoute(),
+                                    ),
+                                  );
+                                }
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

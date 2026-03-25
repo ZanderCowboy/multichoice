@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
                       await context.router.push(
-                        const ResetPasswordPageRoute(),
+                        ResetPasswordPageRoute(isChangePassword: true),
                       );
                       if (context.mounted) {
                         await _loadProfile();

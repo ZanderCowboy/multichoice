@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
@@ -52,16 +53,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     setState(() => _isLoading = true);
 
-    // Mock email sent - replace with backend call later
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    final email = _emailController.text.trim();
+    final result = await coreSl<IRegistrationRepository>()
+        .sendPasswordResetEmail(email);
 
     if (!context.mounted) return;
-    setState(() {
-      _isLoading = false;
-      _successMessage =
-          'Reset link sent! Check your email or open your mail app.';
-    });
 
+    var sent = false;
+    result.fold(
+      (err) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err.message)),
+        );
+      },
+      (_) {
+        sent = true;
+        setState(() {
+          _isLoading = false;
+          _successMessage =
+              'Reset link sent! Check your email or open your mail app.';
+        });
+      },
+    );
+
+    if (!sent || !context.mounted) return;
     await Future<void>.delayed(_successMessageDuration);
     if (!context.mounted) return;
     setState(() {
@@ -71,7 +87,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _onGoToResetPage(BuildContext context) {
-    unawaited(context.router.push(const ResetPasswordPageRoute()));
+    unawaited(context.router.push(ResetPasswordPageRoute()));
   }
 
   Future<void> _openEmailApp(BuildContext context) async {
@@ -162,54 +178,56 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget _buildForm(BuildContext context) {
     return SingleChildScrollView(
       padding: allPadding16,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            gap24,
-            Text(
-              "Enter your email and we'll send you a link to reset your password.",
-              style: context.appTextTheme.bodyLarge,
-            ),
-            gap24,
-            EmailField(controller: _emailController),
-            gap24,
-            AsyncFilledButton(
-              onPressed: () => _onResetPassword(context),
-              isLoading: _isLoading,
-              successLabel: _successMessage,
-              flexSuccessLabel: true,
-              successIcon: _successMessage != null
-                  ? Icon(
-                      Icons.check_circle_outline,
-                      size: 20,
-                      color: context.appColorsTheme.primary,
-                    )
-                  : null,
-              label: const Text('Send Reset Link'),
-            ),
-            gap16,
-            TextButton(
-              onPressed: _isLoading || _successMessage != null
-                  ? null
-                  : () => _onGoToResetPage(context),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('I have the reset link, go to Reset Password'),
-                  Text(
-                    '(temp - for testing)',
-                    style: context.appTextTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: context.appColorsTheme.secondary,
-                    ),
-                  ),
-                ],
+      child: AutofillGroup(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              gap24,
+              Text(
+                "Enter your email and we'll send you a link to reset your password.",
+                style: context.appTextTheme.bodyLarge,
               ),
-            ),
-          ],
+              gap24,
+              EmailField(controller: _emailController),
+              gap24,
+              AsyncFilledButton(
+                onPressed: () => _onResetPassword(context),
+                isLoading: _isLoading,
+                successLabel: _successMessage,
+                flexSuccessLabel: true,
+                successIcon: _successMessage != null
+                    ? Icon(
+                        Icons.check_circle_outline,
+                        size: 20,
+                        color: context.appColorsTheme.primary,
+                      )
+                    : null,
+                label: const Text('Send Reset Link'),
+              ),
+              gap16,
+              TextButton(
+                onPressed: _isLoading || _successMessage != null
+                    ? null
+                    : () => _onGoToResetPage(context),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('I have the reset link, go to Reset Password'),
+                    Text(
+                      '(temp - for testing)',
+                      style: context.appTextTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: context.appColorsTheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

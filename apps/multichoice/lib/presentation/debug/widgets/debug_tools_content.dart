@@ -34,7 +34,7 @@ class DebugToolsContent extends StatelessWidget {
             leading: const Icon(Icons.lock_reset),
             title: const Text('Reset Password'),
             subtitle: const Text('Test reset password flow'),
-            onTap: () => context.router.push(const ResetPasswordPageRoute()),
+            onTap: () => context.router.push(ResetPasswordPageRoute()),
           ),
           gap12,
           FutureBuilder<bool>(
