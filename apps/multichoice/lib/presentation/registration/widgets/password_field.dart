@@ -23,6 +23,7 @@ class PasswordField extends StatefulWidget {
     this.validatePolicy = true,
     this.onValidityChanged,
     this.suffixIconAreaWidth = 92,
+    this.autofillHints = const [AutofillHints.password],
   }) : assert(
          !(controller != null && initialValue != null),
          'PasswordField: controller and initialValue cannot both be provided. '
@@ -47,6 +48,9 @@ class PasswordField extends StatefulWidget {
   /// Horizontal space reserved for the info + visibility controls so the field
   /// width stays stable when the eye icon appears.
   final double suffixIconAreaWidth;
+
+  /// Use [AutofillHints.newPassword] on sign-up / password change screens.
+  final Iterable<String>? autofillHints;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -176,11 +180,15 @@ class _PasswordFieldState extends State<PasswordField> {
     final disabledBorderColor = appColors.disabled ?? Colors.blue;
     final hasPasswordInput = _currentPassword.trim().isNotEmpty;
     final suffixWidth = widget.suffixIconAreaWidth;
+    final usePolicyBorder = widget.showRequirements || widget.validatePolicy;
     final policyBorderColor = _policyBorderColor(
       successColor: successColor,
       inactiveColor: inactiveBorderColor,
       errorColor: errorColor,
     );
+    final effectiveBorderColor = usePolicyBorder
+        ? policyBorderColor
+        : inactiveBorderColor;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,10 +230,10 @@ class _PasswordFieldState extends State<PasswordField> {
                 ? null
                 : const TextStyle(fontSize: 0, height: 0),
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: policyBorderColor),
+              borderSide: BorderSide(color: effectiveBorderColor),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: policyBorderColor),
+              borderSide: BorderSide(color: effectiveBorderColor),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
@@ -239,7 +247,7 @@ class _PasswordFieldState extends State<PasswordField> {
               borderSide: BorderSide(color: disabledBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: policyBorderColor),
+              borderSide: BorderSide(color: effectiveBorderColor),
             ),
             suffixIconConstraints: BoxConstraints(
               minWidth: suffixWidth,
@@ -315,6 +323,7 @@ class _PasswordFieldState extends State<PasswordField> {
             ),
           ),
           cursorColor: textColor,
+          autofillHints: widget.autofillHints,
           keyboardType: TextInputType.visiblePassword,
           obscureText: _obscureText,
           obscuringCharacter: '*',

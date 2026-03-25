@@ -18,6 +18,7 @@ class UsernameField extends StatefulWidget {
     this.hintText = 'Enter username',
     this.labelText = 'Username',
     this.onValidityChanged,
+    this.autofillHints = const [AutofillHints.newUsername],
   });
 
   final TextEditingController? controller;
@@ -30,6 +31,7 @@ class UsernameField extends StatefulWidget {
   final String hintText;
   final String labelText;
   final ValueChanged<bool>? onValidityChanged;
+  final Iterable<String>? autofillHints;
 
   static String? defaultValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -139,6 +141,7 @@ class _UsernameFieldState extends State<UsernameField> {
           ),
       keyboardType: TextInputType.text,
       autocorrect: false,
+      autofillHints: widget.autofillHints,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       autovalidateMode: _hasTyped
