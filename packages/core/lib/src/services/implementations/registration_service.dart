@@ -219,6 +219,54 @@ class RegistrationService implements IRegistrationService {
     );
   }
 
+  @override
+  Future<Either<AuthException, void>> updatePassword(String newPassword) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        return const Left(AuthException.noSignedInUser());
+      }
+      await user.updatePassword(newPassword);
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
+  @override
+  Future<Either<AuthException, void>> confirmPasswordReset({
+    required String oobCode,
+    required String newPassword,
+  }) async {
+    try {
+      await _auth.confirmPasswordReset(
+        code: oobCode,
+        newPassword: newPassword,
+      );
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
+  @override
+  Future<Either<AuthException, void>> sendPasswordResetEmail(
+    String email,
+  ) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
   String _mapFirebaseAuthError(FirebaseAuthException e) {
     return switch (e.code) {
       'email-already-in-use' => 'An account already exists for this email.',
@@ -230,6 +278,8 @@ class RegistrationService implements IRegistrationService {
       'wrong-password' => 'Incorrect password.',
       'invalid-credential' => 'Invalid email or password.',
       'invalid-login-credentials' => 'Invalid email or password.',
+      'expired-action-code' => 'This reset link has expired. Request a new one.',
+      'invalid-action-code' => 'This reset link is invalid or was already used.',
       _ => e.message ?? e.code,
     };
   }

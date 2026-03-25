@@ -25,4 +25,22 @@ class RegistrationRepository implements IRegistrationRepository {
   @override
   Future<Either<AuthException, AuthResultDTO>> signInWithGoogle() =>
       _registrationService.signInWithGoogle();
+
+  @override
+  Future<Either<AuthException, void>> updatePassword(String newPassword) =>
+      _registrationService.updatePassword(newPassword);
+
+  @override
+  Future<Either<AuthException, void>> confirmPasswordReset({
+    required String oobCode,
+    required String newPassword,
+  }) =>
+      _registrationService.confirmPasswordReset(
+        oobCode: oobCode,
+        newPassword: newPassword,
+      );
+
+  @override
+  Future<Either<AuthException, void>> sendPasswordResetEmail(String email) =>
+      _registrationService.sendPasswordResetEmail(email);
 }

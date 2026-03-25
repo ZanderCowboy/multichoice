@@ -20,6 +20,9 @@ sealed class RegistrationEvent {
   const factory RegistrationEvent.cancelClicked() = RegistrationCancelClicked;
   const factory RegistrationEvent.prefillRequested() =
       RegistrationPrefillRequested;
+  /// Clears form state for sign-up so no prior login email is shown.
+  const factory RegistrationEvent.signupFormOpened() =
+      RegistrationSignupFormOpened;
 }
 
 final class RegistrationPrefillRequested extends RegistrationEvent {
@@ -50,4 +53,8 @@ final class RegistrationGoogleSignInClicked extends RegistrationEvent {
 
 final class RegistrationCancelClicked extends RegistrationEvent {
   const RegistrationCancelClicked();
+}
+
+final class RegistrationSignupFormOpened extends RegistrationEvent {
+  const RegistrationSignupFormOpened();
 }

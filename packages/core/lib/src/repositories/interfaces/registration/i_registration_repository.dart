@@ -11,4 +11,13 @@ abstract class IRegistrationRepository {
   );
 
   Future<Either<AuthException, AuthResultDTO>> signInWithGoogle();
+
+  Future<Either<AuthException, void>> updatePassword(String newPassword);
+
+  Future<Either<AuthException, void>> confirmPasswordReset({
+    required String oobCode,
+    required String newPassword,
+  });
+
+  Future<Either<AuthException, void>> sendPasswordResetEmail(String email);
 }

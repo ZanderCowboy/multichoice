@@ -58,6 +58,9 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       case RegistrationPrefillRequested():
         await _handlePrefill(emit);
         break;
+      case RegistrationSignupFormOpened():
+        emit(RegistrationState.initial());
+        break;
     }
   }
 

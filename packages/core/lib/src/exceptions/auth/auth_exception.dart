@@ -11,6 +11,9 @@ class AuthException implements Exception {
 
   const AuthException.signInCancelled() : this('Sign in cancelled');
 
+  const AuthException.noSignedInUser()
+      : this('No signed-in user. Sign in to change your password.');
+
   factory AuthException.firebaseMessage(String message) =>
       AuthException(message);
 
