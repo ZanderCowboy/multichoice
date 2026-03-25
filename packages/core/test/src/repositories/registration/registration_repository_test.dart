@@ -57,5 +57,43 @@ void main() {
       expect(result, Right<AuthException, AuthResultDTO>(successResult));
       verify(mockService.signInWithGoogle()).called(1);
     });
+
+    test('updatePassword delegates to registration service', () async {
+      when(
+        mockService.updatePassword('newPass1!'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.updatePassword('newPass1!');
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.updatePassword('newPass1!')).called(1);
+    });
+
+    test('confirmPasswordReset delegates to registration service', () async {
+      when(
+        mockService.confirmPasswordReset(oobCode: 'code', newPassword: 'p'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.confirmPasswordReset(
+        oobCode: 'code',
+        newPassword: 'p',
+      );
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(
+        mockService.confirmPasswordReset(oobCode: 'code', newPassword: 'p'),
+      ).called(1);
+    });
+
+    test('sendPasswordResetEmail delegates to registration service', () async {
+      when(
+        mockService.sendPasswordResetEmail('a@b.com'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.sendPasswordResetEmail('a@b.com');
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.sendPasswordResetEmail('a@b.com')).called(1);
+    });
   });
 }

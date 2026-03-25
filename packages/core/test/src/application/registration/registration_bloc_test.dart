@@ -264,5 +264,13 @@ void main() {
       act: (b) => b.add(const RegistrationEvent.prefillRequested()),
       expect: () => <RegistrationState>[],
     );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signupFormOpened resets to initial state',
+      build: () => bloc,
+      seed: () => seededState(email: 'old@example.com', username: 'u', password: 'x'),
+      act: (b) => b.add(const RegistrationEvent.signupFormOpened()),
+      expect: () => [RegistrationState.initial()],
+    );
   });
 }
