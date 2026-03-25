@@ -45,6 +45,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IRegistrationRepository>(as: #MockRegistrationRepository),
   MockSpec<IRegistrationService>(as: #MockRegistrationService),
   MockSpec<IPasswordService>(as: #MockPasswordService),
+  MockSpec<ICredentialValidationService>(as: #MockCredentialValidationService),
   MockSpec<FirebaseAuth>(as: #MockFirebaseAuth),
   MockSpec<User>(as: #MockFirebaseUser),
   MockSpec<UserCredential>(as: #MockUserCredential),

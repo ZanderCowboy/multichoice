@@ -10,7 +10,7 @@ import '../../../mocks.mocks.dart';
 void main() {
   late RegistrationBloc bloc;
   late MockRegistrationRepository mockRepository;
-  late MockPasswordService mockPasswordService;
+  late MockCredentialValidationService mockCredentialValidationService;
   late MockAppStorageService mockAppStorage;
 
   final authSuccess = AuthResultDTO(accessToken: 't', userId: 'uid');
@@ -23,24 +23,23 @@ void main() {
     bool isSuccess = false,
     bool isError = false,
     String? errorMessage,
-  }) =>
-      RegistrationState(
-        email: email,
-        username: username,
-        password: password,
-        isLoading: isLoading,
-        isSuccess: isSuccess,
-        isError: isError,
-        errorMessage: errorMessage,
-      );
+  }) => RegistrationState(
+    email: email,
+    username: username,
+    password: password,
+    isLoading: isLoading,
+    isSuccess: isSuccess,
+    isError: isError,
+    errorMessage: errorMessage,
+  );
 
   setUp(() {
     mockRepository = MockRegistrationRepository();
-    mockPasswordService = MockPasswordService();
+    mockCredentialValidationService = MockCredentialValidationService();
     mockAppStorage = MockAppStorageService();
     bloc = RegistrationBloc(
       mockRepository,
-      mockPasswordService,
+      mockCredentialValidationService,
       mockAppStorage,
     );
   });
@@ -94,7 +93,13 @@ void main() {
       'signupClicked emits error when password validation fails',
       build: () {
         when(
-          mockPasswordService.validate(any),
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateUsername(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePassword(any),
         ).thenReturn('Password must include: 1 number');
         return bloc;
       },
@@ -103,10 +108,22 @@ void main() {
       expect: () => [
         isA<RegistrationState>()
             .having((s) => s.isError, 'isError', true)
-            .having((s) => s.errorMessage, 'errorMessage', 'Password must include: 1 number'),
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Password must include: 1 number',
+            ),
       ],
       verify: (_) {
-        verify(mockPasswordService.validate('Secure1!')).called(1);
+        verify(
+          mockCredentialValidationService.validateEmail('test@example.com'),
+        ).called(1);
+        verify(
+          mockCredentialValidationService.validateUsername('user1'),
+        ).called(1);
+        verify(
+          mockCredentialValidationService.validatePassword('Secure1!'),
+        ).called(1);
         verifyNever(mockRepository.signUp(any));
       },
     );
@@ -114,7 +131,15 @@ void main() {
     blocTest<RegistrationBloc, RegistrationState>(
       'signupClicked emits loading then success when sign up succeeds',
       build: () {
-        when(mockPasswordService.validate(any)).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateUsername(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
         when(
           mockRepository.signUp(any),
         ).thenAnswer((_) async => Right(authSuccess));
@@ -147,7 +172,15 @@ void main() {
     blocTest<RegistrationBloc, RegistrationState>(
       'signupClicked emits loading then error when sign up fails',
       build: () {
-        when(mockPasswordService.validate(any)).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateUsername(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
         when(mockRepository.signUp(any)).thenAnswer(
           (_) async => const Left(AuthException('Email in use')),
         );
@@ -169,6 +202,11 @@ void main() {
       'signInClicked emits error when email is empty',
       build: () => bloc,
       seed: () => seededState(email: '', password: 'x'),
+      setUp: () {
+        when(mockCredentialValidationService.validateEmail(any)).thenReturn(
+          'Email is required',
+        );
+      },
       act: (b) => b.add(const RegistrationEvent.signInClicked()),
       expect: () => [
         isA<RegistrationState>()
@@ -184,6 +222,14 @@ void main() {
       'signInClicked emits error when password is empty',
       build: () => bloc,
       seed: () => seededState(password: ''),
+      setUp: () {
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn('Password is required');
+      },
       act: (b) => b.add(const RegistrationEvent.signInClicked()),
       expect: () => [
         isA<RegistrationState>()
@@ -199,6 +245,12 @@ void main() {
     blocTest<RegistrationBloc, RegistrationState>(
       'signInClicked emits loading then success when sign in succeeds',
       build: () {
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn(null);
         when(
           mockRepository.signIn('test@example.com', 'Secure1!'),
         ).thenAnswer((_) async => Right(authSuccess));
@@ -242,7 +294,9 @@ void main() {
     blocTest<RegistrationBloc, RegistrationState>(
       'prefillRequested sets email from storage when present',
       build: () {
-        when(mockAppStorage.lastUsedEmail).thenAnswer((_) async => 'saved@x.com');
+        when(
+          mockAppStorage.lastUsedEmail,
+        ).thenAnswer((_) async => 'saved@x.com');
         return bloc;
       },
       act: (b) => b.add(const RegistrationEvent.prefillRequested()),
@@ -268,7 +322,8 @@ void main() {
     blocTest<RegistrationBloc, RegistrationState>(
       'signupFormOpened resets to initial state',
       build: () => bloc,
-      seed: () => seededState(email: 'old@example.com', username: 'u', password: 'x'),
+      seed: () =>
+          seededState(email: 'old@example.com', username: 'u', password: 'x'),
       act: (b) => b.add(const RegistrationEvent.signupFormOpened()),
       expect: () => [RegistrationState.initial()],
     );

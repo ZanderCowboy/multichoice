@@ -13,14 +13,14 @@ part 'registration_bloc.g.dart';
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   RegistrationBloc(
     this._registrationRepository,
-    this._passwordService,
+    this._credentialValidationService,
     this._appStorageService,
   ) : super(RegistrationState.initial()) {
     on<RegistrationEvent>(_onEvent);
   }
 
   final IRegistrationRepository _registrationRepository;
-  final IPasswordService _passwordService;
+  final ICredentialValidationService _credentialValidationService;
   final IAppStorageService _appStorageService;
 
   Future<void> _onEvent(
@@ -72,7 +72,33 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   }
 
   Future<void> _handleSignup(Emitter<RegistrationState> emit) async {
-    final validationError = _passwordService.validate(state.password);
+    final emailError = _credentialValidationService.validateEmail(state.email);
+    if (emailError != null) {
+      emit(
+        state.copyWith(
+          isError: true,
+          errorMessage: emailError,
+        ),
+      );
+      return;
+    }
+
+    final usernameError = _credentialValidationService.validateUsername(
+      state.username,
+    );
+    if (usernameError != null) {
+      emit(
+        state.copyWith(
+          isError: true,
+          errorMessage: usernameError,
+        ),
+      );
+      return;
+    }
+
+    final validationError = _credentialValidationService.validatePassword(
+      state.password,
+    );
     if (validationError != null) {
       emit(
         state.copyWith(
@@ -114,22 +140,25 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   }
 
   Future<void> _handleSignIn(Emitter<RegistrationState> emit) async {
-    final email = state.email.trim();
-    if (email.isEmpty) {
+    final emailError = _credentialValidationService.validateEmail(state.email);
+    if (emailError != null) {
       emit(
         state.copyWith(
           isError: true,
-          errorMessage: 'Email is required',
+          errorMessage: emailError,
         ),
       );
       return;
     }
 
-    if (state.password.isEmpty) {
+    final passwordError = _credentialValidationService.validatePasswordRequired(
+      state.password,
+    );
+    if (passwordError != null) {
       emit(
         state.copyWith(
           isError: true,
-          errorMessage: 'Password is required',
+          errorMessage: passwordError,
         ),
       );
       return;
@@ -138,7 +167,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     emit(state.copyWith(isLoading: true, isError: false, errorMessage: null));
 
     final result = await _registrationRepository.signIn(
-      email,
+      state.email.trim(),
       state.password,
     );
 
