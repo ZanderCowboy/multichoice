@@ -45,7 +45,9 @@ class _DetailsSectionState extends State<_DetailsSection> {
         final isEditing = state.isEditingMode;
 
         return Card(
-          elevation: 2,
+          elevation: 3,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           margin: horizontal12 + top12 + bottom6,
           color: context.appColorsTheme.primary,

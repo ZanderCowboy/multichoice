@@ -9,6 +9,7 @@ import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/home/horizontal_home.dart';
 part 'widgets/home/vertical_home.dart';
+part 'widgets/home/edit_mode_helper_banner.dart';
 part 'widgets/_on_home_refresh.dart';
 
 class HomeLayout extends StatelessWidget {

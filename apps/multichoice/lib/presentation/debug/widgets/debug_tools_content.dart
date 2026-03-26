@@ -25,7 +25,7 @@ class DebugToolsContent extends StatelessWidget {
             leading: const Icon(Icons.dataset),
             title: const Text('Clear Storage Data'),
             subtitle: const Text(
-              'Clear any data stored in SharedPreferences',
+              'Clears tour, layout, banners, permissions flags, email, etc.',
             ),
             onTap: () => onClearStorage(context),
           ),
@@ -34,19 +34,30 @@ class DebugToolsContent extends StatelessWidget {
             leading: const Icon(Icons.lock_reset),
             title: const Text('Reset Password'),
             subtitle: const Text('Test reset password flow'),
-            onTap: () => context.router.push(const ResetPasswordPageRoute()),
+            onTap: () => context.router.push(ResetPasswordPageRoute()),
           ),
           gap12,
-          SwitchListTile(
-            secondary: const Icon(Icons.person_outline),
-            title: const Text('Force Logged In (debug)'),
-            subtitle: Text(
-              authNotifier.hasDebugOverride
-                  ? 'Manual override active'
-                  : 'Using stored session state',
-            ),
-            value: authNotifier.isUserLoggedIn,
-            onChanged: (value) => authNotifier.setDebugLoggedInOverride,
+          FutureBuilder<bool>(
+            future: authNotifier.isUserLoggedIn,
+            builder: (context, snapshot) {
+              final sessionLoggedIn = snapshot.data ?? false;
+              final value = authNotifier.hasDebugOverride
+                  ? (authNotifier.debugLoggedInOverride ?? false)
+                  : sessionLoggedIn;
+              return SwitchListTile(
+                secondary: const Icon(Icons.person_outline),
+                title: const Text('Force Logged In (debug)'),
+                subtitle: Text(
+                  authNotifier.hasDebugOverride
+                      ? 'Manual override active'
+                      : 'Using stored session state',
+                ),
+                value: value,
+                onChanged: (newValue) => authNotifier.setDebugLoggedInOverride(
+                  value: newValue,
+                ),
+              );
+            },
           ),
           if (authNotifier.hasDebugOverride)
             TextButton.icon(

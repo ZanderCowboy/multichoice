@@ -93,6 +93,8 @@ const bottom24 = EdgeInsets.only(bottom: 24);
 
 const vertical4horizontal0 = EdgeInsets.symmetric(vertical: 4, horizontal: 0);
 
+const vertical4horizontal4 = EdgeInsets.symmetric(vertical: 4, horizontal: 4);
+
 const vertical8horizontal4 = EdgeInsets.symmetric(vertical: 8, horizontal: 4);
 
 const vertical12horizontal4 = EdgeInsets.symmetric(horizontal: 4, vertical: 12);

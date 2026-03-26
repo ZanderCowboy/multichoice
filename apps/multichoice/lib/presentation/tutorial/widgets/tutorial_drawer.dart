@@ -13,6 +13,7 @@ class TutorialDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: MediaQuery.sizeOf(context).width,
+      backgroundColor: context.theme.appColors.background,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -36,7 +37,7 @@ class TutorialDrawer extends StatelessWidget {
                     children: [
                       Text(
                         'Multichoice',
-                        style: context.appTextTheme.titleLarge,
+                        style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(

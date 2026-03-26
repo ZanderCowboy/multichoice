@@ -18,7 +18,12 @@ class HorizontalVerticalLayoutButton extends StatelessWidget {
         style: context.appTextTheme.denseTitle,
       ),
       value: appLayout.isLayoutVertical,
-      trackColor: WidgetStatePropertyAll(context.appColorsTheme.foreground),
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return context.appColorsTheme.primaryLight;
+        }
+        return context.appColorsTheme.primaryLight;
+      }),
       activeThumbColor: context.theme.appColors.accent,
       inactiveThumbColor: context.theme.appColors.accent,
       thumbIcon: WidgetStateProperty.resolveWith((states) {

@@ -26,9 +26,7 @@ class AppVersion extends StatelessWidget {
                         context.router.push(const DebugPageRoute()),
                     child: Text(
                       'v${snapshot.data}',
-                      style: context.appTextTheme.bodyMedium?.copyWith(
-                        fontSize: 9,
-                      ),
+                      style: context.appTextTheme.bodyMedium,
                     ),
                   )
                 : const SizedBox.shrink();

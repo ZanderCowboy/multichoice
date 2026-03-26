@@ -92,14 +92,18 @@ class _HorizontalTab extends StatelessWidget {
     final isFirstTab =
         context.watch<ProductBloc>().state.tabs?.first.id == tab.id;
 
-    return Card(
-      margin: allPadding4,
-      color: context.theme.appColors.linkColor,
-      child: Padding(
-        padding: allPadding2,
-        child: SizedBox(
-          height: UIConstants.horiTabHeight(context),
-          child: CustomScrollView(
+    return Padding(
+      padding: allPadding4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+          borderRadius: borderCircular12,
+        ),
+        child: Padding(
+          padding: allPadding2,
+          child: SizedBox(
+            height: UIConstants.horiTabHeight(context),
+            child: CustomScrollView(
             scrollDirection: Axis.horizontal,
             controller: ScrollController(),
             scrollBehavior: CustomScrollBehaviour(),
@@ -142,10 +146,11 @@ class _HorizontalTab extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
-                  color: context.theme.appColors.textTertiary,
+                  color: context.theme.appColors.secondaryLight,
                   thickness: 2,
-                  indent: 4,
-                  endIndent: 4,
+                  width: 8,
+                  indent: 0,
+                  endIndent: 0,
                 ),
               ),
               SliverGrid.builder(
@@ -208,6 +213,7 @@ class _HorizontalTab extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

@@ -25,7 +25,8 @@ class SearchResultCard extends StatelessWidget {
     // TODO: Create a reusable card widget for search results and details.
     return Card(
       elevation: 3,
-      // shadowColor: Colors.grey[400],
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular5,
       ),

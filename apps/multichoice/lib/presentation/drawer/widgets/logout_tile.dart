@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 
 import 'package:core/core.dart';
@@ -20,16 +18,22 @@ class LogoutTile extends StatelessWidget {
     );
   }
 
-  void _onLogout(BuildContext context) {
+  Future<void> _onLogout(BuildContext context) async {
     Navigator.of(context).pop();
     context.read<AuthNotifier>().clearDebugLoggedInOverride();
-    if (coreSl.isRegistered<Session>()) {
-      coreSl<Session>().deleteLoginInfo();
+    if (coreSl.isRegistered<ILoginService>()) {
+      await coreSl<ILoginService>().deleteLoginInfo();
     }
+    if (!context.mounted) return;
     context.read<AuthNotifier>().notifyAuthChanged();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Signed out successfully')),
     );
-    unawaited(Future<void>.microtask(() => showLoginModal(context)));
+    unawaited(
+      Future<void>.microtask(() {
+        if (!context.mounted) return;
+        showLoginModal(context);
+      }),
+    );
   }
 }

@@ -14,6 +14,8 @@ class EmailField extends StatefulWidget {
     this.validator,
     this.autofocus = false,
     this.enabled = true,
+    this.onValidityChanged,
+    this.autofillHints = const [AutofillHints.email],
   });
 
   final TextEditingController? controller;
@@ -23,6 +25,8 @@ class EmailField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final bool autofocus;
   final bool enabled;
+  final ValueChanged<bool>? onValidityChanged;
+  final Iterable<String>? autofillHints;
 
   static String? defaultValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -44,6 +48,7 @@ class EmailField extends StatefulWidget {
 class _EmailFieldState extends State<EmailField> {
   bool _hasTyped = false;
   bool _isValidEmail = false;
+  bool _lastNotifiedValid = false;
 
   String? _validator(String? value) {
     final trimmedValue = value?.trim() ?? '';
@@ -159,9 +164,14 @@ class _EmailFieldState extends State<EmailField> {
             _isValidEmail = isValid;
           });
         }
+        if (_lastNotifiedValid != isValid) {
+          _lastNotifiedValid = isValid;
+          widget.onValidityChanged?.call(isValid);
+        }
         widget.onChanged?.call(value);
       },
 
+      autofillHints: widget.autofillHints,
       validator: _validator,
     );
   }

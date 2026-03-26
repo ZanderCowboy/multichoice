@@ -6,12 +6,19 @@ import 'package:flutter/foundation.dart';
 class AuthNotifier extends ChangeNotifier {
   bool? _debugLoggedInOverride;
 
+  /// Bumps when auth changes so keyed `FutureBuilder` session checks re-run.
+  int authEpoch = 0;
+
+  /// Bumps when debug "Clear Storage Data" runs so UI can re-read SharedPreferences.
+  int storageClearEpoch = 0;
+
   bool get hasDebugOverride => _debugLoggedInOverride != null;
 
-  bool get isUserLoggedIn {
+  Future<bool> get isUserLoggedIn async {
     final override = _debugLoggedInOverride;
     if (override != null) return override;
-    return coreSl.isRegistered<Session>() && coreSl<Session>().isUserLoggedIn();
+    return coreSl.isRegistered<ILoginService>() &&
+        await coreSl<ILoginService>().isUserLoggedIn();
   }
 
   bool? get debugLoggedInOverride => _debugLoggedInOverride;
@@ -27,6 +34,12 @@ class AuthNotifier extends ChangeNotifier {
   }
 
   void notifyAuthChanged() {
+    authEpoch++;
+    notifyListeners();
+  }
+
+  void notifyStorageCleared() {
+    storageClearEpoch++;
     notifyListeners();
   }
 }

@@ -16,6 +16,7 @@ class EmailOrUsernameField extends StatefulWidget {
     this.autofocus = false,
     this.enabled = true,
     this.onValidityChanged,
+    this.autofillHints = const [AutofillHints.username],
   });
 
   final TextEditingController? controller;
@@ -26,6 +27,7 @@ class EmailOrUsernameField extends StatefulWidget {
   final bool autofocus;
   final bool enabled;
   final ValueChanged<bool>? onValidityChanged;
+  final Iterable<String>? autofillHints;
 
   static String? defaultValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -126,6 +128,7 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
           ),
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
+      autofillHints: widget.autofillHints,
       autofocus: widget.autofocus,
       enabled: widget.enabled,
       autovalidateMode: _hasTyped

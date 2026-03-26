@@ -95,10 +95,10 @@ final ThemeData _light = () {
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return _lightColors.foreground;
+          return _lightColors.primaryLight;
         }
 
-        return _lightColors.primary;
+        return _lightColors.primaryLight;
       }),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
     ),
@@ -140,7 +140,7 @@ final ThemeData _light = () {
     ),
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(
-        color: _lightColors.primaryLight,
+        color: _lightColors.primary?.withValues(alpha: 0.2),
         borderRadius: borderCircular8,
       ),
       textStyle: _AppTypography.body2.copyWith(

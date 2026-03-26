@@ -55,44 +55,51 @@ class _HorizontalHomeState extends State<_HorizontalHome> {
         if (isEditMode && tabs.isNotEmpty) {
           // Use ReorderableListView for edit mode
           final theme = Theme.of(context);
-          return Padding(
-            padding: top4,
-            child: ReorderableListView.builder(
-              scrollController: _scrollController,
-              buildDefaultDragHandles: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              proxyDecorator: (child, index, animation) {
-                // Override Card theme to make it transparent when dragging
-                return Theme(
-                  data: theme.copyWith(
-                    cardTheme: theme.cardTheme.copyWith(
-                      color: Colors.transparent,
-                      surfaceTintColor: Colors.transparent,
-                      elevation: 0,
-                    ),
+          return Column(
+            children: [
+              const _EditModeHelperBanner(isLayoutVertical: false),
+              Expanded(
+                child: Padding(
+                  padding: top4,
+                  child: ReorderableListView.builder(
+                    scrollController: _scrollController,
+                    buildDefaultDragHandles: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    proxyDecorator: (child, index, animation) {
+                      // Override Card theme to make it transparent when dragging
+                      return Theme(
+                        data: theme.copyWith(
+                          cardTheme: theme.cardTheme.copyWith(
+                            color: Colors.transparent,
+                            surfaceTintColor: Colors.transparent,
+                            elevation: 0,
+                          ),
+                        ),
+                        child: child,
+                      );
+                    },
+                    itemCount: tabs.length,
+                    onReorder: (oldIndex, newIndex) {
+                      context.read<HomeBloc>().add(
+                        HomeEvent.onReorderTabs(oldIndex, newIndex),
+                      );
+                    },
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
+                      return Padding(
+                        key: ValueKey(tab.id),
+                        padding: const EdgeInsets.only(bottom: 8, top: 4),
+                        child: CollectionTab(
+                          tab: tab,
+                          isEditMode: isEditMode,
+                          dragIndex: index,
+                        ),
+                      );
+                    },
                   ),
-                  child: child,
-                );
-              },
-              itemCount: tabs.length,
-              onReorder: (oldIndex, newIndex) {
-                context.read<HomeBloc>().add(
-                  HomeEvent.onReorderTabs(oldIndex, newIndex),
-                );
-              },
-              itemBuilder: (_, index) {
-                final tab = tabs[index];
-                return Padding(
-                  key: ValueKey(tab.id),
-                  padding: const EdgeInsets.only(bottom: 8, top: 4),
-                  child: CollectionTab(
-                    tab: tab,
-                    isEditMode: isEditMode,
-                    dragIndex: index,
-                  ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           );
         }
 

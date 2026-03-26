@@ -14,7 +14,7 @@ class DataSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'Data',
-            style: context.appTextTheme.titleSmall!.copyWith(
+            style: context.appTextTheme.titleSmall?.copyWith(
               letterSpacing: 1.1,
             ),
           ),
