@@ -74,6 +74,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           }
         },
         builder: (context, state) {
+          final validation = coreSl<ICredentialValidationService>();
+          final canSubmitReset =
+              validation.validatePassword(state.newPassword) == null &&
+              validation.validatePasswordConfirmation(
+                password: state.newPassword,
+                confirmation: state.confirmPassword,
+              ) ==
+                  null;
+
           return Scaffold(
             appBar: AppBar(
               title: Text(title),
@@ -161,6 +170,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   oobCode: widget.oobCode,
                                 ),
                               ),
+                        enabled: canSubmitReset,
                         isLoading: state.isLoading,
                         successLabel: state.successMessage,
                         successIcon: state.successMessage != null

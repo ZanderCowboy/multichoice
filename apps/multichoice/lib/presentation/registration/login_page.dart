@@ -32,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailOrUsernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _loginFormReady = false;
   bool _hasRequestedPrefill = false;
   _AuthAction? _loadingAction;
   String? _loginButtonMessage;
@@ -41,14 +42,31 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _emailOrUsernameController.addListener(_syncLoginFormValidity);
+    _passwordController.addListener(_syncLoginFormValidity);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncLoginFormValidity());
   }
 
   @override
   void dispose() {
     _loginMessageResetTimer?.cancel();
+    _emailOrUsernameController.removeListener(_syncLoginFormValidity);
+    _passwordController.removeListener(_syncLoginFormValidity);
     _emailOrUsernameController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _syncLoginFormValidity() {
+    if (!mounted) return;
+    final ident = _emailOrUsernameController.text.trim();
+    final identOk = ident.isNotEmpty &&
+        EmailOrUsernameField.defaultValidator(ident) == null;
+    final passOk = _passwordController.text.trim().isNotEmpty;
+    final ready = identOk && passOk;
+    if (ready != _loginFormReady) {
+      setState(() => _loginFormReady = ready);
+    }
   }
 
   void _syncControllersFromState(RegistrationState state) {
@@ -139,6 +157,7 @@ class _LoginPageState extends State<LoginPage> {
             formKey: _formKey,
             emailOrUsernameController: _emailOrUsernameController,
             passwordController: _passwordController,
+            loginFormReady: _loginFormReady,
             isModal: widget.isModal,
             loadingAction: _loadingAction,
             isLoading: state.isLoading,
@@ -183,6 +202,7 @@ class _LoginPageContent extends StatelessWidget {
     required this.formKey,
     required this.emailOrUsernameController,
     required this.passwordController,
+    required this.loginFormReady,
     required this.isModal,
     required this.loadingAction,
     required this.isLoading,
@@ -195,6 +215,7 @@ class _LoginPageContent extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController emailOrUsernameController;
   final TextEditingController passwordController;
+  final bool loginFormReady;
   final bool isModal;
   final _AuthAction? loadingAction;
   final bool isLoading;
@@ -282,6 +303,7 @@ class _LoginPageContent extends StatelessWidget {
                   ),
                   gap16,
                   LoginButton(
+                    enabled: loginFormReady,
                     onPressed: isLoading
                         ? null
                         : () {

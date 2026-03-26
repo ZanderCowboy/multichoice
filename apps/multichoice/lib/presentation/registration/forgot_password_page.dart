@@ -32,6 +32,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   bool _isLoading = false;
   bool _emailSent = false;
   String? _successMessage;
+  bool _emailValid = false;
 
   @override
   void initState() {
@@ -40,12 +41,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         widget.prePopulatedEmail!.isNotEmpty) {
       _emailController.text = widget.prePopulatedEmail!;
     }
+    _emailController.addListener(_syncEmailValidity);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncEmailValidity());
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _emailController
+      ..removeListener(_syncEmailValidity)
+      ..dispose();
     super.dispose();
+  }
+
+  void _syncEmailValidity() {
+    if (!mounted) return;
+    final email = _emailController.text.trim();
+    final ok =
+        email.isNotEmpty && EmailField.defaultValidator(email) == null;
+    if (ok != _emailValid) {
+      setState(() => _emailValid = ok);
+    }
   }
 
   Future<void> _onResetPassword(BuildContext context) async {
@@ -194,6 +209,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               gap24,
               AsyncFilledButton(
                 onPressed: () => _onResetPassword(context),
+                enabled: _emailValid,
                 isLoading: _isLoading,
                 successLabel: _successMessage,
                 flexSuccessLabel: true,
@@ -205,26 +221,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       )
                     : null,
                 label: const Text('Send Reset Link'),
-              ),
-              gap16,
-              TextButton(
-                onPressed: _isLoading || _successMessage != null
-                    ? null
-                    : () => _onGoToResetPage(context),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('I have the reset link, go to Reset Password'),
-                    Text(
-                      '(temp - for testing)',
-                      style: context.appTextTheme.bodySmall?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: context.appColorsTheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),

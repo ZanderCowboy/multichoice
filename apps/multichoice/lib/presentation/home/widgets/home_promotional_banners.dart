@@ -127,7 +127,16 @@ class _HomePromotionalBannersState extends State<HomePromotionalBanners> {
       ),
     );
     if (!context.mounted) return;
+    final auth = context.read<AuthNotifier>();
     await context.router.push(const SignupPageRoute());
+    if (!mounted) return;
+    final loggedIn = await auth.isUserLoggedIn;
+    if (!mounted) return;
+    if (loggedIn) {
+      await coreSl<IAppStorageService>().setIsSignupBannerDismissed(true);
+      if (!mounted) return;
+      setState(() => _signupDismissed = true);
+    }
   }
 
   @override
