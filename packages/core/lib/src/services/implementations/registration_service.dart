@@ -48,6 +48,8 @@ class RegistrationService implements IRegistrationService {
         email: dto.email,
         username: dto.username.isNotEmpty ? dto.username : null,
       );
+      await _appStorageService.setIsExistingUser(true);
+      await _appStorageService.setHasPreviouslySignedIn(true);
       await _appStorageService.setLastUsedEmail(dto.email);
 
       return Right(
@@ -94,6 +96,8 @@ class RegistrationService implements IRegistrationService {
       } else if (trimmed.contains('@')) {
         await _appStorageService.setLastUsedEmail(trimmed);
       }
+      await _appStorageService.setIsExistingUser(true);
+      await _appStorageService.setHasPreviouslySignedIn(true);
 
       return Right(
         AuthResultDTO(accessToken: idToken, userId: user.uid),
@@ -163,6 +167,8 @@ class RegistrationService implements IRegistrationService {
         email: email.isNotEmpty ? email : null,
         username: resolvedName,
       );
+      await _appStorageService.setIsExistingUser(true);
+      await _appStorageService.setHasPreviouslySignedIn(true);
       if (email.isNotEmpty) {
         await _appStorageService.setLastUsedEmail(email);
       }
@@ -207,6 +213,8 @@ class RegistrationService implements IRegistrationService {
       email: email.isNotEmpty ? email : null,
       username: username,
     );
+    await _appStorageService.setIsExistingUser(true);
+    await _appStorageService.setHasPreviouslySignedIn(true);
     if (email.isNotEmpty) {
       await _appStorageService.setLastUsedEmail(email);
     }
@@ -278,8 +286,10 @@ class RegistrationService implements IRegistrationService {
       'wrong-password' => 'Incorrect password.',
       'invalid-credential' => 'Invalid email or password.',
       'invalid-login-credentials' => 'Invalid email or password.',
-      'expired-action-code' => 'This reset link has expired. Request a new one.',
-      'invalid-action-code' => 'This reset link is invalid or was already used.',
+      'expired-action-code' =>
+        'This reset link has expired. Request a new one.',
+      'invalid-action-code' =>
+        'This reset link is invalid or was already used.',
       _ => e.message ?? e.code,
     };
   }

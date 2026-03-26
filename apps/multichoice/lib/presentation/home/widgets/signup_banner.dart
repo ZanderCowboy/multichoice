@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
-/// Single carousel page: prompts users to import data when they have no collections.
-class ImportDataBannerPage extends StatelessWidget {
-  const ImportDataBannerPage({
+/// Single carousel page: sign up CTA for guests on the home screen.
+class SignupBannerPage extends StatelessWidget {
+  const SignupBannerPage({
     required this.usePillStyle,
-    required this.onImportTap,
+    required this.onSignUpTap,
     required this.onDismiss,
     super.key,
   });
 
   final bool usePillStyle;
-  final VoidCallback onImportTap;
+  final VoidCallback onSignUpTap;
   final VoidCallback onDismiss;
 
   @override
@@ -29,25 +29,30 @@ class ImportDataBannerPage extends StatelessWidget {
       child: DismissibleBannerBar(
         variant: usePillStyle ? BannerBarVariant.pill : BannerBarVariant.flat,
         leading: Icon(
-          Icons.info_outline,
+          Icons.person_add_outlined,
           color: context.theme.appColors.iconColor,
           size: 20,
         ),
-        title: usePillStyle ? 'No collections yet?' : 'No collections yet',
+        title: 'Sign up for Multichoice',
         titleStyle: context.appTextTheme.bodyMedium!.copyWith(
           fontWeight: FontWeight.w600,
           color: titleColor,
         ),
-        body: GestureDetector(
-          onTap: onImportTap,
-          child: Text(
-            'Import data or create a new collection',
-            style: context.appTextTheme.denseSubtitle!.copyWith(
-              color: context.theme.appColors.linkColor,
-              decoration: TextDecoration.underline,
-              fontWeight: usePillStyle ? FontWeight.w600 : null,
-            ),
+        body: Text(
+          'Create a free account to sync and keep your collections safe.',
+          style: context.appTextTheme.bodySmall?.copyWith(
+            color: (titleColor ?? Theme.of(context).colorScheme.onSurface)
+                .withValues(alpha: 0.9),
           ),
+        ),
+        trailing: OutlinedButton(
+          onPressed: onSignUpTap,
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            minimumSize: const Size(0, 36),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: const Text('Sign up'),
         ),
         onDismiss: onDismiss,
         backgroundColor: backgroundColor,

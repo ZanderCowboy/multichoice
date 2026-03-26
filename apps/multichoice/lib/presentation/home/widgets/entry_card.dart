@@ -82,7 +82,7 @@ class EntryCard extends StatelessWidget {
           : () async {
               final bloc = context.read<HomeBloc>();
               if (!bloc.state.isEditMode) {
-                await _triggerEditModeHaptic();
+                await triggerEditModeHaptic();
                 bloc.add(const HomeEvent.onToggleEditMode());
               }
             },

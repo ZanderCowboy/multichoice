@@ -9,6 +9,9 @@ class AuthNotifier extends ChangeNotifier {
   /// Bumps when auth changes so keyed `FutureBuilder` session checks re-run.
   int authEpoch = 0;
 
+  /// Bumps when debug "Clear Storage Data" runs so UI can re-read SharedPreferences.
+  int storageClearEpoch = 0;
+
   bool get hasDebugOverride => _debugLoggedInOverride != null;
 
   Future<bool> get isUserLoggedIn async {
@@ -32,6 +35,11 @@ class AuthNotifier extends ChangeNotifier {
 
   void notifyAuthChanged() {
     authEpoch++;
+    notifyListeners();
+  }
+
+  void notifyStorageCleared() {
+    storageClearEpoch++;
     notifyListeners();
   }
 }

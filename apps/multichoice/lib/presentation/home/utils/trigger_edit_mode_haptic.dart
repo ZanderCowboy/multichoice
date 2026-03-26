@@ -1,7 +1,8 @@
-part of '../home_page.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
-Future<void> _triggerEditModeHaptic() async {
-  // Haptics are only available on mobile platforms with supported hardware.
+/// Light haptic feedback when entering home edit mode (mobile only).
+Future<void> triggerEditModeHaptic() async {
   if (kIsWeb) return;
 
   final platform = defaultTargetPlatform;
@@ -11,8 +12,6 @@ Future<void> _triggerEditModeHaptic() async {
 
   try {
     if (platform == TargetPlatform.android) {
-      // Android impact haptics can be too subtle; long-press vibration is
-      // stronger and more consistently perceptible across devices.
       await HapticFeedback.vibrate();
     } else {
       await HapticFeedback.mediumImpact();

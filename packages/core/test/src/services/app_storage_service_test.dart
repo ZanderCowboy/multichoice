@@ -171,6 +171,32 @@ void main() {
     });
   });
 
+  group('AppStorageService - Signed in history', () {
+    test('should return false when hasPreviouslySignedIn is not set', () async {
+      when(mockSharedPreferences.getBool(any)).thenReturn(null);
+
+      final result = await appStorageService.hasPreviouslySignedIn;
+
+      expect(result, false);
+      verify(mockSharedPreferences.getBool(any)).called(1);
+    });
+
+    test('should persist hasPreviouslySignedIn value', () async {
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setHasPreviouslySignedIn(true);
+
+      verify(
+        mockSharedPreferences.setBool(
+          StorageKeys.hasPreviouslySignedIn.key,
+          true,
+        ),
+      ).called(1);
+    });
+  });
+
   group('AppStorageService - Permissions', () {
     test('should return false when isPermissionsChecked is not set', () async {
       when(mockSharedPreferences.getBool(any)).thenReturn(null);
@@ -211,8 +237,9 @@ void main() {
       final result = await appStorageService.lastUsedEmail;
 
       expect(result, isNull);
-      verify(mockSharedPreferences.getString(StorageKeys.lastUsedEmail.key))
-          .called(1);
+      verify(
+        mockSharedPreferences.getString(StorageKeys.lastUsedEmail.key),
+      ).called(1);
     });
 
     test('should return stored email', () async {
@@ -224,8 +251,9 @@ void main() {
     });
 
     test('should persist last used email', () async {
-      when(mockSharedPreferences.setString(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setString(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setLastUsedEmail('save@example.com');
 
@@ -239,15 +267,17 @@ void main() {
   });
 
   group('AppStorageService - Import data banner', () {
-    test('should return false when isImportDataBannerDismissed is not set',
-        () async {
-      when(mockSharedPreferences.getBool(any)).thenReturn(null);
+    test(
+      'should return false when isImportDataBannerDismissed is not set',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(null);
 
-      final result = await appStorageService.isImportDataBannerDismissed;
+        final result = await appStorageService.isImportDataBannerDismissed;
 
-      expect(result, false);
-      verify(mockSharedPreferences.getBool(any)).called(1);
-    });
+        expect(result, false);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
 
     test('should return true when banner was dismissed', () async {
       when(mockSharedPreferences.getBool(any)).thenReturn(true);
@@ -258,12 +288,42 @@ void main() {
     });
 
     test('should set import banner dismissed flag', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsImportDataBannerDismissed(true);
 
       verify(mockSharedPreferences.setBool(any, true)).called(1);
+    });
+  });
+
+  group('AppStorageService - Signup banner', () {
+    test(
+      'should return false when isSignupBannerDismissed is not set',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(null);
+
+        final result = await appStorageService.isSignupBannerDismissed;
+
+        expect(result, false);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
+
+    test('should persist isSignupBannerDismissed value', () async {
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setIsSignupBannerDismissed(true);
+
+      verify(
+        mockSharedPreferences.setBool(
+          StorageKeys.isSignupBannerDismissed.key,
+          true,
+        ),
+      ).called(1);
     });
   });
 
@@ -296,7 +356,7 @@ void main() {
       await appStorageService.clearAllData();
 
       verify(mockSharedPreferences.setInt(any, -1)).called(1);
-      verify(mockSharedPreferences.setBool(any, false)).called(6);
+      verify(mockSharedPreferences.setBool(any, false)).called(8);
       verify(
         mockSharedPreferences.remove(StorageKeys.lastUsedEmail.key),
       ).called(1);

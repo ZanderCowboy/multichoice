@@ -39,6 +39,11 @@ class _LoginPageState extends State<LoginPage> {
   Timer? _loginMessageResetTimer;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _loginMessageResetTimer?.cancel();
     _emailOrUsernameController.dispose();
@@ -211,8 +216,12 @@ class _LoginPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final promptStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+    );
+
     return SingleChildScrollView(
-      padding: allPadding16,
+      padding: allPadding8,
       child: AutofillGroup(
         child: Form(
           key: formKey,
@@ -267,10 +276,7 @@ class _LoginPageContent extends StatelessWidget {
                           : () => _onForgotPassword(context),
                       child: Text(
                         'Forgot Password?',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: context.theme.appColors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
+                        style: context.appTextTheme.hyperlink,
                       ),
                     ),
                   ),
@@ -297,12 +303,7 @@ class _LoginPageContent extends StatelessWidget {
                         padding: horizontal16,
                         child: Text(
                           'or',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
+                          style: context.appTextTheme.contrastBody,
                         ),
                       ),
                       const Expanded(child: Divider()),
@@ -317,17 +318,15 @@ class _LoginPageContent extends StatelessWidget {
                   Center(
                     child: RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
+                        style: promptStyle,
                         children: [
-                          const TextSpan(text: "Don't have an account? "),
+                          TextSpan(
+                            text: "Don't have an account? ",
+                            style: context.appTextTheme.bodyLarge,
+                          ),
                           TextSpan(
                             text: 'Sign Up',
-                            style: TextStyle(
-                              color: context.theme.appColors.primary,
-                              decoration: TextDecoration.underline,
-                            ),
+                            style: context.appTextTheme.hyperlink,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 if (!isLoading) {

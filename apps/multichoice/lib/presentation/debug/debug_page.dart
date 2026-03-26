@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/debug/widgets/export.dart';
+import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -101,6 +103,7 @@ class _DebugBodyState extends State<_DebugBody> {
     if (confirmed ?? false) {
       await coreSl<IAppStorageService>().clearAllData();
       if (context.mounted) {
+        context.read<AuthNotifier>().notifyStorageCleared();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Storage data cleared successfully')),
         );

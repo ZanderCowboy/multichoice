@@ -25,7 +25,7 @@ class DebugToolsContent extends StatelessWidget {
             leading: const Icon(Icons.dataset),
             title: const Text('Clear Storage Data'),
             subtitle: const Text(
-              'Clear any data stored in SharedPreferences',
+              'Clears tour, layout, banners, permissions flags, email, etc.',
             ),
             onTap: () => onClearStorage(context),
           ),

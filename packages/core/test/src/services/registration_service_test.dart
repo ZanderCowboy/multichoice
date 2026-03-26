@@ -34,6 +34,15 @@ void main() {
       mockAppStorage,
       mockGoogleSignIn,
     );
+
+    // Ensure any "new user" flag writes don't break async tests.
+    when(mockAppStorage.setIsExistingUser(any)).thenAnswer((_) async {});
+    when(
+      mockAppStorage.setHasPreviouslySignedIn(true),
+    ).thenAnswer((_) async {});
+    when(
+      mockAppStorage.setHasPreviouslySignedIn(false),
+    ).thenAnswer((_) async {});
   });
 
   group('RegistrationService signUp', () {
@@ -56,13 +65,17 @@ void main() {
 
       final result = await service.signUp(dto);
 
-      expect(result, Right<AuthException, AuthResultDTO>(
-        AuthResultDTO(accessToken: 'id-token', userId: 'uid-1'),
-      ));
+      expect(
+        result,
+        Right<AuthException, AuthResultDTO>(
+          AuthResultDTO(accessToken: 'id-token', userId: 'uid-1'),
+        ),
+      );
       verify(mockLogin.storeLoginInfo('id-token')).called(1);
       verify(
         mockLogin.storeUserProfile(email: 'a@b.com', username: 'alice'),
       ).called(1);
+      verify(mockAppStorage.setIsExistingUser(true)).called(1);
       verify(mockAppStorage.setLastUsedEmail('a@b.com')).called(1);
     });
 
@@ -88,6 +101,7 @@ void main() {
       verify(
         mockLogin.storeUserProfile(email: 'a@b.com', username: null),
       ).called(1);
+      verify(mockAppStorage.setIsExistingUser(true)).called(1);
     });
 
     test('returns Left when credential has no user', () async {
@@ -106,10 +120,14 @@ void main() {
 
       final result = await service.signUp(dto);
 
-      expect(result, const Left<AuthException, AuthResultDTO>(
-        AuthException.userCreationFailed(),
-      ));
+      expect(
+        result,
+        const Left<AuthException, AuthResultDTO>(
+          AuthException.userCreationFailed(),
+        ),
+      );
       verifyNever(mockLogin.storeLoginInfo(any));
+      verifyNever(mockAppStorage.setIsExistingUser(any));
     });
 
     test('returns Left when id token is null', () async {
@@ -129,9 +147,13 @@ void main() {
 
       final result = await service.signUp(dto);
 
-      expect(result, const Left<AuthException, AuthResultDTO>(
-        AuthException.tokenUnavailable(),
-      ));
+      expect(
+        result,
+        const Left<AuthException, AuthResultDTO>(
+          AuthException.tokenUnavailable(),
+        ),
+      );
+      verifyNever(mockAppStorage.setIsExistingUser(any));
     });
 
     test('maps FirebaseAuthException to friendly message', () async {
@@ -210,82 +232,95 @@ void main() {
       );
     });
 
-    test('maps unknown Firebase code using code when message is null', () async {
-      final dto = SignupRequestDTO(
-        email: 'a@b.com',
-        username: 'u',
-        password: 'Secure1!',
-      );
-      when(
-        mockAuth.createUserWithEmailAndPassword(
-          email: anyNamed('email'),
-          password: anyNamed('password'),
-        ),
-      ).thenThrow(
-        FirebaseAuthException(
-          code: 'custom-code',
-          message: null,
-        ),
-      );
+    test(
+      'maps unknown Firebase code using code when message is null',
+      () async {
+        final dto = SignupRequestDTO(
+          email: 'a@b.com',
+          username: 'u',
+          password: 'Secure1!',
+        );
+        when(
+          mockAuth.createUserWithEmailAndPassword(
+            email: anyNamed('email'),
+            password: anyNamed('password'),
+          ),
+        ).thenThrow(
+          FirebaseAuthException(
+            code: 'custom-code',
+            message: null,
+          ),
+        );
 
-      final result = await service.signUp(dto);
+        final result = await service.signUp(dto);
 
-      result.fold(
-        (e) => expect(e.message, 'custom-code'),
-        (_) => fail('expected Left'),
-      );
-    });
+        result.fold(
+          (e) => expect(e.message, 'custom-code'),
+          (_) => fail('expected Left'),
+        );
+      },
+    );
   });
 
   group('RegistrationService signIn', () {
-    test('returns Right and stores profile using resolved Firebase email',
-        () async {
-      when(
-        mockAuth.signInWithEmailAndPassword(
-          email: anyNamed('email'),
-          password: anyNamed('password'),
-        ),
-      ).thenAnswer((_) async => mockCredential);
-      when(mockCredential.user).thenReturn(mockUser);
-      when(mockUser.uid).thenReturn('uid-2');
-      when(mockUser.getIdToken()).thenAnswer((_) async => 'token-in');
-      when(mockUser.email).thenReturn('resolved@firebase.com');
-      when(mockUser.displayName).thenReturn('Display');
+    test(
+      'returns Right and stores profile using resolved Firebase email',
+      () async {
+        when(
+          mockAuth.signInWithEmailAndPassword(
+            email: anyNamed('email'),
+            password: anyNamed('password'),
+          ),
+        ).thenAnswer((_) async => mockCredential);
+        when(mockCredential.user).thenReturn(mockUser);
+        when(mockUser.uid).thenReturn('uid-2');
+        when(mockUser.getIdToken()).thenAnswer((_) async => 'token-in');
+        when(mockUser.email).thenReturn('resolved@firebase.com');
+        when(mockUser.displayName).thenReturn('Display');
 
-      final result = await service.signIn('ignored@input.com', 'pw');
+        final result = await service.signIn('ignored@input.com', 'pw');
 
-      expect(result.isRight(), true);
-      verify(mockAppStorage.setLastUsedEmail('resolved@firebase.com')).called(1);
-      verify(
-        mockLogin.storeUserProfile(
-          email: 'resolved@firebase.com',
-          username: 'Display',
-        ),
-      ).called(1);
-    });
+        expect(result.isRight(), true);
+        verify(
+          mockAppStorage.setLastUsedEmail('resolved@firebase.com'),
+        ).called(1);
+        verify(
+          mockLogin.storeUserProfile(
+            email: 'resolved@firebase.com',
+            username: 'Display',
+          ),
+        ).called(1);
+        verify(mockAppStorage.setIsExistingUser(true)).called(1);
+      },
+    );
 
-    test('uses trimmed email when Firebase user email is null but input has @',
-        () async {
-      when(
-        mockAuth.signInWithEmailAndPassword(
-          email: anyNamed('email'),
-          password: anyNamed('password'),
-        ),
-      ).thenAnswer((_) async => mockCredential);
-      when(mockCredential.user).thenReturn(mockUser);
-      when(mockUser.uid).thenReturn('uid');
-      when(mockUser.getIdToken()).thenAnswer((_) async => 't');
-      when(mockUser.email).thenReturn(null);
-      when(mockUser.displayName).thenReturn(null);
+    test(
+      'uses trimmed email when Firebase user email is null but input has @',
+      () async {
+        when(
+          mockAuth.signInWithEmailAndPassword(
+            email: anyNamed('email'),
+            password: anyNamed('password'),
+          ),
+        ).thenAnswer((_) async => mockCredential);
+        when(mockCredential.user).thenReturn(mockUser);
+        when(mockUser.uid).thenReturn('uid');
+        when(mockUser.getIdToken()).thenAnswer((_) async => 't');
+        when(mockUser.email).thenReturn(null);
+        when(mockUser.displayName).thenReturn(null);
 
-      await service.signIn('  trim@me.com  ', 'pw');
+        await service.signIn('  trim@me.com  ', 'pw');
 
-      verify(mockLogin.storeUserProfile(
-        email: 'trim@me.com',
-        username: null,
-      )).called(1);
-      verify(mockAppStorage.setLastUsedEmail('trim@me.com')).called(1);
-    });
+        verify(
+          mockLogin.storeUserProfile(
+            email: 'trim@me.com',
+            username: null,
+          ),
+        ).called(1);
+        verify(mockAppStorage.setLastUsedEmail('trim@me.com')).called(1);
+        verify(mockAppStorage.setIsExistingUser(true)).called(1);
+      },
+    );
 
     test('uses trimmed local part as username when no @ in input', () async {
       when(
@@ -302,11 +337,14 @@ void main() {
 
       await service.signIn('localuser', 'pw');
 
-      verify(mockLogin.storeUserProfile(
-        email: null,
-        username: 'localuser',
-      )).called(1);
+      verify(
+        mockLogin.storeUserProfile(
+          email: null,
+          username: 'localuser',
+        ),
+      ).called(1);
       verifyNever(mockAppStorage.setLastUsedEmail(any));
+      verify(mockAppStorage.setIsExistingUser(true)).called(1);
     });
 
     test('returns Left when user is null', () async {
@@ -410,9 +448,12 @@ void main() {
     });
 
     test('completes local session when Google tokens are missing', () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
+      when(
+        mockGoogleSignIn.signIn(),
+      ).thenAnswer((_) async => mockGoogleAccount);
+      when(
+        mockGoogleAccount.authentication,
+      ).thenAnswer((_) async => mockGoogleAuth);
       when(mockGoogleAuth.idToken).thenReturn(null);
       when(mockGoogleAuth.accessToken).thenReturn(null);
       when(mockGoogleAccount.id).thenReturn('acc-id');
@@ -420,7 +461,10 @@ void main() {
       when(mockGoogleAccount.displayName).thenReturn('G User');
       when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
       when(
-        mockLogin.storeUserProfile(email: anyNamed('email'), username: anyNamed('username')),
+        mockLogin.storeUserProfile(
+          email: anyNamed('email'),
+          username: anyNamed('username'),
+        ),
       ).thenAnswer((_) async {});
       when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
 
@@ -442,42 +486,56 @@ void main() {
         ),
       ).called(1);
       verify(mockAppStorage.setLastUsedEmail('g@mail.com')).called(1);
+      verify(mockAppStorage.setIsExistingUser(true)).called(1);
     });
 
-    test('local session derives username from email local part when display empty',
-        () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
-      when(mockGoogleAuth.idToken).thenReturn(null);
-      when(mockGoogleAuth.accessToken).thenReturn(null);
-      when(mockGoogleAccount.id).thenReturn('id');
-      when(mockGoogleAccount.email).thenReturn('person@example.com');
-      when(mockGoogleAccount.displayName).thenReturn('');
-      when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
-      when(
-        mockLogin.storeUserProfile(email: anyNamed('email'), username: anyNamed('username')),
-      ).thenAnswer((_) async {});
+    test(
+      'local session derives username from email local part when display empty',
+      () async {
+        when(
+          mockGoogleSignIn.signIn(),
+        ).thenAnswer((_) async => mockGoogleAccount);
+        when(
+          mockGoogleAccount.authentication,
+        ).thenAnswer((_) async => mockGoogleAuth);
+        when(mockGoogleAuth.idToken).thenReturn(null);
+        when(mockGoogleAuth.accessToken).thenReturn(null);
+        when(mockGoogleAccount.id).thenReturn('id');
+        when(mockGoogleAccount.email).thenReturn('person@example.com');
+        when(mockGoogleAccount.displayName).thenReturn('');
+        when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
+        when(
+          mockLogin.storeUserProfile(
+            email: anyNamed('email'),
+            username: anyNamed('username'),
+          ),
+        ).thenAnswer((_) async {});
 
-      await service.signInWithGoogle();
+        await service.signInWithGoogle();
 
-      verify(
-        mockLogin.storeUserProfile(
-          email: 'person@example.com',
-          username: 'person',
-        ),
-      ).called(1);
-    });
+        verify(
+          mockLogin.storeUserProfile(
+            email: 'person@example.com',
+            username: 'person',
+          ),
+        ).called(1);
+      },
+    );
 
     test('signs in via Firebase when Google tokens are present', () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
+      when(
+        mockGoogleSignIn.signIn(),
+      ).thenAnswer((_) async => mockGoogleAccount);
+      when(
+        mockGoogleAccount.authentication,
+      ).thenAnswer((_) async => mockGoogleAuth);
       when(mockGoogleAuth.idToken).thenReturn('gid');
       when(mockGoogleAuth.accessToken).thenReturn('gaccess');
       when(mockGoogleAccount.email).thenReturn('picker@mail.com');
       when(mockGoogleAccount.displayName).thenReturn('Picker');
-      when(mockAuth.signInWithCredential(any)).thenAnswer((_) async => mockCredential);
+      when(
+        mockAuth.signInWithCredential(any),
+      ).thenAnswer((_) async => mockCredential);
       when(mockCredential.user).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('fb-uid');
       when(mockUser.getIdToken()).thenAnswer((_) async => 'firebase-token');
@@ -485,7 +543,10 @@ void main() {
       when(mockUser.displayName).thenReturn('Firebase Name');
       when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
       when(
-        mockLogin.storeUserProfile(email: anyNamed('email'), username: anyNamed('username')),
+        mockLogin.storeUserProfile(
+          email: anyNamed('email'),
+          username: anyNamed('username'),
+        ),
       ).thenAnswer((_) async {});
       when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
 
@@ -500,66 +561,89 @@ void main() {
         ),
       ).called(1);
       verify(mockAppStorage.setLastUsedEmail('firebase@mail.com')).called(1);
+      verify(mockAppStorage.setIsExistingUser(true)).called(1);
     });
 
-    test('uses account display name when Firebase user display name is empty',
-        () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
-      when(mockGoogleAuth.idToken).thenReturn('gid');
-      when(mockGoogleAuth.accessToken).thenReturn('gaccess');
-      when(mockGoogleAccount.email).thenReturn('acc@mail.com');
-      when(mockGoogleAccount.displayName).thenReturn('From Google');
-      when(mockAuth.signInWithCredential(any)).thenAnswer((_) async => mockCredential);
-      when(mockCredential.user).thenReturn(mockUser);
-      when(mockUser.uid).thenReturn('fb-uid');
-      when(mockUser.getIdToken()).thenAnswer((_) async => 't');
-      when(mockUser.email).thenReturn('user@mail.com');
-      when(mockUser.displayName).thenReturn(null);
-      when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
-      when(
-        mockLogin.storeUserProfile(email: anyNamed('email'), username: anyNamed('username')),
-      ).thenAnswer((_) async {});
-      when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
+    test(
+      'uses account display name when Firebase user display name is empty',
+      () async {
+        when(
+          mockGoogleSignIn.signIn(),
+        ).thenAnswer((_) async => mockGoogleAccount);
+        when(
+          mockGoogleAccount.authentication,
+        ).thenAnswer((_) async => mockGoogleAuth);
+        when(mockGoogleAuth.idToken).thenReturn('gid');
+        when(mockGoogleAuth.accessToken).thenReturn('gaccess');
+        when(mockGoogleAccount.email).thenReturn('acc@mail.com');
+        when(mockGoogleAccount.displayName).thenReturn('From Google');
+        when(
+          mockAuth.signInWithCredential(any),
+        ).thenAnswer((_) async => mockCredential);
+        when(mockCredential.user).thenReturn(mockUser);
+        when(mockUser.uid).thenReturn('fb-uid');
+        when(mockUser.getIdToken()).thenAnswer((_) async => 't');
+        when(mockUser.email).thenReturn('user@mail.com');
+        when(mockUser.displayName).thenReturn(null);
+        when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
+        when(
+          mockLogin.storeUserProfile(
+            email: anyNamed('email'),
+            username: anyNamed('username'),
+          ),
+        ).thenAnswer((_) async {});
+        when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
 
-      await service.signInWithGoogle();
+        await service.signInWithGoogle();
 
-      verify(
-        mockLogin.storeUserProfile(
-          email: 'user@mail.com',
-          username: 'From Google',
-        ),
-      ).called(1);
-    });
+        verify(
+          mockLogin.storeUserProfile(
+            email: 'user@mail.com',
+            username: 'From Google',
+          ),
+        ).called(1);
+      },
+    );
 
-    test('returns signInFailed when Firebase user is null after credential',
-        () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
-      when(mockGoogleAuth.idToken).thenReturn('a');
-      when(mockGoogleAuth.accessToken).thenReturn('b');
-      when(mockAuth.signInWithCredential(any)).thenAnswer((_) async => mockCredential);
-      when(mockCredential.user).thenReturn(null);
+    test(
+      'returns signInFailed when Firebase user is null after credential',
+      () async {
+        when(
+          mockGoogleSignIn.signIn(),
+        ).thenAnswer((_) async => mockGoogleAccount);
+        when(
+          mockGoogleAccount.authentication,
+        ).thenAnswer((_) async => mockGoogleAuth);
+        when(mockGoogleAuth.idToken).thenReturn('a');
+        when(mockGoogleAuth.accessToken).thenReturn('b');
+        when(
+          mockAuth.signInWithCredential(any),
+        ).thenAnswer((_) async => mockCredential);
+        when(mockCredential.user).thenReturn(null);
 
-      final result = await service.signInWithGoogle();
+        final result = await service.signInWithGoogle();
 
-      expect(
-        result,
-        const Left<AuthException, AuthResultDTO>(
-          AuthException.signInFailed(),
-        ),
-      );
-    });
+        expect(
+          result,
+          const Left<AuthException, AuthResultDTO>(
+            AuthException.signInFailed(),
+          ),
+        );
+      },
+    );
 
     test('returns tokenUnavailable when Firebase id token is null', () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
+      when(
+        mockGoogleSignIn.signIn(),
+      ).thenAnswer((_) async => mockGoogleAccount);
+      when(
+        mockGoogleAccount.authentication,
+      ).thenAnswer((_) async => mockGoogleAuth);
       when(mockGoogleAuth.idToken).thenReturn('a');
       when(mockGoogleAuth.accessToken).thenReturn('b');
-      when(mockAuth.signInWithCredential(any)).thenAnswer((_) async => mockCredential);
+      when(
+        mockAuth.signInWithCredential(any),
+      ).thenAnswer((_) async => mockCredential);
       when(mockCredential.user).thenReturn(mockUser);
       when(mockUser.getIdToken()).thenAnswer((_) async => null);
 
@@ -573,27 +657,37 @@ void main() {
       );
     });
 
-    test('falls back to local session when signInWithCredential fails', () async {
-      when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleAccount);
-      when(mockGoogleAccount.authentication)
-          .thenAnswer((_) async => mockGoogleAuth);
-      when(mockGoogleAuth.idToken).thenReturn('a');
-      when(mockGoogleAuth.accessToken).thenReturn('b');
-      when(mockAuth.signInWithCredential(any)).thenThrow(Exception('firebase'));
-      when(mockGoogleAccount.id).thenReturn('fallback-id');
-      when(mockGoogleAccount.email).thenReturn('fb@mail.com');
-      when(mockGoogleAccount.displayName).thenReturn('Fb');
-      when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
-      when(
-        mockLogin.storeUserProfile(email: anyNamed('email'), username: anyNamed('username')),
-      ).thenAnswer((_) async {});
-      when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
+    test(
+      'falls back to local session when signInWithCredential fails',
+      () async {
+        when(
+          mockGoogleSignIn.signIn(),
+        ).thenAnswer((_) async => mockGoogleAccount);
+        when(
+          mockGoogleAccount.authentication,
+        ).thenAnswer((_) async => mockGoogleAuth);
+        when(mockGoogleAuth.idToken).thenReturn('a');
+        when(mockGoogleAuth.accessToken).thenReturn('b');
+        when(
+          mockAuth.signInWithCredential(any),
+        ).thenThrow(Exception('firebase'));
+        when(mockGoogleAccount.id).thenReturn('fallback-id');
+        when(mockGoogleAccount.email).thenReturn('fb@mail.com');
+        when(mockGoogleAccount.displayName).thenReturn('Fb');
+        when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
+        when(
+          mockLogin.storeUserProfile(
+            email: anyNamed('email'),
+            username: anyNamed('username'),
+          ),
+        ).thenAnswer((_) async {});
+        when(mockAppStorage.setLastUsedEmail(any)).thenAnswer((_) async {});
 
-      final result = await service.signInWithGoogle();
+        final result = await service.signInWithGoogle();
 
-      expect(result.isRight(), true);
-      verify(mockLogin.storeLoginInfo('google_local_fallback-id')).called(1);
-    });
+        expect(result.isRight(), true);
+        verify(mockLogin.storeLoginInfo('google_local_fallback-id')).called(1);
+      },
+    );
   });
-
 }

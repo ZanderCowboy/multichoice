@@ -14,11 +14,17 @@ abstract class IAppStorageService {
   Future<bool> get isExistingUser;
   Future<void> setIsExistingUser(bool isExisting);
 
+  Future<bool> get hasPreviouslySignedIn;
+  Future<void> setHasPreviouslySignedIn(bool hasSignedIn);
+
   Future<bool> get isPermissionsChecked;
   Future<void> setIsPermissionsChecked(bool isChecked);
 
   Future<bool> get isImportDataBannerDismissed;
   Future<void> setIsImportDataBannerDismissed(bool isDismissed);
+
+  Future<bool> get isSignupBannerDismissed;
+  Future<void> setIsSignupBannerDismissed(bool isDismissed);
 
   Future<String?> get lastUsedEmail;
   Future<void> setLastUsedEmail(String email);

@@ -15,7 +15,7 @@ class DebugOptionSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 12,
+      spacing: 8,
       runSpacing: 8,
       children: [
         _OptionChip(
