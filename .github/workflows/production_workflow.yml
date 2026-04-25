@@ -23,6 +23,11 @@ on:
           - patch
           - minor
           - major
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
+        required: true
+        type: boolean
+        default: true
       target_branch:
         description: "Branch to build and update"
         required: true
@@ -144,29 +149,6 @@ jobs:
 
           echo "Version without RC suffix: $bumped_version+$new_build_number"
           echo "Current version: $bumped_version"
-
-      ##############################################
-      # Generate GitHub App Token
-      ##############################################
-      - name: Generate GitHub App Token
-        id: generate_token
-        uses: peter-murray/workflow-application-token-action@v4
-        with:
-          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
-          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
-
-      ##############################################
-      # Commit Version Update
-      ##############################################
-      - name: Commit Version Update
-        uses: ./.github/actions/tokenized-commit
-        with:
-          github_token: ${{ steps.generate_token.outputs.token }}
-          repository: ${{ github.repository }}
-          file_path: apps/multichoice/pubspec.yaml
-          commit_message: "Release version ${{ steps.get_current_version.outputs.version_with_build }} [skip ci]"
-          branch_name: ${{ inputs.target_branch }}
-          version_with_build: ${{ steps.get_current_version.outputs.version_with_build }}
 
   build:
     name: Builds Android App
@@ -321,6 +303,7 @@ jobs:
       # Release to Google Play Production Track
       ###############################################.
       - name: Release Build to production track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: r0adkll/upload-google-play@v1
         with:
           releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
@@ -331,9 +314,32 @@ jobs:
           status: "completed"
 
       ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/tokenized-commit
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          repository: ${{ github.repository }}
+          file_path: apps/multichoice/pubspec.yaml
+          commit_message: "Release version ${{ needs.preBuild.outputs.version_number }} [skip ci]"
+          branch_name: ${{ inputs.target_branch }}
+          version_with_build: ${{ needs.preBuild.outputs.version_number }}
+
+      ##############################################
       # Create New Tag
       ##############################################
       - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         id: create_tag
         uses: ./.github/actions/create-git-tag
         with:
@@ -347,7 +353,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release
+    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release && !inputs.dry_run
     steps:
       ##############################################
       # Checkout Repository
@@ -369,45 +375,30 @@ jobs:
       ##############################################
       # Create GitHub Release
       ##############################################
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ needs.build.outputs.tag_version }}
+      - name: Create GitHub Release (and upload APK)
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
+          tag_name: v${{ needs.build.outputs.tag_version }}
+          name: Release v${{ needs.build.outputs.tag_version }}
           body: |
-            ## What's New in v${{ env.VERSION }}
-            
+            ## What's New in v${{ needs.build.outputs.tag_version }}
+
             This release includes the latest features and improvements for MultiChoice.
-            
-            ### 📱 Download
+
+            ### Download
             - **APK**: Available for direct download below
             - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
-            
-            ### 🔧 Technical Details
+
+            ### Technical Details
             - Build Number: ${{ needs.build.outputs.build_number }}
             - Platform: Android
-            
-            ### 📋 Release Notes
+
+            ### Release Notes
             For detailed release notes, please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) file.
+          files: |
+            ./artifacts/app-release.apk
           draft: false
           prerelease: false
-
-      ##############################################
-      # Upload APK to Release
-      ##############################################
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/app-release.apk
-          asset_name: multichoice-v${{ needs.build.outputs.tag_version }}.apk
-          asset_content_type: application/vnd.android.package-archive
 
       ##############################################
       # Send Success Notification

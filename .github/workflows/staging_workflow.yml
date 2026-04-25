@@ -17,6 +17,12 @@ on:
     types:
       - closed
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
+        required: true
+        type: boolean
+        default: true
 
 concurrency:
   group: staging-workflow-${{ github.event.pull_request.number || github.run_id }}
@@ -25,7 +31,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false) }}
     runs-on: ubuntu-latest
     concurrency:
       group: version-management-staging
@@ -77,6 +83,7 @@ jobs:
           branch_name: rc
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
+          commit_changes: "false"
 
   build:
     name: Builds Android App
@@ -195,6 +202,7 @@ jobs:
       # Release to Google Play Internal Track
       ###############################################
       - name: Release Build to internal track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: r0adkll/upload-google-play@v1
         with:
           releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
@@ -205,9 +213,33 @@ jobs:
           status: "completed"
 
       ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/version-management
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          pubspec_path: apps/multichoice/pubspec.yaml
+          branch_name: rc
+          bump_type: none
+          target_version: ${{ needs.preBuild.outputs.version_number }}
+          version_suffix: "-RC"
+          commit_changes: "true"
+
+      ##############################################
       # Create New Tag
       ##############################################
       - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: ./.github/actions/create-git-tag
         with:
           version_number: ${{ needs.preBuild.outputs.version_number }}
