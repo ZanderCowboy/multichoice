@@ -1,0 +1,25 @@
+---
+description: Core project standards that apply to all work
+alwaysApply: true
+---
+
+# Core Project Standards
+
+- Keep changes scoped to the user request or GitHub ticket.
+- Follow the current architecture, folder layout, naming, and local patterns before introducing anything new.
+- Ask for confirmation before adding dependencies, packages, service boundaries, state management approaches, persistence mechanisms, public APIs, or UX patterns.
+- Never commit secrets, API keys, `.env` files, credentials, debug logs, or temporary plan files.
+- Do not commit or push unless the user explicitly asks.
+
+## Code Quality
+
+- Use `const`, `final`, and named constants where practical.
+- Check existing constants and helpers before adding new literals or abstractions.
+- Keep functions and widgets focused; split only when it improves readability or follows nearby patterns.
+- Preserve shipped behavior, persisted data, public APIs, and user-facing flows unless the ticket explicitly requires a change and the user confirms the risk.
+
+## Validation
+
+- Add or update focused tests for new behavior and bug fixes.
+- Run the narrowest useful validation first, then broaden for shared changes.
+- Fix introduced analyzer, lint, formatting, and test issues before finishing when practical.

@@ -1,0 +1,36 @@
+---
+description: Core service, repository, wrapper, and controller conventions
+globs: ["packages/core/**/*.dart", "packages/models/**/*.dart"]
+alwaysApply: false
+---
+
+# Core Services And Data
+
+Follow the existing core architecture before adding or changing service, repository, controller, wrapper, or model behavior.
+
+## Interfaces And Implementations
+
+- Every service, wrapper, controller, or repository implementation should have a matching interface when that pattern exists locally.
+- Interface files use `i_<name>.dart` or `i_<name>_service.dart` according to the nearby folder.
+- Services, wrappers, and controllers use `interfaces/` and `implementations/`.
+- Repositories currently use `interfaces/` and `implementation/`; follow the existing local folder name.
+- Register injectable dependencies consistently with existing core registration patterns.
+
+## Results And Errors
+
+- Preserve existing result/error types and propagation patterns.
+- Do not expose internal service details directly to UI.
+- Handle external service failures at the layer where similar failures are already handled.
+- Avoid changing public interfaces unless the issue or feature requires it and the user confirms.
+
+## Models And Mapping
+
+- Keep DTOs, database models, API models, enums, and mappers in `packages/models`.
+- Use existing mapper patterns instead of ad hoc conversions.
+- Do not duplicate shared model shapes in app code.
+- Regenerate generated model files through Melos/build_runner.
+
+## Tests
+
+- Add focused tests for business logic, error handling, and mapping behavior.
+- Use existing mocks from `mocks.dart` before adding new mock specs.

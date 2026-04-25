@@ -1,3 +1,9 @@
+export 'interfaces/i_analytics_service.dart';
+export 'interfaces/i_credential_validation_service.dart';
 export 'interfaces/i_app_info_service.dart';
 export 'interfaces/i_app_storage_service.dart';
 export 'interfaces/i_data_exchange_service.dart';
+export 'interfaces/i_firebase_service.dart';
+export 'interfaces/i_login_service.dart';
+export 'interfaces/i_password_service.dart';
+export 'interfaces/i_registration_service.dart';

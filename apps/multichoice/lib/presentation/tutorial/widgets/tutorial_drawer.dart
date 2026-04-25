@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
@@ -38,16 +37,12 @@ class TutorialDrawer extends StatelessWidget {
                     children: [
                       Text(
                         'Multichoice',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: Colors.white,
-                        ),
+                        style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(
                         'Welcome back!',
-                        style: AppTypography.subtitleMedium.copyWith(
-                          color: Colors.white70,
-                        ),
+                        style: context.appTextTheme.subtitleMedium,
                       ),
                     ],
                   ),

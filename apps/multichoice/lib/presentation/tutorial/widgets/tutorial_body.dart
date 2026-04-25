@@ -36,8 +36,10 @@ class TutorialBody extends StatelessWidget {
                     final tab = tabs[index];
 
                     if (tabs.isNotEmpty && index == 0) {
-                      final step =
-                          context.watch<ProductBloc>().state.currentStep;
+                      final step = context
+                          .watch<ProductBloc>()
+                          .state
+                          .currentStep;
 
                       if (step == ProductTourStep.showCollection) {
                         return TourWidgetWrapper(
@@ -85,18 +87,23 @@ class _HorizontalTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLayout = context.watch<AppLayout>();
     final entries = tab.entries;
     final isFirstTab =
         context.watch<ProductBloc>().state.tabs?.first.id == tab.id;
 
-    return Card(
-      margin: allPadding4,
-      color: context.theme.appColors.primary,
-      child: Padding(
-        padding: allPadding2,
-        child: SizedBox(
-          height: UIConstants.horiTabHeight(context),
-          child: CustomScrollView(
+    return Padding(
+      padding: allPadding4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+          borderRadius: borderCircular12,
+        ),
+        child: Padding(
+          padding: allPadding2,
+          child: SizedBox(
+            height: UIConstants.horiTabHeight(context),
+            child: CustomScrollView(
             scrollDirection: Axis.horizontal,
             controller: ScrollController(),
             scrollBehavior: CustomScrollBehaviour(),
@@ -111,10 +118,7 @@ class _HorizontalTab extends StatelessWidget {
                         padding: left4,
                         child: Text(
                           tab.title,
-                          style:
-                              context.theme.appTextTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                          ),
+                          style: context.theme.appTextTheme.denseTitle,
                         ),
                       ),
                       if (tab.subtitle.isEmpty)
@@ -124,8 +128,7 @@ class _HorizontalTab extends StatelessWidget {
                           padding: left4,
                           child: Text(
                             tab.subtitle,
-                            style: context.theme.appTextTheme.subtitleMedium
-                                ?.copyWith(fontSize: 12),
+                            style: context.theme.appTextTheme.denseSubtitle,
                           ),
                         ),
                       const Expanded(child: SizedBox()),
@@ -145,8 +148,9 @@ class _HorizontalTab extends StatelessWidget {
                 child: VerticalDivider(
                   color: context.theme.appColors.secondaryLight,
                   thickness: 2,
-                  indent: 4,
-                  endIndent: 4,
+                  width: 8,
+                  indent: 0,
+                  endIndent: 0,
                 ),
               ),
               SliverGrid.builder(
@@ -174,25 +178,42 @@ class _HorizontalTab extends StatelessWidget {
                     if (step == ProductTourStep.showItemsInCollection) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemsInCollection,
-                        child: EntryCard(entry: entry, onDoubleTap: () {}),
+                        child: EntryCard(
+                          entry: entry,
+                          onDoubleTap: () {},
+                          isLayoutVertical: appLayout.isLayoutVertical,
+                        ),
                       );
                     } else if (step == ProductTourStep.showItemActions) {
                       return TourWidgetWrapper(
                         step: ProductTourStep.showItemActions,
-                        child: EntryCard(entry: entry, onDoubleTap: () {}),
+                        child: EntryCard(
+                          entry: entry,
+                          onDoubleTap: () {},
+                          isLayoutVertical: appLayout.isLayoutVertical,
+                        ),
                       );
                     }
 
-                    return EntryCard(entry: entry, onDoubleTap: () {});
+                    return EntryCard(
+                      entry: entry,
+                      onDoubleTap: () {},
+                      isLayoutVertical: appLayout.isLayoutVertical,
+                    );
                   }
 
-                  return EntryCard(entry: entry, onDoubleTap: () {});
+                  return EntryCard(
+                    entry: entry,
+                    onDoubleTap: () {},
+                    isLayoutVertical: appLayout.isLayoutVertical,
+                  );
                 },
               ),
             ],
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

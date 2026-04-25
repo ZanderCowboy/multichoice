@@ -2,7 +2,7 @@ import 'package:core/src/services/implementations/app_info_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../helpers/fake_path_provider_platform.dart';
 import '../../injection.dart';

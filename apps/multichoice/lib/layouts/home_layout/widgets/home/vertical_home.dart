@@ -1,12 +1,29 @@
 part of '../../home_layout.dart';
 
-class _VerticalHome extends HookWidget {
+class _VerticalHome extends StatefulWidget {
   const _VerticalHome();
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
+  State<_VerticalHome> createState() => _VerticalHomeState();
+}
 
+class _VerticalHomeState extends State<_VerticalHome> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
         // Only proceed if we have both previous and current tabs
@@ -21,9 +38,10 @@ class _VerticalHome extends HookWidget {
       },
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!mounted || !_scrollController.hasClients) return;
+            await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
             );
@@ -32,34 +50,103 @@ class _VerticalHome extends HookWidget {
       },
       builder: (context, state) {
         final tabs = state.tabs ?? [];
+        final isEditMode = state.isEditMode;
 
-        return Padding(
-          padding: left0top4right0bottom24,
-          child: SizedBox(
-            height: UIConstants.vertTabHeight(context),
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              scrollBehavior: CustomScrollBehaviour(),
-              slivers: [
-                SliverPadding(
-                  padding: left4,
-                  sliver: SliverList.builder(
+        if (isEditMode && tabs.isNotEmpty) {
+          // Use ReorderableListView with horizontal scrolling for edit mode
+          final theme = Theme.of(context);
+          return Padding(
+            padding: vertical4horizontal4,
+            child: Column(
+              children: [
+                const _EditModeHelperBanner(isLayoutVertical: true),
+                Expanded(
+                  child: SizedBox(
+                    height: UIConstants.vertTabHeight(context),
+                    child: ReorderableListView.builder(
+                      scrollController: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      buildDefaultDragHandles: false,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      proxyDecorator: (child, index, animation) {
+                        // Override Card theme to make it transparent when dragging
+                        return Theme(
+                          data: theme.copyWith(
+                            cardTheme: theme.cardTheme.copyWith(
+                              color: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              elevation: 0,
+                            ),
+                          ),
+                          child: child,
+                        );
+                      },
+                      itemCount: tabs.length,
+                      onReorder: (oldIndex, newIndex) {
+                        context.read<HomeBloc>().add(
+                          HomeEvent.onReorderTabs(oldIndex, newIndex),
+                        );
+                      },
+                      itemBuilder: (_, index) {
+                        final tab = tabs[index];
+                        return Padding(
+                          key: ValueKey(tab.id),
+                          padding: horizontal4,
+                          child: CollectionTab(
+                            tab: tab,
+                            isEditMode: isEditMode,
+                            dragIndex: index,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Normal mode
+        return RefreshIndicator(
+          onRefresh: () => _onHomeRefresh(context),
+          color: context.theme.appColors.textTertiary,
+          backgroundColor: context.theme.appColors.scaffoldBackground,
+          // Note: The nested scroll structure (SingleChildScrollView wrapping
+          // CustomScrollView) is intentional. RefreshIndicator requires vertical
+          // scrolling, but this layout uses horizontal scrolling for tabs.
+          // The outer vertical scroll enables pull-to-refresh functionality.
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: UIConstants.vertTabHeight(context),
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _scrollController,
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
                     itemCount: tabs.length,
                     itemBuilder: (_, index) {
                       final tab = tabs[index];
 
-                      return CollectionTab(tab: tab);
+                      return Padding(
+                        padding: horizontal6,
+                        child: CollectionTab(
+                          tab: tab,
+                          isEditMode: isEditMode,
+                        ),
+                      );
                     },
                   ),
-                ),
-                const SliverPadding(
-                  padding: right12,
-                  sliver: SliverToBoxAdapter(
-                    child: NewTab(),
+                  const SliverPadding(
+                    padding: horizontal6,
+                    sliver: SliverToBoxAdapter(
+                      child: NewTab(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

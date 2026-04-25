@@ -1,21 +1,40 @@
 part of '../home_page.dart';
 
-class NewTab extends HookWidget {
+class NewTab extends StatefulWidget {
   const NewTab({super.key});
 
   @override
+  State<NewTab> createState() => _NewTabState();
+}
+
+class _NewTabState extends State<NewTab> {
+  late final TextEditingController _titleTextController;
+  late final TextEditingController _subtitleTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleTextController = TextEditingController();
+    _subtitleTextController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleTextController.dispose();
+    _subtitleTextController.dispose();
+    super.dispose();
+  }
+
+  Future<void> onPressed() async {
+    Navigator.of(context).pop();
+    await Future.microtask(() {
+      _titleTextController.clear();
+      _subtitleTextController.clear();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final titleTextController = useTextEditingController();
-    final subtitleTextController = useTextEditingController();
-
-    void onPressed() {
-      Navigator.of(context).pop();
-      Future.microtask(() {
-        titleTextController.clear();
-        subtitleTextController.clear();
-      });
-    }
-
     return AddTabCard(
       key: context.keys.addNewTabButton,
       width: UIConstants.newTabWidth(context),
@@ -28,25 +47,25 @@ class NewTab extends HookWidget {
             child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return ReusableForm(
-                  titleController: titleTextController,
-                  subtitleController: subtitleTextController,
-                  onTitleChanged: (value) => context
-                      .read<HomeBloc>()
-                      .add(HomeEvent.onChangedTabTitle(value)),
-                  onSubtitleChanged: (value) => context
-                      .read<HomeBloc>()
-                      .add(HomeEvent.onChangedTabSubtitle(value)),
-                  onCancel: () {
+                  titleController: _titleTextController,
+                  subtitleController: _subtitleTextController,
+                  onTitleChanged: (value) => context.read<HomeBloc>().add(
+                    HomeEvent.onChangedTabTitle(value),
+                  ),
+                  onSubtitleChanged: (value) => context.read<HomeBloc>().add(
+                    HomeEvent.onChangedTabSubtitle(value),
+                  ),
+                  onCancel: () async {
                     context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedCancel(),
-                        );
-                    onPressed();
+                      const HomeEvent.onPressedCancel(),
+                    );
+                    await onPressed();
                   },
-                  onAdd: () {
+                  onAdd: () async {
                     context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedAddTab(),
-                        );
-                    onPressed();
+                      const HomeEvent.onPressedAddTab(),
+                    );
+                    await onPressed();
                   },
                   isValid: state.isValid,
                 );

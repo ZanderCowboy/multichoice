@@ -3,12 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
 
 void main() {
-  testWidgets('ThemeGetter extension returns the correct ThemeData',
-      (WidgetTester tester) async {
+  testWidgets('ThemeGetter extension returns the correct ThemeData', (
+    tester,
+  ) async {
     final testWidget = MaterialApp(
       theme: ThemeData.light(),
       home: Builder(
-        builder: (BuildContext context) {
+        builder: (context) {
           final themeData = context.theme;
 
           return Scaffold(
