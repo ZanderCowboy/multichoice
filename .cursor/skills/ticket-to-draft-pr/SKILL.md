@@ -18,10 +18,10 @@ Use this skill when the user wants a GitHub ticket handled from implementation t
 2. **Create or switch to a ticket branch**
    - Never do feature or fix development directly on `develop` (it is protected).
    - If the current branch is `develop`, create and switch to a new branch before making any code changes.
-   - Branch naming must include the ticket number, for example:
-     - `55-add-new-feature`
-     - `256-this-is-a-bug`
-   - If already on a non-`develop` branch, continue on the current branch unless it clearly does not match the ticket.
+   - Branch naming must include the workflow prefix (`feature/` or `fix/`) and the ticket number, for example:
+     - `feature/55-add-new-feature`
+     - `fix/256-this-is-a-bug`
+   - If already on a non-`develop` branch, continue on the current branch unless it clearly does not match the ticket or the expected `feature/`/`fix/` naming convention.
 
 3. **Choose the implementation command**
    - For new behavior or enhancements, follow `.cursor/commands/feature.md`.
