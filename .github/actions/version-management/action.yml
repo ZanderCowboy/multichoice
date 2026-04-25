@@ -20,6 +20,14 @@ inputs:
     description: "Optional suffix to add to the version (e.g. -RC)"
     required: false
     default: ""
+  commit_changes:
+    description: "If false, only computes and outputs the next version (no commit/push)."
+    required: false
+    default: "true"
+  target_version:
+    description: "Optional exact version to commit/push (e.g. 1.2.3+456). When set, bump_type is ignored."
+    required: false
+    default: ""
 
 outputs:
   version_number:
@@ -46,37 +54,20 @@ runs:
         token: ${{ inputs.github_token }}
 
     ##############################################
-    # Get Latest Tag
-    ##############################################
-    - name: Get Latest Tag
-      id: get_latest_tag
-      shell: bash
-      run: |
-        git fetch --tags
-        latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
-        if [[ -z "$latest_tag" ]]; then
-          echo "latest_tag=0.0.0" >> $GITHUB_OUTPUT
-          echo "Latest tag: 0.0.0 (no tags found)"
-        else
-          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
-          echo "Latest tag: $latest_tag"
-        fi
-        echo "***********************************"
-
-    ##############################################
     # Get Current Version From pubspec.yaml
     ##############################################
     - name: Get Current Version From pubspec.yaml
       id: get_current_version
       shell: bash
       run: |
+        set -euo pipefail
         echo "Checking version in ${{ inputs.pubspec_path }}:"
         if [[ ! -f "${{ inputs.pubspec_path }}" ]]; then
           echo "::error::File not found: ${{ inputs.pubspec_path }}"
           exit 1
         fi
 
-        cat ${{ inputs.pubspec_path }} | grep '^version:' || {
+        grep '^version:' "${{ inputs.pubspec_path }}" || {
           echo "::error::No version field found in ${{ inputs.pubspec_path }}"
           exit 1
         }
@@ -98,183 +89,131 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github_token }}
-        REPO: ${{ github.repository }}
       run: |
-        latest_tag=${{ steps.get_latest_tag.outputs.latest_tag }}
-        current_version=${{ steps.get_current_version.outputs.current_version }}
+        set -euo pipefail
+
+        branch_name="${{ inputs.branch_name }}"
+        pubspec_path="${{ inputs.pubspec_path }}"
+        bump_type="${{ inputs.bump_type }}"
         version_suffix="${{ inputs.version_suffix }}"
+        commit_changes="${{ inputs.commit_changes }}"
+        target_version="${{ inputs.target_version }}"
 
-        echo "Comparing current_version ($current_version) with latest_tag ($latest_tag)"
-        
-        # Extract version parts for comparison
-        current_version_part=$(echo "$current_version" | cut -d'+' -f1)
-        current_build_number=$(echo "$current_version" | cut -d'+' -f2)
-        
-        # Validate current version format
-        if ! echo "$current_version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
-          echo "::error::Invalid version format: $current_version_part"
-          exit 1
-        fi
-        
-        if ! echo "$current_build_number" | grep -qE '^[0-9]+$'; then
-          echo "::error::Invalid build number: $current_build_number"
-          exit 1
-        fi
-        
-        # Function to handle version conflicts
-        handle_version_conflict() {
-          local max_retries=3
-          local retry_count=0
-          
-          while [[ $retry_count -lt $max_retries ]]; do
-            echo "Attempt $((retry_count + 1)) of $max_retries to resolve version conflict"
-            
-            # Fetch latest changes
-            git fetch origin ${{ inputs.branch_name }}
-            git reset --hard origin/${{ inputs.branch_name }}
-            
-            # Get updated version
-            updated_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
-            if [[ "$updated_version" != "$current_version" ]]; then
-              echo "Version was updated by another process: $updated_version"
-              current_version="$updated_version"
-              current_version_part=$(echo "$current_version" | cut -d'+' -f1)
-              current_build_number=$(echo "$current_version" | cut -d'+' -f2)
-              break
-            fi
-            
-            retry_count=$((retry_count + 1))
-            if [[ $retry_count -lt $max_retries ]]; then
-              echo "Waiting 5 seconds before retry..."
-              sleep 5
-            fi
-          done
-          
-          if [[ $retry_count -eq $max_retries ]]; then
-            echo "::error::Failed to resolve version conflict after $max_retries attempts"
+        git config user.name "VersionBumpingBot"
+        git config user.email "bot@versionbumpingbot.com"
+
+        read_current_version() {
+          local v
+          v="$(grep '^version:' "$pubspec_path" | sed 's/version:[[:space:]]*//')"
+          if ! echo "$v" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'; then
+            echo "::error::Invalid version format in $pubspec_path: $v"
             exit 1
           fi
+          echo "$v"
         }
-        
-        # Compare versions (handle case where latest_tag might be 0.0.0)
-        if [[ "$latest_tag" == "0.0.0" ]] || [[ "$current_version" > "$latest_tag" ]]; then
-          echo "Version in pubspec.yaml ($current_version) is ahead of latest tag ($latest_tag). Proceeding."
-          if [[ -n "$version_suffix" ]]; then
-            # Add suffix to the version if it doesn't already have it
-            if [[ "$current_version_part" != *"$version_suffix"* ]]; then
-              new_version_part="${current_version_part}${version_suffix}"
-              new_version="${new_version_part}+${current_build_number}"
-              # Update pubspec.yaml with suffixed version
-              sed -i "s/version: .*/version: $new_version/" ${{ inputs.pubspec_path }}
-              git add ${{ inputs.pubspec_path }}
-              git commit -m "Add $version_suffix suffix to version $new_version [skip ci]"
-              
-              # Try to push, handle conflicts
-              if ! git push origin HEAD:${{ inputs.branch_name }}; then
-                echo "Push failed, attempting to resolve version conflict..."
-                handle_version_conflict
-              fi
-              
-              current_version="$new_version"
-              current_version_part="$new_version_part"
-            fi
-          fi
-          echo "version_part=$current_version_part" >> $GITHUB_OUTPUT
-          echo "build_number=$current_build_number" >> $GITHUB_OUTPUT
-          echo "version_number=$current_version" >> $GITHUB_OUTPUT
-        else
-          echo "********** Updating version in pubspec.yaml. **********"
 
-          # Extract version and build number
-          version_part=$(echo "$current_version" | cut -d'+' -f1)
-          build_number=$(echo "$current_version" | cut -d'+' -f2)
-          echo "Version part: $version_part + Build number: $build_number"
-          
-          # Validate version format
-          if ! echo "$version_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?$'; then
-            echo "::error::Invalid version format in pubspec.yaml: $version_part. Expected: x.y.z or x.y.z-RC"
+        compute_next_version() {
+          local current_version current_part current_build base_part major minor patch new_build new_part
+
+          current_version="$(read_current_version)"
+          current_part="$(echo "$current_version" | cut -d'+' -f1)"
+          current_build="$(echo "$current_version" | cut -d'+' -f2)"
+
+          if ! echo "$current_build" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid build number: $current_build"
             exit 1
           fi
-          
-          # Split version into major, minor, patch
-          IFS='.' read -r major minor patch_with_suffix <<< "$version_part"
-          
-          # Handle RC suffix in patch
-          if [[ "$patch_with_suffix" == *"-RC"* ]]; then
-            patch=$(echo "$patch_with_suffix" | cut -d'-' -f1)
-          else
-            patch="$patch_with_suffix"
-          fi
-          
-          # Validate numeric parts
-          if ! [[ "$major" =~ ^[0-9]+$ ]] || ! [[ "$minor" =~ ^[0-9]+$ ]] || ! [[ "$patch" =~ ^[0-9]+$ ]]; then
-            echo "::error::Invalid version components: major=$major, minor=$minor, patch=$patch"
+
+          # Strip any existing suffix (we re-apply version_suffix deterministically below)
+          base_part="${current_part%%-*}"
+          if ! echo "$base_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid version part: $current_part"
             exit 1
           fi
-          
-          # Increment version based on bump_type
-          bump_type="${{ inputs.bump_type }}"
-          echo "bump_type value is: $bump_type"
+
+          IFS='.' read -r major minor patch <<< "$base_part"
+
           case "$bump_type" in
-            "major")
-              major=$((major + 1))
-              minor=0
-              patch=0
-              ;;
-            "minor")
-              minor=$((minor + 1))
-              patch=0
-              ;;
-            "patch")
-              patch=$((patch + 1))
-              ;;
-            "none")
-              # For none, we only increment the build number
-              ;;
+            major)
+              major=$((major + 1)); minor=0; patch=0 ;;
+            minor)
+              minor=$((minor + 1)); patch=0 ;;
+            patch)
+              patch=$((patch + 1)) ;;
+            none)
+              : ;;
             *)
               echo "::error::Invalid bump_type: $bump_type. Expected: major, minor, patch, none"
-              exit 1
-              ;;
+              exit 1 ;;
           esac
-          
-          new_version="$major.$minor.$patch"
-          new_build_number=$((build_number + 1))
-          
-          # Add suffix if provided
+
+          new_build=$((current_build + 1))
+          new_part="$major.$minor.$patch"
+
           if [[ -n "$version_suffix" ]]; then
-            # Check if the version already contains the suffix to avoid duplication
-            if [[ "$new_version" != *"$version_suffix"* ]]; then
-              new_version="${new_version}${version_suffix}"
+            new_part="${new_part}${version_suffix}"
+          fi
+
+          echo "${new_part}+${new_build}"
+        }
+
+        commit_version() {
+          local new_version="$1"
+          sed -i "s/^version: .*/version: $new_version/" "$pubspec_path"
+          git add "$pubspec_path"
+          git commit -m "Bump version to $new_version [skip ci]" >/dev/null
+        }
+
+        max_retries=3
+        for attempt in $(seq 1 "$max_retries"); do
+          echo "Version bump attempt $attempt/$max_retries"
+
+          # Ensure we are on the latest remote tip before computing the next version.
+          git fetch origin "$branch_name"
+          git reset --hard "origin/$branch_name"
+
+          current_version="$(read_current_version)"
+          if [[ -n "$target_version" ]]; then
+            next_version="$target_version"
+            if ! echo "$next_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'; then
+              echo "::error::Invalid target_version: $next_version"
+              exit 1
             fi
+          else
+            next_version="$(compute_next_version)"
           fi
 
-          # Echo new version and build number
-          echo "New version part: $new_version + New build number: $new_build_number"
-          
-          # Update pubspec.yaml with new version and build number
-          sed -i "s/version: .*/version: $new_version+$new_build_number/" ${{ inputs.pubspec_path }}
-          
-          git config --global user.name 'VersionBumpingBot'
-          git config --global user.email 'bot@versionbumpingbot.com'
-          
-          git add ${{ inputs.pubspec_path }}
-          git commit -m "Bump version to $new_version+$new_build_number [skip ci]" || {
-            echo "::error::Failed to commit version bump"
+          if [[ "$next_version" == "$current_version" ]]; then
+            echo "::error::Next version equals current version ($current_version); refusing to commit"
             exit 1
-          }
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git
-          
-          # Try to push, handle conflicts
-          if ! git push origin HEAD:${{ inputs.branch_name }}; then
-            echo "Push failed, attempting to resolve version conflict..."
-            handle_version_conflict
-            # Re-run version bumping logic with updated version
-            echo "Re-running version bumping with updated version: $current_version"
-            exit 1  # This will trigger a retry of the action
           fi
 
-          echo "version_part=$new_version" >> $GITHUB_OUTPUT
-          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
-          echo "version_number=$new_version+$new_build_number" >> $GITHUB_OUTPUT
+          echo "Updating version: $current_version -> $next_version"
 
-        fi
+          # Compute-only mode (no commit/push)
+          if [[ "$commit_changes" != "true" ]]; then
+            version_part="$(echo "$next_version" | cut -d'+' -f1)"
+            build_number="$(echo "$next_version" | cut -d'+' -f2)"
+            echo "version_part=$version_part" >> "$GITHUB_OUTPUT"
+            echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
+            echo "version_number=$next_version" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          commit_version "$next_version"
+
+          if git push origin "HEAD:$branch_name"; then
+            version_part="$(echo "$next_version" | cut -d'+' -f1)"
+            build_number="$(echo "$next_version" | cut -d'+' -f2)"
+            echo "version_part=$version_part" >> "$GITHUB_OUTPUT"
+            echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
+            echo "version_number=$next_version" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "::warning::Push failed (possible version conflict). Retrying in 5 seconds..."
+          sleep 5
+        done
+
+        echo "::error::Failed to bump/push version after $max_retries attempts"
+        exit 1
