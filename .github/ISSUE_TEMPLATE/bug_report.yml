@@ -74,24 +74,24 @@ body:
   - type: input
     id: app-version
     attributes:
-      label: 📦 App Version
-      description: What version of the app are you running?
+      label: 📦 App Version (optional)
+      description: If known, include the version (or commit hash)
       placeholder: "Example: 1.2.3+45"
     validations:
-      required: true
+      required: false
 
   - type: dropdown
     id: severity
     attributes:
-      label: 🚨 Severity Level
-      description: How severe is this bug?
+      label: 🚨 Severity Level (optional)
+      description: Rough impact assessment
       options:
         - "🔥 Critical - App unusable/crashes"
         - "🚨 High - Major feature broken"
         - "⚠️ Medium - Feature partially works"
         - "🔧 Low - Minor issue/cosmetic"
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: device-info
@@ -133,14 +133,9 @@ body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: ✅ Pre-submission Checklist
-      description: Please verify the following before submitting
+      label: ✅ Quick check
       options:
         - label: I have searched for existing issues
           required: true
-        - label: I have provided steps to reproduce
+        - label: I included steps to reproduce
           required: true
-        - label: I have included relevant device/version information
-          required: true
-        - label: I am willing to help test the fix
-          required: false 

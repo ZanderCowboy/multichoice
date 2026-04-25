@@ -11,7 +11,7 @@ body:
       value: |
         ## ✨ Feature Request
         
-        We love hearing about new ideas! Please describe your feature request in detail.
+        We love hearing about new ideas! Keep it short—details can go in comments.
         
         > **Tip**: Before submitting, check if a similar feature request already exists.
 
@@ -41,59 +41,6 @@ body:
       placeholder: "I would like to see... / The app should..."
     validations:
       required: true
-
-  - type: dropdown
-    id: feature-type
-    attributes:
-      label: 🏷️ Feature Type
-      description: What type of feature is this?
-      options:
-        - "🎨 UI/UX Enhancement"
-        - "⚡ Performance Improvement"
-        - "🔧 New Functionality"
-        - "🔌 Integration/API"
-        - "📱 Platform-specific"
-        - "🌐 Accessibility"
-        - "🔒 Security Enhancement"
-        - "📊 Analytics/Tracking"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: 📈 Priority Level
-      description: How important is this feature to you?
-      options:
-        - "🔥 High - Would significantly improve the app"
-        - "⚡ Medium - Nice to have improvement"
-        - "💡 Low - Minor enhancement"
-    validations:
-      required: true
-
-  - type: textarea
-    id: user-stories
-    attributes:
-      label: 👥 User Stories
-      description: Who would benefit from this feature and how?
-      placeholder: |
-        - As a [user type], I want [goal] so that [benefit]
-        - Example: As a student, I want to organize my notes by subject so that I can study more efficiently
-    validations:
-      required: true
-
-  - type: textarea
-    id: acceptance-criteria
-    attributes:
-      label: ✅ Acceptance Criteria
-      description: What conditions must be met for this feature to be considered complete?
-      placeholder: |
-        - [ ] User can toggle dark mode in settings
-        - [ ] Dark mode persists across app restarts
-        - [ ] All screens support dark mode
-        - [ ] Follows system dark mode preference
-    validations:
-      required: false
 
   - type: textarea
     id: mockups-designs
@@ -125,20 +72,6 @@ body:
     validations:
       required: false
 
-  - type: dropdown
-    id: complexity
-    attributes:
-      label: ⚖️ Estimated Complexity
-      description: How complex do you think this feature might be?
-      options:
-        - "🟢 Simple - Minor changes needed"
-        - "🟡 Medium - Moderate development effort"
-        - "🟠 Complex - Significant changes required"
-        - "🔴 Very Complex - Major architectural changes"
-        - "❓ Unknown - Need technical assessment"
-    validations:
-      required: false
-
   - type: textarea
     id: additional-context
     attributes:
@@ -151,16 +84,7 @@ body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: ✅ Pre-submission Checklist
-      description: Please verify the following before submitting
+      label: ✅ Quick check
       options:
-        - label: I have searched for existing feature requests
+        - label: I searched for an existing feature request
           required: true
-        - label: I have clearly described the problem this feature solves
-          required: true
-        - label: I have provided a detailed proposed solution
-          required: true
-        - label: I am willing to help test this feature when implemented
-          required: false
-        - label: I am interested in contributing to this feature's development
-          required: false 
