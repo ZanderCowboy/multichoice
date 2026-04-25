@@ -21,7 +21,7 @@ Use Melos and the root Makefile for workspace operations. Prefer the narrowest c
 
 ## Code Generation
 
-- Generated files include `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `*.auto_mappr.dart`, and `*.mocks.dart`.
+- Generated files include `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `*.auto_mappr.dart`, `*.gr.dart`, and `*.mocks.dart`.
 - Do not hand-edit generated files.
 - When build_runner is needed, use Melos or the Makefile commands rather than invoking it manually.
 - When mocks are needed, check `mocks.dart` first and regenerate through Melos after updating mock specs.
