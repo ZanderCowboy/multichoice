@@ -5,8 +5,6 @@ class AppearanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appLayout = context.watch<AppLayout>();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -14,24 +12,13 @@ class AppearanceSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'Appearance',
-            style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
         const LightDarkModeButton(),
-        if (!appLayout.isInitialized)
-          CircularLoader.small()
-        else
-          SwitchListTile(
-            key: context.keys.layoutSwitch,
-            title: const Text('Horizontal / Vertical Layout'),
-            value: appLayout.isLayoutVertical,
-            onChanged: (value) async {
-              await appLayout.setLayoutVertical(isVertical: value);
-            },
-          ),
+        const HorizontalVerticalLayoutButton(),
       ],
     );
   }

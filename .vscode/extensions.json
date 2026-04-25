@@ -2,6 +2,9 @@
 {
     "recommendations": [
         "dart-code.dart-code",
-        "dart-code.flutter"
+        "dart-code.flutter",
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens",
+        "redhat.java"
     ]
 }

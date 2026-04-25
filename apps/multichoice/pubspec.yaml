@@ -2,17 +2,21 @@ name: multichoice
 description: "The application for the Multichoice repo"
 publish_to: "none"
 
-version: 0.5.2+184
+version: 0.8.0+237
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.10.8 <4.0.0"
 
 dependencies:
-  auto_route: ^10.0.1
+  auto_route: ^11.1.0
   bloc: ^9.0.0
   core: ^0.0.1
   file_picker: ^10.1.9
-  firebase_core: ^3.0.0
+  firebase_analytics: ^12.1.1
+  firebase_core: ^4.4.0
+  firebase_crashlytics: ^5.0.7
+  firebase_performance: ^0.11.1+4
+  firebase_remote_config: ^6.1.4
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
@@ -21,12 +25,15 @@ dependencies:
   flutter_svg_provider: ^1.0.7
   gap: ^3.0.1
   models: ^0.0.1
+  open_mail: ^1.2.1
   permission_handler: ^12.0.0+1
   provider: ^6.1.1
+  reorderable_grid: ^1.0.13
   shared_preferences: ^2.2.2
-  showcaseview: ^4.0.1
+  showcaseview: ^5.0.1
   theme: ^0.0.1
   ui_kit: ^0.0.1
+  url_launcher: ^6.2.0
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding
@@ -40,7 +47,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^10.0.0
 
 flutter:
   uses-material-design: true

@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Flutter
         uses: ./.github/actions/setup-flutter-with-java
@@ -29,3 +29,16 @@ jobs:
       - name: Run Melos Analyze
         run: melos analyze
         shell: bash
+
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true

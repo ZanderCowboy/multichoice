@@ -1,0 +1,41 @@
+---
+description: Reusable Dart patterns for services, pages, tests, and models
+globs: ["apps/**/*.dart", "packages/**/*.dart"]
+alwaysApply: false
+---
+
+# Reusable Patterns
+
+Use these patterns only when they match nearby code. Prefer the local implementation style over a generic template.
+
+## Services
+
+- Put interfaces in `interfaces/` and implementations in `implementations/`.
+- Name service interfaces like `IAppInfoService` in `i_app_info_service.dart`.
+- Register injectable implementations consistently with nearby services.
+- Return existing result/error types used by the surrounding service.
+
+## Pages And Widgets
+
+- Public page class owns `Scaffold` and `AppBar`.
+- Private child widget owns the body.
+- Extract feature-specific widgets into the local `widgets` folder when the parent grows.
+- Use `part`/`part of` only where the feature already uses that pattern.
+
+## Tests
+
+- Mirror the source path under `test`.
+- Use existing `mocks.dart` before adding mock specs.
+- Keep tests focused on behavior, especially regression cases.
+
+## Repositories And Models
+
+- Follow existing repository `interfaces/` and `implementation/` folders.
+- Keep DTOs, database models, API models, enums, and mappers in `packages/models`.
+- Use Freezed and generated JSON only where the surrounding models already do.
+- Run generation through Melos; do not hand-edit generated files.
+
+## Templates
+
+- Use `.cursor/templates` as references, not as mandatory structure.
+- Adapt templates to the current package and nearby code before editing.

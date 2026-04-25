@@ -1,4 +1,7 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
@@ -29,22 +32,42 @@ class WelcomeModal extends StatelessWidget {
                 ),
               ),
               gap16,
-              const Text(
+              Text(
                 'Multichoice helps you organize your thoughts and ideas into customizable collections. '
                 'Would you like to follow a quick tutorial to learn how to use the app?',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: onGoHome,
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.home,
+                          button: AnalyticsButton.goHome,
+                          action: AnalyticsAction.tap,
+                          source: 'welcome_modal',
+                        ),
+                      );
+                      onGoHome();
+                    },
                     child: const Text('Go Home'),
                   ),
                   ElevatedButton(
-                    onPressed: onFollowTutorial,
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const UiActionEventData(
+                          page: AnalyticsPage.home,
+                          button: AnalyticsButton.followTutorial,
+                          action: AnalyticsAction.tap,
+                          source: 'tutorial',
+                        ),
+                      );
+                      onFollowTutorial();
+                    },
                     child: const Text('Follow Tutorial'),
                   ),
                 ],

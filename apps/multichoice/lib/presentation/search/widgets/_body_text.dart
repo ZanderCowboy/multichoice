@@ -14,12 +14,12 @@ class _BodyText extends StatelessWidget {
           Icon(
             Icons.search,
             size: 48,
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+            color: context.theme.appColors.textTertiary,
           ),
           gap16,
           Text(
             state.query.isEmpty
-                ? 'Start typing to search for tabs and entries'
+                ? 'Start typing to search for collections and items'
                 : 'No results found',
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,

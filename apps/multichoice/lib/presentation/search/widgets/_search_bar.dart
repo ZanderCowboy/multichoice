@@ -1,16 +1,44 @@
 part of '../search_page.dart';
 
-class _SearchBar extends HookWidget {
+class _SearchBar extends StatefulWidget {
   const _SearchBar();
 
   @override
-  Widget build(BuildContext context) {
-    final controller = useTextEditingController();
+  State<_SearchBar> createState() => _SearchBarState();
+}
 
+class _SearchBarState extends State<_SearchBar> {
+  late final TextEditingController _controller;
+
+  bool get _hasQuery => _controller.text.trim().isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _controller.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller
+      ..removeListener(_onTextChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 36,
       child: TextField(
-        controller: controller,
+        controller: _controller,
         autofocus: true,
         cursorColor: Colors.black87,
         cursorHeight: 18,
@@ -36,14 +64,26 @@ class _SearchBar extends HookWidget {
             borderRadius: borderCircular16,
             borderSide: BorderSide.none,
           ),
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear, color: Colors.black54, size: 20),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {
-              controller.clear();
-              context.read<SearchBloc>().add(const SearchEvent.clear());
-            },
+          suffixIconConstraints: const BoxConstraints(minWidth: 32),
+          suffixIcon: IgnorePointer(
+            ignoring: !_hasQuery,
+            child: AnimatedOpacity(
+              opacity: _hasQuery ? 1 : 0,
+              duration: const Duration(milliseconds: 120),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.clear,
+                  color: Colors.black54,
+                  size: 20,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  _controller.clear();
+                  context.read<SearchBloc>().add(const SearchEvent.clear());
+                },
+              ),
+            ),
           ),
         ),
         onChanged: (query) {

@@ -14,7 +14,7 @@
 
 ## 📱 Download
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.zandercowboy.multichoice)
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
 
 ## 📖 Description
 
@@ -84,8 +84,8 @@ Multichoice is a versatile Flutter application that helps users manage and organ
 
 ### Prerequisites
 
-- Flutter version: 3.27.1
-- Dart version: 3.6.0
+- Flutter version: 3.41.4
+- Dart version: 3.11.1
 - Android Studio / VS Code
 - Windows (for Windows platform development)
 

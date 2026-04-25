@@ -1,65 +1,31 @@
 ---
-description: 
-globs: 
+description: Dart code organization and architecture boundaries
+globs: ["apps/**/*.dart", "packages/**/*.dart"]
 alwaysApply: false
 ---
-# Code Organization Guide
+# Code Organization
 
-## Package Structure
-Each package should follow this structure:
-```
-package_name/
-├── lib/
-│   ├── src/           # Implementation files
-│   ├── package_name.dart  # Public API
-│   └── models/        # Data models
-├── test/              # Test files
-└── pubspec.yaml       # Package configuration
-```
+## App Code
 
-## App Structure
-Each Flutter app should follow this structure:
-```
-app_name/
-├── lib/
-│   ├── main.dart      # Entry point
-│   ├── app.dart       # App configuration
-│   ├── features/      # Feature modules
-│   ├── shared/        # Shared components
-│   └── utils/         # Utility functions
-├── test/              # Test files
-└── pubspec.yaml       # App configuration
-```
+- `apps/multichoice/lib/app` contains app setup, routing, theme wiring, auth/app layout, and app-level exports.
+- `apps/multichoice/lib/layouts` contains layout-level widgets such as the home layout and tabs.
+- `apps/multichoice/lib/presentation` contains pages, feature UI, feature widgets, dialogs, and presentation utilities.
+- `apps/multichoice/lib/utils` contains app-only utilities such as product tour helpers.
+- Follow the existing folder near the change before creating a new one.
 
-## Feature Organization
-Features should be organized as follows:
-```
-feature_name/
-├── data/             # Data layer
-│   ├── repositories/
-│   └── datasources/
-├── domain/           # Business logic
-│   ├── entities/
-│   └── usecases/
-└── presentation/     # UI layer
-    ├── pages/
-    ├── widgets/
-    └── controllers/
-```
+## Package Code
 
-## Best Practices
-1. Keep files focused and single-responsibility. Multiple files is prefered with part/part-of instead of large files. 
-2. Use barrel files (index.dart) for clean exports, named export.dart
-3. Follow the dependency rule: presentation → domain → data
-4. Keep business logic in the domain layer
-5. Use dependency injection for better testability
+- `packages/core/lib/src/application` contains Bloc state, events, and behavior coordination.
+- `packages/core/lib/src/services`, `repositories`, `controllers`, and `wrappers` use interfaces plus implementations.
+- `packages/models/lib/src` contains DTOs, database models, API models, enums, mappers, and analytics models.
+- `packages/ui_kit/lib/src` contains reusable UI components and constants.
+- `packages/theme/lib/src` contains theme extensions and color definitions.
 
-## Linting
-1. Avoid missing commas
+## File Shape
 
-## Testing
-- Unit tests for business logic
-- Widget tests for UI components
-- Integration tests for feature flows
-- Place tests next to the code they test
+- Keep files focused and consistent with nearby naming.
+- Prefer small private widget files with `part`/`part of` only where that pattern already exists locally.
+- Keep `part` declarations alphabetical.
+- Use `export.dart` barrel files rather than `index.dart`.
+- Add trailing commas for stable formatting.
 

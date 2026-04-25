@@ -25,8 +25,8 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               IconButton(
                 onPressed: () {
                   context.read<DetailsBloc>().add(
-                        const DetailsEvent.onSubmit(),
-                      );
+                    const DetailsEvent.onSubmit(),
+                  );
                 },
                 icon: const Icon(
                   Icons.check,
@@ -36,8 +36,8 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               IconButton(
                 onPressed: () {
                   context.read<DetailsBloc>().add(
-                        const DetailsEvent.onToggleEditMode(),
-                      );
+                    const DetailsEvent.onToggleEditMode(),
+                  );
                 },
                 icon: const Icon(
                   Icons.edit,
