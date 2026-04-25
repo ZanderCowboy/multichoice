@@ -41,14 +41,6 @@ Fixes #(issue number)
 - [ ] Integration tests
 - [ ] Manual testing
 
-### 📱 Platforms Tested
-- [ ] Android
-- [ ] iOS
-- [ ] Web
-- [ ] Windows
-- [ ] macOS
-- [ ] Linux
-
 ### 🔧 Test Results
 <!-- Paste test results or screenshots if applicable -->
 ```bash
@@ -58,11 +50,9 @@ Fixes #(issue number)
 ## 📸 Screenshots/Videos
 <!-- Add screenshots or videos demonstrating the changes (especially for UI changes) -->
 
-### Before
-<!-- Screenshots of the current behavior (if applicable) -->
-
-### After
-<!-- Screenshots of the new behavior -->
+| Before | After |
+| --- | --- |
+| <!-- drag/drop or paste image link --> | <!-- drag/drop or paste image link --> |
 
 ## 🏗️ Architecture Impact
 <!-- Describe any architectural changes or considerations -->

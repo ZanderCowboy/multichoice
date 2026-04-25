@@ -162,43 +162,44 @@ jobs:
               });
             }
 
-      - name: 📋 Validate PR requirements
-        if: github.event.action == 'ready_for_review'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            const body = pr.body || '';
-            
-            const checks = {
-              'Related Issue': /Fixes #\d+/i.test(body),
-              'Change Type Selected': /- \[x\]/i.test(body),
-              'Version Bump Selected': /`(major|minor|patch|no-build)`.*- \[x\]/i.test(body),
-              'Testing Completed': /Test Types Run.*- \[x\]/i.test(body)
-            };
-            
-            const failed = Object.entries(checks)
-              .filter(([_, passed]) => !passed)
-              .map(([check]) => check);
-            
-            if (failed.length > 0) {
-              const comment = `
-              ## ⚠️ PR Template Requirements Missing
-              
-              Please complete the following sections in your PR description:
-              
-              ${failed.map(item => `- [ ] ${item}`).join('\n')}
-              
-              This helps us review your PR more efficiently! 🚀
-              `;
-              
-              await github.rest.issues.createComment({
-                issue_number: pr.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            }
+      # Disabled for now (too noisy for a mostly-solo-maintainer workflow).
+      # - name: 📋 Validate PR requirements
+      #   if: github.event.action == 'ready_for_review'
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const pr = context.payload.pull_request;
+      #       const body = pr.body || '';
+      #
+      #       const checks = {
+      #         'Related Issue': /Fixes #\d+/i.test(body),
+      #         'Change Type Selected': /- \[x\]/i.test(body),
+      #         'Version Bump Selected': /`(major|minor|patch|no-build)`.*- \[x\]/i.test(body),
+      #         'Testing Completed': /Test Types Run.*- \[x\]/i.test(body)
+      #       };
+      #
+      #       const failed = Object.entries(checks)
+      #         .filter(([_, passed]) => !passed)
+      #         .map(([check]) => check);
+      #
+      #       if (failed.length > 0) {
+      #         const comment = `
+      #         ## ⚠️ PR Template Requirements Missing
+      #
+      #         Please complete the following sections in your PR description:
+      #
+      #         ${failed.map(item => `- [ ] ${item}`).join('\n')}
+      #
+      #         This helps us review your PR more efficiently! 🚀
+      #         `;
+      #
+      #         await github.rest.issues.createComment({
+      #           issue_number: pr.number,
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           body: comment
+      #         });
+      #       }
 
   celebrate:
     name: 🎉 Celebrate Contributions
