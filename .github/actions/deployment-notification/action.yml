@@ -2,6 +2,10 @@ name: "Deployment Notification"
 description: "Sends deployment status notifications"
 
 inputs:
+  github_token:
+    description: "GitHub token (used for creating issues on failure)"
+    required: false
+    default: "${{ github.token }}"
   deployment_status:
     description: "Status of deployment (success, failure, cancelled)"
     required: true
@@ -106,19 +110,25 @@ runs:
     - name: Send Webhook Notification
       if: inputs.webhook_url != ''
       shell: bash
+      env:
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
       run: |
         webhook_url="${{ inputs.webhook_url }}"
         message="${{ steps.generate_message.outputs.message }}"
-        
-        # Prepare payload
-        payload=$(cat <<EOF
-        {
-          "text": "$message",
+
+        # Prepare JSON payload with proper escaping
+        payload="$(python3 - <<'PY'
+        import json
+        import os
+
+        message = os.environ["MESSAGE"]
+        print(json.dumps({
+          "text": message,
           "username": "Deployment Bot",
-          "icon_emoji": ":rocket:"
-        }
-        EOF
-        )
+          "icon_emoji": ":rocket:",
+        }))
+        PY
+        )"
         
         # Send webhook
         curl -X POST -H "Content-Type: application/json" \
@@ -153,6 +163,8 @@ runs:
     - name: Create GitHub Issue for Failed Deployments
       if: inputs.deployment_status == 'failure'
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
       run: |
         title="🚨 Deployment Failed - ${{ inputs.environment }} v${{ inputs.version }}"
         body="${{ steps.generate_message.outputs.message }}"

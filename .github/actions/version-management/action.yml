@@ -39,7 +39,7 @@ runs:
     # Checkout Branch
     ##############################################
     - name: Checkout Branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ inputs.branch_name }}
         fetch-depth: 0
