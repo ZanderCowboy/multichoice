@@ -147,9 +147,9 @@ env:
    - Monitor version conflicts
 
 4. **Rollback Strategy**
-   - Have a clear rollback procedure
-   - Test rollback mechanisms regularly
-   - Document rollback decisions
+   - Rollbacks are **manual** (for example, via Google Play Console release management)
+   - If you need to undo a version change, revert the version commit on the target branch
+   - Document rollback decisions and incident context in an issue
 
 ## Monitoring and Analytics
 

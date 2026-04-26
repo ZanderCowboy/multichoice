@@ -122,10 +122,8 @@ runs:
       shell: bash
       env:
         MESSAGE: ${{ steps.generate_message.outputs.message }}
+        WEBHOOK_URL: ${{ inputs.webhook_url }}
       run: |
-        webhook_url="${{ inputs.webhook_url }}"
-        message="${{ steps.generate_message.outputs.message }}"
-
         # Prepare JSON payload with proper escaping
         payload="$(python3 - <<'PY'
         import json
@@ -143,7 +141,7 @@ runs:
         # Send webhook
         if curl -X POST -H "Content-Type: application/json" \
           -d "$payload" \
-          "$webhook_url"; then
+          "$WEBHOOK_URL"; then
           echo "✅ Webhook notification sent"
         else
           echo "::warning::Failed to send webhook notification"
@@ -152,21 +150,22 @@ runs:
     - name: Send Email Notification
       if: inputs.email_recipients != ''
       shell: bash
+      env:
+        EMAIL_RECIPIENTS: ${{ inputs.email_recipients }}
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
       run: |
-        recipients="${{ inputs.email_recipients }}"
-        status="${{ inputs.deployment_status }}"
-        environment="${{ inputs.environment }}"
-        version="${{ inputs.version }}"
-        
         # This would typically use a service like SendGrid, Mailgun, etc.
         # For now, we'll just log the intent
-        echo "📧 Email notification would be sent to: $recipients"
-        echo "Subject: Deployment $status - $environment v$version"
-        echo "Body: ${{ steps.generate_message.outputs.message }}"
+        echo "📧 Email notification would be sent to: $EMAIL_RECIPIENTS"
+        echo "Subject: Deployment $DEPLOYMENT_STATUS - $DEPLOYMENT_ENVIRONMENT v$VERSION"
+        echo "Body: $MESSAGE"
         
         # Example with curl to a hypothetical email service
         # curl -X POST "https://api.emailservice.com/send" \
-        #   -H "Authorization: Bearer ${{ secrets.EMAIL_API_KEY }}" \
+        #   -H "Authorization: Bearer <EMAIL_API_KEY>" \
         #   -H "Content-Type: application/json" \
         #   -d "{\"to\":\"$recipients\",\"subject\":\"Deployment $status\",\"body\":\"$message\"}"
 
@@ -175,20 +174,33 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github_token }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
       run: |
-        title="🚨 Deployment Failed - ${{ inputs.environment }} v${{ inputs.version }}"
-        body="${{ steps.generate_message.outputs.message }}"
+        set -euo pipefail
+
+        title="🚨 Deployment Failed - ${DEPLOYMENT_ENVIRONMENT} v${VERSION}"
+        body="$MESSAGE"
         
         # Create issue using GitHub CLI
-        gh issue create \
+        if gh issue create --title "$title" --body "$body"; then
+          echo "✅ GitHub issue created for failed deployment"
+          exit 0
+        fi
+
+        echo "::warning::Failed to create GitHub issue"
+        echo "Attempting again with optional labels if they exist..."
+
+        if gh issue create \
           --title "$title" \
           --body "$body" \
           --label "deployment-failed" \
-          --label "${{ inputs.environment }}" || {
+          --label "$DEPLOYMENT_ENVIRONMENT"; then
+          echo "✅ GitHub issue created for failed deployment (with labels)"
+        else
           echo "::warning::Failed to create GitHub issue"
-        }
-        
-        echo "✅ GitHub issue created for failed deployment"
+        fi
 
     - name: Log Notification Summary
       shell: bash

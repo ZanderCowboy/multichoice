@@ -72,8 +72,19 @@ runs:
           exit 1
         }
 
-        if ! grep -qE '^version:[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' "${{ inputs.pubspec_path }}"; then
-          echo "::error::Invalid version format in ${{ inputs.pubspec_path }}. Expected format: x.y.z+build or x.y.z-RC+build"
+        version_suffix="${{ inputs.version_suffix }}"
+        # Escape regex metacharacters in version_suffix before embedding in grep -E.
+        escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
+        if [[ -n "$version_suffix" ]]; then
+          expected_regex="^version:[[:space:]]*[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
+          expected_hint="x.y.z${version_suffix}+build"
+        else
+          expected_regex="^version:[[:space:]]*[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
+          expected_hint="x.y.z+build"
+        fi
+
+        if ! grep -qE "$expected_regex" "${{ inputs.pubspec_path }}"; then
+          echo "::error::Invalid version format in ${{ inputs.pubspec_path }}. Expected format: ${expected_hint}"
           exit 1
         fi
         current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
@@ -105,7 +116,15 @@ runs:
         read_current_version() {
           local v
           v="$(grep '^version:' "$pubspec_path" | sed 's/version:[[:space:]]*//')"
-          if ! echo "$v" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'; then
+          local escaped_suffix version_re
+          escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
+          if [[ -n "$version_suffix" ]]; then
+            version_re="^[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
+          else
+            version_re="^[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
+          fi
+
+          if ! echo "$v" | grep -qE "$version_re"; then
             echo "::error::Invalid version format in $pubspec_path: $v"
             exit 1
           fi
@@ -175,8 +194,18 @@ runs:
           current_version="$(read_current_version)"
           if [[ -n "$target_version" ]]; then
             next_version="$target_version"
-            if ! echo "$next_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$'; then
+            escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
+            if [[ -n "$version_suffix" ]]; then
+              version_re="^[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
+              expected_hint="x.y.z${version_suffix}+build"
+            else
+              version_re="^[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
+              expected_hint="x.y.z+build"
+            fi
+
+            if ! echo "$next_version" | grep -qE "$version_re"; then
               echo "::error::Invalid target_version: $next_version"
+              echo "::error::Expected format: ${expected_hint}"
               exit 1
             fi
           else
