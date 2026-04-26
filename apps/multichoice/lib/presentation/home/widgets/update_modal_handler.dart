@@ -63,27 +63,45 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
 
       _hasShownModal = true;
 
-      await showModalBottomSheet<void>(
+      await showGeneralDialog<void>(
         context: context,
-        useSafeArea: true,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: borderCircular16,
+        barrierLabel: 'update_available',
+        pageBuilder: (context, animation, secondaryAnimation) => Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: left0top4right0bottom24,
+            child: UpdateAvailableModal(
+              onLater: () => Navigator.of(context).pop(),
+              onUpdate: () async {
+                final navigator = Navigator.of(context);
+                final url = (storeUrl ?? '').trim();
+                if (url.isNotEmpty) {
+                  final uri = Uri.tryParse(url);
+                  if (uri != null) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                }
+                navigator.pop();
+              },
+            ),
+          ),
         ),
-        builder: (context) => UpdateAvailableModal(
-          onLater: () => Navigator.of(context).pop(),
-          onUpdate: () async {
-            final navigator = Navigator.of(context);
-            final url = (storeUrl ?? '').trim();
-            if (url.isNotEmpty) {
-              final uri = Uri.tryParse(url);
-              if (uri != null) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            }
-            navigator.pop();
-          },
-        ),
+        transitionBuilder: (context, anim, secondaryAnim, child) {
+          final curved = CurvedAnimation(
+            parent: anim,
+            curve: Curves.easeOutCubic,
+          );
+          return FadeTransition(
+            opacity: curved,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.1),
+                end: Offset.zero,
+              ).animate(curved),
+              child: child,
+            ),
+          );
+        },
       );
     } on Object catch (e) {
       log('Error checking update availability: $e');

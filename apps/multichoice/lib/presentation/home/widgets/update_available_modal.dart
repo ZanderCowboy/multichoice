@@ -14,43 +14,47 @@ class UpdateAvailableModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 520),
       child: Padding(
-        padding: allPadding16,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Update available',
-              style: context.appTextTheme.headingMedium,
-            ),
-            gap8,
-            Text(
-              'A newer version of Multichoice is available on the Play Store.',
-              style: context.appTextTheme.subtitleMedium,
-            ),
-            gap16,
-            Row(
+        padding: horizontal16,
+        child: Material(
+          color: context.theme.colorScheme.surface,
+          elevation: 8,
+          borderRadius: borderCircular16,
+          child: Padding(
+            padding: allPadding16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onLater,
-                    child: const Text('Later'),
-                  ),
+                Text(
+                  'Update available',
+                  style: context.appTextTheme.titleMedium,
+                ),
+                gap4,
+                Text(
+                  'A newer version of Multichoice is available on the Play Store.',
+                  style: context.appTextTheme.bodyMedium,
                 ),
                 gap12,
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onUpdate,
-                    child: const Text('Update'),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: onLater,
+                      child: const Text('Later'),
+                    ),
+                    gap8,
+                    ElevatedButton(
+                      onPressed: onUpdate,
+                      child: const Text('Update'),
+                    ),
+                  ],
                 ),
               ],
             ),
-            gap8,
-          ],
+          ),
         ),
       ),
     );
