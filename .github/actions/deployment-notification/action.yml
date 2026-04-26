@@ -141,13 +141,13 @@ runs:
         )"
         
         # Send webhook
-        curl -X POST -H "Content-Type: application/json" \
+        if curl -X POST -H "Content-Type: application/json" \
           -d "$payload" \
-          "$webhook_url" || {
+          "$webhook_url"; then
+          echo "✅ Webhook notification sent"
+        else
           echo "::warning::Failed to send webhook notification"
-        }
-        
-        echo "✅ Webhook notification sent"
+        fi
 
     - name: Send Email Notification
       if: inputs.email_recipients != ''
