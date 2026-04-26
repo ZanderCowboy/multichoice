@@ -309,6 +309,8 @@ class AuthService implements IAuthService {
 
 Create `packages/core/lib/src/application/auth/auth_bloc.dart`:
 ```dart
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -322,6 +324,7 @@ part 'auth_bloc.freezed.dart';
 @injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthService _authService;
+  late final StreamSubscription<UserDTO?> _authStateChangesSub;
 
   AuthBloc(this._authService) : super(const AuthState.initial()) {
     on<AuthEvent>((event, emit) async {
@@ -334,7 +337,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     // Listen to auth state changes
-    _authService.authStateChanges.listen((user) {
+    _authStateChangesSub = _authService.authStateChanges.listen((user) {
       add(AuthEvent.authStateChanged(user));
     });
   }
@@ -383,6 +386,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else {
       emit(const AuthState.unauthenticated());
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await _authStateChangesSub.cancel();
+    return super.close();
   }
 }
 ```
