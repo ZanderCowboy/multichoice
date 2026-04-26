@@ -42,22 +42,32 @@ void main() {
         final filePath = '/path/to/selected/file.txt';
 
         when(
-          mockFilePickerWrapper.pickFile(),
+          mockFilePickerWrapper.pickFile(
+            allowedExtensions: anyNamed('allowedExtensions'),
+          ),
         ).thenAnswer((_) async => filePath);
 
         final result = await dataExchangeService.pickFile();
 
         expect(result, filePath);
-        verify(mockFilePickerWrapper.pickFile()).called(1);
+        verify(mockFilePickerWrapper.pickFile(
+          allowedExtensions: ['multichoice', 'json'],
+        )).called(1);
       });
 
       test('should return null when no file is selected', () async {
-        when(mockFilePickerWrapper.pickFile()).thenAnswer((_) async => null);
+        when(
+          mockFilePickerWrapper.pickFile(
+            allowedExtensions: anyNamed('allowedExtensions'),
+          ),
+        ).thenAnswer((_) async => null);
 
         final result = await dataExchangeService.pickFile();
 
         expect(result, isNull);
-        verify(mockFilePickerWrapper.pickFile()).called(1);
+        verify(mockFilePickerWrapper.pickFile(
+          allowedExtensions: ['multichoice', 'json'],
+        )).called(1);
       });
     });
 
@@ -79,8 +89,8 @@ void main() {
 
         verify(
           mockFilePickerWrapper.saveFile(
-            dialogTitle: 'Save JSON File',
-            fileName: '$fileName.json',
+            dialogTitle: 'Save Multichoice File',
+            fileName: '$fileName.multichoice',
             bytes: fileBytes,
           ),
         ).called(1);
@@ -102,8 +112,8 @@ void main() {
 
         verify(
           mockFilePickerWrapper.saveFile(
-            dialogTitle: 'Save JSON File',
-            fileName: '$fileName.json',
+            dialogTitle: 'Save Multichoice File',
+            fileName: '$fileName.multichoice',
             bytes: fileBytes,
           ),
         ).called(1);
@@ -125,8 +135,8 @@ void main() {
 
         verify(
           mockFilePickerWrapper.saveFile(
-            dialogTitle: 'Save JSON File',
-            fileName: '$fileName.json',
+            dialogTitle: 'Save Multichoice File',
+            fileName: '$fileName.multichoice',
             bytes: fileBytes,
           ),
         ).called(1);
@@ -243,6 +253,14 @@ void main() {
         final filePath = '/path/to/nonexistent/file.json';
 
         final result = await dataExchangeService.importDataFromJSON(filePath);
+
+        expect(result, false);
+      });
+
+      test('should reject unsupported file extensions', () async {
+        final result = await dataExchangeService.importDataFromJSON(
+          '/path/to/image.png',
+        );
 
         expect(result, false);
       });
