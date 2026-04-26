@@ -415,7 +415,7 @@ jobs:
 
   notify-failure:
     name: Notify Deployment Failure
-    needs: [preBuild]
+    needs: [preBuild, build, create-release]
     runs-on: ubuntu-latest
     if: failure() && needs.preBuild.result != 'skipped'
     steps:
