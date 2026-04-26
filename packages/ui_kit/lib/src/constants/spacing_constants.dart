@@ -104,3 +104,5 @@ const vertical4horizontal8 = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
 const vertical2left14right2 = EdgeInsets.fromLTRB(14, 2, 2, 2);
 
 const left0top4right0bottom24 = EdgeInsets.fromLTRB(0, 4, 0, 24);
+
+const left0top4right0bottom48 = EdgeInsets.fromLTRB(0, 4, 0, 48);
