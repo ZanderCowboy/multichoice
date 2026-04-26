@@ -9,6 +9,27 @@ import 'package:multichoice/presentation/home/widgets/update_available_modal.dar
 import 'package:ui_kit/ui_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+Future<void> showUpdatePromptForDebug(BuildContext context) async {
+  try {
+    final firebaseService = coreSl<IFirebaseService>();
+    await firebaseService.forceFetchAndActivate();
+    final storeUrl = await firebaseService.getString(
+      FirebaseConfigKeys.googlePlayStoreUrl,
+    );
+    if (!context.mounted) return;
+    await _showUpdatePromptDialog(
+      context: context,
+      storeUrl: storeUrl,
+    );
+  } on Object catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to show update prompt: $e')),
+      );
+    }
+  }
+}
+
 class UpdateModalHandler extends StatefulWidget {
   const UpdateModalHandler({
     required this.builder,
@@ -63,45 +84,9 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
 
       _hasShownModal = true;
 
-      await showGeneralDialog<void>(
+      await _showUpdatePromptDialog(
         context: context,
-        barrierLabel: 'update_available',
-        pageBuilder: (context, animation, secondaryAnimation) => Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: left0top4right0bottom24,
-            child: UpdateAvailableModal(
-              onLater: () => Navigator.of(context).pop(),
-              onUpdate: () async {
-                final navigator = Navigator.of(context);
-                final url = (storeUrl ?? '').trim();
-                if (url.isNotEmpty) {
-                  final uri = Uri.tryParse(url);
-                  if (uri != null) {
-                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                  }
-                }
-                navigator.pop();
-              },
-            ),
-          ),
-        ),
-        transitionBuilder: (context, anim, secondaryAnim, child) {
-          final curved = CurvedAnimation(
-            parent: anim,
-            curve: Curves.easeOutCubic,
-          );
-          return FadeTransition(
-            opacity: curved,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 0.1),
-                end: Offset.zero,
-              ).animate(curved),
-              child: child,
-            ),
-          );
-        },
+        storeUrl: storeUrl,
       );
     } on Object catch (e) {
       log('Error checking update availability: $e');
@@ -110,4 +95,53 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
 
   @override
   Widget build(BuildContext context) => widget.builder(context);
+}
+
+Future<void> _showUpdatePromptDialog({
+  required BuildContext context,
+  required String? storeUrl,
+}) {
+  return showGeneralDialog<void>(
+    context: context,
+    barrierLabel: 'update_available',
+    pageBuilder: (context, animation, secondaryAnimation) => PopScope(
+      canPop: false,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: left0top4right0bottom48,
+          child: UpdateAvailableModal(
+            onLater: () => Navigator.of(context).pop(),
+            onUpdate: () async {
+              final navigator = Navigator.of(context);
+              final url = (storeUrl ?? '').trim();
+              if (url.isNotEmpty) {
+                final uri = Uri.tryParse(url);
+                if (uri != null) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              }
+              navigator.pop();
+            },
+          ),
+        ),
+      ),
+    ),
+    transitionBuilder: (context, anim, secondaryAnim, child) {
+      final curved = CurvedAnimation(
+        parent: anim,
+        curve: Curves.easeOutCubic,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.1),
+            end: Offset.zero,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
 }

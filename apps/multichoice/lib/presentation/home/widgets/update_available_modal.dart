@@ -15,7 +15,7 @@ class UpdateAvailableModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 520),
+      constraints: const BoxConstraints(maxWidth: 460),
       child: Padding(
         padding: horizontal16,
         child: Material(
