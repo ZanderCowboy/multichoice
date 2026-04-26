@@ -33,48 +33,53 @@ class DataSection extends StatelessWidget {
         ),
         BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
+            final canDeleteAll = state.tabs != null && state.tabs!.isNotEmpty;
+
+            Future<void> showDeleteAllDialog() async {
+              if (!canDeleteAll) return;
+
+              CustomDialog<AlertDialog>.show(
+                context: context,
+                title: const Text(
+                  'Delete all tabs and entries?',
+                ),
+                content: const Text(
+                  'Are you sure you want to delete all tabs and their entries?',
+                ),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('No, cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const CrudEventData(
+                          page: AnalyticsPage.settings,
+                          entity: AnalyticsEntity.allTabs,
+                          action: AnalyticsAction.delete,
+                        ),
+                      );
+                      context.read<HomeBloc>().add(
+                        const HomeEvent.onPressedDeleteAll(),
+                      );
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Yes, delete'),
+                  ),
+                ],
+              );
+            }
+
             return ListTile(
               title: Text(
                 'Delete All Data',
                 style: context.appTextTheme.denseTitle,
               ),
+              onTap: canDeleteAll ? showDeleteAllDialog : null,
               trailing: IconButton(
                 key: context.keys.deleteAllDataButton,
-                onPressed: state.tabs != null && state.tabs!.isNotEmpty
-                    ? () {
-                        CustomDialog<AlertDialog>.show(
-                          context: context,
-                          title: const Text(
-                            'Delete all tabs and entries?',
-                          ),
-                          content: const Text(
-                            'Are you sure you want to delete all tabs and their entries?',
-                          ),
-                          actions: [
-                            OutlinedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('No, cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await coreSl<IAnalyticsService>().logEvent(
-                                  const CrudEventData(
-                                    page: AnalyticsPage.settings,
-                                    entity: AnalyticsEntity.allTabs,
-                                    action: AnalyticsAction.delete,
-                                  ),
-                                );
-                                context.read<HomeBloc>().add(
-                                  const HomeEvent.onPressedDeleteAll(),
-                                );
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Yes, delete'),
-                            ),
-                          ],
-                        );
-                      }
-                    : null,
+                onPressed: canDeleteAll ? showDeleteAllDialog : null,
                 tooltip: TooltipEnums.deleteAllData.tooltip,
                 icon: state.tabs == null || state.tabs!.isEmpty
                     ? Icon(
