@@ -6,6 +6,7 @@ final AboutDeveloperModeUnlocker _aboutDeveloperModeUnlocker =
 
 const _aboutDialogTapDelay = Duration(milliseconds: 250);
 const _developerModeSnackBarDuration = Duration(milliseconds: 900);
+const _developerModeSnackBarWidth = 280.0;
 
 class MoreSection extends StatefulWidget {
   const MoreSection({super.key});
@@ -135,10 +136,7 @@ class _MoreSectionState extends State<MoreSection> {
     final messenger = ScaffoldMessenger.of(context)..removeCurrentSnackBar();
     if (result.didEnable) {
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text('You are now a developer.'),
-          duration: _developerModeSnackBarDuration,
-        ),
+        _developerModeSnackBar('You are now a developer.'),
       );
       return;
     }
@@ -146,12 +144,24 @@ class _MoreSectionState extends State<MoreSection> {
     if (result.shouldShowCountdown) {
       final tapLabel = result.remainingTaps == 1 ? 'tap' : 'taps';
       messenger.showSnackBar(
-        SnackBar(
-          content: Text('${result.remainingTaps} $tapLabel until developer mode.'),
-          duration: _developerModeSnackBarDuration,
+        _developerModeSnackBar(
+          '${result.remainingTaps} $tapLabel until developer mode.',
         ),
       );
     }
+  }
+
+  SnackBar _developerModeSnackBar(String message) {
+    return SnackBar(
+      behavior: SnackBarBehavior.floating,
+      width: _developerModeSnackBarWidth,
+      shape: const StadiumBorder(),
+      duration: _developerModeSnackBarDuration,
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   Future<void> _showAboutDialog(BuildContext context) async {
