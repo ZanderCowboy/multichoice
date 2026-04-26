@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/presentation/home/widgets/update_available_modal.dart';
@@ -39,8 +40,13 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
       final firebaseService = coreSl<IFirebaseService>();
       final appInfoService = coreSl<IAppInfoService>();
 
-      // Ensure Remote Config has a chance to fetch before reading values.
-      await firebaseService.fetchAndActivate();
+      // In debug we want Remote Config updates to reflect immediately while
+      // keeping normal caching behavior in release builds.
+      if (kDebugMode) {
+        await firebaseService.forceFetchAndActivate();
+      } else {
+        await firebaseService.fetchAndActivate();
+      }
 
       final latestVersion = await firebaseService.getString(
         FirebaseConfigKeys.latestAppVersion,
