@@ -1,0 +1,214 @@
+name: "Deployment Notification"
+description: "Sends deployment status notifications"
+
+inputs:
+  github_token:
+    description: "GitHub token (used for creating issues on failure)"
+    required: false
+    default: "${{ github.token }}"
+  deployment_status:
+    description: "Status of deployment (success, failure, cancelled)"
+    required: true
+  environment:
+    description: "Environment being deployed to (develop, staging, production)"
+    required: true
+  version:
+    description: "Version being deployed"
+    required: true
+  branch:
+    description: "Branch being deployed from"
+    required: true
+  commit_sha:
+    description: "Commit SHA being deployed"
+    required: false
+    default: "${{ github.sha }}"
+  commit_message:
+    description: "Commit message"
+    required: false
+    default: "${{ github.event.head_commit.message || 'No commit message' }}"
+  author:
+    description: "Author of the commit"
+    required: false
+    default: "${{ github.actor }}"
+  pr_number:
+    description: "Pull request number"
+    required: false
+    default: "${{ github.event.pull_request.number || '' }}"
+  pr_title:
+    description: "Pull request title"
+    required: false
+    default: "${{ github.event.pull_request.title || '' }}"
+  webhook_url:
+    description: "Webhook URL for notifications (Slack, Discord, etc.)"
+    required: false
+  email_recipients:
+    description: "Comma-separated list of email recipients"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate Notification Message
+      id: generate_message
+      shell: bash
+      env:
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        BRANCH: ${{ inputs.branch }}
+        COMMIT_SHA: ${{ inputs.commit_sha }}
+        COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        AUTHOR: ${{ inputs.author }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_TITLE: ${{ inputs.pr_title }}
+      run: |
+        status="$DEPLOYMENT_STATUS"
+        environment="$DEPLOYMENT_ENVIRONMENT"
+        version="$VERSION"
+        branch="$BRANCH"
+        commit_sha="$COMMIT_SHA"
+        commit_message="$COMMIT_MESSAGE"
+        author="$AUTHOR"
+        pr_number="$PR_NUMBER"
+        pr_title="$PR_TITLE"
+        
+        # Set emoji based on status
+        case "$status" in
+          "success") status_emoji="✅" ;;
+          "failure") status_emoji="❌" ;;
+          "cancelled") status_emoji="⚠️" ;;
+          *) status_emoji="ℹ️" ;;
+        esac
+        
+        # Set environment emoji
+        case "$environment" in
+          "develop") env_emoji="🔧" ;;
+          "staging") env_emoji="🚀" ;;
+          "production") env_emoji="🎯" ;;
+          *) env_emoji="🌍" ;;
+        esac
+        
+        # Build message
+        message=""
+        message+="$status_emoji **Deployment $status**\n"
+        message+="$env_emoji **Environment:** $environment\n"
+        message+="📦 **Version:** $version\n"
+        message+="🌿 **Branch:** $branch\n"
+        message+="👤 **Author:** $author\n"
+        
+        if [[ -n "$pr_number" ]]; then
+          message+="🔗 **PR:** #$pr_number - $pr_title\n"
+        fi
+        
+        message+="📝 **Commit:** \`${commit_sha:0:8}\`\n"
+        message+="💬 **Message:** $commit_message\n"
+        message+="⏰ **Time:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')\n"
+        
+        # Add repository link
+        message+="🔗 **Repository:** https://github.com/${{ github.repository }}\n"
+        
+        if [[ -n "$pr_number" ]]; then
+          message+="🔗 **PR Link:** https://github.com/${{ github.repository }}/pull/$pr_number\n"
+        fi
+        
+        echo "message<<EOF" >> $GITHUB_OUTPUT
+        echo "$message" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        echo "Generated notification message"
+
+    - name: Send Webhook Notification
+      if: inputs.webhook_url != ''
+      shell: bash
+      env:
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+        WEBHOOK_URL: ${{ inputs.webhook_url }}
+      run: |
+        # Prepare JSON payload with proper escaping
+        payload="$(python3 - <<'PY'
+        import json
+        import os
+
+        message = os.environ["MESSAGE"]
+        print(json.dumps({
+          "text": message,
+          "username": "Deployment Bot",
+          "icon_emoji": ":rocket:",
+        }))
+        PY
+        )"
+        
+        # Send webhook
+        if curl -X POST -H "Content-Type: application/json" \
+          -d "$payload" \
+          "$WEBHOOK_URL"; then
+          echo "✅ Webhook notification sent"
+        else
+          echo "::warning::Failed to send webhook notification"
+        fi
+
+    - name: Send Email Notification
+      if: inputs.email_recipients != ''
+      shell: bash
+      env:
+        EMAIL_RECIPIENTS: ${{ inputs.email_recipients }}
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+      run: |
+        # This would typically use a service like SendGrid, Mailgun, etc.
+        # For now, we'll just log the intent
+        echo "📧 Email notification would be sent to: $EMAIL_RECIPIENTS"
+        echo "Subject: Deployment $DEPLOYMENT_STATUS - $DEPLOYMENT_ENVIRONMENT v$VERSION"
+        echo "Body: $MESSAGE"
+        
+        # Example with curl to a hypothetical email service
+        # curl -X POST "https://api.emailservice.com/send" \
+        #   -H "Authorization: Bearer <EMAIL_API_KEY>" \
+        #   -H "Content-Type: application/json" \
+        #   -d "{\"to\":\"$recipients\",\"subject\":\"Deployment $status\",\"body\":\"$message\"}"
+
+    - name: Create GitHub Issue for Failed Deployments
+      if: inputs.deployment_status == 'failure'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+      run: |
+        set -euo pipefail
+
+        title="🚨 Deployment Failed - ${DEPLOYMENT_ENVIRONMENT} v${VERSION}"
+        body="$MESSAGE"
+        
+        # Create issue using GitHub CLI
+        if gh issue create --title "$title" --body "$body"; then
+          echo "✅ GitHub issue created for failed deployment"
+          exit 0
+        fi
+
+        echo "::warning::Failed to create GitHub issue"
+        echo "Attempting again with optional labels if they exist..."
+
+        if gh issue create \
+          --title "$title" \
+          --body "$body" \
+          --label "deployment-failed" \
+          --label "$DEPLOYMENT_ENVIRONMENT"; then
+          echo "✅ GitHub issue created for failed deployment (with labels)"
+        else
+          echo "::warning::Failed to create GitHub issue"
+        fi
+
+    - name: Log Notification Summary
+      shell: bash
+      run: |
+        echo "📊 Notification Summary:"
+        echo "Status: ${{ inputs.deployment_status }}"
+        echo "Environment: ${{ inputs.environment }}"
+        echo "Version: ${{ inputs.version }}"
+        echo "Webhook: ${{ inputs.webhook_url != '' && 'Sent' || 'Not configured' }}"
+        echo "Email: ${{ inputs.email_recipients != '' && 'Sent' || 'Not configured' }}"
+        echo "GitHub Issue: ${{ inputs.deployment_status == 'failure' && 'Created' || 'Not needed' }}" 
