@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -28,6 +30,36 @@ class DebugToolsContent extends StatelessWidget {
               'Clears tour, layout, banners, permissions flags, email, etc.',
             ),
             onTap: () => onClearStorage(context),
+          ),
+          gap12,
+          ListTile(
+            leading: const Icon(Icons.cloud_sync_outlined),
+            title: const Text('Refetch Remote Config'),
+            subtitle: const Text('Force fetch + activate latest Remote Config'),
+            onTap: () async {
+              try {
+                final firebaseService = coreSl<IFirebaseService>();
+                await firebaseService.forceFetchAndActivate();
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Remote Config refreshed')),
+                );
+              } on Object catch (e) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to refresh: $e')),
+                );
+              }
+            },
+          ),
+          gap12,
+          ListTile(
+            leading: const Icon(Icons.system_update_alt_outlined),
+            title: const Text('Show Update Prompt'),
+            subtitle: const Text('Show the update dialog (debug)'),
+            onTap: () async {
+              await showUpdatePromptForDebug(context);
+            },
           ),
           gap12,
           ListTile(

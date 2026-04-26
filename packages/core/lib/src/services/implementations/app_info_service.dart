@@ -11,4 +11,20 @@ class AppInfoService implements IAppInfoService {
     final version = Version.parse(packageInfo.version);
     return '${version.major}.${version.minor}.${version.patch}+${packageInfo.buildNumber}';
   }
+
+  @override
+  Future<bool> isUpdateAvailable(String latestVersion) async {
+    if (latestVersion.trim().isEmpty) {
+      return false;
+    }
+
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final current = Version.parse(packageInfo.version);
+      final latest = Version.parse(latestVersion);
+      return latest > current;
+    } catch (_) {
+      return false;
+    }
+  }
 }

@@ -29,7 +29,7 @@ void main() {
     appInfoService = AppInfoService();
   });
 
-  tearDown(() async {
+  tearDownAll(() async {
     await db.close();
   });
 
@@ -42,5 +42,34 @@ void main() {
 
     // Assert
     expect(result, expectedVersion);
+  });
+
+  group('isUpdateAvailable', () {
+    test('returns false when latest version is empty', () async {
+      final result = await appInfoService.isUpdateAvailable('');
+      expect(result, false);
+    });
+
+    test('returns false when latest version is invalid', () async {
+      final result = await appInfoService.isUpdateAvailable('not-a-version');
+      expect(result, false);
+    });
+
+    test('returns false when latest version equals current version', () async {
+      final result = await appInfoService.isUpdateAvailable('1.0.0');
+      expect(result, false);
+    });
+
+    test('returns true when latest version is greater than current version',
+        () async {
+      final result = await appInfoService.isUpdateAvailable('1.1.0');
+      expect(result, true);
+    });
+
+    test('returns false when latest version is lower than current version',
+        () async {
+      final result = await appInfoService.isUpdateAvailable('0.9.9');
+      expect(result, false);
+    });
   });
 }
