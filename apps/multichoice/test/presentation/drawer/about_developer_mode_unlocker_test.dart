@@ -11,9 +11,26 @@ void main() {
 
       final t0 = DateTime(2026);
       expect(unlocker.isEnabled, isFalse);
-      expect(unlocker.registerTap(t0), isFalse);
-      expect(unlocker.registerTap(t0.add(const Duration(milliseconds: 100))), isFalse);
-      expect(unlocker.registerTap(t0.add(const Duration(milliseconds: 200))), isTrue);
+
+      final firstTap = unlocker.registerTap(t0);
+      expect(firstTap.didEnable, isFalse);
+      expect(firstTap.isFirstTapInSequence, isTrue);
+      expect(firstTap.remainingTaps, 2);
+      expect(firstTap.shouldShowCountdown, isFalse);
+
+      final secondTap = unlocker.registerTap(
+        t0.add(const Duration(milliseconds: 100)),
+      );
+      expect(secondTap.didEnable, isFalse);
+      expect(secondTap.isFirstTapInSequence, isFalse);
+      expect(secondTap.remainingTaps, 1);
+      expect(secondTap.shouldShowCountdown, isTrue);
+
+      final thirdTap = unlocker.registerTap(
+        t0.add(const Duration(milliseconds: 200)),
+      );
+      expect(thirdTap.didEnable, isTrue);
+      expect(thirdTap.remainingTaps, 0);
       expect(unlocker.isEnabled, isTrue);
     });
 
@@ -24,8 +41,14 @@ void main() {
       );
 
       final t0 = DateTime(2026);
-      expect(unlocker.registerTap(t0), isFalse);
-      expect(unlocker.registerTap(t0.add(const Duration(milliseconds: 60))), isFalse);
+      expect(unlocker.registerTap(t0).isFirstTapInSequence, isTrue);
+      final nextTap = unlocker.registerTap(
+        t0.add(const Duration(milliseconds: 60)),
+      );
+      expect(
+        nextTap.isFirstTapInSequence,
+        isTrue,
+      );
       expect(unlocker.isEnabled, isFalse);
     });
   });

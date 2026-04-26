@@ -17,6 +17,16 @@ Future<bool> _drawerSessionLoggedIn() async {
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
 
+  void _onLogin(BuildContext context) {
+    Navigator.of(context).pop();
+    unawaited(
+      Future<void>.microtask(() {
+        if (!context.mounted) return;
+        showLoginModal(context);
+      }),
+    );
+  }
+
   void _onLogout(BuildContext context) {
     Navigator.of(context).pop();
     if (coreSl.isRegistered<ILoginService>()) {
@@ -70,6 +80,13 @@ class HomeDrawer extends StatelessWidget {
                           leading: const Icon(Icons.logout_outlined),
                           title: const Text('Logout'),
                           onTap: () => _onLogout(context),
+                        ),
+                      ] else ...[
+                        const Divider(height: 32),
+                        ListTile(
+                          leading: const Icon(Icons.login_outlined),
+                          title: const Text('Sign In'),
+                          onTap: () => _onLogin(context),
                         ),
                       ],
                       gap56,
