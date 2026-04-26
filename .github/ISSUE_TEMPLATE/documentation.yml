@@ -24,6 +24,23 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: 📂 Documentation Type
+      description: What kind of docs change is this?
+      options:
+        - "📖 README"
+        - "🚀 Getting Started"
+        - "🏗️ Architecture"
+        - "🧪 Testing"
+        - "🔧 Configuration"
+        - "🐛 Troubleshooting"
+        - "🎯 Contributing"
+        - "✨ Other"
+    validations:
+      required: true
+
   - type: textarea
     id: current-state
     attributes:

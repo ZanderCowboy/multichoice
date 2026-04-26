@@ -42,6 +42,24 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: 🏷️ Feature Type
+      description: What kind of feature is this?
+      options:
+        - "🎨 UI/UX Enhancement"
+        - "🔧 New Functionality"
+        - "📦 Data / Storage"
+        - "🔌 Integration / API"
+        - "⚡ Performance"
+        - "🌐 Accessibility"
+        - "🔒 Security"
+        - "🧪 Testing / QA"
+        - "✨ Other"
+    validations:
+      required: true
+
   - type: textarea
     id: mockups-designs
     attributes:

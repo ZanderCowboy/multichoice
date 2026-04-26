@@ -22,6 +22,23 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: maintenance-type
+    attributes:
+      label: 🏷️ Maintenance Type
+      description: What kind of maintenance is this?
+      options:
+        - "📦 Dependency updates"
+        - "♻️ Refactor / cleanup"
+        - "🧪 Tests / tooling"
+        - "🏗️ Build / CI"
+        - "⚡ Performance"
+        - "🔒 Security"
+        - "📝 Docs"
+        - "✨ Other"
+    validations:
+      required: true
+
   - type: textarea
     id: current-situation
     attributes:

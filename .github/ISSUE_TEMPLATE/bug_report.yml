@@ -24,6 +24,24 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: bug-type
+    attributes:
+      label: 🏷️ Bug Type
+      description: What area does this bug relate to?
+      options:
+        - "💥 Crash"
+        - "🎨 UI / Layout"
+        - "📦 Data / Storage"
+        - "🔐 Auth / Login"
+        - "⚡ Performance"
+        - "🔔 Notifications"
+        - "🧪 Tests"
+        - "🏗️ Build / CI"
+        - "✨ Other"
+    validations:
+      required: true
+
   - type: textarea
     id: reproduction-steps
     attributes:
