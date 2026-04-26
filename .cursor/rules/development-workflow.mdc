@@ -8,7 +8,8 @@ Use Melos and the root Makefile for workspace operations. Prefer the narrowest c
 
 ## Common Commands
 
-- `melos analyze` - analyze the workspace.
+- `melos exec --scope=<package> -- flutter analyze` - analyze a single package/app (preferred).
+- `melos analyze` - analyze the whole workspace (only when changes span multiple packages).
 - `melos test:all` - run all tests.
 - `melos test:core` - run core package tests.
 - `melos test:multichoice` - run main app tests.
@@ -29,6 +30,12 @@ Use Melos and the root Makefile for workspace operations. Prefer the narrowest c
 ## Validation
 
 - Run focused tests for the touched package or app first.
-- Run `melos analyze` after substantive Dart changes.
+- Prefer scoped analyze:
+  - `melos exec --scope=multichoice -- flutter analyze` (app-only)
+  - `melos exec --scope=core -- flutter analyze` (core-only)
+  - `melos exec --scope=ui_kit -- flutter analyze` (ui kit only)
+  - `melos exec --scope=models -- flutter analyze` (models only)
+  - `melos exec --scope=theme -- flutter analyze` (theme only)
+- Run `melos analyze` only for broad, shared, or cross-package changes.
 - Run `melos test:all` for broad, shared, or cross-package changes.
 - State any skipped validation and the remaining risk in the final response.

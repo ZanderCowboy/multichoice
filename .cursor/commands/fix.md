@@ -81,7 +81,13 @@ If the input is missing, first check for current analyzer issues. If there are n
    - Run the narrowest useful validation first, then broaden only if the change touches shared behavior:
      - relevant package test
      - relevant app test
-     - `melos analyze`
+     - scoped analyze for the touched package/app:
+       - `melos exec --scope=multichoice -- flutter analyze` (app-only changes)
+       - `melos exec --scope=core -- flutter analyze` (core-only changes)
+       - `melos exec --scope=ui_kit -- flutter analyze` (ui kit only)
+       - `melos exec --scope=models -- flutter analyze` (models only)
+       - `melos exec --scope=theme -- flutter analyze` (theme only)
+     - `melos analyze` only when changes span multiple packages
      - `melos test:all` for broad or shared fixes
    - Run formatting if Dart files were edited.
    - Fix introduced lints, analyzer issues, and test failures.

@@ -22,6 +22,28 @@ clean:
 mr:
 	cd "$(WORKDIR)" && melos rebuild:all
 
+# Analyze (scoped)
+# Usage:
+# - make analyze WORKDIR=apps/multichoice
+# - make analyze WORKDIR=packages/core
+analyze:
+	cd "$(WORKDIR)" && flutter analyze
+
+analyze_multichoice:
+	$(MAKE) analyze WORKDIR=apps/multichoice
+
+analyze_core:
+	$(MAKE) analyze WORKDIR=packages/core
+
+analyze_models:
+	$(MAKE) analyze WORKDIR=packages/models
+
+analyze_theme:
+	$(MAKE) analyze WORKDIR=packages/theme
+
+analyze_ui_kit:
+	$(MAKE) analyze WORKDIR=packages/ui_kit
+
 # Enable DebugView for Firebase Analytics
 debug_view:
 	cd "$(WORKDIR)" && adb shell setprop debug.firebase.analytics.app co.za.zanderkotze.multichoice
