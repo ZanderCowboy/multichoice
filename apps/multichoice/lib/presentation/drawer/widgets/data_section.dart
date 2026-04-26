@@ -7,6 +7,18 @@ class DataSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> openDataTransfer() async {
+      await context.router.push(
+        DataTransferScreenRoute(
+          onCallback: () {
+            context.read<HomeBloc>().add(
+              const HomeEvent.onGetTabs(),
+            );
+          },
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,17 +94,10 @@ class DataSection extends StatelessWidget {
             'Import / Export Data',
             style: context.appTextTheme.denseTitle,
           ),
+          onTap: () async => openDataTransfer(),
           trailing: IconButton(
             key: context.keys.importExportDataButton,
-            onPressed: () => context.router.push(
-              DataTransferScreenRoute(
-                onCallback: () {
-                  context.read<HomeBloc>().add(
-                    const HomeEvent.onGetTabs(),
-                  );
-                },
-              ),
-            ),
+            onPressed: () async => openDataTransfer(),
             tooltip: TooltipEnums.importExport.tooltip,
             icon: const Icon(
               Icons.import_export_outlined,
