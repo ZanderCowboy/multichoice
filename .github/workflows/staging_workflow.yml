@@ -17,18 +17,24 @@ on:
     types:
       - closed
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
+        required: true
+        type: boolean
+        default: true
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: staging-workflow-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false) }}
     runs-on: ubuntu-latest
     concurrency:
-      group: build-group
+      group: version-management-staging
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.version_management.outputs.version_number }}
@@ -77,6 +83,7 @@ jobs:
           branch_name: rc
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
+          commit_changes: "false"
 
   build:
     name: Builds Android App
@@ -100,19 +107,7 @@ jobs:
         uses: ./.github/actions/setup-flutter-with-java
 
       ##############################################
-      # Melos Coverage for Core
-      ##############################################
-      - name: Melos Coverage for Core
-        run: melos coverage:core
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: packages/core/coverage/lcov.info
-          fail_ci_if_error: true
-
-      ##############################################
-      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
       ##############################################
       - name: Download Android Keystore File
         id: android_keystore
@@ -138,6 +133,52 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
+      - name: Create and Validate google-services.json file
+        working-directory: apps/multichoice/android/app/
+        env:
+          ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
+          ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
+        run: |
+          set -euo pipefail
+          printf '%s' "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open('google-services.json', encoding='utf-8') as f:
+            config = json.load(f)
+
+          package_name = 'co.za.zanderkotze.multichoice'
+          matching_clients = [
+            client for client in config.get('client', [])
+            if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == package_name
+          ]
+
+          if not matching_clients:
+            raise SystemExit(f'google-services.json does not contain package {package_name}.')
+
+          client = matching_clients[0]
+          mobilesdk_app_id = client.get('client_info', {}).get('mobilesdk_app_id')
+          if mobilesdk_app_id != os.environ['ANDROID_APP_ID']:
+            raise SystemExit(
+              'ANDROID_APP_ID secret does not match google-services.json '
+              f'({os.environ["ANDROID_APP_ID"]} != {mobilesdk_app_id}).'
+            )
+
+          api_keys = client.get('api_key', [])
+          if not api_keys:
+            raise SystemExit('google-services.json does not contain an Android API key.')
+
+          current_api_key = api_keys[0].get('current_key')
+          if current_api_key != os.environ['ANDROID_API_KEY']:
+            raise SystemExit(
+              'ANDROID_API_KEY secret does not match google-services.json '
+              f'({os.environ["ANDROID_API_KEY"]} != {current_api_key}).'
+            )
+
+          print('google-services.json parsed and validated successfully.')
+          PY
+
       ##############################################
       # Build App Bundle
       ##############################################
@@ -152,7 +193,7 @@ jobs:
       # Upload App Bundle as Artifact
       ##############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
@@ -161,6 +202,7 @@ jobs:
       # Release to Google Play Internal Track
       ###############################################
       - name: Release Build to internal track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: r0adkll/upload-google-play@v1
         with:
           releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
@@ -171,11 +213,67 @@ jobs:
           status: "completed"
 
       ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/version-management
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          pubspec_path: apps/multichoice/pubspec.yaml
+          branch_name: rc
+          bump_type: none
+          target_version: ${{ needs.preBuild.outputs.version_number }}
+          version_suffix: "-RC"
+          commit_changes: "true"
+
+      ##############################################
       # Create New Tag
       ##############################################
       - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: ./.github/actions/create-git-tag
         with:
           version_number: ${{ needs.preBuild.outputs.version_number }}
           tag_strategy: "full"
           allowed_formats: "rc"
+
+      ##############################################
+      # Send Success Notification
+      ##############################################
+      - name: Send Success Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: staging
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: rc
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
+  notify-failure:
+    name: Notify Deployment Failure
+    needs: [preBuild, build]
+    runs-on: ubuntu-latest
+    if: failure() && needs.preBuild.result != 'skipped'
+    steps:
+      ##############################################
+      # Send Failure Notification
+      ##############################################
+      - name: Send Failure Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: failure
+          environment: staging
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: rc
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

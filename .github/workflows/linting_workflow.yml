@@ -2,12 +2,12 @@ name: Linting and Analysis
 
 on:
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
-    branches: 
-      - '**'
+    branches:
+      - "**"
   workflow_dispatch:
 
 concurrency:
@@ -29,3 +29,16 @@ jobs:
       - name: Run Melos Analyze
         run: melos analyze
         shell: bash
+
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true

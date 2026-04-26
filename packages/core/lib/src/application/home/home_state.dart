@@ -1,30 +1,55 @@
 part of 'home_bloc.dart';
 
-@freezed
-abstract class HomeState with _$HomeState {
-  const factory HomeState({
-    required TabsDTO tab,
-    required List<TabsDTO>? tabs,
-    required EntryDTO entry,
-    required List<EntryDTO>? entryCards,
-    required bool isLoading,
-    required bool isDeleted,
-    required bool isAdded,
-    required bool isValid,
-    required bool isEditMode,
-    required String? errorMessage,
-  }) = _HomeState;
+@CopyWith()
+class HomeState extends Equatable {
+  const HomeState({
+    required this.tab,
+    required this.tabs,
+    required this.entry,
+    required this.entryCards,
+    required this.isLoading,
+    required this.isDeleted,
+    required this.isAdded,
+    required this.isValid,
+    required this.isEditMode,
+    required this.errorMessage,
+  });
 
   factory HomeState.initial() => HomeState(
-        tab: TabsDTO.empty(),
-        tabs: null,
-        entry: EntryDTO.empty(),
-        entryCards: null,
-        isLoading: false,
-        isDeleted: false,
-        isAdded: false,
-        isValid: false,
-        isEditMode: false,
-        errorMessage: '',
-      );
+    tab: TabsDTO.empty(),
+    tabs: null,
+    entry: EntryDTO.empty(),
+    entryCards: null,
+    isLoading: false,
+    isDeleted: false,
+    isAdded: false,
+    isValid: false,
+    isEditMode: false,
+    errorMessage: '',
+  );
+
+  final TabsDTO tab;
+  final List<TabsDTO>? tabs;
+  final EntryDTO entry;
+  final List<EntryDTO>? entryCards;
+  final bool isLoading;
+  final bool isDeleted;
+  final bool isAdded;
+  final bool isValid;
+  final bool isEditMode;
+  final String? errorMessage;
+
+  @override
+  List<Object?> get props => [
+    tab,
+    tabs,
+    entry,
+    entryCards,
+    isLoading,
+    isDeleted,
+    isAdded,
+    isValid,
+    isEditMode,
+    errorMessage,
+  ];
 }

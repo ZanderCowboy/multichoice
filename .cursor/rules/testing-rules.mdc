@@ -1,0 +1,29 @@
+---
+description: Test structure, mocks, and validation conventions
+globs: ["**/*.test.dart", "**/*_test.dart", "**/test/**"]
+alwaysApply: false
+---
+
+# Testing Rules
+
+Write focused tests for new behavior and bug fixes. Keep tests aligned with nearby files and package conventions.
+
+## Structure
+
+- Mirror the source directory structure under the relevant `test` directory.
+- Use descriptive `group()` and `test()` names that describe behavior.
+- Prefer arrange, act, assert organization.
+- Test behavior and outputs, not private implementation details.
+
+## Mocks
+
+- Before creating mocks, check for an existing `mocks.dart`.
+- In `packages/core`, use `packages/core/test/mocks.dart` and generated mocks from `mocks.mocks.dart` when possible.
+- Add new `MockSpec` entries only when an existing mock does not cover the dependency.
+- Regenerate mocks through Melos/build_runner, not by editing generated files.
+
+## Validation
+
+- Run the narrowest relevant test target first.
+- Use `melos test:core` for core changes and `melos test:multichoice` for app changes.
+- Use `melos test:all` when changes affect shared contracts or multiple packages.

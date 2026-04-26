@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/layouts/home_layout/widgets/tab/horizontal_tab.dart';
-import 'package:multichoice/layouts/home_layout/widgets/tab/vertical_tab.dart';
+import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:ui_kit/ui_kit.dart';
 
+import 'package:multichoice/layouts/home_layout/widgets/tab/horizontal_tab.dart';
+import 'package:multichoice/layouts/home_layout/widgets/tab/vertical_tab.dart';
 class TabLayout extends StatelessWidget {
   const TabLayout({
     required this.tab,

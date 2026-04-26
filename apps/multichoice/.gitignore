@@ -11,7 +11,6 @@ pubspec.lock
 .pub/
 
 # Generated Code
-**/*.freezed.dart
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart

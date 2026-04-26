@@ -29,7 +29,6 @@ pubspec.lock
 **/ios/Flutter/.last_build_id
 
 # Generated Code
-**/*.freezed.dart
 **/*.g.dart
 **/*.config.dart
 **/*.auto_mappr.dart

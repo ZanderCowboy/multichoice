@@ -1,13 +1,13 @@
 part of 'search_bloc.dart';
 
-@freezed
-abstract class SearchState with _$SearchState {
-  const factory SearchState({
-    required List<SearchResult> results,
-    required bool isLoading,
-    required String? errorMessage,
-    required String query,
-  }) = _SearchState;
+@CopyWith()
+class SearchState extends Equatable {
+  const SearchState({
+    required this.results,
+    required this.isLoading,
+    required this.errorMessage,
+    required this.query,
+  });
 
   factory SearchState.initial() => const SearchState(
     results: [],
@@ -15,4 +15,12 @@ abstract class SearchState with _$SearchState {
     errorMessage: null,
     query: '',
   );
+
+  final List<SearchResult> results;
+  final bool isLoading;
+  final String? errorMessage;
+  final String query;
+
+  @override
+  List<Object?> get props => [results, isLoading, errorMessage, query];
 }

@@ -8,6 +8,7 @@ import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:models/models.dart';
 import 'package:clock/clock.dart';
+import 'package:core/src/services/implementations/noop_analytics_service.dart';
 import '../../helpers/fake_path_provider_platform.dart';
 
 import '../../../injection.dart';
@@ -38,7 +39,11 @@ void main() {
     mockTabsRepository = MockTabsRepository();
     mockEntryRepository = MockEntryRepository();
     clock = Clock.fixed(timestamp);
-    homeBloc = HomeBloc(mockTabsRepository, mockEntryRepository);
+    homeBloc = HomeBloc(
+      mockTabsRepository,
+      mockEntryRepository,
+      const NoopAnalyticsService(),
+    );
   });
 
   tearDown(() {

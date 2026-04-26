@@ -42,10 +42,10 @@ instructions: |
 - [ ] Stateless widgets are preferred over stateful when possible
 - [ ] Widgets follow the established pattern with proper structure
 
-#### Freezed Models
-- [ ] Models use proper `@freezed` annotation
-- [ ] Include proper `part` statements for `.freezed.dart` and `.g.dart`
-- [ ] Include `fromJson` factory constructor
+#### Data Models
+- [ ] Models use `@CopyWith()` and/or immutable constructors as appropriate
+- [ ] Include proper `part` statements for generated `.g.dart` files when needed
+- [ ] Include `fromJson` factory constructor when serializable
 - [ ] All fields are properly typed and required/optional as appropriate
 
 ### 2. Code Quality & Best Practices
@@ -67,7 +67,7 @@ instructions: |
 #### Code Generation
 - [ ] Generated files are properly excluded from version control
 - [ ] Proper use of build_runner through melos commands
-- [ ] Check for `*.g.dart`, `*.freezed.dart`, `*.mocks.dart`, `*.auto_mappr.dart` patterns
+- [ ] Check for `*.g.dart`, `*.mocks.dart`, `*.auto_mappr.dart` patterns
 
 ### 3. Testing Requirements
 
@@ -209,7 +209,7 @@ class UserService implements IUserService {
 5. Verify accessibility
 
 ### For Model Changes
-1. Verify Freezed pattern is followed
+1. Verify immutable model/copyWith pattern is followed
 2. Check for proper JSON serialization
 3. Ensure immutability
 4. Verify proper field typing

@@ -1,0 +1,127 @@
+name: 🔧 Maintenance  
+description: Technical debt, refactoring, or dependency updates
+title: "[Maintenance]: "
+labels: ["maintenance", "technical-debt"]
+assignees:
+  - ZanderCowboy
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔧 Maintenance Task
+        
+        Keep it short and specific. If it’s big, we can break it into smaller issues later.
+
+  - type: input
+    id: maintenance-title
+    attributes:
+      label: 🎯 Maintenance Task Title
+      description: What needs to be maintained or improved?
+      placeholder: "Example: Update Flutter dependencies to latest versions"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: maintenance-type
+    attributes:
+      label: 🏷️ Maintenance Type
+      description: What kind of maintenance is this?
+      options:
+        - "📦 Dependency updates"
+        - "♻️ Refactor / cleanup"
+        - "🧪 Tests / tooling"
+        - "🏗️ Build / CI"
+        - "⚡ Performance"
+        - "🔒 Security"
+        - "📝 Docs"
+        - "✨ Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-situation
+    attributes:
+      label: 📊 Current Situation
+      description: What is the current state that needs improvement?
+      placeholder: |
+        - Dependencies are outdated (Flutter 3.0.x → 3.13.x)
+        - Code duplication in auth modules
+        - Tests are flaky and need refactoring
+        - Build times are too slow
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: 🛠️ Proposed Changes
+      description: What specific changes do you propose?
+      placeholder: |
+        - Update pubspec.yaml dependencies
+        - Extract common auth logic to shared service
+        - Refactor test setup/teardown methods
+        - Optimize build configuration
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-components
+    attributes:
+      label: 🎯 Affected Components
+      description: What parts of the codebase will be affected?
+      placeholder: |
+        - packages/core/
+        - Authentication services
+        - CI/CD workflows
+        - All Flutter packages
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: ✨ Expected Benefits
+      description: What improvements will this maintenance provide?
+      placeholder: |
+        - Improved performance
+        - Better code maintainability
+        - Enhanced security
+        - Faster build times
+        - Reduced technical debt
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: ⚠️ Potential Risks
+      description: What could go wrong? What are the risks?
+      placeholder: |
+        - Breaking changes in new dependencies
+        - Temporary build instability
+        - Need to update documentation
+        - May require extensive testing
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-strategy
+    attributes:
+      label: 🧪 Testing Strategy
+      description: How will you ensure the changes don't break anything?
+      placeholder: |
+        - Run full test suite
+        - Manual testing on key flows
+        - Integration test verification
+        - Performance benchmarks
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Quick check
+      options:
+        - label: This is scoped enough to complete in one PR (or I noted how to split it)
+          required: true

@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class CollectionTab extends HookWidget {
+class CollectionTab extends StatelessWidget {
   const CollectionTab({
     required this.tab,
     this.isEditMode = false,
@@ -18,36 +18,38 @@ class CollectionTab extends HookWidget {
       onTap: isEditMode
           ? null
           : () async {
-              await context.router.push(
-                DetailsPageRoute(
-                  result: SearchResult(isTab: true, item: tab, matchScore: 0),
-                  onBack: () {
-                    context.read<HomeBloc>().add(const HomeEvent.refresh());
-                    context.router.pop();
-                  },
+              await coreSl<IAnalyticsService>().logEvent(
+                CrudEventData(
+                  page: AnalyticsPage.home,
+                  entity: AnalyticsEntity.tab,
+                  action: AnalyticsAction.open,
+                  tabId: tab.id,
                 ),
               );
+
+              if (context.mounted) {
+                await context.router.push(
+                  DetailsPageRoute(
+                    result: SearchResult(isTab: true, item: tab, matchScore: 0),
+                    onBack: () {
+                      context.router.pop();
+                    },
+                  ),
+                );
+              }
             },
-      onLongPress: isEditMode ? null : () => _onDeleteTab(context),
+      onLongPress: () async {
+        final bloc = context.read<HomeBloc>();
+        if (!bloc.state.isEditMode) {
+          await triggerEditModeHaptic();
+          bloc.add(const HomeEvent.onToggleEditMode());
+        }
+      },
       child: TabLayout(
         tab: tab,
         isEditMode: isEditMode,
         dragIndex: dragIndex,
       ),
-    );
-  }
-
-  void _onDeleteTab(BuildContext context) {
-    deleteModal(
-      context: context,
-      title: tab.title,
-      content: Text(
-        "Are you sure you want to delete tab ${tab.title} and all it's entries?",
-      ),
-      onConfirm: () {
-        context.read<HomeBloc>().add(HomeEvent.onLongPressedDeleteTab(tab.id));
-        Navigator.of(context).pop();
-      },
     );
   }
 }

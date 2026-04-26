@@ -1,6 +1,7 @@
-// ignore_for_file: avoid_catches_without_on_clauses, document_ignores
+// ignore_for_file: avoid_catches_without_on_clauses
 
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ReusableForm extends StatelessWidget {
@@ -35,7 +36,7 @@ class ReusableForm extends StatelessWidget {
     try {
       // Try to access controller text to verify it's not disposed
       final isTitleNotEmpty = titleController.text.isNotEmpty;
-      
+
       return _buildForm(context, isTitleNotEmpty);
     } catch (e) {
       // Controllers are disposed - return minimal widget
@@ -44,6 +45,18 @@ class ReusableForm extends StatelessWidget {
   }
 
   Widget _buildForm(BuildContext context, bool isTitleNotEmpty) {
+    final appColors = context.theme.appColors;
+    final inputTheme = Theme.of(context).inputDecorationTheme;
+    final textColor =
+        inputTheme.labelStyle?.color ??
+        inputTheme.hintStyle?.color ??
+        appColors.textSecondary ??
+        appColors.textPrimary ??
+        Colors.white;
+    final baseDecoration = const InputDecoration(
+      alignLabelWithHint: true,
+    ).applyDefaults(inputTheme);
+
     return Form(
       child: SingleChildScrollView(
         child: Column(
@@ -53,20 +66,30 @@ class ReusableForm extends StatelessWidget {
               controller: titleController,
               onChanged: onTitleChanged,
               onTap: onTitleTap,
-              decoration: const InputDecoration(
+              textAlignVertical: TextAlignVertical.top,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Title',
                 hintText: 'Title',
               ),
+              maxLines: 3,
             ),
             gap10,
             TextFormField(
               controller: subtitleController,
               onChanged: onSubtitleChanged,
               onTap: onSubtitleTap,
-              decoration: const InputDecoration(
+              textAlignVertical: TextAlignVertical.top,
+              style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                color: textColor,
+              ),
+              decoration: baseDecoration.copyWith(
                 labelText: 'Enter a Subtitle',
                 hintText: 'Subtitle',
               ),
+              maxLines: 3,
             ),
             gap24,
             Row(

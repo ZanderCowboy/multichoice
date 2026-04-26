@@ -6,6 +6,16 @@ This repository contains GitHub Actions workflows for managing the build and dep
 
 The versioning system follows semantic versioning (MAJOR.MINOR.PATCH+BUILD) with support for release candidates (RC).
 
+### Recommended pattern (compute → deploy → commit)
+
+To avoid “version bump” commits when a build/deploy fails, the recommended approach is:
+
+- **Pre-build**: compute the next version and expose it as workflow outputs **without committing**.
+- **Build/Deploy**: use the computed `version_part` + `build_number` to build and deploy artifacts.
+- **Post-success**: after a successful deploy, **commit and push** the exact `version_number`, then create tags/releases from that commit.
+
+If you ever switch back to “commit before deploy”, you’ll likely need a rollback mechanism again.
+
 ### Version Bumping
 
 Version bumps are controlled through PR labels:

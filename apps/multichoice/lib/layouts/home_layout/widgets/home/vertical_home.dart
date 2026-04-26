@@ -1,55 +1,72 @@
 part of '../../home_layout.dart';
 
-/// Width of the edge zone (in logical pixels). When the drag is in this zone
-/// near the left or right edge, the list scrolls.
-const _kEdgeScrollZoneWidth = 80.0;
-
-/// Scroll distance per tick while in the edge zone.
-const _kEdgeScrollStep = 12.0;
-
-/// Interval between scroll ticks while hovering in the edge zone.
-const _kEdgeScrollInterval = Duration(milliseconds: 50);
-
-class _VerticalHome extends HookWidget {
+class _VerticalHome extends StatefulWidget {
   const _VerticalHome();
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final dragPositionRef = useRef<Offset?>(null);
-    final isDraggingRef = useRef(false);
-    final viewportContextRef = useRef<BuildContext?>(null);
+  State<_VerticalHome> createState() => _VerticalHomeState();
+}
 
-    useEffect(
-      () {
-        final timer = Timer.periodic(_kEdgeScrollInterval, (_) {
-          if (!isDraggingRef.value) return;
-          final pos = dragPositionRef.value;
-          if (pos == null) return;
-          final ctx = viewportContextRef.value;
-          if (ctx == null || !ctx.mounted) return;
-          final box = ctx.findRenderObject() as RenderBox?;
-          if (box == null || !box.hasSize) return;
-          final viewportRect =
-              box.localToGlobal(Offset.zero) & box.size;
-          final position = scrollController.position;
-          if (pos.dx < viewportRect.left + _kEdgeScrollZoneWidth) {
-            final newOffset =
-                (position.pixels - _kEdgeScrollStep)
-                    .clamp(position.minScrollExtent, position.maxScrollExtent);
-            scrollController.jumpTo(newOffset);
-          } else if (pos.dx > viewportRect.right - _kEdgeScrollZoneWidth) {
-            final newOffset =
-                (position.pixels + _kEdgeScrollStep)
-                    .clamp(position.minScrollExtent, position.maxScrollExtent);
-            scrollController.jumpTo(newOffset);
-          }
-        });
-        return timer.cancel;
-      },
-      [scrollController],
+class _VerticalHomeState extends State<_VerticalHome> {
+  late final ScrollController _scrollController;
+  final GlobalKey _viewportKey = GlobalKey();
+  Timer? _edgeScrollTimer;
+
+  bool _isDragging = false;
+  Offset? _dragPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+
+    _edgeScrollTimer = Timer.periodic(
+      const Duration(milliseconds: 50),
+      (_) => _tickEdgeScroll(),
     );
+  }
 
+  @override
+  void dispose() {
+    _edgeScrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _tickEdgeScroll() {
+    if (!_isDragging) return;
+    final pos = _dragPosition;
+    if (pos == null || !_scrollController.hasClients) return;
+
+    final ctx = _viewportKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
+
+    final box = ctx.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
+
+    final viewportRect = box.localToGlobal(Offset.zero) & box.size;
+    final position = _scrollController.position;
+
+    const zone = 80.0;
+    const step = 12.0;
+
+    if (pos.dx < viewportRect.left + zone) {
+      final newOffset = (position.pixels - step).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      );
+      _scrollController.jumpTo(newOffset);
+    } else if (pos.dx > viewportRect.right - zone) {
+      final newOffset = (position.pixels + step).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      );
+      _scrollController.jumpTo(newOffset);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       listenWhen: (previous, current) {
         // Only proceed if we have both previous and current tabs
@@ -65,8 +82,9 @@ class _VerticalHome extends HookWidget {
       listener: (context, state) {
         if (state.tabs != null && state.tabs!.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await scrollController.animateTo(
-              scrollController.position.maxScrollExtent,
+            if (!mounted || !_scrollController.hasClients) return;
+            await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
             );
@@ -81,6 +99,7 @@ class _VerticalHome extends HookWidget {
           // Use ReorderableListView with horizontal scrolling for edit mode.
           // Wrap in DragScrollScope and overlay so dragging near edges scrolls.
           final theme = Theme.of(context);
+          if (false) {
           void onDragStarted() {
             isDraggingRef.value = true;
           }
@@ -156,50 +175,99 @@ class _VerticalHome extends HookWidget {
                   );
                 },
               ),
+          }
+          return Padding(
+            padding: vertical4horizontal4,
+            child: Column(
+              children: [
+                const _EditModeHelperBanner(isLayoutVertical: true),
+                Expanded(
+                  child: SizedBox(
+                    height: UIConstants.vertTabHeight(context),
+                    child: ReorderableListView.builder(
+                      scrollController: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      buildDefaultDragHandles: false,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      proxyDecorator: (child, index, animation) {
+                        // Override Card theme to make it transparent when dragging
+                        return Theme(
+                          data: theme.copyWith(
+                            cardTheme: theme.cardTheme.copyWith(
+                              color: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              elevation: 0,
+                            ),
+                          ),
+                          child: child,
+                        );
+                      },
+                      itemCount: tabs.length,
+                      onReorder: (oldIndex, newIndex) {
+                        context.read<HomeBloc>().add(
+                          HomeEvent.onReorderTabs(oldIndex, newIndex),
+                        );
+                      },
+                      itemBuilder: (_, index) {
+                        final tab = tabs[index];
+                        return Padding(
+                          key: ValueKey(tab.id),
+                          padding: horizontal4,
+                          child: CollectionTab(
+                            tab: tab,
+                            isEditMode: isEditMode,
+                            dragIndex: index,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+
             ),
           );
         }
 
         // Normal mode
-        // Note: The nested scroll structure (SingleChildScrollView wrapping
-        // CustomScrollView) is intentional. RefreshIndicator requires vertical
-        // scrolling, but this layout uses horizontal scrolling for tabs.
-        // The outer vertical scroll enables pull-to-refresh functionality.
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
+          color: context.theme.appColors.textTertiary,
+          backgroundColor: context.theme.appColors.scaffoldBackground,
+          // Note: The nested scroll structure (SingleChildScrollView wrapping
+          // CustomScrollView) is intentional. RefreshIndicator requires vertical
+          // scrolling, but this layout uses horizontal scrolling for tabs.
+          // The outer vertical scroll enables pull-to-refresh functionality.
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: vertical4horizontal0,
-              child: SizedBox(
-                height: UIConstants.vertTabHeight(context),
-                child: CustomScrollView(
-                  scrollDirection: Axis.horizontal,
-                  controller: scrollController,
-                  scrollBehavior: CustomScrollBehaviour(),
-                  slivers: [
-                    SliverPadding(
-                      padding: left4,
-                      sliver: SliverList.builder(
-                        itemCount: tabs.length,
-                        itemBuilder: (_, index) {
-                          final tab = tabs[index];
+            child: SizedBox(
+              height: UIConstants.vertTabHeight(context),
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _scrollController,
+                scrollBehavior: CustomScrollBehaviour(),
+                slivers: [
+                  SliverList.builder(
+                    itemCount: tabs.length,
+                    itemBuilder: (_, index) {
+                      final tab = tabs[index];
 
-                          return CollectionTab(
-                            tab: tab,
-                            isEditMode: isEditMode,
-                          );
-                        },
-                      ),
+                      return Padding(
+                        padding: horizontal6,
+                        child: CollectionTab(
+                          tab: tab,
+                          isEditMode: isEditMode,
+                        ),
+                      );
+                    },
+                  ),
+                  const SliverPadding(
+                    padding: horizontal6,
+                    sliver: SliverToBoxAdapter(
+                      child: NewTab(),
                     ),
-                    const SliverPadding(
-                      padding: right12,
-                      sliver: SliverToBoxAdapter(
-                        child: NewTab(),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

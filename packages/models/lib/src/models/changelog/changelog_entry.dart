@@ -1,15 +1,13 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'changelog_entry.g.dart';
 
 @CopyWith()
 @JsonSerializable()
-class ChangelogEntry {
-  const ChangelogEntry({
-    required this.date,
-    required this.changes,
-  });
+class ChangelogEntry extends Equatable {
+  const ChangelogEntry({required this.date, required this.changes});
 
   factory ChangelogEntry.fromJson(Map<String, dynamic> json) =>
       _$ChangelogEntryFromJson(json);
@@ -19,19 +17,6 @@ class ChangelogEntry {
 
   Map<String, dynamic> toJson() => _$ChangelogEntryToJson(this);
 
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ChangelogEntry &&
-          runtimeType == other.runtimeType &&
-          date == other.date &&
-          changes == other.changes;
-
-  // TODO: Remove == and hashCode methods if not needed (not used in Sets/Maps)
-  @override
-  int get hashCode => date.hashCode ^ changes.hashCode;
-
-  @override
-  String toString() => 'ChangelogEntry(date: $date, changes: $changes)';
+  List<Object?> get props => [date, changes];
 }

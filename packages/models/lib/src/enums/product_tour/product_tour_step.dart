@@ -7,12 +7,13 @@ enum ProductTourStep {
   showItemActions(5),
   showCollectionActions(6),
   showCollectionMenu(7),
-  showSettings(8),
-  showAppearanceSection(9),
-  showDataSection(10),
-  showMoreSection(11),
-  closeSettings(12),
-  thanksPopup(13),
+  showEditAndSearch(8),
+  showSettings(9),
+  showAppearanceSection(10),
+  showDataSection(11),
+  showMoreSection(12),
+  closeSettings(13),
+  thanksPopup(14),
   noneCompleted(-1),
   reset(-2),
   ;
@@ -20,4 +21,14 @@ enum ProductTourStep {
   const ProductTourStep(this.value);
 
   final int value;
+
+  static ProductTourStep? fromValue(int value) {
+    for (final step in ProductTourStep.values) {
+      if (step.value == value) {
+        return step;
+      }
+    }
+
+    return null;
+  }
 }

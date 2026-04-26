@@ -16,13 +16,14 @@ class _ResultListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
-      shadowColor: Colors.grey[400],
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular8,
       ),
       margin: margin,
-      color: context.theme.appColors.secondary,
+      color: context.appColorsTheme.secondary,
       child: Padding(
         padding: internalPadding,
         child: Row(
@@ -33,22 +34,14 @@ class _ResultListTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontSize: 16,
-                          letterSpacing: 0.3,
-                          height: 1,
-                        ),
+                    style: context.appTextTheme.contrastTitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
                   gap4,
                   Text(
                     subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 12,
-                          letterSpacing: 0.5,
-                          height: 1.25,
-                        ),
+                    style: context.appTextTheme.contrastSubtitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                   ),

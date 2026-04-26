@@ -1,18 +1,20 @@
 import 'package:bloc/bloc.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:core/core.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
 
-part 'home_bloc.freezed.dart';
 part 'home_event.dart';
 part 'home_state.dart';
+part 'home_bloc.g.dart';
 
 @Injectable()
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(
     this._tabsRepository,
     this._entryRepository,
+    this._analyticsService,
   ) : super(HomeState.initial()) {
     on<HomeEvent>(_onEvent);
   }
@@ -59,8 +61,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _handleToggleEditMode(emit);
       case OnReorderTabs(:final oldIndex, :final newIndex):
         await _handleReorderTabs(oldIndex, newIndex, emit);
-      case OnReorderEntries(:final tabId, :final oldIndex, :final newIndex):
-        await _handleReorderEntries(tabId, oldIndex, newIndex, emit);
       case OnMoveEntryToTab(
           :final entryId,
           :final fromTabId,
@@ -74,13 +74,43 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           insertIndex,
           emit,
         );
-      default:
+      case OnReorderEntries(
+        :final tabId,
+        :final oldIndex,
+        :final newIndex,
+        :final isGrid,
+      ):
+        await _handleReorderEntries(tabId, oldIndex, newIndex, isGrid, emit);
     }
   }
 
   Future<void> _handleGetTabs(Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));
     final tabs = await _tabsRepository.readTabs();
+
+    // Log collection and item counts for analytics
+    if (tabs.isNotEmpty) {
+      final entries = await _entryRepository.readAllEntries();
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.open,
+          itemCount: tabs.length,
+        ),
+      );
+
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.open,
+          itemCount: entries.length,
+        ),
+      );
+    }
+
     emit(state.copyWith(tabs: tabs, isLoading: false));
   }
 
@@ -99,6 +129,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await _tabsRepository.addTab(
         title: updatedTitle,
         subtitle: updatedSubtitle,
+      );
+      await _analyticsService.logEvent(
+        const CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.create,
+        ),
       );
     } else {
       emit(state.copyWith(errorMessage: 'Failed to add collection.'));
@@ -128,6 +165,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         title: updatedTitle,
         subtitle: updatedSubtitle,
       );
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.create,
+          tabId: tab.id,
+        ),
+      );
     } else {
       emit(state.copyWith(errorMessage: 'Failed to add item.'));
     }
@@ -147,6 +192,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleDeleteTab(int tabId, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true, isDeleted: true));
     await _tabsRepository.deleteTab(tabId: tabId);
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.tab,
+        action: AnalyticsAction.delete,
+        tabId: tabId,
+      ),
+    );
     final tabs = await _tabsRepository.readTabs();
     emit(
       state.copyWith(
@@ -165,6 +218,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.copyWith(isLoading: true, isDeleted: true));
     await _entryRepository.deleteEntry(tabId: tabId, entryId: entryId);
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.entry,
+        action: AnalyticsAction.delete,
+        tabId: tabId,
+        entryId: entryId,
+      ),
+    );
     final entryCards = await _entryRepository.readEntries(tabId: tabId);
     final tabs = await _tabsRepository.readTabs();
     emit(
@@ -186,6 +248,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final tabs = await _tabsRepository.readTabs();
 
     if (result) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.allEntries,
+          action: AnalyticsAction.delete,
+          tabId: tabId,
+        ),
+      );
       emit(
         state.copyWith(
           tabs: tabs,
@@ -203,6 +273,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final result = await _tabsRepository.deleteTabs();
 
     if (result) {
+      await _analyticsService.logEvent(
+        const CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.allTabs,
+          action: AnalyticsAction.delete,
+        ),
+      );
       emit(
         state.copyWith(
           tab: TabsDTO.empty(),
@@ -269,6 +346,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       title: updatedTitle,
       subtitle: updatedSubtitle,
     );
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.tab,
+        action: AnalyticsAction.update,
+        tabId: tab.id,
+      ),
+    );
 
     final tabs = await _tabsRepository.readTabs();
     emit(
@@ -292,6 +377,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       tabId: entry.tabId,
       title: updatedTitle,
       subtitle: updatedSubtitle,
+    );
+    await _analyticsService.logEvent(
+      CrudEventData(
+        page: AnalyticsPage.home,
+        entity: AnalyticsEntity.entry,
+        action: AnalyticsAction.update,
+        tabId: entry.tabId,
+        entryId: entry.id,
+      ),
     );
 
     final tabs = await _tabsRepository.readTabs();
@@ -433,8 +527,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Store the original tabs for rollback if needed
     final originalTabs = tabs;
-
-    // Create a mutable copy of the tabs list
     final updatedTabs = List<TabsDTO>.from(tabs);
 
     // Adjust newIndex if moving down
@@ -452,7 +544,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // Persist the new order to the database
     final tabIds = updatedTabs.map((t) => t.id).toList();
     final success = await _tabsRepository.updateTabsOrder(tabIds);
-    
+    if (success) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.tab,
+          action: AnalyticsAction.reorder,
+          itemCount: tabIds.length,
+        ),
+      );
+    }
+
     // If persistence failed, revert to original order
     if (!success) {
       emit(state.copyWith(tabs: originalTabs));
@@ -464,12 +566,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     int tabId,
     int oldIndex,
     int newIndex,
+    bool isGrid,
     Emitter<HomeState> emit,
   ) async {
     final tabs = state.tabs;
     if (tabs == null) return;
 
-    // Find the tab
     final tabIndex = tabs.indexWhere((t) => t.id == tabId);
     if (tabIndex == -1) return;
 
@@ -479,18 +581,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Store the original tabs for rollback if needed
     final originalTabs = tabs;
-
-    // Create a mutable copy of the entries list
     final updatedEntries = List<EntryDTO>.from(entries);
 
-    // Adjust newIndex if moving down
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
+    // Adjust newIndex based on source widget type
+    var targetIndex = newIndex;
+    if (!isGrid && oldIndex < newIndex) {
+      // Standard list behavior: adjust when moving down
+      targetIndex = newIndex - 1;
+    }
+
+    targetIndex = targetIndex.clamp(0, updatedEntries.length - 1);
+    if (targetIndex == oldIndex) {
+      return;
     }
 
     // Reorder the entries
     final entry = updatedEntries.removeAt(oldIndex);
-    updatedEntries.insert(newIndex, entry);
+    updatedEntries.insert(targetIndex, entry);
 
     // Update the tab with the new entries order
     final updatedTab = tab.copyWith(entries: updatedEntries);
@@ -502,11 +609,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Persist the new order to the database
     final entryIds = updatedEntries.map((e) => e.id).toList();
+
     final success = await _entryRepository.updateEntriesOrder(
       tabId: tabId,
       entryIds: entryIds,
     );
-    
+    if (success) {
+      await _analyticsService.logEvent(
+        CrudEventData(
+          page: AnalyticsPage.home,
+          entity: AnalyticsEntity.entry,
+          action: AnalyticsAction.reorder,
+          tabId: tabId,
+          itemCount: entryIds.length,
+        ),
+      );
+    }
+
     // If persistence failed, revert to original order
     if (!success) {
       emit(state.copyWith(tabs: originalTabs));
@@ -516,4 +635,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final ITabsRepository _tabsRepository;
   final IEntryRepository _entryRepository;
+  final IAnalyticsService _analyticsService;
 }

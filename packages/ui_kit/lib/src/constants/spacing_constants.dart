@@ -41,13 +41,23 @@ const allPadding16 = EdgeInsets.all(16);
 
 const allPadding18 = EdgeInsets.all(18);
 
+const allPadding20 = EdgeInsets.all(20);
+
 const allPadding24 = EdgeInsets.all(24);
+
+const vertical4 = EdgeInsets.symmetric(vertical: 4);
+
+const vertical6 = EdgeInsets.symmetric(vertical: 6);
 
 const vertical8 = EdgeInsets.symmetric(vertical: 8);
 
 const vertical12 = EdgeInsets.symmetric(vertical: 12);
 
+const horizontal2 = EdgeInsets.symmetric(horizontal: 2);
+
 const horizontal4 = EdgeInsets.symmetric(horizontal: 4);
+
+const horizontal6 = EdgeInsets.symmetric(horizontal: 6);
 
 const horizontal8 = EdgeInsets.symmetric(horizontal: 8);
 
@@ -82,6 +92,8 @@ const bottom12 = EdgeInsets.only(bottom: 12);
 const bottom24 = EdgeInsets.only(bottom: 24);
 
 const vertical4horizontal0 = EdgeInsets.symmetric(vertical: 4, horizontal: 0);
+
+const vertical4horizontal4 = EdgeInsets.symmetric(vertical: 4, horizontal: 4);
 
 const vertical8horizontal4 = EdgeInsets.symmetric(vertical: 8, horizontal: 4);
 

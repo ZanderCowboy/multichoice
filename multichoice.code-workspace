@@ -8,6 +8,34 @@
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"svg.preview.background": "editor",
+		"chat.tools.terminal.autoApprove": {
+			"dart": true,
+			"flutter": true,
+			"make": true,
+			"git fetch": true,
+			"Test-Path": true
+		},
+		"dart.analysisExcludedFolders": [
+			"**/multichoice_v2",
+			"**/packages/data"
+		],
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/flutter/ephemeral": true,
+			"**/Flutter/ephemeral": true,
+			"**/.symlinks": true,
+			"**/.plugin_symlinks": true,
+			"**/**.isar.*": true,
+			"**/**.isar-lck*": true,
+			"**/*isar.dll": true,
+		},
+		"yaml.schemas": {
+			"https://www.schemastore.org/github-action.json": "chat-editing-snapshot-text-model:/c%3A/Programming/Projects/multichoice/.github/actions/check-version-labels/action.yml?%7B%22session%22%3A%7B%22%24mid%22%3A1%2C%22external%22%3A%22vscode-chat-session%3A%2F%2Flocal%2FMWZmZmI2NjMtZWY5Zi00ZjVkLTg2MTYtZmQ4N2EwOTJlMGEz%22%2C%22path%22%3A%22%2FMWZmZmI2NjMtZWY5Zi00ZjVkLTg2MTYtZmQ4N2EwOTJlMGEz%22%2C%22scheme%22%3A%22vscode-chat-session%22%2C%22authority%22%3A%22local%22%7D%2C%22requestId%22%3A%22request_15ad95ba-21d1-440f-a1c8-67f58e11d65f%22%2C%22undoStop%22%3A%22__epoch_11%22%7D"
+		}
 	},
 	"extensions": {
 		"recommendations": [
