@@ -52,10 +52,8 @@ class AuthInterceptorImpl implements AuthInterceptor {
       // Store new tokens
       // await _tokenStorage.storeTokens(response.accessToken, response.refreshToken);
 
-      print('Token refreshed successfully');
     } catch (e) {
       // Handle refresh failure - might need to redirect to login
-      print('Token refresh failed: $e');
       throw Exception('Failed to refresh authentication token');
     }
   }

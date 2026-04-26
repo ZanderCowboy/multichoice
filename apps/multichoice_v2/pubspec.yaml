@@ -36,9 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   bloc: ^9.0.0
   meta: ^1.15.0
-  build_runner: ^2.4.15
 
 dev_dependencies:
+  build_runner: ^2.4.15
   flutter_test:
     sdk: flutter
 

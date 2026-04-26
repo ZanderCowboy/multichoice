@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'collection.freezed.dart';
 
 @freezed
-class Collection with _$Collection {
+abstract class Collection with _$Collection {
   factory Collection({
     required int id,
     required List<Item> items,

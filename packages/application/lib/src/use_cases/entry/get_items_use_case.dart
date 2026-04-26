@@ -6,10 +6,9 @@ class GetItemsUseCaseImpl implements IGetItemsUseCase {
   final IItemRepository _itemRepository;
 
   @override
-  Future<List<Item>> execute(String collectionId) async {
-    // Business rule: validate tabId
-    if (collectionId.trim().isEmpty) {
-      throw ArgumentError('Collection ID cannot be empty');
+  Future<List<Item>> execute(int collectionId) async {
+    if (collectionId <= 0) {
+      throw ArgumentError('Collection ID must be greater than 0');
     }
 
     // Get entries from repository

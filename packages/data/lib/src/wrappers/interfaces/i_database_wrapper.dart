@@ -1,5 +1,5 @@
-import 'package:isar/isar.dart';
 import 'package:data/data.dart';
+import 'package:isar_community/isar.dart';
 
 abstract class IDatabaseWrapper {
   Future<void> close();

@@ -1,5 +1,5 @@
 import 'package:data/data.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 class ItemLocalDatasource implements IItemLocalDatasource {
   ItemLocalDatasource(this._databaseWrapper);

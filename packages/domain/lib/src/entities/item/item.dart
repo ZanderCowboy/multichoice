@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'item.freezed.dart';
 
 @freezed
-class Item with _$Item {
+abstract class Item with _$Item {
   factory Item({
     required int id,
     required int collectionId,

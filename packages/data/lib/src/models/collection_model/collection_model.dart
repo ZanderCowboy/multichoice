@@ -1,23 +1,20 @@
 import 'package:data/src/extensions/string.dart';
-import 'package:isar/isar.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:isar_community/isar.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'collection_model.freezed.dart';
 part 'collection_model.g.dart';
 
-@freezed
 @Collection(ignore: {'copyWith'})
-class CollectionModel with _$CollectionModel {
-  factory CollectionModel({
-    required String? uuid,
-    required String? title,
-    required String? subtitle,
-    required DateTime? createdAt,
-    required DateTime? updatedAt,
-    required List<String>? itemUuids,
-  }) = _CollectionModel;
-
-  const CollectionModel._();
+@JsonSerializable()
+class CollectionModel {
+  CollectionModel({
+    required this.uuid,
+    required this.title,
+    required this.subtitle,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.itemUuids,
+  });
 
   factory CollectionModel.empty() => CollectionModel(
         uuid: null,
@@ -30,6 +27,15 @@ class CollectionModel with _$CollectionModel {
 
   factory CollectionModel.fromJson(Map<String, dynamic> json) =>
       _$CollectionModelFromJson(json);
+
+  final String? uuid;
+  final String? title;
+  final String? subtitle;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final List<String>? itemUuids;
+
+  Map<String, dynamic> toJson() => _$CollectionModelToJson(this);
 
   Id get id => uuid?.fastHash() ?? 0;
 
