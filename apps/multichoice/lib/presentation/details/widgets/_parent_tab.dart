@@ -13,9 +13,12 @@ class _ParentTab extends StatelessWidget {
           return const Text('Failed to load parent tab');
         }
 
-        return _ResultListTile(
-          title: tab.title,
-          subtitle: tab.subtitle,
+        return Padding(
+          padding: vertical8,
+          child: _ResultListTile(
+            title: tab.title,
+            subtitle: tab.subtitle,
+          ),
         );
       },
     );

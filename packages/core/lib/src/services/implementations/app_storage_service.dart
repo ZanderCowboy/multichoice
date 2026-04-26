@@ -90,6 +90,22 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<bool> get hasPreviouslySignedIn async {
+    final hasSignedIn = _sharedPreferences.getBool(
+      StorageKeys.hasPreviouslySignedIn.key,
+    );
+    return hasSignedIn ?? false;
+  }
+
+  @override
+  Future<void> setHasPreviouslySignedIn(bool hasSignedIn) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.hasPreviouslySignedIn.key,
+      hasSignedIn,
+    );
+  }
+
+  @override
   Future<bool> get isPermissionsChecked async {
     final isChecked = _sharedPreferences.getBool(
       StorageKeys.isPermissionsChecked.key,
@@ -122,6 +138,40 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<bool> get isSignupBannerDismissed async {
+    final isDismissed = _sharedPreferences.getBool(
+      StorageKeys.isSignupBannerDismissed.key,
+    );
+    return isDismissed ?? false;
+  }
+
+  @override
+  Future<void> setIsSignupBannerDismissed(bool isDismissed) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isSignupBannerDismissed.key,
+      isDismissed,
+    );
+  }
+
+  @override
+  Future<String?> get lastUsedEmail async {
+    return _sharedPreferences.getString(StorageKeys.lastUsedEmail.key);
+  }
+
+  @override
+  Future<void> setLastUsedEmail(String email) async {
+    await _sharedPreferences.setString(
+      StorageKeys.lastUsedEmail.key,
+      email,
+    );
+  }
+
+  @override
+  Future<void> clearLastUsedEmail() async {
+    await _sharedPreferences.remove(StorageKeys.lastUsedEmail.key);
+  }
+
+  @override
   Future<void> clearAllData() async {
     if (!kDebugMode) return;
 
@@ -129,7 +179,10 @@ class AppStorageService implements IAppStorageService {
     await setIsDarkMode(false);
     await setIsLayoutVertical(false);
     await setIsExistingUser(false);
+    await setHasPreviouslySignedIn(false);
     await setIsPermissionsChecked(false);
     await setIsImportDataBannerDismissed(false);
+    await setIsSignupBannerDismissed(false);
+    await clearLastUsedEmail();
   }
 }

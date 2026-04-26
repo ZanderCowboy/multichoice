@@ -1,221 +1,152 @@
-# GitHub Workflows
+# Workflows
 
-This folder documents the active GitHub Actions workflows for linting, `develop`, RC staging, and production release.
+This repository contains GitHub Actions workflows for managing the build and deployment process across different environments: develop, staging (RC), and production.
 
-## Quick Index
+## Version Management
 
-- Linting: `.github/workflows/linting_workflow.yml`
-- Develop: `.github/workflows/develop_workflow.yml`
-- Staging (RC): `.github/workflows/staging_workflow.yml`
-- Production: `.github/workflows/production_workflow.yml`
+The versioning system follows semantic versioning (MAJOR.MINOR.PATCH+BUILD) with support for release candidates (RC).
 
-## Versioning Model
+### Recommended pattern (compute → deploy → commit)
 
-Supported version shapes:
+To avoid “version bump” commits when a build/deploy fails, the recommended approach is:
 
-```text
-Standard: X.Y.Z+BUILD
-RC:       X.Y.Z-RC+BUILD
-```
+- **Pre-build**: compute the next version and expose it as workflow outputs **without committing**.
+- **Build/Deploy**: use the computed `version_part` + `build_number` to build and deploy artifacts.
+- **Post-success**: after a successful deploy, **commit and push** the exact `version_number`, then create tags/releases from that commit.
 
-Policy summary:
+If you ever switch back to “commit before deploy”, you’ll likely need a rollback mechanism again.
 
-- `develop` uses labels for semantic bumping (`feature`/`bug`) plus build bump.
-- `staging` (RC) bumps **build only** and keeps the `-RC` suffix.
-- `production` removes `-RC`, bumps build number by `+1`, and does **not** perform semantic major/minor/patch bumps.
+### Version Bumping
 
-## Workflow Details
+Version bumps are controlled through PR labels:
+- `major`: Increments the major version (1.0.0 -> 2.0.0)
+- `minor`: Increments the minor version (1.0.0 -> 1.1.0)
+- `patch`: Increments the patch version (1.0.0 -> 1.0.1)
+- `no-build`: Skips version bumping
 
-### 1) Linting and Analysis
+### Version Suffixes
 
-**File:** `.github/workflows/linting_workflow.yml`
+- RC (Release Candidate) suffix is automatically added in the staging workflow
+- RC suffix is removed when promoting to production
 
-#### Develop Triggers
+## Workflow Overview
 
-```yaml
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: ["**"]
-  workflow_dispatch:
-```
+### Develop Workflow
 
-#### What It Does
-
-- Runs `melos analyze`
-- Runs `melos coverage:all`
-- Merges LCOV files
-- Uploads merged coverage to Codecov
-
-### 2) Develop Workflow
-
-**File:** `.github/workflows/develop_workflow.yml`
-
-#### Staging Triggers
-
-```yaml
-on:
-  pull_request:
-    branches: ["develop"]
-    types: [closed]
-  workflow_dispatch:
-    inputs:
-      bump_type:
-        type: choice
-        options: [none, patch, minor]
-```
-
-#### PR Path Behavior
-
-- Runs only when PR is merged and does not contain `no-build`.
-- Label mapping:
-
-```text
-feature -> minor + build bump
-bug     -> patch + build bump
-none    -> build bump only
-```
-
-- If both labels exist, `feature` wins.
-
-#### Manual Path Behavior
-
-- Uses `workflow_dispatch` input `bump_type` (`none|patch|minor`).
-
-#### Production Build and Release Actions
-
-- Builds APK + AAB
+- Triggered on PR closure to `develop` branch
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
 - Uploads APK to Firebase App Distribution
-- Creates full tag (`X.Y.Z(+/-RC)+BUILD`)
+- Creates AAB artifact
+- Version bumping based on PR labels (patch, minor)
 
-### 3) Staging (RC) Workflow
+### Staging (RC) Workflow
 
-**File:** `.github/workflows/staging_workflow.yml`
+- Triggered on PR closure to `rc` branch
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
+- Creates AAB artifact
+- Uploads to Google Play internal track
+- Adds RC suffix to version
+- Version bumping based on PR labels (major, minor, patch)
 
-#### Triggers
+### Production Workflow
 
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
-  workflow_dispatch:
-    inputs:
-      target_branch:
-        type: string
-```
+- Triggered on PR closure to `main` branch from `rc`
+- Supports manual trigger via workflow_dispatch
+- Runs tests, analysis, and builds Android app
+- Creates both APK and AAB artifacts
+- Removes RC suffix from version
+- Uploads to Google Play production track (currently commented out)
 
-#### RC Guard
+## Common Features Across Workflows
 
-- PR flow continues only when `github.head_ref` starts with `rc`.
-- Supported branch examples:
+### Pre-build Steps
 
-```text
-rc
-rc/1
-rc/2026-03
-rc-1
-rc-feature-freeze
-rc_1
-rc_hotfix
-rc/mobile/stabilization
-```
+- Version management
+- GitHub App token generation
+- Label validation
+- Version bumping based on PR labels
 
-#### Version and Build Actions
+### Build Steps
 
-```text
-bump_type: none
-suffix:    -RC
-result:    build number increments, RC suffix preserved
-```
+- Flutter and Java setup
+- Core package coverage testing
+- Codecov integration
+- Android keystore setup
+- Secrets file generation
+- APK/AAB building
+- Artifact uploads
 
-#### Delivery
+### Post-build Steps
 
-- Builds AAB
-- Uploads to Google Play `internal` track
-- Creates RC full tag
+- Tag creation
+- Version updates in pubspec.yaml
+- Google Play Store deployment (where applicable)
 
-### 4) Production Workflow
+## Concurrency Control
 
-**File:** `.github/workflows/production_workflow.yml`
+- All workflows implement concurrency control
+- Prevents multiple builds from running simultaneously
+- Cancels in-progress builds when new ones are triggered
 
-#### Trigger
+## Security
 
-```yaml
-on:
-  workflow_dispatch:
-    inputs:
-      release_type:        # legacy compatibility input
-      target_branch:
-      skip_github_release:
-```
+- Uses GitHub App tokens for authentication
+- Securely handles Android keystore and secrets
+- Implements proper permission scopes for GitHub Actions
 
-#### Version Derivation
+## Artifacts
 
-Reads latest RC tag in this format:
+- APK files for direct installation
+- AAB files for Google Play Store submission
+- Coverage reports for code quality monitoring
 
-```text
-vX.Y.Z-RC+N
-```
+## Linting Workflow
 
-Transforms to:
+## Build Workflow
 
-```text
-X.Y.Z+(N+1)
-```
+- Runs with every closed PR into develop
+- Has workflow_dispatch
+- Concurrency
 
-Example:
+- Only runs when the PR has been merged OR if there is no 'no-build' label
+- Runs on ubuntu-latest
 
-```text
-v1.3.7-RC+155 -> 1.3.7+156
-```
+preBuild
+- Checks out repo
+action=app_versioning
+- Uses 'stikkyapp/update-pubspec-version@v1' to bump version
+- Updates the pubspec file
+- Uploads the pubspec file
+- Echos the new version
 
-#### Build and Release Actions
+- Reads the config
+- Extracts build flag and environment (true and release)
+- Downloads pubspec file
 
-- Uses `.github/actions/tokenized-commit` to update `pubspec.yaml`
-- Builds APK + AAB
-- Uploads AAB to Google Play `production` track
-- Creates standard tag (`X.Y.Z+BUILD`)
-- Optionally creates GitHub release and uploads APK artifact
+build
+- Runs on ubuntu-latest
+- checks out repo
+- sets up Java and Flutter
+- Runs melos coverage:core
+- Uploads coverage
+- Runs dart analysis
+<- Get latest tag
+<- Get current version from pubspec.yaml
+<- Generate GitHub App Token
+<- Update version in pubspec.yaml
+- Downloads pubspec file
+- Downloads Android Keystore.jks file
+- Create key.properties
+- Create secrets.dart
+- Builds appbundle
+- Builds APK
+- Uploads AAB artifact
+- Uploads APK to Firebase
+<- Create new tag
 
-## Shared Composite Actions
-
-### `setup-flutter-with-java`
-
-**File:** `.github/actions/setup-flutter-with-java/action.yml`
-
-- Sets up Flutter tooling and Java for workflow jobs.
-
-### `prepare-android-release-files`
-
-**File:** `.github/actions/prepare-android-release-files/action.yml`
-
-- Decodes keystore
-- Writes `key.properties`
-- Creates `apps/multichoice/lib/auth/secrets.dart`
-- Creates and validates `google-services.json`
-
-### `check-version-labels`
-
-**File:** `.github/actions/check-version-labels/action.yml`
-
-- Resolves bump type from labels
-- Supports `feature`, `bug`, and `no-build`
-
-### `version-management`
-
-**File:** `.github/actions/version-management/action.yml`
-
-- Applies version/build updates and pushes to the target branch.
-
-### `tokenized-commit`
-
-**File:** `.github/actions/tokenized-commit/action.yml`
-
-- Updates `pubspec.yaml`, commits, and pushes using GitHub App token.
-
-## Operational Notes
-
-- Concurrency groups are enabled to reduce conflicting runs.
-- Coverage + Codecov are owned by the linting workflow.
-- Keep this file in sync whenever workflow triggers or versioning rules change.
+postBuild
+- Runs on ubuntu-latest
+- Checks out repo
+- Uses 'stefanzweifel/git-auto-commit-action@v5' to bump and commit

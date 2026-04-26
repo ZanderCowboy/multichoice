@@ -31,7 +31,7 @@ Widget _scrollToStartButton({
             child: Icon(
               icon,
               size: 24,
-              color: context.theme.appColors.ternary,
+              color: context.theme.appColors.textTertiary,
             ),
           ),
         ),

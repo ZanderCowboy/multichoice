@@ -8,11 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'app_version.dart';
+part 'account_section.dart';
 part 'appearance_section.dart';
 part 'data_section.dart';
 part 'drawer_header_section.dart';

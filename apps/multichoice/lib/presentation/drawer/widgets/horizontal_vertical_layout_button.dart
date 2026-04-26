@@ -13,21 +13,30 @@ class HorizontalVerticalLayoutButton extends StatelessWidget {
 
     return SwitchListTile(
       key: context.keys.layoutSwitch,
-      title: const Text('Horizontal / Vertical Layout'),
+      title: Text(
+        'Horizontal / Vertical Layout',
+        style: context.appTextTheme.denseTitle,
+      ),
       value: appLayout.isLayoutVertical,
-      activeThumbColor: context.theme.appColors.secondary,
-      inactiveThumbColor: context.theme.appColors.secondary,
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return context.appColorsTheme.primaryLight;
+        }
+        return context.appColorsTheme.primaryLight;
+      }),
+      activeThumbColor: context.theme.appColors.accent,
+      inactiveThumbColor: context.theme.appColors.accent,
       thumbIcon: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return const Icon(
+          return Icon(
             Icons.view_column,
-            color: Colors.white,
+            color: context.appColorsTheme.primary,
           );
         }
 
-        return const Icon(
+        return Icon(
           Icons.unfold_more,
-          color: Colors.white,
+          color: context.appColorsTheme.primary,
         );
       }),
       onChanged: (value) async {

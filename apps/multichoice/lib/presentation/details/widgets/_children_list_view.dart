@@ -10,26 +10,22 @@ class _ChildrenListView extends StatelessWidget {
         final children = state.children;
 
         if (children == null) {
-          return const SliverToBoxAdapter(
+          return SliverToBoxAdapter(
             child: Center(
               child: Text(
                 'No children available',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
             ),
           );
         }
 
         if (children.isEmpty) {
-          return const SliverToBoxAdapter(
+          return SliverToBoxAdapter(
             child: Center(
               child: Text(
                 'No children found',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
             ),
           );

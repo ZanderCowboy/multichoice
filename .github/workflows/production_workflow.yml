@@ -1,281 +1,433 @@
 ---
 # This workflow is manually triggered.
-# It derives the next production version from the latest RC tag by:
-# - removing the -RC suffix
-# - incrementing build number by 1 (no semantic major/minor/patch bump)
+# It builds the Android app, uploads artifacts, publishes to Play, tags the release,
+# and can optionally create a GitHub release.
 #
-# Example:
-# - latest RC tag: v1.3.7-RC+155
-# - production version built and released: 1.3.7+156
+# Versioning works as follows:
+# - Reads the latest RC tag matching: vX.Y.Z-RC+N
+# - Bumps semantic version based on input: patch, minor, or major
+# - Always increments build number by 1
+#   Example: v2.4.1-RC+125 with release_type=minor -> v2.5.0+126
+# - Creates a version-only tag from the finalized version (for example, v2.5.0)
+#
 name: main-workflow
 on:
-    workflow_dispatch:
-        inputs:
-            release_type:
-                description: "Legacy input kept for compatibility (not used for semantic bumps)"
-                required: true
-                type: choice
-                default: patch
-                options:
-                    - patch
-                    - minor
-                    - major
-            target_branch:
-                description: "Branch to build and update"
-                required: true
-                type: string
-                default: main
-            skip_github_release:
-                description: "Skip creating a GitHub Release"
-                required: true
-                type: boolean
-                default: false
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Semantic version bump type"
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
+        required: true
+        type: boolean
+        default: true
+      target_branch:
+        description: "Branch to build and update"
+        required: true
+        type: string
+        default: main
+      skip_github_release:
+        description: "Skip creating a GitHub Release"
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+  group: production-workflow-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
-    preBuild:
-        name: Prebuild - Version Management
-        runs-on: ubuntu-latest
-        concurrency:
-            group: build-group
-            cancel-in-progress: false
-        outputs:
-            version_number: ${{ steps.resolve_version.outputs.version_number }}
-            version_part: ${{ steps.resolve_version.outputs.version_part }}
-            build_number: ${{ steps.resolve_version.outputs.build_number }}
+  preBuild:
+    name: Prebuild - Version Management
+    runs-on: ubuntu-latest
+    concurrency:
+      group: version-management-production
+      cancel-in-progress: false
+    outputs:
+      version_number: ${{ steps.get_current_version.outputs.version_with_build }}
+      version_part: ${{ steps.get_current_version.outputs.current_version }}
+      build_number: ${{ steps.get_current_version.outputs.build_number }}
 
-        steps:
-            ##############################################
-            # Checkout Repository
-            ##############################################
-            - name: Checkout Repository
-              uses: actions/checkout@v6
-              with:
-                  fetch-depth: 0
-                  ref: ${{ inputs.target_branch }}
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.target_branch }}
 
-            ##############################################
-            # Resolve Production Version From Latest RC Tag
-            ##############################################
-            - name: Resolve Production Version From Latest RC Tag
-              id: resolve_version
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  git fetch --tags
+      ##############################################
+      # Get Current Version From Latest Tag
+      ##############################################
+      - name: Get Current Version From Latest Tag
+        id: get_current_version
+        shell: bash
+        env:
+          RELEASE_TYPE: ${{ inputs.release_type }}
+        run: |
+          # Get the latest tag
+          latest_tag=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' | head -n1)
+          if [[ -z "$latest_tag" ]]; then
+            echo "::error::No valid tags found in repository"
+            exit 1
+          fi
+          echo "latest_tag=$latest_tag"
 
-                  latest_rc_tag=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-RC\+[0-9]+$' | head -n1)
-                  if [[ -z "$latest_rc_tag" ]]; then
-                    echo "::error::No RC tag found in format vX.Y.Z-RC+N"
-                    exit 1
-                  fi
+          # Remove 'v' prefix if present
+          version_without_v=${latest_tag#v}
+          echo "version_without_v=$version_without_v"
 
-                  rc_version=${latest_rc_tag#v}
-                  rc_version_part=$(echo "$rc_version" | cut -d'+' -f1)
-                  rc_build_number=$(echo "$rc_version" | cut -d'+' -f2)
+          # Check if version has RC suffix
+          if [[ ! "$version_without_v" =~ -RC ]]; then
+            echo "::error::Latest tag does not have RC suffix: $version_without_v"
+            exit 1
+          fi
 
-                  if [[ ! "$rc_version_part" =~ ^[0-9]+\.[0-9]+\.[0-9]+-RC$ ]]; then
-                    echo "::error::Invalid RC version part: $rc_version_part"
-                    exit 1
-                  fi
+          # Extract version parts
+          version_part_RC=$(echo "$version_without_v" | cut -d'+' -f1)
+          build_number=$(echo "$version_without_v" | cut -d'+' -f2)
 
-                  if [[ ! "$rc_build_number" =~ ^[0-9]+$ ]]; then
-                    echo "::error::Invalid RC build number: $rc_build_number"
-                    exit 1
-                  fi
+          new_build_number=$((build_number + 1))
 
-                  version_part=${rc_version_part%-RC}
-                  build_number=$((rc_build_number + 1))
-                  version_number="$version_part+$build_number"
+          # Remove RC suffix to get base version
+          version_without_rc=${version_part_RC%-RC*}
 
-                  echo "version_part=$version_part" >> "$GITHUB_OUTPUT"
-                  echo "build_number=$build_number" >> "$GITHUB_OUTPUT"
-                  echo "version_number=$version_number" >> "$GITHUB_OUTPUT"
+          # Validate the extracted version
+          if ! echo "$version_without_rc" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid version format after removing RC: $version_without_rc"
+            exit 1
+          fi
 
-            ##############################################
-            # Generate GitHub App Token
-            ##############################################
-            - name: Generate GitHub App Token
-              id: generate_token
-              uses: peter-murray/workflow-application-token-action@v4
-              with:
-                  application_id: ${{ secrets.VERSION_BOT_APP_ID }}
-                  application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+          if ! echo "$new_build_number" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid build number: $new_build_number"
+            exit 1
+          fi
 
-            ##############################################
-            # Commit Version Update
-            ##############################################
-            - name: Commit Version Update
-              uses: ./.github/actions/tokenized-commit
-              with:
-                  github_token: ${{ steps.generate_token.outputs.token }}
-                  repository: ${{ github.repository }}
-                  file_path: apps/multichoice/pubspec.yaml
-                  commit_message: "Release version ${{ steps.resolve_version.outputs.version_number }} [skip ci]"
-                  branch_name: ${{ inputs.target_branch }}
-                  version_with_build: ${{ steps.resolve_version.outputs.version_number }}
+          IFS='.' read -r major minor patch <<< "$version_without_rc"
+          case "$RELEASE_TYPE" in
+            major)
+              major=$((major + 1))
+              minor=0
+              patch=0
+              ;;
+            minor)
+              minor=$((minor + 1))
+              patch=0
+              ;;
+            patch)
+              patch=$((patch + 1))
+              ;;
+            *)
+              echo "::error::Invalid release_type: $RELEASE_TYPE"
+              exit 1
+              ;;
+          esac
 
-    build:
-        name: Builds Android App
-        needs: [preBuild]
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-            packages: read
-            statuses: write
-        outputs:
-            tag_version: ${{ steps.create_tag.outputs.tag_version }}
-            build_number: ${{ needs.preBuild.outputs.build_number }}
-        steps:
-            ##############################################
-            # Checkout Repository
-            ##############################################
-            - name: Checkout Repository
-              uses: actions/checkout@v6
-              with:
-                  ref: ${{ inputs.target_branch }}
+          bumped_version="$major.$minor.$patch"
 
-            ##############################################
-            # Set up Flutter and Java
-            ##############################################
-            - name: Set up Flutter and Java
-              uses: ./.github/actions/setup-flutter-with-java
+          if ! echo "$bumped_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid bumped version: $bumped_version"
+            exit 1
+          fi
 
-            ##############################################
-            # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
-            ##############################################
-            - name: Prepare Android Release Files
-              uses: ./.github/actions/prepare-android-release-files
-              with:
-                  android_keystore_base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-                  store_password: ${{ secrets.STORE_PASSWORD }}
-                  key_password: ${{ secrets.KEY_PASSWORD }}
-                  key_alias: ${{ secrets.KEY_ALIAS }}
-                  web_api_key: ${{ secrets.WEB_API_KEY }}
-                  web_app_id: ${{ secrets.WEB_APP_ID }}
-                  android_api_key: ${{ secrets.ANDROID_API_KEY }}
-                  android_app_id: ${{ secrets.ANDROID_APP_ID }}
-                  ios_api_key: ${{ secrets.IOS_API_KEY }}
-                  ios_app_id: ${{ secrets.IOS_APP_ID }}
-                  google_services_json_b64: ${{ secrets.GOOGLE_SERVICES_JSON_B64 }}
+          echo "version_without_rc=$bumped_version" >> $GITHUB_OUTPUT
+          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
+          echo "updated build number: $new_build_number"
+          echo "version_with_build=$bumped_version+$new_build_number" >> $GITHUB_OUTPUT
+          echo "full version: $bumped_version+$new_build_number"
+          echo "current_version=$bumped_version" >> $GITHUB_OUTPUT
+          echo "Current version name: $bumped_version"
 
-            ##############################################
-            # Build APK
-            ##############################################
-            - name: Build APK
-              env:
-                  FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
-                  FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-              run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
-              working-directory: apps/multichoice/
+          echo "Version without RC suffix: $bumped_version+$new_build_number"
+          echo "Current version: $bumped_version"
 
-            ##############################################
-            # Upload APK as Artifact
-            ##############################################
-            - name: Upload Android APK
-              uses: actions/upload-artifact@v7
-              with:
-                  name: "android-release-apk"
-                  path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+  build:
+    name: Builds Android App
+    needs: [preBuild]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      statuses: write
+    outputs:
+      tag_version: ${{ steps.create_tag.outputs.tag_version }}
+      build_number: ${{ needs.preBuild.outputs.build_number }}
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
 
-            ##############################################
-            # Build App Bundle
-            ##############################################
-            - name: Build App Bundle
-              env:
-                  FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
-                  FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-              run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
-              working-directory: apps/multichoice/
+      ##############################################
+      # Set up Flutter and Java
+      ##############################################
+      - name: Set up Flutter and Java
+        uses: ./.github/actions/setup-flutter-with-java
 
-            ##############################################
-            # Upload App Bundle as Artifact
-            ##############################################
-            - name: Upload Android App Bundle
-              uses: actions/upload-artifact@v7
-              with:
-                  name: "android-release-appbundle"
-                  path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+      ##############################################
+      # Melos Coverage for Core
+      ##############################################
+      - name: Melos Coverage for Core
+        run: melos coverage:core
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: packages/core/coverage/lcov.info
+          fail_ci_if_error: true
 
-            ###############################################
-            # Release to Google Play Production Track
-            ###############################################
-            - name: Release Build to production track
-              uses: r0adkll/upload-google-play@v1
-              with:
-                  releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
-                  serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-                  packageName: "co.za.zanderkotze.multichoice"
-                  track: "production"
-                  releaseName: ${{ needs.preBuild.outputs.version_number }}
-                  status: "completed"
+      ##############################################
+      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
+      ##############################################
+      - name: Download Android Keystore File
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      - name: Create key.properties File
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+        working-directory: apps/multichoice/android/
+      - name: Create secrets.dart File
+        run: |
+          mkdir auth
+          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
+          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
+          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
+          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
+          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
+          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
+        working-directory: apps/multichoice/lib/
 
-            ##############################################
-            # Create New Tag
-            ##############################################
-            - name: Create New Tag
-              id: create_tag
-              uses: ./.github/actions/create-git-tag
-              with:
-                  version_number: ${{ needs.preBuild.outputs.version_number }}
-                  tag_strategy: "full"
-                  allowed_formats: "standard"
+      - name: Create and Validate google-services.json file
+        working-directory: apps/multichoice/android/app/
+        env:
+          ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
+          ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
+        run: |
+          set -euo pipefail
+          printf '%s' "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
+          python3 - <<'PY'
+          import json
+          import os
 
-    create-release:
-        name: Create GitHub Release
-        needs: [build]
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-        if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release
-        steps:
-            ##############################################
-            # Download APK Artifact
-            ##############################################
-            - name: Download APK Artifact
-              uses: actions/download-artifact@v8
-              with:
-                  name: "android-release-apk"
-                  path: ./artifacts/
+          with open('google-services.json', encoding='utf-8') as f:
+            config = json.load(f)
 
-            ##############################################
-            # Create GitHub Release
-            ##############################################
-            - name: Create GitHub Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  VERSION: ${{ needs.build.outputs.tag_version }}
-              with:
-                  tag_name: v${{ env.VERSION }}
-                  release_name: Release v${{ env.VERSION }}
-                  body: |
-                      ## What's New in v${{ env.VERSION }}
+          package_name = 'co.za.zanderkotze.multichoice'
+          matching_clients = [
+            client for client in config.get('client', [])
+            if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == package_name
+          ]
 
-                      Production release for MultiChoice.
+          if not matching_clients:
+            raise SystemExit(f'google-services.json does not contain package {package_name}.')
 
-                      ### Technical Details
-                      - Build Number: ${{ needs.build.outputs.build_number }}
-                      - Platform: Android
+          client = matching_clients[0]
+          mobilesdk_app_id = client.get('client_info', {}).get('mobilesdk_app_id')
+          if mobilesdk_app_id != os.environ['ANDROID_APP_ID']:
+            raise SystemExit(
+              'ANDROID_APP_ID secret does not match google-services.json '
+              f'({os.environ["ANDROID_APP_ID"]} != {mobilesdk_app_id}).'
+            )
 
-                      ### 📋 Release Notes
-                      For detailed release notes, please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) file.
-                  draft: false
-                  prerelease: false
+          api_keys = client.get('api_key', [])
+          if not api_keys:
+            raise SystemExit('google-services.json does not contain an Android API key.')
 
-            ##############################################
-            # Upload APK to Release
-            ##############################################
-            - name: Upload APK to Release
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./artifacts/app-release.apk
-                  asset_name: multichoice-v${{ needs.build.outputs.tag_version }}.apk
-                  asset_content_type: application/vnd.android.package-archive
+          current_api_key = api_keys[0].get('current_key')
+          if current_api_key != os.environ['ANDROID_API_KEY']:
+            raise SystemExit(
+              'ANDROID_API_KEY secret does not match google-services.json '
+              f'({os.environ["ANDROID_API_KEY"]} != {current_api_key}).'
+            )
+
+          print('google-services.json parsed and validated successfully.')
+          PY
+
+      ##############################################
+      # Build APK
+      ##############################################
+      - name: Build APK
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload APK as Artifact
+      ##############################################
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: "android-release-apk"
+          path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+
+      ##############################################
+      # Build App Bundle
+      ##############################################
+      - name: Build App Bundle
+        env:
+          FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
+          FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
+        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        working-directory: apps/multichoice/
+
+      ##############################################
+      # Upload App Bundle as Artifact
+      ##############################################
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: "android-release-appbundle"
+          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+
+      ###############################################
+      # Release to Google Play Production Track
+      ###############################################.
+      - name: Release Build to production track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: "co.za.zanderkotze.multichoice"
+          track: "production"
+          releaseName: ${{ needs.preBuild.outputs.version_part }}
+          status: "completed"
+
+      ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v4
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/tokenized-commit
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          repository: ${{ github.repository }}
+          file_path: apps/multichoice/pubspec.yaml
+          commit_message: "Release version ${{ needs.preBuild.outputs.version_number }} [skip ci]"
+          branch_name: ${{ inputs.target_branch }}
+          version_with_build: ${{ needs.preBuild.outputs.version_number }}
+
+      ##############################################
+      # Create New Tag
+      ##############################################
+      - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: create_tag
+        uses: ./.github/actions/create-git-tag
+        with:
+          version_number: ${{ needs.preBuild.outputs.version_number }}
+          tag_strategy: "version-only"
+          allowed_formats: "standard"
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release && !inputs.dry_run
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.target_branch }}
+
+      ##############################################
+      # Download APK Artifact
+      ##############################################
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: "android-release-apk"
+          path: ./artifacts/
+
+      ##############################################
+      # Create GitHub Release
+      ##############################################
+      - name: Create GitHub Release (and upload APK)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.build.outputs.tag_version }}
+          name: Release v${{ needs.build.outputs.tag_version }}
+          body: |
+            ## What's New in v${{ needs.build.outputs.tag_version }}
+
+            This release includes the latest features and improvements for MultiChoice.
+
+            ### Download
+            - **APK**: Available for direct download below
+            - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
+
+            ### Technical Details
+            - Build Number: ${{ needs.build.outputs.build_number }}
+            - Platform: Android
+
+            ### Release Notes
+            For detailed release notes, please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) file.
+          files: |
+            ./artifacts/app-release.apk
+          draft: false
+          prerelease: false
+
+      ##############################################
+      # Send Success Notification
+      ##############################################
+      - name: Send Success Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: production
+          version: ${{ needs.build.outputs.tag_version }}
+          branch: main
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
+  notify-failure:
+    name: Notify Deployment Failure
+    needs: [preBuild, build, create-release]
+    runs-on: ubuntu-latest
+    if: failure() && needs.preBuild.result != 'skipped'
+    steps:
+      ##############################################
+      # Send Failure Notification
+      ##############################################
+      - name: Send Failure Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: failure
+          environment: production
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: main
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

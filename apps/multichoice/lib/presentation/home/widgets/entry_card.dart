@@ -18,6 +18,33 @@ class EntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget? dragHandle;
+    if (isEditMode && dragIndex != null) {
+      dragHandle = isLayoutVertical
+          ? ReorderableDragStartListener(
+              index: dragIndex!,
+              child: Icon(
+                Icons.unfold_more,
+                size: 28,
+                color: context.appColorsTheme.ternary,
+              ),
+            )
+          : ReorderableGridDelayedDragStartListener(
+              index: dragIndex!,
+              child: Icon(
+                Icons.open_with,
+                size: 28,
+                color: context.appColorsTheme.ternary,
+              ),
+            );
+    } else if (isEditMode) {
+      dragHandle = Icon(
+        isLayoutVertical ? Icons.unfold_more : Icons.open_with,
+        size: 24,
+        color: context.appColorsTheme.ternary,
+      );
+    }
+
     return GestureDetector(
       onTap: isEditMode
           ? null
@@ -55,7 +82,7 @@ class EntryCard extends StatelessWidget {
           : () async {
               final bloc = context.read<HomeBloc>();
               if (!bloc.state.isEditMode) {
-                await _triggerEditModeHaptic();
+                await triggerEditModeHaptic();
                 bloc.add(const HomeEvent.onToggleEditMode());
               }
             },
@@ -63,80 +90,61 @@ class EntryCard extends StatelessWidget {
         padding: isLayoutVertical ? allPadding2 : allPadding4,
         child: Card(
           elevation: 3,
-          shadowColor: context.theme.appColors.primary,
+          // shadowColor: Colors.transparent,
+          // surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: borderCircular5,
           ),
           margin: EdgeInsets.zero,
-          color: context.theme.appColors.secondary,
+          color: context.appColorsTheme.secondary,
           child: Padding(
             padding: allPadding4,
             child: SizedBox(
               height: UIConstants.entryHeight(context),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.centerLeft,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isEditMode && dragIndex != null)
-                        Padding(
-                          padding: horizontal4,
-                          child: isLayoutVertical
-                              ? ReorderableDragStartListener(
-                                  index: dragIndex!,
-                                  child: Icon(
-                                    Icons.unfold_more,
-                                    size: 24,
-                                    color: context.theme.appColors.ternary,
-                                  ),
-                                )
-                              : ReorderableGridDelayedDragStartListener(
-                                  index: dragIndex!,
-                                  child: Icon(
-                                    Icons.open_with,
-                                    size: 24,
-                                    color: context.theme.appColors.ternary,
-                                  ),
-                                ),
-                        )
-                      else if (isEditMode)
-                        Padding(
-                          padding: horizontal4,
-                          child: Icon(
-                            isLayoutVertical
-                                ? Icons.unfold_more
-                                : Icons.open_with,
-                            size: 24,
-                            color: context.theme.appColors.ternary,
-                          ),
-                        ),
-                      Expanded(
-                        child: Text(
+                  Opacity(
+                    opacity: isEditMode ? 0.5 : 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           entry.title,
-                          style: context.theme.appTextTheme.titleSmall
-                              ?.copyWith(
-                                fontSize: 16,
-                                letterSpacing: 0.3,
-                                height: 1,
-                              ),
+                          style: context.appTextTheme.contrastSubtitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
-                      ),
-                    ],
-                  ),
-                  gap4,
-                  Text(
-                    entry.subtitle,
-                    style: context.theme.appTextTheme.subtitleSmall?.copyWith(
-                      fontSize: 12,
-                      letterSpacing: 0.5,
-                      height: 1.25,
+                        gap4,
+                        Text(
+                          entry.subtitle,
+                          style: context.appTextTheme.contrastBody,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                        ),
+                      ],
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
                   ),
+                  if (dragHandle != null)
+                    Align(
+                      alignment: isLayoutVertical
+                          ? Alignment.centerLeft
+                          : Alignment.topCenter,
+                      child: Transform.translate(
+                        offset: isLayoutVertical
+                            ? Offset(
+                                UIConstants.vertTabWidth(context) / 3,
+                                0,
+                              )
+                            : Offset(0, UIConstants.horiTabHeight(context) / 8),
+                        child: SizedBox(
+                          height: 36,
+                          width: 36,
+                          child: Center(child: dragHandle),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

@@ -56,46 +56,53 @@ class _VerticalHomeState extends State<_VerticalHome> {
           // Use ReorderableListView with horizontal scrolling for edit mode
           final theme = Theme.of(context);
           return Padding(
-            padding: vertical4horizontal0,
-            child: SizedBox(
-              height: UIConstants.vertTabHeight(context),
-              child: ReorderableListView.builder(
-                scrollController: _scrollController,
-                scrollDirection: Axis.horizontal,
-                buildDefaultDragHandles: false,
-                physics: const AlwaysScrollableScrollPhysics(),
-                proxyDecorator: (child, index, animation) {
-                  // Override Card theme to make it transparent when dragging
-                  return Theme(
-                    data: theme.copyWith(
-                      cardTheme: theme.cardTheme.copyWith(
-                        color: Colors.transparent,
-                        surfaceTintColor: Colors.transparent,
-                        elevation: 0,
-                      ),
+            padding: vertical4horizontal4,
+            child: Column(
+              children: [
+                const _EditModeHelperBanner(isLayoutVertical: true),
+                Expanded(
+                  child: SizedBox(
+                    height: UIConstants.vertTabHeight(context),
+                    child: ReorderableListView.builder(
+                      scrollController: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      buildDefaultDragHandles: false,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      proxyDecorator: (child, index, animation) {
+                        // Override Card theme to make it transparent when dragging
+                        return Theme(
+                          data: theme.copyWith(
+                            cardTheme: theme.cardTheme.copyWith(
+                              color: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              elevation: 0,
+                            ),
+                          ),
+                          child: child,
+                        );
+                      },
+                      itemCount: tabs.length,
+                      onReorder: (oldIndex, newIndex) {
+                        context.read<HomeBloc>().add(
+                          HomeEvent.onReorderTabs(oldIndex, newIndex),
+                        );
+                      },
+                      itemBuilder: (_, index) {
+                        final tab = tabs[index];
+                        return Padding(
+                          key: ValueKey(tab.id),
+                          padding: horizontal4,
+                          child: CollectionTab(
+                            tab: tab,
+                            isEditMode: isEditMode,
+                            dragIndex: index,
+                          ),
+                        );
+                      },
                     ),
-                    child: child,
-                  );
-                },
-                itemCount: tabs.length,
-                onReorder: (oldIndex, newIndex) {
-                  context.read<HomeBloc>().add(
-                    HomeEvent.onReorderTabs(oldIndex, newIndex),
-                  );
-                },
-                itemBuilder: (_, index) {
-                  final tab = tabs[index];
-                  return Padding(
-                    key: ValueKey(tab.id),
-                    padding: horizontal4,
-                    child: CollectionTab(
-                      tab: tab,
-                      isEditMode: isEditMode,
-                      dragIndex: index,
-                    ),
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
           );
         }
@@ -103,8 +110,8 @@ class _VerticalHomeState extends State<_VerticalHome> {
         // Normal mode
         return RefreshIndicator(
           onRefresh: () => _onHomeRefresh(context),
-          color: context.theme.appColors.ternary,
-          backgroundColor: context.theme.appColors.background,
+          color: context.theme.appColors.textTertiary,
+          backgroundColor: context.theme.appColors.scaffoldBackground,
           // Note: The nested scroll structure (SingleChildScrollView wrapping
           // CustomScrollView) is intentional. RefreshIndicator requires vertical
           // scrolling, but this layout uses horizontal scrolling for tabs.

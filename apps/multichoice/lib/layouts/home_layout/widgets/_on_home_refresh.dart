@@ -20,7 +20,7 @@ Future<void> _onHomeRefresh(BuildContext context) async {
                 'Refreshed',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: context.theme.appColors.ternary,
+                  color: context.theme.appColors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
                 ),
@@ -32,7 +32,7 @@ Future<void> _onHomeRefresh(BuildContext context) async {
                 },
                 icon: Icon(
                   Icons.close,
-                  color: context.theme.appColors.ternary,
+                  color: context.theme.appColors.textPrimary,
                   size: 20,
                 ),
               ),

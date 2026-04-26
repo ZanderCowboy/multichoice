@@ -32,14 +32,15 @@ class _LightDarkModeButtonState extends State<LightDarkModeButton> {
   Widget build(BuildContext context) {
     return SwitchListTile(
       key: context.keys.lightDarkModeSwitch,
-      title: const Text('Light / Dark Mode'),
-      value: _isDark,
-      activeThumbImage: AssetImage(Assets.images.sleepMode.path),
-      thumbColor: WidgetStatePropertyAll(
-        context.theme.appColors.primary,
+      title: Text(
+        'Light / Dark Mode',
+        style: context.appTextTheme.denseTitle,
       ),
-      inactiveThumbColor: Colors.black,
+      value: _isDark,
+      activeThumbImage: AssetImage(Assets.images.sleepWhite.path),
+      activeThumbColor: context.appColorsTheme.foreground,
       inactiveThumbImage: AssetImage(Assets.images.sun.path),
+      inactiveThumbColor: context.appColorsTheme.primary,
       onChanged: (value) async {
         setState(() {
           _isDark = !_isDark;

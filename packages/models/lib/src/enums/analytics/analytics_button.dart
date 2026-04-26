@@ -16,6 +16,7 @@ enum AnalyticsButton {
   theme('theme_switch'),
   about('about'),
   dismissBanner('dismiss_banner'),
+  signUp('sign_up'),
   ;
 
   const AnalyticsButton(this.key);

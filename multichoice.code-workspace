@@ -15,6 +15,10 @@
 			"git fetch": true,
 			"Test-Path": true
 		},
+		"dart.analysisExcludedFolders": [
+			"**/multichoice_v2",
+			"**/packages/data"
+		],
 		"files.exclude": {
 			"**/.git": true,
 			"**/.svn": true,

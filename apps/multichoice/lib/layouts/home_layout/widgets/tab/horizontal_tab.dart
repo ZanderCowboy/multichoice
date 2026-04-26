@@ -100,11 +100,13 @@ class _HorizontalTabState extends State<_HorizontalTab> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         const SliverToBoxAdapter(
-          child: SizedBox(width: 8),
+          child: gap8,
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: context.theme.appColors.primary?.withValues(alpha: 0.8),
+            color: context.appColorsTheme.primary?.withValues(
+              alpha: 0.8,
+            ),
             borderRadius: borderCircular12,
           ),
           sliver: SliverMainAxisGroup(
@@ -116,7 +118,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
               ),
               SliverToBoxAdapter(
                 child: VerticalDivider(
-                  color: context.theme.appColors.secondaryLight,
+                  color: context.appColorsTheme.secondaryLight,
                   thickness: 2,
                   width: 8,
                   indent: 0,
@@ -148,7 +150,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(width: 8),
+          child: gap8,
         ),
       ],
     );

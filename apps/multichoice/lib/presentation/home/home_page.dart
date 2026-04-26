@@ -1,15 +1,15 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
-import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
+import 'package:multichoice/presentation/home/utils/trigger_edit_mode_haptic.dart';
+import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
+import 'package:multichoice/presentation/home/widgets/home_promotional_banners.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
@@ -20,14 +20,11 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_check_and_request_permissions.dart';
-part 'utils/_trigger_edit_mode_haptic.dart';
 part 'widgets/collection_tab.dart';
-part 'widgets/edit_mode_button.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
 part 'widgets/new_tab.dart';
-part 'widgets/search_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -98,45 +95,11 @@ class _HomePageState extends State<_HomePage> {
                     _isDrawerOpen = isOpened;
                   });
                 },
-                appBar: AppBar(
-                  title: const Text('Multichoice'),
-                  actions: [
-                    const EditModeButton(),
-                    AnimatedOpacity(
-                      opacity: state.isEditMode ? 0.35 : 1,
-                      duration: const Duration(milliseconds: 180),
-                      child: IgnorePointer(
-                        ignoring: state.isEditMode,
-                        child: const SearchButton(),
-                      ),
-                    ),
-                  ],
-                  leading: AnimatedOpacity(
-                    opacity: state.isEditMode ? 0.35 : 1,
-                    duration: const Duration(milliseconds: 180),
-                    child: IgnorePointer(
-                      ignoring: state.isEditMode,
-                      child: IconButton(
-                        onPressed: () async {
-                          await coreSl<IAnalyticsService>().logEvent(
-                            const UiActionEventData(
-                              page: AnalyticsPage.home,
-                              button: AnalyticsButton.settings,
-                              action: AnalyticsAction.open,
-                            ),
-                          );
-                          scaffoldKey.currentState?.openDrawer();
-                        },
-                        tooltip: TooltipEnums.settings.tooltip,
-                        icon: const Icon(Icons.settings_outlined),
-                      ),
-                    ),
-                  ),
-                ),
+                appBar: const HomeAppBar(),
                 drawer: const HomeDrawer(),
                 body: const Column(
                   children: [
-                    ImportDataBanner(),
+                    HomePromotionalBanners(),
                     Expanded(
                       child: SafeArea(
                         child: HomeLayout(),

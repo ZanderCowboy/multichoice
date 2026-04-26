@@ -26,44 +26,31 @@ alwaysApply: false     # Whether to always apply this rule
 ---
 ```
 
-### Rule File Examples
+### Rule Files
 
-1. **Language-Specific Rules** (`example-language-specific.mdc`)
-   - Apply to specific file types using glob patterns
-   - Example: Dart-specific conventions
+1. **Core Standards** (`always-apply.mdc`)
+   - Project-wide standards that apply to every conversation
 
-2. **Always Apply Rules** (`example-always-apply.mdc`)
-   - Rules that apply to every conversation
-   - Use `alwaysApply: true`
-   - Good for project-wide conventions
+2. **Project Structure** (`project-structure.mdc`)
+   - Monorepo layout, package ownership, and architecture boundaries
 
-3. **Conditional Rules** (`example-conditional-rules.mdc`)
-   - Apply to specific directories or patterns
-   - Example: Core package rules, feature module rules
+3. **Development Workflow** (`development-workflow.mdc`)
+   - Melos, Makefile, code generation, and validation commands
 
-4. **Testing Rules** (`example-testing-rules.mdc`)
-   - Rules for test files
-   - Testing conventions and best practices
+4. **Code Organization** (`code-organization.mdc`)
+   - Dart app/package organization and file shape conventions
 
-5. **API/Service Rules** (`example-api-rules.mdc`)
-   - Rules for service layer code
-   - Interface/implementation patterns
+5. **Testing Rules** (`testing-rules.mdc`)
+   - Test structure, mocks, and validation conventions
 
-6. **UI Rules** (`example-ui-rules.mdc`)
-   - Widget and UI development guidelines
-   - Page structure conventions
+6. **API/Service Rules** (`api-rules.mdc`)
+   - Core services, repositories, wrappers, controllers, and model guidance
 
-7. **Complex Globs** (`example-complex-globs.mdc`)
-   - Advanced glob pattern examples
-   - Inclusion and exclusion patterns
+7. **UI Rules** (`ui-rules.mdc`)
+   - Flutter UI, widget, layout, constants, and styling conventions
 
-8. **Shortcuts** (`example-shortcuts.mdc`)
-   - Quick reference for common tasks
-   - Build commands, testing commands, etc.
-
-9. **Reusable Patterns** (`example-reusable-patterns.mdc`)
-   - Common code patterns the AI can reference
-   - Service, page, test, repository patterns
+8. **Reusable Patterns** (`reusable-patterns.mdc`)
+   - Common Dart patterns to adapt from nearby code
 
 ### Glob Pattern Examples
 
@@ -184,7 +171,7 @@ For information on creating reusable code snippets, templates, and patterns, see
 
 1. **Code Snippets** (`.vscode/snippets.code-snippets`) - Fast code insertion
 2. **Templates** (`.cursor/templates/`) - Complete file templates
-3. **Reusable Patterns** (`.cursor/rules/example-reusable-patterns.mdc`) - AI-referenced patterns
+3. **Reusable Patterns** (`.cursor/rules/reusable-patterns.mdc`) - AI-referenced patterns
 4. **Example Snippets** (`.cursor/templates/example-snippets.json`) - More snippet examples
 
 ## Tips

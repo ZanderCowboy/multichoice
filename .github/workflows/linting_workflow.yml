@@ -44,7 +44,7 @@ jobs:
           cat apps/multichoice/coverage/lcov.info packages/core/coverage/lcov.info > coverage/lcov.info
 
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/lcov.info
