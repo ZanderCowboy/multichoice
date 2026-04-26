@@ -33,7 +33,7 @@ jobs:
             - 🚀 **Development**: Once assigned, you can start working on it
             
             ### 💡 Pro Tips:
-            - Check out our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTION.md) for development setup
+            - Check out our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTING.md) for development setup
             - Join our [Discussions](https://github.com/ZanderCowboy/multichoice/discussions) for questions
             - Look for \`good first issue\` labels if you're new to the project
             
@@ -265,7 +265,7 @@ jobs:
             ### 🚀 Getting Started:
             1. **Comment** to get assigned to this issue
             2. **Fork** the repository
-            3. **Read** our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTION.md)
+            3. **Read** our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTING.md)
             4. **Set up** your development environment
             5. **Create** a branch: \`${context.payload.issue.number}-${context.payload.issue.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}\`
             
