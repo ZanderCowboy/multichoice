@@ -165,10 +165,22 @@ import 'package:models/models.dart';
 
 abstract class AuthException implements Exception {
   final String message;
-  AuthException(this.message);
+  const AuthException(this.message);
   
   @override
   String toString() => message;
+}
+
+class SignInException extends AuthException {
+  const SignInException(super.message);
+}
+
+class SignOutException extends AuthException {
+  const SignOutException(super.message);
+}
+
+class GetUserException extends AuthException {
+  const GetUserException(super.message);
 }
 
 abstract class IAuthService {
@@ -202,7 +214,7 @@ class AuthService implements IAuthService {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return Left(AuthException('Google sign-in was cancelled'));
+        return Left(const SignInException('Google sign-in was cancelled'));
       }
 
       final GoogleSignInAuthentication googleAuth = 
@@ -218,7 +230,7 @@ class AuthService implements IAuthService {
       
       final user = userCredential.user;
       if (user == null) {
-        return Left(AuthException('Failed to sign in with Google'));
+        return Left(const SignInException('Failed to sign in with Google'));
       }
 
       final userDTO = UserDTO(
@@ -232,7 +244,7 @@ class AuthService implements IAuthService {
 
       return Right(userDTO);
     } catch (e) {
-      return Left(AuthException('Google sign-in failed: $e'));
+      return Left(SignInException('Google sign-in failed: $e'));
     }
   }
 
@@ -245,7 +257,7 @@ class AuthService implements IAuthService {
       ]);
       return const Right(null);
     } catch (e) {
-      return Left(AuthException('Sign out failed: $e'));
+      return Left(SignOutException('Sign out failed: $e'));
     }
   }
 
@@ -268,7 +280,7 @@ class AuthService implements IAuthService {
 
       return Right(userDTO);
     } catch (e) {
-      return Left(AuthException('Failed to get current user: $e'));
+      return Left(GetUserException('Failed to get current user: $e'));
     }
   }
 
@@ -294,6 +306,8 @@ class AuthService implements IAuthService {
 
 Create `packages/core/lib/src/application/auth/auth_bloc.dart`:
 ```dart
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -307,6 +321,7 @@ part 'auth_bloc.freezed.dart';
 @injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthService _authService;
+  late final StreamSubscription<UserDTO?> _authStateSubscription;
 
   AuthBloc(this._authService) : super(const AuthState.initial()) {
     on<AuthEvent>((event, emit) async {
@@ -319,9 +334,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     // Listen to auth state changes
-    _authService.authStateChanges.listen((user) {
+    _authStateSubscription = _authService.authStateChanges.listen((user) {
       add(AuthEvent.authStateChanged(user));
     });
+  }
+
+  @override
+  Future<void> close() async {
+    await _authStateSubscription.cancel();
+    return super.close();
   }
 
   Future<void> _onSignInWithGoogle(Emitter<AuthState> emit) async {

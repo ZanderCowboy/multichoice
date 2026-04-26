@@ -141,7 +141,6 @@ android {
     buildTypes {
         debug {
             debuggable true
-            applicationIdSuffix ".debug"
         }
         release {
             minifyEnabled true
@@ -186,7 +185,7 @@ Update `apps/multichoice/android/app/src/main/res/values/strings.xml`:
 
 ```xml
 <resources>
-    <string name="app_name">@string/app_name</string>
+    <!-- app_name is provided by each flavor via resValue; omit a base value here -->
 </resources>
 ```
 
@@ -209,7 +208,7 @@ Create a separate app for development:
 
 1. Go to Google Play Console
 2. Create new app: "Multichoice Dev"
-3. Use different package name: `com.zander.multichoice.dev`
+3. Use different package name: `co.za.zanderkotze.multichoice.dev`
 4. Set up completely separate from production
 
 **Recommendation**: Use Option 1 (same app, different tracks) as it's simpler to manage.
@@ -294,7 +293,7 @@ class ProdConfig implements AppConfig {
 
 Create separate main files:
 
-**apps/multichoice/lib/main_dev.dart**:
+**apps/multichoice/lib/main_development.dart**:
 ```dart
 import 'package:flutter/material.dart';
 import 'package:multichoice/bootstrap.dart';
@@ -308,7 +307,7 @@ void main() async {
 }
 ```
 
-**apps/multichoice/lib/main_prod.dart**:
+**apps/multichoice/lib/main_production.dart**:
 ```dart
 import 'package:flutter/material.dart';
 import 'package:multichoice/bootstrap.dart';
@@ -322,10 +321,20 @@ void main() async {
 }
 ```
 
-**apps/multichoice/lib/main.dart** (update existing):
+**apps/multichoice/lib/main.dart** (default production entry point):
 ```dart
-// Default to production
-export 'main_prod.dart';
+import 'package:flutter/material.dart';
+import 'package:multichoice/bootstrap.dart';
+import 'package:multichoice/config/prod_config.dart';
+import 'package:multichoice/config/app_config.dart';
+
+// Default entrypoint: production configuration.
+// Use --target lib/main_development.dart for a dev build.
+void main() async {
+  AppConfig.setInstance(ProdConfig());
+  await bootstrap();
+  runApp(const MyApp());
+}
 ```
 
 ### Step 3: Update Firebase Options
@@ -490,7 +499,7 @@ jobs:
       - name: Build dev APK
         run: |
           cd apps/multichoice
-          flutter build apk --flavor dev --target lib/main_dev.dart
+          flutter build apk --flavor dev --target lib/main_development.dart
           
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -518,12 +527,12 @@ on:
       - name: Build prod APK
         run: |
           cd apps/multichoice
-          flutter build apk --flavor prod --target lib/main_prod.dart
+          flutter build apk --flavor prod --target lib/main_production.dart
           
       - name: Build prod AAB
         run: |
           cd apps/multichoice
-          flutter build appbundle --flavor prod --target lib/main_prod.dart
+          flutter build appbundle --flavor prod --target lib/main_production.dart
 ```
 
 ## Testing Strategy
@@ -613,7 +622,7 @@ void handleError(dynamic error, StackTrace stackTrace) {
 **Issue**: Flavor not found
 ```bash
 # Solution: Ensure build.gradle has correct flavor configuration
-flutter build apk --flavor dev --target lib/main_dev.dart
+flutter build apk --flavor dev --target lib/main_development.dart
 ```
 
 **Issue**: Firebase configuration not found
@@ -650,7 +659,7 @@ cd apps/multichoice/android
 
 **Issue**: Wrong environment detected
 ```bash
-# Solution: Verify main_dev.dart and main_prod.dart are correctly setting config
+# Solution: Verify main_development.dart and main_production.dart are correctly setting config
 # Check bootstrap.dart is using correct Firebase options
 ```
 
@@ -675,17 +684,18 @@ cd apps/multichoice/android
 
 This setup will give you confidence to develop new features knowing your production app is protected. Start with the Firebase setup and gradually implement each section.
 
+```mermaid
 graph TB
     subgraph "DEV Environment"
         A["Firebase Project:<br/>multichoice-dev"]
-        B["App Package:<br/>com.zander.multichoice.dev"]
+        B["App Package:<br/>co.za.zanderkotze.multichoice.dev"]
         C["Google Play:<br/>Internal Testing Track"]
         D["Database:<br/>Test Data"]
     end
 
     subgraph "PROD Environment"
         E["Firebase Project:<br/>multichoice-412309"]
-        F["App Package:<br/>com.zander.multichoice"]
+        F["App Package:<br/>co.za.zanderkotze.multichoice"]
         G["Google Play:<br/>Production Track"]
         H["Database:<br/>Real User Data"]
     end
@@ -710,3 +720,4 @@ graph TB
     O --> F
     O --> G
     O --> H
+```

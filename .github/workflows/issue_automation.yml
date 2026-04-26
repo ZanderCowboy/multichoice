@@ -40,7 +40,7 @@ jobs:
             **Happy coding!** 🚀
             `;
             
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -53,7 +53,7 @@ jobs:
           script: |
             const issue = context.payload.issue || context.payload.pull_request;
             const title = issue.title.toLowerCase();
-            const body = issue.body || '';
+            const body = (issue.body || '').toLowerCase();
             
             const labels = [];
             
@@ -71,12 +71,12 @@ jobs:
             if (body.includes('test') || body.includes('testing')) labels.push('testing');
             
             // Add priority labels for critical issues
-            if (title.includes('critical') || title.includes('urgent') || body.includes('🔥 Critical')) {
+            if (title.includes('critical') || title.includes('urgent') || body.includes('🔥 critical')) {
               labels.push('priority: high');
             }
             
-            // Add good first issue for documentation
-            if (labels.includes('documentation') && !issue.pull_request) {
+            // Add good first issue for documentation (issues only)
+            if (labels.includes('documentation') && context.eventName === 'issues') {
               labels.push('good first issue');
             }
             
@@ -215,14 +215,12 @@ jobs:
         with:
           script: |
             // Check if this is the user's first contribution
-            const { data: pullRequests } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              creator: context.actor,
-              state: 'all'
+            const { data: searchResults } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} is:pr author:${context.actor}`,
+              per_page: 100
             });
             
-            if (pullRequests.length === 1) {
+            if (searchResults.total_count === 1) {
               const celebrationComment = `
               ## 🎉 First Contribution! 
               

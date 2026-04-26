@@ -168,10 +168,22 @@ import 'package:models/models.dart';
 
 abstract class AuthException implements Exception {
   final String message;
-  AuthException(this.message);
+  const AuthException(this.message);
   
   @override
   String toString() => message;
+}
+
+class SignInException extends AuthException {
+  const SignInException(super.message);
+}
+
+class SignOutException extends AuthException {
+  const SignOutException(super.message);
+}
+
+class GetUserException extends AuthException {
+  const GetUserException(super.message);
 }
 
 abstract class IAuthService {
@@ -205,7 +217,7 @@ class AuthService implements IAuthService {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return Left(AuthException('Google sign-in was cancelled'));
+        return Left(const SignInException('Google sign-in was cancelled'));
       }
 
       final GoogleSignInAuthentication googleAuth = 
@@ -221,7 +233,7 @@ class AuthService implements IAuthService {
       
       final user = userCredential.user;
       if (user == null) {
-        return Left(AuthException('Failed to sign in with Google'));
+        return Left(const SignInException('Failed to sign in with Google'));
       }
 
       final userDTO = UserDTO(
@@ -235,7 +247,7 @@ class AuthService implements IAuthService {
 
       return Right(userDTO);
     } catch (e) {
-      return Left(AuthException('Google sign-in failed: $e'));
+      return Left(SignInException('Google sign-in failed: $e'));
     }
   }
 
@@ -248,7 +260,7 @@ class AuthService implements IAuthService {
       ]);
       return const Right(null);
     } catch (e) {
-      return Left(AuthException('Sign out failed: $e'));
+      return Left(SignOutException('Sign out failed: $e'));
     }
   }
 
@@ -271,7 +283,7 @@ class AuthService implements IAuthService {
 
       return Right(userDTO);
     } catch (e) {
-      return Left(AuthException('Failed to get current user: $e'));
+      return Left(GetUserException('Failed to get current user: $e'));
     }
   }
 

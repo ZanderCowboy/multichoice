@@ -27,8 +27,8 @@ Use this checklist to systematically implement the DEV and PROD environment setu
 
 ### [ ] Add Android App to Dev Project
 
-- [ ] Add Android app with package name: `com.zander.multichoice.dev`
-- [ ] Download `google-services.json` for dev
+- [ ] Add Android app with package name: `co.za.zanderkotze.multichoice.dev`
+- [ ] Download `google-services.json` for the `co.za.zanderkotze.multichoice.dev` app
 
 ## Phase 2: Android Configuration
 
@@ -64,8 +64,8 @@ apps/multichoice/android/app/src/
 
 ### [ ] Create Environment-Specific Main Files
 
-- [ ] Create `apps/multichoice/lib/main_dev.dart`
-- [ ] Create `apps/multichoice/lib/main_prod.dart`
+- [ ] Create `apps/multichoice/lib/main_development.dart`
+- [ ] Create `apps/multichoice/lib/main_production.dart`
 - [ ] Update existing `apps/multichoice/lib/main.dart`
 
 ### [ ] Create Firebase Options Files
@@ -84,14 +84,14 @@ apps/multichoice/android/app/src/
 
 ```bash
 cd apps/multichoice
-flutter run --flavor dev --target lib/main_dev.dart
+flutter run --flavor dev --target lib/main_development.dart
 ```
 
 ### [ ] Test Prod Build Locally
 
 ```bash
 cd apps/multichoice
-flutter run --flavor prod --target lib/main_prod.dart
+flutter run --flavor prod --target lib/main_production.dart
 ```
 
 ### [ ] Verify Environment Separation
@@ -194,16 +194,16 @@ Add new secrets for dev environment:
 
 ```bash
 # Run dev build locally
-flutter run --flavor dev --target lib/main_dev.dart
+flutter run --flavor dev --target lib/main_development.dart
 
 # Run prod build locally  
-flutter run --flavor prod --target lib/main_prod.dart
+flutter run --flavor prod --target lib/main_production.dart
 
 # Build dev APK
-flutter build apk --flavor dev --target lib/main_dev.dart
+flutter build apk --flavor dev --target lib/main_development.dart
 
 # Build prod APK
-flutter build apk --flavor prod --target lib/main_prod.dart
+flutter build apk --flavor prod --target lib/main_production.dart
 ```
 
 ### Firebase CLI
