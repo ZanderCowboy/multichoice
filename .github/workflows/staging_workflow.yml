@@ -14,6 +14,11 @@ name: rc-workflow
 on:
   pull_request:
     branches: ["rc"]
+    paths-ignore:
+      # The workflow updates pubspec version after a successful deploy.
+      # Ignoring pubspec changes prevents any accidental feedback-loop triggers
+      # if this workflow ever adds push-based triggers in the future.
+      - "apps/multichoice/pubspec.yaml"
     types:
       - closed
   workflow_dispatch:
