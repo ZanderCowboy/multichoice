@@ -1,36 +1,62 @@
 import 'package:core/src/services/interfaces/i_login_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:injectable/injectable.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class SessionImpl extends Session {
-  SessionImpl(this.sharedPref);
+const _accessTokenKey = 'access_token';
+const _loginStatusKey = 'login_status';
+const _profileEmailKey = 'profile_email';
+const _profileUsernameKey = 'profile_username';
 
-  SharedPreferences sharedPref;
+@LazySingleton(as: ILoginService)
+class LoginService extends ILoginService {
+  LoginService(this._secureStorage);
+
+  final FlutterSecureStorage _secureStorage;
 
   @override
-  void storeLoginInfo(String accessToken) {
-    sharedPref
-      ..setBool('login_status', true)
-      ..setString('access_token', accessToken);
+  Future<void> storeLoginInfo(String accessToken) async {
+    await _secureStorage.write(key: _accessTokenKey, value: accessToken);
+    await _secureStorage.write(key: _loginStatusKey, value: 'true');
   }
 
   @override
-  bool isUserLoggedIn() {
-    final isLoggedIn = sharedPref.getBool('login_status') ?? false;
-    return isLoggedIn;
+  Future<bool> isUserLoggedIn() async {
+    final token = await _secureStorage.read(key: _accessTokenKey);
+    return token != null && token.isNotEmpty;
   }
 
   @override
-  String getAccessToken() {
-    return sharedPref.getString('access_token') ?? '';
+  Future<String> getAccessToken() async {
+    return await _secureStorage.read(key: _accessTokenKey) ?? '';
   }
 
   @override
-  void deleteLoginInfo() {
-    if (sharedPref.containsKey('login_status')) {
-      sharedPref.remove('login_status');
+  Future<void> deleteLoginInfo() async {
+    await _secureStorage.delete(key: _accessTokenKey);
+    await _secureStorage.delete(key: _loginStatusKey);
+    await _secureStorage.delete(key: _profileEmailKey);
+    await _secureStorage.delete(key: _profileUsernameKey);
+  }
+
+  @override
+  Future<void> storeUserProfile({String? email, String? username}) async {
+    if (email != null && email.isNotEmpty) {
+      await _secureStorage.write(key: _profileEmailKey, value: email);
     }
-    if (sharedPref.containsKey('access_token')) {
-      sharedPref.remove('access_token');
+    if (username != null && username.isNotEmpty) {
+      await _secureStorage.write(key: _profileUsernameKey, value: username);
     }
+  }
+
+  @override
+  Future<String?> getProfileEmail() async {
+    final v = await _secureStorage.read(key: _profileEmailKey);
+    return v?.isEmpty ?? true ? null : v;
+  }
+
+  @override
+  Future<String?> getProfileUsername() async {
+    final v = await _secureStorage.read(key: _profileUsernameKey);
+    return v?.isEmpty ?? true ? null : v;
   }
 }

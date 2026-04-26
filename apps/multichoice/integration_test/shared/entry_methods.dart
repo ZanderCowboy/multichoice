@@ -4,7 +4,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
 class EntryMethods {
-  static final keys = WidgetKeys.instance;
+  static final WidgetKeys keys = WidgetKeys.instance;
 
   static Future<void> pressAndOpenAddEntry(WidgetTester tester) async {
     await tester.tap(find.byKey(keys.addNewEntryButton).first);

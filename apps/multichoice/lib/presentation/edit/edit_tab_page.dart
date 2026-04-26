@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -17,21 +19,26 @@ class EditTabPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<HomeBloc>.value(
       value: ctx.read<HomeBloc>(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit Tab'),
-          centerTitle: false,
-          leading: IconButton(
-            onPressed: () {
-              ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
-              context.router.popUntilRoot();
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.editTab,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Edit Tab'),
+            centerTitle: false,
+            leading: IconButton(
+              onPressed: () {
+                ctx.read<HomeBloc>().add(const HomeEvent.onPressedCancel());
+                context.router.popUntilRoot();
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+              ),
             ),
           ),
+          body: const SafeArea(
+            child: _EditPage(),
+          ),
         ),
-        body: const _EditPage(),
       ),
     );
   }
@@ -61,8 +68,8 @@ class _EditPage extends StatelessWidget {
                   initialValue: state.tab.title,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedTabTitle(value),
-                        );
+                      HomeEvent.onChangedTabTitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Title',
@@ -73,8 +80,8 @@ class _EditPage extends StatelessWidget {
                   initialValue: state.tab.subtitle,
                   onChanged: (value) {
                     context.read<HomeBloc>().add(
-                          HomeEvent.onChangedTabSubtitle(value),
-                        );
+                      HomeEvent.onChangedTabSubtitle(value),
+                    );
                   },
                   decoration: const InputDecoration(
                     labelText: 'Subtitle',
@@ -87,8 +94,8 @@ class _EditPage extends StatelessWidget {
                     OutlinedButton(
                       onPressed: () {
                         context.read<HomeBloc>().add(
-                              const HomeEvent.onPressedCancel(),
-                            );
+                          const HomeEvent.onPressedCancel(),
+                        );
                         context.router.popUntilRoot();
                       },
                       child: const Text('Cancel'),
@@ -96,9 +103,9 @@ class _EditPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: state.isValid && state.tab.title.isNotEmpty
                           ? () {
-                              context
-                                  .read<HomeBloc>()
-                                  .add(const HomeEvent.onSubmitEditTab());
+                              context.read<HomeBloc>().add(
+                                const HomeEvent.onSubmitEditTab(),
+                              );
 
                               context.router.popUntilRoot();
                             }

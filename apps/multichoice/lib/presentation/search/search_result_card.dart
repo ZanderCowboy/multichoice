@@ -6,6 +6,7 @@ class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
     required this.title,
     required this.subtitle,
+    required this.isTab,
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
@@ -14,6 +15,7 @@ class SearchResultCard extends StatelessWidget {
 
   final String title;
   final String subtitle;
+  final bool isTab;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -23,12 +25,12 @@ class SearchResultCard extends StatelessWidget {
     // TODO: Create a reusable card widget for search results and details.
     return Card(
       elevation: 3,
-      shadowColor: Colors.grey[400],
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular5,
       ),
       margin: allPadding4,
-      color: context.theme.appColors.secondary,
       child: InkWell(
         borderRadius: borderCircular5,
         onTap: onTap,
@@ -37,9 +39,8 @@ class SearchResultCard extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                Icons.search,
+                isTab ? Icons.calendar_view_month : Icons.crop_landscape,
                 size: 24,
-                color: context.theme.appColors.primary,
               ),
               gap8,
               Expanded(
@@ -48,22 +49,14 @@ class SearchResultCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                            height: 1,
-                          ),
+                      style: context.theme.appTextTheme.denseTitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                     gap4,
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12,
-                            letterSpacing: 0.5,
-                            height: 1.25,
-                          ),
+                      style: context.theme.appTextTheme.denseSubtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                     ),

@@ -17,6 +17,16 @@ on:
     types:
       - closed
   workflow_dispatch:
+    inputs:
+      bump_type:
+        description: Version bump type for the develop build
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - patch
+          - minor
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,7 +35,7 @@ concurrency:
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false) }}
     runs-on: ubuntu-latest
     concurrency:
       group: build-group
@@ -40,7 +50,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -59,11 +69,31 @@ jobs:
       ##############################################
       - name: Check Version Labels
         id: check_labels
+        if: github.event_name == 'pull_request'
         uses: ./.github/actions/check-version-labels
         with:
           labels: ${{ toJson(github.event.pull_request.labels) }}
           allowed_labels: "minor,patch"
           no_build_label: "no-build"
+
+      ##############################################
+      # Resolve Bump Type
+      ##############################################
+      - name: Resolve Bump Type
+        id: resolve_bump_type
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_BUMP_TYPE: ${{ inputs.bump_type }}
+          LABEL_BUMP_TYPE: ${{ steps.check_labels.outputs.bump_type }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "bump_type=$MANUAL_BUMP_TYPE" >> "$GITHUB_OUTPUT"
+            echo "Using manual bump type: $MANUAL_BUMP_TYPE"
+          else
+            echo "bump_type=$LABEL_BUMP_TYPE" >> "$GITHUB_OUTPUT"
+            echo "Using PR label bump type: $LABEL_BUMP_TYPE"
+          fi
 
       ##############################################
       # Version Management
@@ -75,7 +105,7 @@ jobs:
           github_token: ${{ steps.generate_token.outputs.token }}
           pubspec_path: apps/multichoice/pubspec.yaml
           branch_name: develop
-          bump_type: ${{ steps.check_labels.outputs.bump_type }}
+          bump_type: ${{ steps.resolve_bump_type.outputs.bump_type }}
 
   build:
     name: Builds Android App
@@ -90,7 +120,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       ##############################################
       # Set up Flutter and Java
@@ -104,14 +134,14 @@ jobs:
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
       ##############################################
-      # Download and Prepare Android Keystore, Key Properties, and Secrets Dart
+      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
       ##############################################
       - name: Download Android Keystore File
         id: android_keystore
@@ -137,6 +167,52 @@ jobs:
           echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
         working-directory: apps/multichoice/lib/
 
+      - name: Create and Validate google-services.json file
+        working-directory: apps/multichoice/android/app/
+        env:
+          ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
+          ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
+        run: |
+          set -euo pipefail
+          printf '%s' "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > google-services.json
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open('google-services.json', encoding='utf-8') as f:
+            config = json.load(f)
+
+          package_name = 'co.za.zanderkotze.multichoice'
+          matching_clients = [
+            client for client in config.get('client', [])
+            if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == package_name
+          ]
+
+          if not matching_clients:
+            raise SystemExit(f'google-services.json does not contain package {package_name}.')
+
+          client = matching_clients[0]
+          mobilesdk_app_id = client.get('client_info', {}).get('mobilesdk_app_id')
+          if mobilesdk_app_id != os.environ['ANDROID_APP_ID']:
+            raise SystemExit(
+              'ANDROID_APP_ID secret does not match google-services.json '
+              f'({os.environ["ANDROID_APP_ID"]} != {mobilesdk_app_id}).'
+            )
+
+          api_keys = client.get('api_key', [])
+          if not api_keys:
+            raise SystemExit('google-services.json does not contain an Android API key.')
+
+          current_api_key = api_keys[0].get('current_key')
+          if current_api_key != os.environ['ANDROID_API_KEY']:
+            raise SystemExit(
+              'ANDROID_API_KEY secret does not match google-services.json '
+              f'({os.environ["ANDROID_API_KEY"]} != {current_api_key}).'
+            )
+
+          print('google-services.json parsed and validated successfully.')
+          PY
+
       ##############################################
       # Build APK
       ##############################################
@@ -151,7 +227,7 @@ jobs:
       # Upload APK as Artifact
       ##############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "android-release-apk"
           path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
@@ -170,7 +246,7 @@ jobs:
       # Upload App Bundle as Artifact
       ##############################################
       - name: Upload Android App Bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "android-release-appbundle"
           path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab

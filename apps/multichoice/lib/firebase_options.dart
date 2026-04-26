@@ -43,7 +43,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
     authDomain: 'multichoice-412309.firebaseapp.com',
-    storageBucket: 'multichoice-412309.appspot.com',
+    storageBucket: 'multichoice-412309.firebasestorage.app',
     measurementId: 'G-RKRDGDJMDK',
   );
 
@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
     appId: androidAppId,
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
-    storageBucket: 'multichoice-412309.appspot.com',
+    storageBucket: 'multichoice-412309.firebasestorage.app',
   );
 
   static FirebaseOptions ios = FirebaseOptions(
@@ -60,7 +60,7 @@ class DefaultFirebaseOptions {
     appId: iosAppId,
     messagingSenderId: '82796040762',
     projectId: 'multichoice-412309',
-    storageBucket: 'multichoice-412309.appspot.com',
+    storageBucket: 'multichoice-412309.firebasestorage.app',
     iosBundleId: 'com.example.multichoice',
   );
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class ThanksModal extends StatelessWidget {
   const ThanksModal({
@@ -14,7 +16,7 @@ class ThanksModal extends StatelessWidget {
       canPop: false,
       child: Dialog(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: allPadding24,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -25,14 +27,14 @@ class ThanksModal extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
-              const Text(
+              gap16,
+              Text(
                 'You now know the basics of using Multichoice. '
                 'Feel free to explore and create your own collections!',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
-              const SizedBox(height: 24),
+              gap24,
               ElevatedButton(
                 onPressed: onGoHome,
                 child: const Text('Go Home'),

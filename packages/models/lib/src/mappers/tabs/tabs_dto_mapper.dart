@@ -11,6 +11,7 @@ import 'package:models/src/mappers/tabs/tabs_dto_mapper.auto_mappr.dart';
       Field('subtitle', custom: TabsMapper.mapSubtitle),
       Field('timestamp', custom: TabsMapper.mapTimestamp),
       Field('entries', custom: TabsMapper.mapEntryIds),
+      Field('order'),
     ],
   ),
 ])

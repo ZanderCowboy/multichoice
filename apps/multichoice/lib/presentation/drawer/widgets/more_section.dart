@@ -5,6 +5,10 @@ class MoreSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isChangelogEnabled = coreSl<IFirebaseService>().isEnabled(
+      FirebaseConfigKeys.enableChangelogPage,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -12,17 +16,19 @@ class MoreSection extends StatelessWidget {
           padding: horizontal16 + vertical8,
           child: Text(
             'More',
-            style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
         ListTile(
-          title: const Text('Restart Tutorial'),
-          subtitle: const Text(
+          title: Text(
+            'Restart Tutorial',
+            style: context.appTextTheme.denseTitle,
+          ),
+          subtitle: Text(
             'Temporarily switches to demo data to show app features, then restores your original data',
-            style: TextStyle(fontSize: 12),
+            style: context.appTextTheme.bodyMedium,
           ),
           trailing: IconButton(
             onPressed: () async {
@@ -55,15 +61,40 @@ class MoreSection extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
-          title: const Text('Send Feedback'),
-          onTap: () {
-            context.router.push(const FeedbackPageRoute());
+          title: Text(
+            'Send Feedback',
+            style: context.appTextTheme.denseTitle,
+          ),
+          onTap: () async {
+            await context.router.push(const FeedbackPageRoute());
           },
         ),
+        if (isChangelogEnabled)
+          ListTile(
+            leading: const Icon(Icons.history),
+            title: Text(
+              'Changelog',
+              style: context.appTextTheme.denseTitle,
+            ),
+            onTap: () async {
+              await context.router.push(const ChangelogPageRoute());
+            },
+          ),
         ListTile(
           leading: const Icon(Icons.info_outline),
-          title: const Text('About'),
+          title: Text(
+            'About',
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
+            await coreSl<IAnalyticsService>().logEvent(
+              const UiActionEventData(
+                page: AnalyticsPage.settings,
+                button: AnalyticsButton.about,
+                action: AnalyticsAction.open,
+                source: 'about',
+              ),
+            );
             final appVersion = await coreSl<IAppInfoService>().getAppVersion();
 
             if (!context.mounted) return;

@@ -1,4 +1,4 @@
-library ui_kit;
+library;
 
 export 'src/constants/export.dart';
 export 'src/widgets/export.dart';

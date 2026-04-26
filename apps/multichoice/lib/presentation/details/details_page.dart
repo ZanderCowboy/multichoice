@@ -1,10 +1,13 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'widgets/_app_bar.dart';
@@ -34,12 +37,17 @@ class DetailsPage extends StatelessWidget {
         ..add(
           DetailsEvent.onPopulate(result),
         ),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: _AppBar(
-            onBack: onBack,
+      child: AnalyticsPageTracker(
+        page: AnalyticsPage.details,
+        child: SafeArea(
+          child: Scaffold(
+            appBar: _AppBar(
+              onBack: onBack,
+            ),
+            body: _DetailsView(
+              onBack: onBack,
+            ),
           ),
-          body: const _DetailsView(),
         ),
       ),
     );
@@ -47,11 +55,29 @@ class DetailsPage extends StatelessWidget {
 }
 
 class _DetailsView extends StatelessWidget {
-  const _DetailsView();
+  const _DetailsView({
+    required this.onBack,
+  });
+
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DetailsBloc, DetailsState>(
+    return BlocConsumer<DetailsBloc, DetailsState>(
+      listenWhen: (previous, current) =>
+          (previous.isDeleted != current.isDeleted && current.isDeleted) ||
+          (previous.isLoading && !current.isLoading && !current.isEditingMode),
+      listener: (context, state) {
+        // Refresh Home immediately when edits complete or delete succeeds
+        // This ensures data is fresh before user navigates back
+        if (state.isDeleted) {
+          context.read<HomeBloc>().add(const HomeEvent.refresh());
+          onBack();
+        } else if (!state.isLoading && !state.isEditingMode) {
+          // Edit/submit just completed
+          context.read<HomeBloc>().add(const HomeEvent.refresh());
+        }
+      },
       builder: (context, state) {
         if (state.isLoading) {
           return Center(child: CircularLoader.medium());
@@ -69,7 +95,7 @@ class _DetailsView extends StatelessWidget {
                       const _DetailsSection(),
                       Divider(
                         thickness: 1.5,
-                        color: context.theme.appColors.primary,
+                        color: context.theme.appColors.iconColor,
                       ),
                     ],
                   ),
@@ -112,7 +138,7 @@ class _DetailsView extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: context.theme.appColors.ternary,
+          color: context.appColorsTheme.ternary,
         ),
       ),
     );

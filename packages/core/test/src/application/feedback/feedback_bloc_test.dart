@@ -1,10 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
+import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
+import 'package:core/src/services/implementations/noop_analytics_service.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
-import 'package:dartz/dartz.dart';
-import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
 
 import '../../../mocks.mocks.dart';
 
@@ -15,7 +16,10 @@ void main() {
 
   setUp(() {
     mockRepository = MockFeedbackRepository();
-    feedbackBloc = FeedbackBloc(mockRepository);
+    feedbackBloc = FeedbackBloc(
+      mockRepository,
+      const NoopAnalyticsService(),
+    );
   });
 
   tearDown(() {
@@ -55,8 +59,9 @@ void main() {
     blocTest<FeedbackBloc, FeedbackState>(
       'emits [loading, success] when feedback is submitted successfully',
       build: () {
-        when(mockRepository.submitFeedback(testFeedback))
-            .thenAnswer((_) async => const Right(null));
+        when(
+          mockRepository.submitFeedback(testFeedback),
+        ).thenAnswer((_) async => const Right(null));
         return feedbackBloc;
       },
       act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),
@@ -97,8 +102,9 @@ void main() {
     blocTest<FeedbackBloc, FeedbackState>(
       'emits [loading, error] when feedback submission fails',
       build: () {
-        when(mockRepository.submitFeedback(testFeedback)).thenAnswer(
-            (_) async => Left(FeedbackException('Failed to submit')));
+        when(
+          mockRepository.submitFeedback(testFeedback),
+        ).thenAnswer((_) async => Left(FeedbackException('Failed to submit')));
         return feedbackBloc;
       },
       act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),

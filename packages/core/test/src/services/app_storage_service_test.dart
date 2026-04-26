@@ -2,6 +2,7 @@ import 'package:core/src/services/implementations/app_storage_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/mockito.dart';
+import 'package:models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../mocks.mocks.dart';
@@ -40,8 +41,9 @@ void main() {
     });
 
     test('should set isDarkMode to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsDarkMode(true);
 
@@ -69,8 +71,9 @@ void main() {
     });
 
     test('should set currentStep to 2', () async {
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setCurrentStep(2);
 
@@ -98,8 +101,9 @@ void main() {
     });
 
     test('should set isCompleted to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsCompleted(true);
 
@@ -127,8 +131,9 @@ void main() {
     });
 
     test('should set isLayoutVertical to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsLayoutVertical(true);
 
@@ -156,12 +161,39 @@ void main() {
     });
 
     test('should set isExistingUser to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsExistingUser(true);
 
       verify(mockSharedPreferences.setBool(any, true)).called(1);
+    });
+  });
+
+  group('AppStorageService - Signed in history', () {
+    test('should return false when hasPreviouslySignedIn is not set', () async {
+      when(mockSharedPreferences.getBool(any)).thenReturn(null);
+
+      final result = await appStorageService.hasPreviouslySignedIn;
+
+      expect(result, false);
+      verify(mockSharedPreferences.getBool(any)).called(1);
+    });
+
+    test('should persist hasPreviouslySignedIn value', () async {
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setHasPreviouslySignedIn(true);
+
+      verify(
+        mockSharedPreferences.setBool(
+          StorageKeys.hasPreviouslySignedIn.key,
+          true,
+        ),
+      ).called(1);
     });
   });
 
@@ -175,19 +207,22 @@ void main() {
       verify(mockSharedPreferences.getBool(any)).called(1);
     });
 
-    test('should return true when isPermissionsChecked is set to true',
-        () async {
-      when(mockSharedPreferences.getBool(any)).thenReturn(true);
+    test(
+      'should return true when isPermissionsChecked is set to true',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(true);
 
-      final result = await appStorageService.isPermissionsChecked;
+        final result = await appStorageService.isPermissionsChecked;
 
-      expect(result, true);
-      verify(mockSharedPreferences.getBool(any)).called(1);
-    });
+        expect(result, true);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
 
     test('should set isPermissionsChecked to true', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.setIsPermissionsChecked(true);
 
@@ -195,12 +230,111 @@ void main() {
     });
   });
 
+  group('AppStorageService - Last used email', () {
+    test('should return null when lastUsedEmail is not set', () async {
+      when(mockSharedPreferences.getString(any)).thenReturn(null);
+
+      final result = await appStorageService.lastUsedEmail;
+
+      expect(result, isNull);
+      verify(
+        mockSharedPreferences.getString(StorageKeys.lastUsedEmail.key),
+      ).called(1);
+    });
+
+    test('should return stored email', () async {
+      when(mockSharedPreferences.getString(any)).thenReturn('user@example.com');
+
+      final result = await appStorageService.lastUsedEmail;
+
+      expect(result, 'user@example.com');
+    });
+
+    test('should persist last used email', () async {
+      when(
+        mockSharedPreferences.setString(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setLastUsedEmail('save@example.com');
+
+      verify(
+        mockSharedPreferences.setString(
+          StorageKeys.lastUsedEmail.key,
+          'save@example.com',
+        ),
+      ).called(1);
+    });
+  });
+
+  group('AppStorageService - Import data banner', () {
+    test(
+      'should return false when isImportDataBannerDismissed is not set',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(null);
+
+        final result = await appStorageService.isImportDataBannerDismissed;
+
+        expect(result, false);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
+
+    test('should return true when banner was dismissed', () async {
+      when(mockSharedPreferences.getBool(any)).thenReturn(true);
+
+      final result = await appStorageService.isImportDataBannerDismissed;
+
+      expect(result, true);
+    });
+
+    test('should set import banner dismissed flag', () async {
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setIsImportDataBannerDismissed(true);
+
+      verify(mockSharedPreferences.setBool(any, true)).called(1);
+    });
+  });
+
+  group('AppStorageService - Signup banner', () {
+    test(
+      'should return false when isSignupBannerDismissed is not set',
+      () async {
+        when(mockSharedPreferences.getBool(any)).thenReturn(null);
+
+        final result = await appStorageService.isSignupBannerDismissed;
+
+        expect(result, false);
+        verify(mockSharedPreferences.getBool(any)).called(1);
+      },
+    );
+
+    test('should persist isSignupBannerDismissed value', () async {
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setIsSignupBannerDismissed(true);
+
+      verify(
+        mockSharedPreferences.setBool(
+          StorageKeys.isSignupBannerDismissed.key,
+          true,
+        ),
+      ).called(1);
+    });
+  });
+
   group('AppStorageService - Reset Tour', () {
     test('should reset tour steps and completion status', () async {
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
 
       await appStorageService.resetTour();
 
@@ -211,15 +345,21 @@ void main() {
 
   group('AppStorageService - Clear All Data', () {
     test('should clear all data in debug mode', () async {
-      when(mockSharedPreferences.setBool(any, any))
-          .thenAnswer((_) async => true);
-      when(mockSharedPreferences.setInt(any, any))
-          .thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setBool(any, any),
+      ).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.setInt(any, any),
+      ).thenAnswer((_) async => true);
+      when(mockSharedPreferences.remove(any)).thenAnswer((_) async => true);
 
       await appStorageService.clearAllData();
 
       verify(mockSharedPreferences.setInt(any, -1)).called(1);
-      verify(mockSharedPreferences.setBool(any, false)).called(5);
+      verify(mockSharedPreferences.setBool(any, false)).called(8);
+      verify(
+        mockSharedPreferences.remove(StorageKeys.lastUsedEmail.key),
+      ).called(1);
     });
   });
 }

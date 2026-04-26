@@ -1,8 +1,10 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/presentation/home/widgets/continue_tour_modal.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
 
-class WelcomeModalHandler extends StatelessWidget {
+class WelcomeModalHandler extends StatefulWidget {
   const WelcomeModalHandler({
     required this.builder,
     required this.onSkipTour,
@@ -14,12 +16,49 @@ class WelcomeModalHandler extends StatelessWidget {
   final Future<void> Function() onSkipTour;
   final Future<void> Function() onFollowTutorial;
 
+  @override
+  State<WelcomeModalHandler> createState() => _WelcomeModalHandlerState();
+}
+
+class _WelcomeModalHandlerState extends State<WelcomeModalHandler> {
+  bool _hasScheduledModalCheck = false;
+
   Future<void> _checkAndShowWelcomeModal(BuildContext context) async {
     final appStorageService = coreSl<IAppStorageService>();
+    final productTourController = coreSl<IProductTourController>();
     final isExistingUser = await appStorageService.isExistingUser;
     final isCompleted = await appStorageService.isCompleted;
+    final currentStep = await productTourController.currentStep;
+
+    final hasStartedTutorial =
+        currentStep != ProductTourStep.welcomePopup &&
+        currentStep != ProductTourStep.noneCompleted &&
+        currentStep != ProductTourStep.reset;
 
     if (!isExistingUser && !isCompleted && context.mounted) {
+      if (hasStartedTutorial) {
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => ContinueTourModal(
+            onFinishTour: () async {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                await widget.onSkipTour();
+              }
+            },
+            onContinueTour: () async {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                await widget.onFollowTutorial();
+              }
+            },
+          ),
+        );
+
+        return;
+      }
+
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -27,13 +66,13 @@ class WelcomeModalHandler extends StatelessWidget {
           onGoHome: () async {
             if (context.mounted) {
               Navigator.of(context).pop();
-              await onSkipTour();
+              await widget.onSkipTour();
             }
           },
           onFollowTutorial: () async {
             if (context.mounted) {
               Navigator.of(context).pop();
-              await onFollowTutorial();
+              await widget.onFollowTutorial();
             }
           },
         ),
@@ -42,11 +81,17 @@ class WelcomeModalHandler extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _checkAndShowWelcomeModal(context),
-    );
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted || _hasScheduledModalCheck) return;
+      _hasScheduledModalCheck = true;
+      await _checkAndShowWelcomeModal(context);
+    });
+  }
 
-    return builder(context);
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context);
   }
 }

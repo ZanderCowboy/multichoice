@@ -1,20 +1,35 @@
 part of 'feedback_bloc.dart';
 
-@freezed
-class FeedbackState with _$FeedbackState {
-  const factory FeedbackState({
-    required FeedbackDTO feedback,
-    required bool isLoading,
-    required bool isSuccess,
-    required bool isError,
-    required String? errorMessage,
-  }) = _FeedbackState;
+@CopyWith()
+class FeedbackState extends Equatable {
+  const FeedbackState({
+    required this.feedback,
+    required this.isLoading,
+    required this.isSuccess,
+    required this.isError,
+    required this.errorMessage,
+  });
 
   factory FeedbackState.initial() => FeedbackState(
-        feedback: FeedbackDTO.empty(),
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-        errorMessage: null,
-      );
+    feedback: FeedbackDTO.empty(),
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
+    errorMessage: null,
+  );
+
+  final FeedbackDTO feedback;
+  final bool isLoading;
+  final bool isSuccess;
+  final bool isError;
+  final String? errorMessage;
+
+  @override
+  List<Object?> get props => [
+    feedback,
+    isLoading,
+    isSuccess,
+    isError,
+    errorMessage,
+  ];
 }

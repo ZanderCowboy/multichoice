@@ -24,4 +24,4 @@ Tasks can be used to run commands that are regularly used. For example, uninstal
 
 ## test_launch.json
 
-This is not a stardard VS Code file, and does not necessarily have use in the codebase. In case it can be used, it can for example be used to run integration tests.
+This is not a standard VS Code file, and does not necessarily have use in the codebase. In case it can be used, it can for example be used to run integration tests.
