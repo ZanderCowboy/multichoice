@@ -806,10 +806,10 @@ void main() {
         build: () {
           when(
             mockEntryRepository.moveEntryToTab(
-              entryId: anyNamed('entryId'),
-              fromTabId: anyNamed('fromTabId'),
-              toTabId: anyNamed('toTabId'),
-              insertIndex: anyNamed('insertIndex'),
+              entryId: 10,
+              fromTabId: 1,
+              toTabId: 2,
+              insertIndex: 0,
             ),
           ).thenAnswer((_) async => true);
 
@@ -870,10 +870,10 @@ void main() {
         build: () {
           when(
             mockEntryRepository.moveEntryToTab(
-              entryId: anyNamed('entryId'),
-              fromTabId: anyNamed('fromTabId'),
-              toTabId: anyNamed('toTabId'),
-              insertIndex: anyNamed('insertIndex'),
+              entryId: 10,
+              fromTabId: 1,
+              toTabId: 2,
+              insertIndex: 0,
             ),
           ).thenAnswer((_) async => false);
 
