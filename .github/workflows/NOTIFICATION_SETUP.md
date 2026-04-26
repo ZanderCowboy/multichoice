@@ -14,11 +14,11 @@
 - Smart conflict detection and resolution
 - Improved version comparison logic
 
-### 3. Rollback Mechanism
+### 3. Version Update Flow
 
-- Automatic version rollback on failures
-- Manual rollback action available
-- Audit trail for rollback operations
+- Version is computed before deployment starts
+- Successful deployments persist the updated version via commit
+- Version changes remain traceable through repository history
 
 ### 4. Comprehensive Notification System
 
