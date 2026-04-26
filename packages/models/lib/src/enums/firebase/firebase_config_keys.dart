@@ -10,7 +10,8 @@ enum FirebaseConfigKeys {
 
   /// Strings
   welcomeMessage('welcome_message'),
-  googlePlayStoreUrl('google_play_store_url');
+  googlePlayStoreUrl('google_play_store_url'),
+  latestAppVersion('latest_app_version');
 
   const FirebaseConfigKeys(this.key);
 
