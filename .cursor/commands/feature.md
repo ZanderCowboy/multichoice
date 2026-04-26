@@ -88,6 +88,7 @@ If the input is missing, ask the user for the GitHub issue link or issue number 
 9. **Completion response**
    - Summarize what was implemented and why.
    - Mention the GitHub issue number and title.
+   - If a PR is created as part of the workflow, ensure the PR title includes the ticket/issue number.
    - List validation performed.
    - Call out any behavior changes, follow-up work, skipped validation, or user decisions still needed.
 

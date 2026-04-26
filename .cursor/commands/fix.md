@@ -90,6 +90,7 @@ If the input is missing, first check for current analyzer issues. If there are n
 10. **Completion response**
    - Summarize the issue fixed and the root cause.
    - Mention the GitHub issue number and title when applicable.
+   - If a PR is created as part of the workflow, ensure the PR title includes the ticket/issue number.
    - List validation performed.
    - Call out any behavior changes, skipped validation, remaining risk, or user decisions still needed.
 

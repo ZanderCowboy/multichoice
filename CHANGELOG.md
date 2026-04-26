@@ -1,7 +1,5 @@
-#210 - Workflows Updates
+#223 - Doc Update Docs
 
-- Fix `rc-workflow` manual runs by allowing `preBuild` to run on `workflow_dispatch`.
-- Add `dry_run` support to staging/production deploy steps to prevent accidental publish/commits.
-- Change versioning flow to compute next version pre-build and commit the exact version only after a successful deploy.
-- Expand `version-management` composite action to support compute-only mode (`commit_changes: false`) and committing a specified `target_version`.
-- Remove unused rollback action and document the recommended versioning pattern in `.github/README.md`.
+- Rename `CONTRIBUTION.md` to `CONTRIBUTING.md` and update workflow links.
+- De-duplicate login documentation by making `docs/login-implementation-guide.md` a pointer to the canonical guide.
+- Improve AuthBloc example in docs by cancelling the auth state subscription in `close()`.

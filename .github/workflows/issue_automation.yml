@@ -1,0 +1,285 @@
+name: 🤖 Issue & PR Automation
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, labeled, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  auto-assign:
+    name: 🎯 Auto Assignment
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    
+    steps:
+      - name: 👋 Welcome new contributors
+        if: github.event.issue && github.actor != 'ZanderCowboy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const welcomeMessage = `
+            ## 🎉 Welcome to Multichoice!
+            
+            Thanks for opening your first issue! Here's what happens next:
+            
+            - 🔍 **Triage**: We'll review and label your issue
+            - 📋 **Assignment**: If approved, we'll assign it to you or a maintainer
+            - 🚀 **Development**: Once assigned, you can start working on it
+            
+            ### 💡 Pro Tips:
+            - Check out our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTING.md) for development setup
+            - Join our [Discussions](https://github.com/ZanderCowboy/multichoice/discussions) for questions
+            - Look for \`good first issue\` labels if you're new to the project
+            
+            **Happy coding!** 🚀
+            `;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: welcomeMessage
+            });
+
+      - name: 🏷️ Auto-label by type
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+            
+            const labels = [];
+            
+            // Auto-label based on title prefixes
+            if (title.includes('[bug]')) labels.push('bug');
+            if (title.includes('[feature]')) labels.push('enhancement');
+            if (title.includes('[docs]')) labels.push('documentation');
+            if (title.includes('[maintenance]')) labels.push('maintenance');
+            
+            // Auto-label based on content
+            if (body.includes('flutter') || body.includes('dart')) labels.push('flutter');
+            if (body.includes('android')) labels.push('android');
+            if (body.includes('ios')) labels.push('ios');
+            if (body.includes('web')) labels.push('web');
+            if (body.includes('test') || body.includes('testing')) labels.push('testing');
+            
+            // Add priority labels for critical issues
+            if (title.includes('critical') || title.includes('urgent') || body.includes('🔥 critical')) {
+              labels.push('priority: high');
+            }
+            
+            // Add good first issue for documentation (issues only)
+            if (labels.includes('documentation') && context.eventName === 'issues') {
+              labels.push('good first issue');
+            }
+            
+            if (labels.length > 0) {
+              const issueNumber = issue.number;
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: labels
+              });
+            }
+
+  auto-assign-maintainer:
+    name: 👨‍💼 Assign Maintainer
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issues' && (
+        (github.event.action == 'labeled' &&
+         contains(github.event.label.name, 'triage')) ||
+        (github.event.action == 'opened' &&
+         (contains(github.event.issue.title, '[Bug]') ||
+          contains(github.event.issue.title, '[Maintenance]')))
+      )
+    
+    steps:
+      - name: 🎯 Assign to maintainer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              assignees: ['ZanderCowboy']
+            });
+
+  pr-automation:
+    name: 🔄 PR Automation
+    runs-on: ubuntu-latest
+    if: github.event.pull_request
+    
+    steps:
+      - name: 🏷️ Auto-label PR by version bump
+        if: github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            const labels = [];
+            
+            // Check for version bump indicators in PR body
+            if (body.includes('- [x] `major`') || body.includes('- [X] `major`')) {
+              labels.push('major');
+            } else if (body.includes('- [x] `minor`') || body.includes('- [X] `minor`')) {
+              labels.push('minor');
+            } else if (body.includes('- [x] `patch`') || body.includes('- [X] `patch`')) {
+              labels.push('patch');
+            } else if (body.includes('- [x] `no-build`') || body.includes('- [X] `no-build`')) {
+              labels.push('no-build');
+            }
+            
+            // Auto-detect change type
+            if (body.includes('- [x] 🐛 Bug fix') || body.includes('- [X] 🐛 Bug fix')) {
+              labels.push('bug fix');
+            }
+            if (body.includes('- [x] ✨ New feature') || body.includes('- [X] ✨ New feature')) {
+              labels.push('enhancement');
+            }
+            if (body.includes('- [x] 📚 Documentation') || body.includes('- [X] 📚 Documentation')) {
+              labels.push('documentation');
+            }
+            
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: labels
+              });
+            }
+
+      # Disabled for now (too noisy for a mostly-solo-maintainer workflow).
+      # - name: 📋 Validate PR requirements
+      #   if: github.event.action == 'ready_for_review'
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const pr = context.payload.pull_request;
+      #       const body = pr.body || '';
+      #
+      #       const checks = {
+      #         'Related Issue': /Fixes #\d+/i.test(body),
+      #         'Change Type Selected': /- \[x\]/i.test(body),
+      #         'Version Bump Selected': /`(major|minor|patch|no-build)`.*- \[x\]/i.test(body),
+      #         'Testing Completed': /Test Types Run.*- \[x\]/i.test(body)
+      #       };
+      #
+      #       const failed = Object.entries(checks)
+      #         .filter(([_, passed]) => !passed)
+      #         .map(([check]) => check);
+      #
+      #       if (failed.length > 0) {
+      #         const comment = `
+      #         ## ⚠️ PR Template Requirements Missing
+      #
+      #         Please complete the following sections in your PR description:
+      #
+      #         ${failed.map(item => `- [ ] ${item}`).join('\n')}
+      #
+      #         This helps us review your PR more efficiently! 🚀
+      #         `;
+      #
+      #         await github.rest.issues.createComment({
+      #           issue_number: pr.number,
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           body: comment
+      #         });
+      #       }
+
+  celebrate:
+    name: 🎉 Celebrate Contributions
+    runs-on: ubuntu-latest
+    if: |
+      (github.event.action == 'opened' && github.event.pull_request) ||
+      (github.event.action == 'labeled' && github.event.label.name == 'good first issue')
+    
+    steps:
+      - name: 🌟 First-time contributor celebration
+        if: github.event.pull_request && github.actor != 'ZanderCowboy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Check if this is the user's first contribution
+            const { data: searchResults } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} is:pr author:${context.actor}`,
+              per_page: 100
+            });
+            
+            if (searchResults.total_count === 1) {
+              const celebrationComment = `
+              ## 🎉 First Contribution! 
+              
+              Wow! This is your first contribution to **Multichoice**! 🎊
+              
+              Thank you for:
+              - 🤝 Joining our community
+              - 🛠️ Improving the project
+              - 🌟 Making Multichoice better for everyone
+              
+              ### What's Next?
+              - ✅ Your PR will be reviewed by maintainers
+              - 🔄 You might receive feedback for improvements
+              - 🚀 Once approved, your code will be merged!
+              
+              ### Keep Contributing!
+              - 🏷️ Look for more \`good first issue\` labels
+              - 💬 Join our [Discussions](https://github.com/ZanderCowboy/multichoice/discussions)
+              - 📖 Check out our [roadmap](https://github.com/ZanderCowboy/multichoice/projects)
+              
+              **Welcome to the team!** 🚀✨
+              `;
+              
+              await github.rest.issues.createComment({
+                issue_number: context.payload.pull_request.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: celebrationComment
+              });
+            }
+
+      - name: 🎯 Good first issue guidance
+        if: github.event.action == 'labeled' && github.event.label.name == 'good first issue'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const guidanceComment = `
+            ## 🌱 Perfect for First-Time Contributors!
+            
+            This issue has been marked as a **good first issue** - great for newcomers! 
+            
+            ### 🚀 Getting Started:
+            1. **Comment** to get assigned to this issue
+            2. **Fork** the repository
+            3. **Read** our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/${context.ref.replace('refs/heads/', '')}/CONTRIBUTING.md)
+            4. **Set up** your development environment
+            5. **Create** a branch: \`${context.payload.issue.number}-${context.payload.issue.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}\`
+            
+            ### 💡 Need Help?
+            - 📚 Check existing documentation in \`/docs/\`
+            - 💬 Ask questions in [Discussions](https://github.com/ZanderCowboy/multichoice/discussions)
+            - 🔍 Look at similar completed issues for examples
+            
+            **We're here to support you!** 🤝
+            `;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.payload.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: guidanceComment
+            });
