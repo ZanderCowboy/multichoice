@@ -1,5 +1,9 @@
 part of 'export.dart';
 
+// Session-only developer mode unlock for About.
+final AboutDeveloperModeUnlocker _aboutDeveloperModeUnlocker =
+    AboutDeveloperModeUnlocker();
+
 class MoreSection extends StatelessWidget {
   const MoreSection({super.key});
 
@@ -99,16 +103,57 @@ class MoreSection extends StatelessWidget {
 
             if (!context.mounted) return;
 
-            showAboutDialog(
-              context: context,
-              applicationName: 'Multichoice',
-              applicationVersion: appVersion,
-              applicationIcon: const FlutterLogo(size: 64),
-              children: [
-                const Text(
-                  'Multichoice is a powerful tool for managing your choices and decisions.',
-                ),
-              ],
+            final didEnableDeveloperMode = _aboutDeveloperModeUnlocker.registerTap(
+              DateTime.now(),
+            );
+
+            if (didEnableDeveloperMode) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Developer mode enabled')),
+              );
+            }
+
+            unawaited(
+              showDialog<void>(
+                context: context,
+                builder: (dialogContext) {
+                  return AlertDialog(
+                    title: const Text('About Multichoice'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Center(child: FlutterLogo(size: 64)),
+                        gap16,
+                        Text('Version $appVersion'),
+                        gap12,
+                        const Text(
+                          'Multichoice is a powerful tool for managing your choices and decisions.',
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      if (_aboutDeveloperModeUnlocker.isEnabled)
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                            showLicensePage(
+                              context: context,
+                              applicationName: 'Multichoice',
+                              applicationVersion: appVersion,
+                              applicationIcon: const FlutterLogo(size: 64),
+                            );
+                          },
+                          child: const Text('Licences'),
+                        ),
+                      TextButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        child: const Text('Close'),
+                      ),
+                    ],
+                  );
+                },
+              ),
             );
           },
         ),
