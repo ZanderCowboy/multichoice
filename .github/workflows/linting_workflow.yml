@@ -35,10 +35,22 @@ jobs:
       ##############################################
       - name: Melos Coverage for Core
         run: melos coverage:core
+        # run: melos coverage:all
 
+      # - name: Merge Coverage Reports
+      #   shell: bash
+      #   run: |
+      #     set -euo pipefail
+      #     mkdir -p coverage
+      #     cat apps/multichoice/coverage/lcov.info packages/core/coverage/lcov.info > coverage/lcov.info
+
+      ##############################################
+      # Upload Coverage to Codecov
+      ##############################################
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
+          # files: coverage/lcov.info
           fail_ci_if_error: true

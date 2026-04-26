@@ -1,6 +1,7 @@
-#319 - Update Import Export Journey
+#330 - DevOps - Update Workflows
 
-- Export backups as `.multichoice` files instead of generic `.json`.
-- Restrict import file picker and validation to Multichoice backup files.
-- Improve Data Transfer screen copy and button labels for clearer guidance.
-- Make Settings “Import / Export Data” row tappable (not just the icon).
+- Remove old workflows.
+- Update `.github/README.md`.
+- Add `.github/actions/prepare-android-release-files/action.yml` to reduce code duplication.
+- Move Codecov steps to linting.
+- Update develop, staging, and production workflows.

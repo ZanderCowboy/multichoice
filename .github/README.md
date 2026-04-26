@@ -33,7 +33,9 @@ Version bumps are controlled through PR labels:
 
 ### Develop Workflow
 
-- Triggered on PR closure to `develop` branch
+- #### Triggers
+  - PR closure to `develop` branch
+  - Manual trigger via `workflow_dispatch`
 - Supports manual trigger via workflow_dispatch
 - Runs tests, analysis, and builds Android app
 - Uploads APK to Firebase App Distribution
@@ -42,7 +44,9 @@ Version bumps are controlled through PR labels:
 
 ### Staging (RC) Workflow
 
-- Triggered on PR closure to `rc` branch
+- #### Triggers
+  - PR closure to `rc` branch
+  - Manual trigger via `workflow_dispatch`
 - Supports manual trigger via workflow_dispatch
 - Runs tests, analysis, and builds Android app
 - Creates AAB artifact
@@ -52,8 +56,8 @@ Version bumps are controlled through PR labels:
 
 ### Production Workflow
 
-- Triggered on PR closure to `main` branch from `rc`
-- Supports manual trigger via workflow_dispatch
+- #### Triggers
+  - Manual trigger via `workflow_dispatch`
 - Runs tests, analysis, and builds Android app
 - Creates both APK and AAB artifacts
 - Removes RC suffix from version
