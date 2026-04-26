@@ -1,5 +1,6 @@
-#223 - Doc Update Docs
+#319 - Update Import Export Journey
 
-- Rename `CONTRIBUTION.md` to `CONTRIBUTING.md` and update workflow links.
-- De-duplicate login documentation by making `docs/login-implementation-guide.md` a pointer to the canonical guide.
-- Improve AuthBloc example in docs by cancelling the auth state subscription in `close()`.
+- Export backups as `.multichoice` files instead of generic `.json`.
+- Restrict import file picker and validation to Multichoice backup files.
+- Improve Data Transfer screen copy and button labels for clearer guidance.
+- Make Settings “Import / Export Data” row tappable (not just the icon).
