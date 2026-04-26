@@ -51,6 +51,7 @@ Use this skill when the user wants a GitHub ticket handled from implementation t
    - Push the current branch.
    - Create the PR as a draft.
    - Use `develop` as the default base unless the user specifies another base.
+   - The PR title MUST include the ticket number (issue number), e.g. `55 Add new feature`.
    - Include the ticket number, summary, testing, breaking changes, and screenshot/video table.
 
 ## Stop Conditions
