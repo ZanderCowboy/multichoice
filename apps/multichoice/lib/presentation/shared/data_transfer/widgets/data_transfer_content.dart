@@ -61,6 +61,8 @@ class DataTransferContent extends StatelessWidget {
               ),
               gap12,
               Card(
+                elevation: 0,
+                surfaceTintColor: Colors.transparent,
                 child: Padding(
                   padding: allPadding12,
                   child: Row(
