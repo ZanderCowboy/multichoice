@@ -10,6 +10,7 @@ import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/utils/trigger_edit_mode_haptic.dart';
 import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
 import 'package:multichoice/presentation/home/widgets/home_promotional_banners.dart';
+import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart';
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
@@ -31,20 +32,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WelcomeModalHandler(
-      builder: (_) => const _HomePage(),
-      onSkipTour: () async {
-        context.read<ProductBloc>().add(const ProductEvent.skipTour());
-      },
-      onFollowTutorial: () async {
-        await context.router.push(
-          TutorialPageRoute(
-            onCallback: () {
-              context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
-            },
-          ),
-        );
-      },
+    return UpdateModalHandler(
+      builder: (_) => WelcomeModalHandler(
+        builder: (_) => const _HomePage(),
+        onSkipTour: () async {
+          context.read<ProductBloc>().add(const ProductEvent.skipTour());
+        },
+        onFollowTutorial: () async {
+          await context.router.push(
+            TutorialPageRoute(
+              onCallback: () {
+                context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
