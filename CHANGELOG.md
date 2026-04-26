@@ -1,6 +1,5 @@
-#0 - Update Cursor Workflow
+#223 - Doc Update Docs
 
-- Add end-to-end feature implementation command.
-- Align fix command with strict minimal-change policy.
-- Refresh Cursor rules to match current monorepo architecture and naming.
-- Add a project skill for ticket-to-draft-PR workflow.
+- Rename `CONTRIBUTION.md` to `CONTRIBUTING.md` and update workflow links.
+- De-duplicate login documentation by making `docs/login-implementation-guide.md` a pointer to the canonical guide.
+- Improve AuthBloc example in docs by cancelling the auth state subscription in `close()`.
