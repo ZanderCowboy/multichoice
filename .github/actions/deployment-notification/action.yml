@@ -51,16 +51,26 @@ runs:
     - name: Generate Notification Message
       id: generate_message
       shell: bash
+      env:
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        BRANCH: ${{ inputs.branch }}
+        COMMIT_SHA: ${{ inputs.commit_sha }}
+        COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        AUTHOR: ${{ inputs.author }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_TITLE: ${{ inputs.pr_title }}
       run: |
-        status="${{ inputs.deployment_status }}"
-        environment="${{ inputs.environment }}"
-        version="${{ inputs.version }}"
-        branch="${{ inputs.branch }}"
-        commit_sha="${{ inputs.commit_sha }}"
-        commit_message="${{ inputs.commit_message }}"
-        author="${{ inputs.author }}"
-        pr_number="${{ inputs.pr_number }}"
-        pr_title="${{ inputs.pr_title }}"
+        status="$DEPLOYMENT_STATUS"
+        environment="$DEPLOYMENT_ENVIRONMENT"
+        version="$VERSION"
+        branch="$BRANCH"
+        commit_sha="$COMMIT_SHA"
+        commit_message="$COMMIT_MESSAGE"
+        author="$AUTHOR"
+        pr_number="$PR_NUMBER"
+        pr_title="$PR_TITLE"
         
         # Set emoji based on status
         case "$status" in
