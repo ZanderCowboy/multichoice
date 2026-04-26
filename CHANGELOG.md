@@ -1,6 +1,4 @@
-#319 - Update Import Export Journey
+#310 - Add Update Modal
 
-- Export backups as `.multichoice` files instead of generic `.json`.
-- Restrict import file picker and validation to Multichoice backup files.
-- Improve Data Transfer screen copy and button labels for clearer guidance.
-- Make Settings “Import / Export Data” row tappable (not just the icon).
+- Show a bottom update modal when `latest_app_version` is newer than the installed version.
+- Open the Play Store via Remote Config `google_play_store_url`.
