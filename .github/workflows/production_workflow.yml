@@ -5,7 +5,7 @@
 #
 # Versioning works as follows:
 # - Reads the current version from apps/multichoice/pubspec.yaml on the target branch
-# - Expects an RC version (X.Y.Z-RC+N) and promotes it to production (X.Y.Z+N)
+# - Expects an RC version (X.Y.Z-RC+N) and promotes it to production (X.Y.Z+N+1)
 #   Example: 2.4.1-RC+125 -> 2.4.1+126
 # - Creates a version-only tag from the finalized version (for example, v2.4.1)
 #
