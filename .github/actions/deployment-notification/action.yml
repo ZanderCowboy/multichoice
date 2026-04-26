@@ -123,28 +123,47 @@ runs:
       env:
         MESSAGE: ${{ steps.generate_message.outputs.message }}
         WEBHOOK_URL: ${{ inputs.webhook_url }}
+        IS_DISCORD: ${{ contains(inputs.webhook_url, 'discord.com/api/webhooks/') || contains(inputs.webhook_url, 'discordapp.com/api/webhooks/') }}
       run: |
+        set -euo pipefail
+
+        # Discord expects a "content" field; Slack expects "text".
+        # Detect Discord by webhook URL.
+        is_discord="${IS_DISCORD:-false}"
+
         # Prepare JSON payload with proper escaping
         payload="$(python3 - <<'PY'
         import json
         import os
 
         message = os.environ["MESSAGE"]
-        print(json.dumps({
-          "text": message,
-          "username": "Deployment Bot",
-          "icon_emoji": ":rocket:",
-        }))
+        is_discord = os.environ.get("IS_DISCORD", "false").lower() == "true"
+
+        if is_discord:
+          print(json.dumps({
+            "content": message,
+            "username": "Deployment Bot",
+          }))
+        else:
+          print(json.dumps({
+            "text": message,
+            "username": "Deployment Bot",
+            "icon_emoji": ":rocket:",
+          }))
         PY
         )"
-        
-        # Send webhook
-        if curl -X POST -H "Content-Type: application/json" \
+
+        # Send webhook and verify HTTP status (curl can exit 0 on HTTP 4xx)
+        http_code="$(curl -sS -o /dev/null -w "%{http_code}" \
+          -X POST -H "Content-Type: application/json" \
           -d "$payload" \
-          "$WEBHOOK_URL"; then
-          echo "✅ Webhook notification sent"
+          "$WEBHOOK_URL" || true)"
+
+        if [[ "$http_code" =~ ^2[0-9]{2}$ ]]; then
+          echo "✅ Webhook notification sent (HTTP $http_code)"
         else
-          echo "::warning::Failed to send webhook notification"
+          echo "::warning::Webhook notification returned HTTP $http_code"
+          echo "::warning::If this is Discord, ensure the payload uses {\"content\": ...} and the webhook URL is correct."
         fi
 
     - name: Send Email Notification
