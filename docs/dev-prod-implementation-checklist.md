@@ -100,6 +100,25 @@ flutter run --flavor prod --target lib/main_production.dart
 - [ ] Verify different Firebase projects are being used
 - [ ] Test authentication with different Firebase projects
 
+### [ ] Update `launch.json`
+
+```json
+{
+    "name": "multichoice (development)",
+    "request": "launch",
+    "type": "dart",
+    "program": "apps/multichoice/lib/main_development.dart",
+    "args": ["--flavor", "dev"]
+},
+{
+    "name": "multichoice (production)",
+    "request": "launch",
+    "type": "dart",
+    "program": "apps/multichoice/lib/main_production.dart",
+    "args": ["--flavor", "prod"]
+},
+```
+
 ## Phase 5: CI/CD Pipeline Updates
 
 ### [ ] Update GitHub Secrets

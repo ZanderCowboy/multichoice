@@ -5,20 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "multichoice (development)",
-            "request": "launch",
-            "type": "dart",
-            "program": "apps/multichoice/lib/main_development.dart",
-            "args": ["--flavor", "dev"]
-        },
-        {
-            "name": "multichoice (production)",
-            "request": "launch",
-            "type": "dart",
-            "program": "apps/multichoice/lib/main_production.dart",
-            "args": ["--flavor", "prod"]
-        },
-        {
             "name": "multichoice",
             "request": "launch",
             "type": "dart",
