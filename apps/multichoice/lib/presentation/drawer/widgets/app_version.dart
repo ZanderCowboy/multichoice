@@ -6,6 +6,9 @@ class AppVersion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appVersion = coreSl<IAppInfoService>().getAppVersion();
+    final versionTextStyle = context.appTextTheme.bodyMedium?.copyWith(
+      color: context.theme.colorScheme.onSurface,
+    );
 
     return Padding(
       padding: allPadding24,
@@ -26,12 +29,18 @@ class AppVersion extends StatelessWidget {
                         context.router.push(const DebugPageRoute()),
                     child: Text(
                       'v${snapshot.data}',
-                      style: context.appTextTheme.bodyMedium,
+                      style: versionTextStyle,
                     ),
                   )
-                : const SizedBox.shrink();
+                : Text(
+                    'v${snapshot.data}',
+                    style: versionTextStyle,
+                  );
           }
-          return const SizedBox.shrink();
+          return Text(
+            'Unknown version',
+            style: versionTextStyle,
+          );
         },
       ),
     );

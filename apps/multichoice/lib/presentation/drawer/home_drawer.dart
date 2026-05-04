@@ -17,6 +17,16 @@ Future<bool> _drawerSessionLoggedIn() async {
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
 
+  void _onLogin(BuildContext context) {
+    Navigator.of(context).pop();
+    unawaited(
+      Future<void>.microtask(() {
+        if (!context.mounted) return;
+        showLoginModal(context);
+      }),
+    );
+  }
+
   void _onLogout(BuildContext context) {
     Navigator.of(context).pop();
     if (coreSl.isRegistered<ILoginService>()) {
@@ -45,39 +55,51 @@ class HomeDrawer extends StatelessWidget {
         return Drawer(
           width: MediaQuery.sizeOf(context).width,
           backgroundColor: context.theme.appColors.background,
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const DrawerHeaderSection(),
-                Expanded(
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    children: [
-                      const AppearanceSection(),
-                      const Divider(height: 32),
-                      const DataSection(),
-                      if (isLoggedIn) ...[
-                        const Divider(height: 32),
-                        const AccountSection(),
-                      ],
-                      const Divider(height: 32),
-                      const MoreSection(),
-                      if (isLoggedIn) ...[
-                        const Divider(height: 32),
-                        ListTile(
-                          leading: const Icon(Icons.logout_outlined),
-                          title: const Text('Logout'),
-                          onTap: () => _onLogout(context),
-                        ),
-                      ],
-                      gap56,
-                    ],
-                  ),
+          child: ScaffoldMessenger(
+            child: Scaffold(
+              backgroundColor: context.theme.appColors.background,
+              body: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const DrawerHeaderSection(),
+                    Expanded(
+                      child: ListView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          const AppearanceSection(),
+                          const Divider(height: 32),
+                          const DataSection(),
+                          if (isLoggedIn) ...[
+                            const Divider(height: 32),
+                            const AccountSection(),
+                          ],
+                          const Divider(height: 32),
+                          const MoreSection(),
+                          if (isLoggedIn) ...[
+                            const Divider(height: 32),
+                            ListTile(
+                              leading: const Icon(Icons.logout_outlined),
+                              title: const Text('Logout'),
+                              onTap: () => _onLogout(context),
+                            ),
+                          ] else ...[
+                            const Divider(height: 32),
+                            ListTile(
+                              leading: const Icon(Icons.login_outlined),
+                              title: const Text('Sign In'),
+                              onTap: () => _onLogin(context),
+                            ),
+                          ],
+                          gap56,
+                        ],
+                      ),
+                    ),
+                    const AppVersion(),
+                  ],
                 ),
-                const AppVersion(),
-              ],
+              ),
             ),
           ),
         );
