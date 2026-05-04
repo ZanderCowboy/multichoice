@@ -23,7 +23,7 @@ class FeedbackDTO extends Equatable {
   factory FeedbackDTO.empty() => FeedbackDTO(
     id: '',
     message: '',
-    rating: 0,
+    rating: 1,
     deviceInfo: '',
     appVersion: '',
     timestamp: DateTime.now(),

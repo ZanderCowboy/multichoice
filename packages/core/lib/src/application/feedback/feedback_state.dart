@@ -11,7 +11,7 @@ class FeedbackState extends Equatable {
   });
 
   factory FeedbackState.initial() => FeedbackState(
-    feedback: FeedbackDTO.empty().copyWith(rating: 1),
+    feedback: FeedbackDTO.empty(),
     isLoading: false,
     isSuccess: false,
     isError: false,
