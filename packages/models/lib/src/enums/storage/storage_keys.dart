@@ -9,7 +9,9 @@ enum StorageKeys {
   analyticsUserId('_analyticsUserId'),
   isImportDataBannerDismissed('_isImportDataBannerDismissed'),
   isSignupBannerDismissed('_isSignupBannerDismissed'),
-  lastUsedEmail('_lastUsedEmail')
+  lastUsedEmail('_lastUsedEmail'),
+  feedbackSubmissionDay('_feedbackSubmissionDay'),
+  feedbackSubmissionCount('_feedbackSubmissionCount'),
   ;
 
   const StorageKeys(this.key);

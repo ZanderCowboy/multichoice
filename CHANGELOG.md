@@ -1,5 +1,4 @@
-#316 - Remove Licences from UX
+#315 - Update Feedback Functionality
 
-- Remove licences from the end-user experience.
-- Replace the About modal with a dedicated About page (social, contact, policies).
-- Fix release builds where the drawer app version wasn’t visible.
+- Require at least one star: default rating is one and submissions with rating below one are rejected.
+- Cap anonymous feedback spam with five successful submissions per local calendar day, persisted on device; debug clear-all resets the counter keys.
