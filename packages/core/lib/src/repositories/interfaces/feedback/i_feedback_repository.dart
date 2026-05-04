@@ -1,8 +1,9 @@
 import 'package:models/models.dart';
 import 'package:dartz/dartz.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
 
 abstract class IFeedbackRepository {
-  Future<Either<FeedbackException, void>> submitFeedback(FeedbackDTO feedback);
+  Future<Either<FeedbackException, void>> submitFeedback(FeedbackDTO feedback, {List<PlatformFile>? imageFiles});
   Stream<List<FeedbackDTO>> getFeedback();
 }
