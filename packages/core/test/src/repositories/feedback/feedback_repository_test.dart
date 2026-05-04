@@ -11,18 +11,20 @@ void main() {
   late MockFirebaseFirestore mockFirestore;
   late MockCollectionReference mockCollection;
   late MockQuerySnapshot mockQuerySnapshot;
+  late MockFirebaseStorage mockStorage;
 
   setUp(() {
     mockFirestore = MockFirebaseFirestore();
     mockCollection = MockCollectionReference();
     mockQuerySnapshot = MockQuerySnapshot();
+    mockStorage = MockFirebaseStorage();
 
     when(mockFirestore.collection('feedback')).thenReturn(mockCollection);
     when(
       mockCollection.orderBy('timestamp', descending: true),
     ).thenReturn(mockCollection);
 
-    repository = FeedbackRepository(mockFirestore);
+    repository = FeedbackRepository(mockFirestore, mockStorage);
   });
 
   group('FeedbackRepository', () {
