@@ -16,7 +16,6 @@ part 'account_section.dart';
 part 'appearance_section.dart';
 part 'data_section.dart';
 part 'drawer_header_section.dart';
-part 'about_developer_mode_unlocker.dart';
 part 'more_section.dart';
 part 'light_dark_mode_button.dart';
 part 'horizontal_vertical_layout_button.dart';
