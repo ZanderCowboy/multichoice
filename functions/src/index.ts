@@ -42,6 +42,11 @@ export const onNewFeedback = onDocumentCreated({
       <p><strong>Timestamp:</strong> 
       ${feedback.timestamp ?
         feedback.timestamp.toDate().toLocaleString() : "N/A"}</p>
+      ${feedback.imageUrls && feedback.imageUrls.length > 0 ? `
+      <h3>Attached Images:</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        ${feedback.imageUrls.map((url: string) => `<img src="${url}" style="max-width: 300px; max-height: 300px; border: 1px solid #ccc; padding: 4px;" />`).join('')}
+      </div>` : ""}
     `,
   };
 
