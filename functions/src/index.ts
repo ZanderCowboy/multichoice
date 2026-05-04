@@ -1,3 +1,4 @@
+/* eslint-disable max-len, indent, object-curly-spacing, quotes */
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { defineString } from "firebase-functions/params";
 import * as admin from "firebase-admin";
@@ -45,7 +46,9 @@ export const onNewFeedback = onDocumentCreated({
       ${feedback.imageUrls && feedback.imageUrls.length > 0 ? `
       <h3>Attached Images:</h3>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        ${feedback.imageUrls.map((url: string) => `<img src="${url}" style="max-width: 300px; max-height: 300px; border: 1px solid #ccc; padding: 4px;" />`).join('')}
+        ${feedback.imageUrls.map((url: string) =>
+          `<img src="${url}" style="max-width: 300px; max-height: 300px; border: 1px solid #ccc; padding: 4px;" />`
+        ).join("")}
       </div>` : ""}
     `,
   };
