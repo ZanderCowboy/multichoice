@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:core/core.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
@@ -60,9 +61,87 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
       category: feedbackState.category,
     );
 
-    //
     // ignore: use_build_context_synchronously
     context.read<FeedbackBloc>().add(FeedbackEvent.submit(feedbackDTO));
+  }
+
+  Future<void> _pickImage(BuildContext context) async {
+    final result = await coreSl<FilePicker>().pickFiles(
+      type: FileType.image,
+      allowMultiple: true,
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      if (context.mounted) {
+        for (final file in result.files) {
+          context.read<FeedbackBloc>().add(FeedbackEvent.imageAdded(file));
+        }
+      }
+    }
+  }
+
+  Widget _buildImageThumbnails(BuildContext context, FeedbackState state) {
+    if (state.imageFiles.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        gap16,
+        const Text('Attached Images:'),
+        gap8,
+        SizedBox(
+          height: 100,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: state.imageFiles.length,
+            separatorBuilder: (_, _) => gap8,
+            itemBuilder: (context, index) {
+              final file = state.imageFiles[index];
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: file.bytes != null
+                        ? Image.memory(file.bytes!, fit: BoxFit.cover)
+                        : file.path != null
+                        ? Image.file(File(file.path!), fit: BoxFit.cover)
+                        : const Icon(Icons.image),
+                  ),
+                  Positioned(
+                    top: -8,
+                    right: -8,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.remove_circle,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          context.read<FeedbackBloc>().add(
+                            FeedbackEvent.imageRemoved(index),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -176,6 +255,13 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                     );
                   }),
                 ),
+                gap16,
+                OutlinedButton.icon(
+                  onPressed: () => _pickImage(context),
+                  icon: const Icon(Icons.image),
+                  label: const Text('Add Images'),
+                ),
+                _buildImageThumbnails(context, state),
                 gap24,
                 ElevatedButton(
                   onPressed: state.isLoading
