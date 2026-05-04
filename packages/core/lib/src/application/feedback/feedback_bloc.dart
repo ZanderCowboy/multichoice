@@ -13,14 +13,42 @@ part 'feedback_bloc.g.dart';
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final IFeedbackRepository _feedbackRepository;
   final IAnalyticsService _analyticsService;
+  final IAppStorageService _appStorageService;
 
   FeedbackBloc(
     this._feedbackRepository,
     this._analyticsService,
+    this._appStorageService,
   ) : super(FeedbackState.initial()) {
     on<FeedbackEvent>((event, emit) async {
       switch (event) {
         case SubmitFeedback(:final feedback):
+          if (feedback.rating < 1) {
+            emit(
+              state.copyWith(
+                feedback: feedback,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage:
+                    'Please choose a rating from 1 to 5 stars.',
+              ),
+            );
+            return;
+          }
+          if (!await _appStorageService.canSubmitMoreFeedbackToday()) {
+            emit(
+              state.copyWith(
+                feedback: feedback,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage:
+                    'You can submit up to 5 feedback reports per day. Try again tomorrow.',
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
               feedback: feedback,
@@ -72,6 +100,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                   rating: feedback.rating,
                 ),
               );
+
+              await _appStorageService.recordFeedbackSubmissionForToday();
 
               emit(
                 state.copyWith(
