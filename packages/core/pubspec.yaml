@@ -36,6 +36,7 @@ dependencies:
   showcaseview: ^5.0.1
   uuid: ^4.3.3
   version: ^3.0.2
+  firebase_storage: ^13.3.0
 
 dev_dependencies:
   bloc_test: ^10.0.0
