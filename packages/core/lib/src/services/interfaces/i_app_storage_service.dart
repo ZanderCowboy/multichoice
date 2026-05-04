@@ -30,6 +30,12 @@ abstract class IAppStorageService {
   Future<void> setLastUsedEmail(String email);
   Future<void> clearLastUsedEmail();
 
+  /// Whether this device is under the daily feedback submission cap.
+  Future<bool> canSubmitMoreFeedbackToday();
+
+  /// Records one successful feedback submission for the daily cap.
+  Future<void> recordFeedbackSubmissionForToday();
+
   /// Clears all storage data by resetting all values to their defaults.
   /// This method should only be used in debug mode.
   Future<void> clearAllData();

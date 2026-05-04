@@ -6,7 +6,49 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: IAppStorageService)
 class AppStorageService implements IAppStorageService {
+  static const int _maxFeedbackSubmissionsPerCalendarDay = 5;
+
   final _sharedPreferences = coreSl<SharedPreferences>();
+
+  String _localCalendarDayKey(DateTime now) =>
+      '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+  @override
+  Future<bool> canSubmitMoreFeedbackToday() async {
+    final today = _localCalendarDayKey(DateTime.now());
+    final storedDay = _sharedPreferences.getString(
+      StorageKeys.feedbackSubmissionDay.key,
+    );
+    final count = _sharedPreferences.getInt(
+          StorageKeys.feedbackSubmissionCount.key,
+        ) ??
+        0;
+    if (storedDay != today) {
+      return true;
+    }
+    return count < _maxFeedbackSubmissionsPerCalendarDay;
+  }
+
+  @override
+  Future<void> recordFeedbackSubmissionForToday() async {
+    final today = _localCalendarDayKey(DateTime.now());
+    final storedDay = _sharedPreferences.getString(
+      StorageKeys.feedbackSubmissionDay.key,
+    );
+    final previousCount = _sharedPreferences.getInt(
+          StorageKeys.feedbackSubmissionCount.key,
+        ) ??
+        0;
+    final nextCount = storedDay != today ? 1 : previousCount + 1;
+    await _sharedPreferences.setString(
+      StorageKeys.feedbackSubmissionDay.key,
+      today,
+    );
+    await _sharedPreferences.setInt(
+      StorageKeys.feedbackSubmissionCount.key,
+      nextCount,
+    );
+  }
 
   @override
   Future<bool> get isDarkMode async {
@@ -184,5 +226,7 @@ class AppStorageService implements IAppStorageService {
     await setIsImportDataBannerDismissed(false);
     await setIsSignupBannerDismissed(false);
     await clearLastUsedEmail();
+    await _sharedPreferences.remove(StorageKeys.feedbackSubmissionDay.key);
+    await _sharedPreferences.remove(StorageKeys.feedbackSubmissionCount.key);
   }
 }
