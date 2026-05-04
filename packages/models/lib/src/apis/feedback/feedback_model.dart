@@ -20,6 +20,7 @@ class FeedbackModel extends Equatable {
     this.userEmail,
     this.category,
     this.status = 'pending',
+    this.imageUrls,
   });
 
   factory FeedbackModel.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +36,7 @@ class FeedbackModel extends Equatable {
   final String? userEmail;
   final String? category;
   final String status;
+  final List<String>? imageUrls;
 
   Map<String, dynamic> toJson() => _$FeedbackModelToJson(this);
 
@@ -50,6 +52,7 @@ class FeedbackModel extends Equatable {
     userEmail,
     category,
     status,
+    imageUrls,
   ];
 }
 
@@ -67,6 +70,7 @@ extension FeedbackModelFirestoreX on FeedbackModel {
       timestamp: (data['timestamp'] as Timestamp).toDate(),
       category: data['category'] as String?,
       status: data['status'] as String? ?? 'pending',
+      imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -81,6 +85,7 @@ extension FeedbackModelFirestoreX on FeedbackModel {
       'timestamp': Timestamp.fromDate(timestamp),
       'category': category,
       'status': status,
+      if (imageUrls != null) 'imageUrls': imageUrls,
     };
   }
 }

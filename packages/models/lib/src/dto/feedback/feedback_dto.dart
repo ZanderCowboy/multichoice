@@ -18,6 +18,7 @@ class FeedbackDTO extends Equatable {
     this.userEmail,
     this.category,
     this.status = 'pending',
+    this.imageUrls,
   });
 
   factory FeedbackDTO.empty() => FeedbackDTO(
@@ -27,6 +28,7 @@ class FeedbackDTO extends Equatable {
     deviceInfo: '',
     appVersion: '',
     timestamp: DateTime.now(),
+    imageUrls: const [],
   );
 
   factory FeedbackDTO.fromJson(Map<String, dynamic> json) =>
@@ -42,6 +44,7 @@ class FeedbackDTO extends Equatable {
   final String? userEmail;
   final String? category;
   final String status;
+  final List<String>? imageUrls;
 
   Map<String, dynamic> toJson() => _$FeedbackDTOToJson(this);
 
@@ -57,5 +60,6 @@ class FeedbackDTO extends Equatable {
     userEmail,
     category,
     status,
+    imageUrls,
   ];
 }
