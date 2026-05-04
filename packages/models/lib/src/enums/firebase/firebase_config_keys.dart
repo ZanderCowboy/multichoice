@@ -3,6 +3,7 @@ enum FirebaseConfigKeys {
   /// example: enableNewFeature('enable_new_feature'),
   usePillStyleBanner('use_pill_style_banner'),
   enableChangelogPage('enable_changelog_page'),
+  feedbackImagesEnabled('feedback_images_enabled'),
 
   /// JSON configs
   // example: appConfig('app_config'),

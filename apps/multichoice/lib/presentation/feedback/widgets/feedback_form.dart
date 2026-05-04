@@ -256,13 +256,17 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   }),
                 ),
                 gap16,
-                OutlinedButton.icon(
-                  onPressed: () => _pickImage(context),
-                  icon: const Icon(Icons.image),
-                  label: const Text('Add Images'),
-                ),
-                _buildImageThumbnails(context, state),
-                gap24,
+                if (coreSl<IFirebaseService>().isEnabled(FirebaseConfigKeys.feedbackImagesEnabled)) ...[
+                  OutlinedButton.icon(
+                    onPressed: () => _pickImage(context),
+                    icon: const Icon(Icons.image),
+                    label: const Text('Add Images'),
+                  ),
+                  _buildImageThumbnails(context, state),
+                  gap24,
+                ] else ...[
+                  gap24,
+                ],
                 ElevatedButton(
                   onPressed: state.isLoading
                       ? null
