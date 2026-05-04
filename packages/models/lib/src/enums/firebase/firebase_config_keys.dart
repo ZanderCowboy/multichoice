@@ -11,7 +11,13 @@ enum FirebaseConfigKeys {
   /// Strings
   welcomeMessage('welcome_message'),
   googlePlayStoreUrl('google_play_store_url'),
-  latestAppVersion('latest_app_version');
+  latestAppVersion('latest_app_version'),
+  aboutInstagramUrl('about_instagram_url'),
+  aboutWebsiteUrl('about_website_url'),
+  aboutContactEmail('about_contact_email'),
+  aboutPrivacyPolicyUrl('about_privacy_policy_url'),
+  aboutTermsUrl('about_terms_url'),
+  aboutAcknowledgementsUrl('about_acknowledgements_url');
 
   const FirebaseConfigKeys(this.key);
 
