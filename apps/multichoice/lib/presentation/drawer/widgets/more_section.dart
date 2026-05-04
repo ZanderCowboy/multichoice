@@ -95,21 +95,8 @@ class MoreSection extends StatelessWidget {
                 source: 'about',
               ),
             );
-            final appVersion = await coreSl<IAppInfoService>().getAppVersion();
-
             if (!context.mounted) return;
-
-            showAboutDialog(
-              context: context,
-              applicationName: 'Multichoice',
-              applicationVersion: appVersion,
-              applicationIcon: const FlutterLogo(size: 64),
-              children: [
-                const Text(
-                  'Multichoice is a powerful tool for managing your choices and decisions.',
-                ),
-              ],
-            );
+            await context.router.push(const AboutPageRoute());
           },
         ),
       ],
