@@ -163,7 +163,7 @@ jobs:
       ##############################################
       - name: Download Android Keystore File
         id: android_keystore
-        uses: timheuer/base64-to-file@v1.2.4
+        uses: timheuer/base64-to-file@v2.0.0
         with:
           fileName: upload-keystore.jks
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -346,7 +346,7 @@ jobs:
       # Create GitHub Release
       ##############################################
       - name: Create GitHub Release (and upload APK)
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ needs.build.outputs.tag_version }}
           name: Release v${{ needs.build.outputs.tag_version }}
