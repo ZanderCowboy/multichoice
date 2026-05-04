@@ -12,13 +12,17 @@ import '../../../mocks.mocks.dart';
 void main() {
   late FeedbackBloc feedbackBloc;
   late MockFeedbackRepository mockRepository;
+  late MockAppStorageService mockAppStorage;
   final fixedTimestamp = DateTime(2024, 1, 1);
 
   setUp(() {
     mockRepository = MockFeedbackRepository();
+    mockAppStorage = MockAppStorageService();
+    when(mockAppStorage.canSubmitMoreFeedbackToday()).thenAnswer((_) async => true);
     feedbackBloc = FeedbackBloc(
       mockRepository,
       const NoopAnalyticsService(),
+      mockAppStorage,
     );
   });
 
@@ -47,7 +51,7 @@ void main() {
       expect(initialState.errorMessage, null);
       expect(initialState.feedback.id, '');
       expect(initialState.feedback.message, '');
-      expect(initialState.feedback.rating, 0);
+      expect(initialState.feedback.rating, 1);
       expect(initialState.feedback.deviceInfo, '');
       expect(initialState.feedback.appVersion, '');
       expect(initialState.feedback.userId, null);
@@ -96,6 +100,54 @@ void main() {
       ],
       verify: (_) {
         verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verify(mockAppStorage.recordFeedbackSubmissionForToday()).called(1);
+      },
+    );
+
+    blocTest<FeedbackBloc, FeedbackState>(
+      'emits error when rating is below one without calling repository',
+      build: () => feedbackBloc,
+      act: (bloc) => bloc.add(
+        FeedbackEvent.submit(testFeedback.copyWith(rating: 0)),
+      ),
+      expect: () => [
+        isA<FeedbackState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Please choose a rating from 1 to 5 stars.',
+            )
+            .having((s) => s.isLoading, 'isLoading', false),
+      ],
+      verify: (_) {
+        verifyNever(mockRepository.submitFeedback(any));
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
+      },
+    );
+
+    blocTest<FeedbackBloc, FeedbackState>(
+      'emits error when daily feedback cap is reached',
+      build: () {
+        when(
+          mockAppStorage.canSubmitMoreFeedbackToday(),
+        ).thenAnswer((_) async => false);
+        return feedbackBloc;
+      },
+      act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),
+      expect: () => [
+        isA<FeedbackState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'You can submit up to 5 feedback reports per day. Try again tomorrow.',
+            )
+            .having((s) => s.isLoading, 'isLoading', false),
+      ],
+      verify: (_) {
+        verifyNever(mockRepository.submitFeedback(any));
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
 
@@ -144,6 +196,7 @@ void main() {
       ],
       verify: (_) {
         verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
 

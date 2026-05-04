@@ -360,6 +360,145 @@ void main() {
       verify(
         mockSharedPreferences.remove(StorageKeys.lastUsedEmail.key),
       ).called(1);
+      verify(
+        mockSharedPreferences.remove(StorageKeys.feedbackSubmissionDay.key),
+      ).called(1);
+      verify(
+        mockSharedPreferences.remove(StorageKeys.feedbackSubmissionCount.key),
+      ).called(1);
     });
+  });
+
+  group('AppStorageService - Feedback submission cap', () {
+    String todayKey() {
+      final n = DateTime.now();
+      return '${n.year}-${n.month.toString().padLeft(2, '0')}-${n.day.toString().padLeft(2, '0')}';
+    }
+
+    test('canSubmitMoreFeedbackToday is true when no day is stored', () async {
+      when(mockSharedPreferences.getString(any)).thenReturn(null);
+      when(mockSharedPreferences.getInt(any)).thenReturn(null);
+
+      expect(await appStorageService.canSubmitMoreFeedbackToday(), true);
+    });
+
+    test(
+      'canSubmitMoreFeedbackToday is true when stored day is not today',
+      () async {
+        when(
+          mockSharedPreferences.getString(
+            StorageKeys.feedbackSubmissionDay.key,
+          ),
+        ).thenReturn('1999-12-31');
+        when(
+          mockSharedPreferences.getInt(
+            StorageKeys.feedbackSubmissionCount.key,
+          ),
+        ).thenReturn(99);
+
+        expect(await appStorageService.canSubmitMoreFeedbackToday(), true);
+      },
+    );
+
+    test(
+      'canSubmitMoreFeedbackToday is true when under cap for today',
+      () async {
+        when(
+          mockSharedPreferences.getString(
+            StorageKeys.feedbackSubmissionDay.key,
+          ),
+        ).thenReturn(todayKey());
+        when(
+          mockSharedPreferences.getInt(
+            StorageKeys.feedbackSubmissionCount.key,
+          ),
+        ).thenReturn(4);
+
+        expect(await appStorageService.canSubmitMoreFeedbackToday(), true);
+      },
+    );
+
+    test(
+      'canSubmitMoreFeedbackToday is false when cap reached for today',
+      () async {
+        when(
+          mockSharedPreferences.getString(
+            StorageKeys.feedbackSubmissionDay.key,
+          ),
+        ).thenReturn(todayKey());
+        when(
+          mockSharedPreferences.getInt(
+            StorageKeys.feedbackSubmissionCount.key,
+          ),
+        ).thenReturn(5);
+
+        expect(await appStorageService.canSubmitMoreFeedbackToday(), false);
+      },
+    );
+
+    test(
+      'recordFeedbackSubmissionForToday resets count on a new calendar day',
+      () async {
+        when(
+          mockSharedPreferences.getString(
+            StorageKeys.feedbackSubmissionDay.key,
+          ),
+        ).thenReturn('1999-12-31');
+        when(
+          mockSharedPreferences.getInt(
+            StorageKeys.feedbackSubmissionCount.key,
+          ),
+        ).thenReturn(5);
+        when(
+          mockSharedPreferences.setString(any, any),
+        ).thenAnswer((_) async => true);
+        when(mockSharedPreferences.setInt(any, any)).thenAnswer((_) async => true);
+
+        await appStorageService.recordFeedbackSubmissionForToday();
+
+        verify(
+          mockSharedPreferences.setString(
+            StorageKeys.feedbackSubmissionDay.key,
+            todayKey(),
+          ),
+        ).called(1);
+        verify(
+          mockSharedPreferences.setInt(
+            StorageKeys.feedbackSubmissionCount.key,
+            1,
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'recordFeedbackSubmissionForToday increments when day matches',
+      () async {
+        final day = todayKey();
+        when(
+          mockSharedPreferences.getString(
+            StorageKeys.feedbackSubmissionDay.key,
+          ),
+        ).thenReturn(day);
+        when(
+          mockSharedPreferences.getInt(
+            StorageKeys.feedbackSubmissionCount.key,
+          ),
+        ).thenReturn(2);
+        when(
+          mockSharedPreferences.setString(any, any),
+        ).thenAnswer((_) async => true);
+        when(mockSharedPreferences.setInt(any, any)).thenAnswer((_) async => true);
+
+        await appStorageService.recordFeedbackSubmissionForToday();
+
+        verify(
+          mockSharedPreferences.setInt(
+            StorageKeys.feedbackSubmissionCount.key,
+            3,
+          ),
+        ).called(1);
+      },
+    );
   });
 }
