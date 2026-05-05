@@ -1,0 +1,21 @@
+name: application
+description: "Application layer for the app."
+version: 0.0.1
+homepage:
+publish_to: none
+
+dependency_overrides:
+  domain:
+    path: ../domain
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  domain: ^0.0.1
+
+dev_dependencies:
+  build_runner: ^2.4.15
+  lints: ^5.1.1
+  test: ^1.31.0
+

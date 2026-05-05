@@ -8,12 +8,12 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  build_runner: ^2.4.15
   flutter:
     sdk: flutter
   theme_tailor_annotation: ^3.0.1
 
 dev_dependencies:
-  build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
   theme_tailor: ^3.0.1

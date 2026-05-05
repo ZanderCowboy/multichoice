@@ -8,6 +8,57 @@ ignore:
   - apps/showcase
 
 scripts:
+  add:
+    run: dart pub add
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+
+  add:core:
+    run: dart pub add
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      scope: ["core"]
+
+  add:data:
+    run: dart pub add
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      scope: ["data"]
+
+  add:domain:
+    run: dart pub add
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      scope: ["domain"]
+
+  add:multichoice:
+    run: dart pub add
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      flutter: true
+      scope: ["multichoice"]
+
+  add:dev:
+    run: dart pub add --dev
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+
   analyze:
     run: dart analyze .
     exec:
@@ -21,6 +72,15 @@ scripts:
       failFast: true
       concurrency: 1
       orderDependents: true
+
+  build:data:
+    run: dart run build_runner build --delete-conflicting-outputs
+    exec:
+      failFast: true
+      concurrency: 1
+      orderDependents: true
+    packageFilters:
+      scope: ["data"]
 
   get:
     run: flutter pub get

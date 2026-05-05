@@ -1,0 +1,26 @@
+import 'package:domain/domain.dart';
+
+class GetItemsUseCaseImpl implements IGetItemsUseCase {
+  const GetItemsUseCaseImpl(this._itemRepository);
+
+  final IItemRepository _itemRepository;
+
+  @override
+  Future<List<Item>> execute(int collectionId) async {
+    if (collectionId <= 0) {
+      throw ArgumentError('Collection ID must be greater than 0');
+    }
+
+    // Get entries from repository
+    final entries = await _itemRepository.getItems();
+
+    // Business rule: filter out invalid entries
+    final validEntries =
+        entries.where((entry) => entry.collectionId == collectionId).toList();
+
+    // Business rule: sort by creation date (newest first)
+    validEntries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return validEntries;
+  }
+}
