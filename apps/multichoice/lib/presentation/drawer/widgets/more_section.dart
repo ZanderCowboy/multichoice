@@ -15,7 +15,7 @@ class MoreSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'More',
+            context.t.drawer.more,
             style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
@@ -23,11 +23,11 @@ class MoreSection extends StatelessWidget {
         ),
         ListTile(
           title: Text(
-            'Restart Tutorial',
+            context.t.drawer.restartTutorial,
             style: context.appTextTheme.denseTitle,
           ),
           subtitle: Text(
-            'Temporarily switches to demo data to show app features, then restores your original data',
+            context.t.drawer.restartTutorialDesc,
             style: context.appTextTheme.bodyMedium,
           ),
           trailing: IconButton(
@@ -62,7 +62,7 @@ class MoreSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
           title: Text(
-            'Send Feedback',
+            context.t.drawer.sendFeedback,
             style: context.appTextTheme.denseTitle,
           ),
           onTap: () async {
@@ -73,7 +73,7 @@ class MoreSection extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.history),
             title: Text(
-              'Changelog',
+              context.t.drawer.changelog,
               style: context.appTextTheme.denseTitle,
             ),
             onTap: () async {
@@ -83,7 +83,7 @@ class MoreSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.info_outline),
           title: Text(
-            'About',
+            context.t.drawer.about,
             style: context.appTextTheme.denseTitle,
           ),
           onTap: () async {

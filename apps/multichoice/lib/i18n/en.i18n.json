@@ -1,6 +1,19 @@
 {
-  "appTitle": "MultiChoice App",
+  "appTitle": "MultiChoice",
   "welcomeMessage": "Welcome to MultiChoice",
   "home": "Home",
-  "settings": "Settings"
+  "settings": "Settings",
+  "auth": {
+    "signedOutSuccess": "Signed out successfully",
+    "logout": "Logout",
+    "signIn": "Sign In"
+  },
+  "drawer": {
+    "more": "More",
+    "restartTutorial": "Restart Tutorial",
+    "restartTutorialDesc": "Temporarily switches to demo data to show app features, then restores your original data",
+    "sendFeedback": "Send Feedback",
+    "changelog": "Changelog",
+    "about": "About"
+  }
 }
