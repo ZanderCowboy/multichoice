@@ -22,6 +22,14 @@ scripts:
       concurrency: 1
       orderDependents: true
 
+  slang:
+    run: dart run slang
+    exec:
+      failFast: false
+      concurrency: 1
+    packageFilters:
+      dependsOn: "slang"
+
   get:
     run: flutter pub get
     exec:
@@ -30,14 +38,14 @@ scripts:
       orderDependents: true
 
   rebuild:all:
-    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs && (dart run slang || echo "No slang configured")
     exec:
       failFast: true
       concurrency: 1
       orderDependents: true
 
   rebuild:apps:
-    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs && (dart run slang || echo "No slang configured")
     exec:
       failFast: true
       concurrency: 1
@@ -47,7 +55,7 @@ scripts:
       scope: ["multichoice"]
 
   rebuild:core:
-    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs && (dart run slang || echo "No slang configured")
     exec:
       failFast: true
       concurrency: 1
@@ -57,7 +65,7 @@ scripts:
       scope: ["core"]
 
   rebuild:models:
-    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+    run: flutter clean && flutter pub get && dart run build_runner build --delete-conflicting-outputs && (dart run slang || echo "No slang configured")
     exec:
       failFast: true
       concurrency: 1
