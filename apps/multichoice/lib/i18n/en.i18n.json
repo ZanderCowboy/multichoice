@@ -6,14 +6,63 @@
   "auth": {
     "signedOutSuccess": "Signed out successfully",
     "logout": "Logout",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "continueWithGoogle": "Continue with Google",
+    "backToSignIn": "Back to Sign In",
+    "forgotPassword": "Forgot Password",
+    "sendResetLink": "Send Reset Link",
+    "openEmailApp": "Open Email App"
   },
   "drawer": {
+    "account": "Account",
+    "appearance": "Appearance",
+    "data": "Data",
     "more": "More",
     "restartTutorial": "Restart Tutorial",
     "restartTutorialDesc": "Temporarily switches to demo data to show app features, then restores your original data",
     "sendFeedback": "Send Feedback",
     "changelog": "Changelog",
-    "about": "About"
+    "about": "About",
+    "horizontalLayout": "Horizontal / Vertical Layout",
+    "lightDarkMode": "Light / Dark Mode",
+    "deleteAllData": "Delete All Data",
+    "deleteAllDataTitle": "Delete all tabs and entries?",
+    "deleteAllDataContent": "Are you sure you want to delete all tabs and their entries?",
+    "importExportData": "Import / Export Data",
+    "welcomeBack": "Welcome back!"
+  },
+  "profile": {
+    "title": "Profile",
+    "email": "Email",
+    "username": "Username",
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete Account",
+    "deleteConfirmation": "Delete account?",
+    "requestDeletion": "Request deletion"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "add": "Add",
+    "edit": "Edit",
+    "warning": "Warning!",
+    "overwrite": "Overwrite",
+    "append": "Append",
+    "start": "Start",
+    "goHome": "Go Home",
+    "noCancel": "No, cancel",
+    "yesDelete": "Yes, delete"
+  },
+  "dataTransfer": {
+    "title": "Data Transfer",
+    "importBackup": "Import backup",
+    "exportBackup": "Export backup",
+    "saveExport": "Save Export",
+    "enterFileName": "Enter File Name"
+  },
+  "modals": {
+    "deleteItem": "Delete ${item}?"
   }
 }

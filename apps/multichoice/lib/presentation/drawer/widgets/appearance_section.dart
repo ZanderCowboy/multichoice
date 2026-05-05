@@ -11,7 +11,7 @@ class AppearanceSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'Appearance',
+            context.t.drawer.appearance,
             style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),

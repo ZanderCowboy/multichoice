@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 
 class LogoutTile extends StatelessWidget {
@@ -13,7 +14,7 @@ class LogoutTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout_outlined),
-      title: const Text('Logout'),
+      title: Text(context.t.auth.logout),
       onTap: () => _onLogout(context),
     );
   }
@@ -27,7 +28,7 @@ class LogoutTile extends StatelessWidget {
     if (!context.mounted) return;
     context.read<AuthNotifier>().notifyAuthChanged();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Signed out successfully')),
+      SnackBar(content: Text(context.t.auth.signedOutSuccess)),
     );
     unawaited(
       Future<void>.microtask(() {

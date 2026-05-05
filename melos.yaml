@@ -23,7 +23,8 @@ scripts:
       orderDependents: true
 
   slang:
-    run: dart run slang
+    run: |
+      dart run slang
     exec:
       failFast: false
       concurrency: 1
