@@ -31,8 +31,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                 isLoading: false,
                 isSuccess: false,
                 isError: true,
-                errorMessage:
-                    'Please choose a rating from 1 to 5 stars.',
+                errorMessage: 'Please choose a rating from 1 to 5 stars.',
               ),
             );
             return;
@@ -145,7 +144,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             ),
           );
         case FeedbackImageRemoved(:final index):
-          final updatedFiles = List<PlatformFile>.from(state.imageFiles)..removeAt(index);
+          final updatedFiles = List<PlatformFile>.from(state.imageFiles)
+            ..removeAt(index);
           emit(
             state.copyWith(
               imageFiles: updatedFiles,

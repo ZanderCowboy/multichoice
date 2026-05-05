@@ -9,7 +9,8 @@ sealed class FeedbackEvent {
     required FeedbackField field,
     required Object? value,
   }) = FeedbackFieldChanged;
-  const factory FeedbackEvent.imageAdded(PlatformFile file) = FeedbackImageAdded;
+  const factory FeedbackEvent.imageAdded(PlatformFile file) =
+      FeedbackImageAdded;
   const factory FeedbackEvent.imageRemoved(int index) = FeedbackImageRemoved;
 }
 

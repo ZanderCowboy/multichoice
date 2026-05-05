@@ -51,6 +51,6 @@ abstract class InjectableModule {
 
   @lazySingleton
   GoogleSignIn get googleSignIn => GoogleSignIn(
-        scopes: const ['email', 'profile'],
-      );
+    scopes: const ['email', 'profile'],
+  );
 }

@@ -256,7 +256,9 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   }),
                 ),
                 gap16,
-                if (coreSl<IFirebaseService>().isEnabled(FirebaseConfigKeys.feedbackImagesEnabled)) ...[
+                if (coreSl<IFirebaseService>().isEnabled(
+                  FirebaseConfigKeys.feedbackImagesEnabled,
+                )) ...[
                   OutlinedButton.icon(
                     onPressed: () => _pickImage(context),
                     icon: const Icon(Icons.image),

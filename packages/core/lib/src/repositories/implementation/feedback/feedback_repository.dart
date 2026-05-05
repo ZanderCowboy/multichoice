@@ -26,12 +26,16 @@ class FeedbackRepository implements IFeedbackRepository {
 
   @override
   Future<Either<FeedbackException, void>> submitFeedback(
-      FeedbackDTO feedback, {List<PlatformFile>? imageFiles}) async {
+    FeedbackDTO feedback, {
+    List<PlatformFile>? imageFiles,
+  }) async {
     try {
       List<String> imageUrls = [];
       if (imageFiles != null && imageFiles.isNotEmpty) {
         for (var file in imageFiles) {
-          final ref = _storage.ref().child('feedback/${feedback.id}/${file.name}');
+          final ref = _storage.ref().child(
+            'feedback/${feedback.id}/${file.name}',
+          );
           if (file.bytes != null) {
             await ref.putData(file.bytes!);
           } else if (file.path != null) {
@@ -43,7 +47,9 @@ class FeedbackRepository implements IFeedbackRepository {
       }
 
       final updatedFeedback = feedback.copyWith(imageUrls: imageUrls);
-      final model = _mapper.convert<FeedbackDTO, FeedbackModel>(updatedFeedback);
+      final model = _mapper.convert<FeedbackDTO, FeedbackModel>(
+        updatedFeedback,
+      );
       await _firestore.collection(_collection).add(model.toFirestore());
       return const Right(null);
     } catch (e) {
@@ -58,10 +64,12 @@ class FeedbackRepository implements IFeedbackRepository {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => FeedbackModelFirestoreX.fromFirestore(doc))
-          .map((model) => _mapper.convert<FeedbackModel, FeedbackDTO>(model))
-          .toList();
-    });
+          return snapshot.docs
+              .map((doc) => FeedbackModelFirestoreX.fromFirestore(doc))
+              .map(
+                (model) => _mapper.convert<FeedbackModel, FeedbackDTO>(model),
+              )
+              .toList();
+        });
   }
 }
