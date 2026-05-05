@@ -13,7 +13,8 @@
 			"flutter": true,
 			"make": true,
 			"git fetch": true,
-			"Test-Path": true
+			"Test-Path": true,
+			".": true
 		},
 		"dart.analysisExcludedFolders": [
 			"**/multichoice_v2",
