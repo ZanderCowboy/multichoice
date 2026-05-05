@@ -1,0 +1,19 @@
+{
+  "appTitle": "MultiChoice",
+  "welcomeMessage": "Welkom bij MultiChoice",
+  "home": "Home",
+  "settings": "Instellingen",
+  "auth": {
+    "signedOutSuccess": "Succesvol uitgelogd",
+    "logout": "Uitloggen",
+    "signIn": "Inloggen"
+  },
+  "drawer": {
+    "more": "Meer",
+    "restartTutorial": "Herstart Tutorial",
+    "restartTutorialDesc": "Schakelt tijdelijk over naar demogegevens om app-functies te tonen, en herstelt daarna uw originele gegevens",
+    "sendFeedback": "Stuur Feedback",
+    "changelog": "Wijzigingslogboek",
+    "about": "Over"
+  }
+}
