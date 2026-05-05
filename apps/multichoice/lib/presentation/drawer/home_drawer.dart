@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class HomeDrawer extends StatelessWidget {
     }
     context.read<AuthNotifier>().notifyAuthChanged();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Signed out successfully')),
+      SnackBar(content: Text(context.t.auth.signedOutSuccess)),
     );
     unawaited(
       Future<void>.microtask(() {
@@ -81,14 +82,14 @@ class HomeDrawer extends StatelessWidget {
                             const Divider(height: 32),
                             ListTile(
                               leading: const Icon(Icons.logout_outlined),
-                              title: const Text('Logout'),
+                              title: Text(context.t.auth.logout),
                               onTap: () => _onLogout(context),
                             ),
                           ] else ...[
                             const Divider(height: 32),
                             ListTile(
                               leading: const Icon(Icons.login_outlined),
-                              title: const Text('Sign In'),
+                              title: Text(context.t.auth.signIn),
                               onTap: () => _onLogin(context),
                             ),
                           ],

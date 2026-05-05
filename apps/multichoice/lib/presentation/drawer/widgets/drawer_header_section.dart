@@ -33,12 +33,12 @@ class DrawerHeaderSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Multichoice',
+                        context.t.appTitle,
                         style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(
-                        asyncSnapshot.data ?? 'Welcome back!',
+                        asyncSnapshot.data ?? context.t.drawer.welcomeBack,
                         style: context.appTextTheme.subtitleMedium,
                       ),
                     ],

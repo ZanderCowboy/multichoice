@@ -6,9 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:multichoice/app/bootstrap/bootstrap.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/crashlytics_setup.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:window_size/window_size.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await LocaleSettings.useDeviceLocale();
+  await LocaleSettings.setLocale(AppLocale.nl); // FOR TESTING
   await bootstrap();
 
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
@@ -28,5 +32,5 @@ void main() async {
     log(e.toString());
   }
 
-  runApp(Multichoice());
+  runApp(TranslationProvider(child: Multichoice()));
 }

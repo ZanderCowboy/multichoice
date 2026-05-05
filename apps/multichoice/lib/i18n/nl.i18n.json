@@ -1,0 +1,65 @@
+{
+  "appTitle": "MultiChoice",
+  "welcomeMessage": "Welkom bij MultiChoice",
+  "home": "Home",
+  "settings": "Instellingen",
+  "auth": {
+    "signedOutSuccess": "Succesvol uitgelogd",
+    "logout": "Uitloggen",
+    "signIn": "Inloggen",
+    "signUp": "Aanmelden",
+    "continueWithGoogle": "Doorgaan met Google",
+    "backToSignIn": "Terug naar inloggen",
+    "forgotPassword": "Wachtwoord vergeten",
+    "sendResetLink": "Stuur reset link",
+    "openEmailApp": "Open e-mail app"
+  },
+  "drawer": {
+    "account": "Account",
+    "appearance": "Weergave",
+    "data": "Gegevens",
+    "more": "Meer",
+    "restartTutorial": "Herstart Tutorial",
+    "restartTutorialDesc": "Schakelt tijdelijk over naar demogegevens om app-functies te tonen, en herstelt daarna uw originele gegevens",
+    "sendFeedback": "Stuur Feedback",
+    "changelog": "Wijzigingslogboek",
+    "about": "Over",
+    "horizontalLayout": "Horizontale / verticale lay-out",
+    "lightDarkMode": "Lichte / donkere modus",
+    "deleteAllData": "Alle gegevens verwijderen",
+    "deleteAllDataTitle": "Alle tabbladen en invoeren verwijderen?",
+    "deleteAllDataContent": "Weet je zeker dat je alle tabbladen en hun invoeren wilt verwijderen?",
+    "importExportData": "Gegevens importeren / exporteren",
+    "welcomeBack": "Welkom terug!"
+  },
+  "profile": {
+    "title": "Profiel",
+    "email": "E-mail",
+    "username": "Gebruikersnaam",
+    "changePassword": "Wachtwoord wijzigen",
+    "deleteAccount": "Account verwijderen",
+    "deleteConfirmation": "Account verwijderen?",
+    "requestDeletion": "Verwijdering aanvragen"
+  },
+  "common": {
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "add": "Toevoegen",
+    "edit": "Bewerken",
+    "warning": "Waarschuwing!",
+    "overwrite": "Overschrijven",
+    "append": "Toevoegen",
+    "start": "Start",
+    "goHome": "Naar startpagina",
+    "noCancel": "Nee, annuleren",
+    "yesDelete": "Ja, verwijderen"
+  },
+  "dataTransfer": {
+    "title": "Gegevensoverdracht",
+    "importBackup": "Back-up importeren",
+    "exportBackup": "Back-up exporteren",
+    "saveExport": "Export opslaan",
+    "enterFileName": "Voer bestandsnaam in"
+  }
+}

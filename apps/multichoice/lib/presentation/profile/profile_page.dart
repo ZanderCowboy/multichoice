@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -59,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(context.t.profile.title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () {
@@ -85,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 else ...[
                   ListTile(
                     leading: const Icon(Icons.email_outlined),
-                    title: const Text('Email'),
+                    title: Text(context.t.profile.email),
                     subtitle: Text(_display(_email)),
                     tileColor: context.theme.appColors.background,
                     shape: RoundedRectangleBorder(
@@ -95,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   gap12,
                   ListTile(
                     leading: const Icon(Icons.person_outline),
-                    title: const Text('Username'),
+                    title: Text(context.t.profile.username),
                     subtitle: Text(_display(_username)),
                     tileColor: context.theme.appColors.background,
                     shape: RoundedRectangleBorder(
@@ -105,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   gap12,
                   ListTile(
                     leading: const Icon(Icons.lock_outline),
-                    title: const Text('Change Password'),
+                    title: Text(context.t.profile.changePassword),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
                       await context.router.push(
@@ -127,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: context.appColorsTheme.error,
                     ),
                     title: Text(
-                      'Delete Account',
+                      context.t.profile.deleteAccount,
                       style: TextStyle(
                         color: context.appColorsTheme.error,
                         fontWeight: FontWeight.w500,
@@ -158,13 +159,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (!context.mounted) return;
                       context.router.popUntilRoot();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Signed out successfully'),
+                        SnackBar(
+                          content: Text(context.t.auth.signedOutSuccess),
                         ),
                       );
                     },
                     icon: const Icon(Icons.logout_outlined),
-                    label: const Text('Sign Out'),
+                    label: Text(context.t.auth.logout),
                   ),
                 ],
               ],

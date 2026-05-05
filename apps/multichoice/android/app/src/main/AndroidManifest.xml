@@ -11,6 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="false"
         android:enableOnBackInvokedCallback="true"
+        android:localeConfig="@xml/locales_config"
         android:allowBackup="false">
         <activity
             android:name=".MainActivity"

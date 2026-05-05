@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 void deleteModal({
@@ -18,8 +19,8 @@ void deleteModal({
       text: TextSpan(
         text: 'Delete ',
         style: DefaultTextStyle.of(context).style.copyWith(
-              fontSize: 24,
-            ),
+          fontSize: 24,
+        ),
         children: [
           TextSpan(
             text: title,
@@ -30,8 +31,8 @@ void deleteModal({
           TextSpan(
             text: '?',
             style: DefaultTextStyle.of(context).style.copyWith(
-                  fontSize: 24,
-                ),
+              fontSize: 24,
+            ),
           ),
         ],
       ),
@@ -40,11 +41,11 @@ void deleteModal({
     actions: [
       OutlinedButton(
         onPressed: onCancel ?? () => Navigator.of(context).pop(),
-        child: const Text('Cancel'),
+        child: Text(cancelText ?? context.t.common.cancel),
       ),
       ElevatedButton(
         onPressed: onConfirm,
-        child: const Text('Delete'),
+        child: Text(confirmText ?? context.t.common.delete),
       ),
     ],
   );

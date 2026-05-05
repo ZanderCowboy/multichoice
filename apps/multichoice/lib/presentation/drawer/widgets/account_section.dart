@@ -12,7 +12,7 @@ class AccountSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'Account',
+            context.t.drawer.account,
             style: context.appTextTheme.titleSmall?.copyWith(
               letterSpacing: 1.1,
             ),
@@ -21,7 +21,7 @@ class AccountSection extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.person_outline),
           title: Text(
-            'Profile',
+            context.t.profile.title,
             style: context.appTextTheme.denseTitle,
           ),
           onTap: () async {

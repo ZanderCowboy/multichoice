@@ -4,15 +4,15 @@ GEN_FILES = \( -name '*.g.dart' -o -name '*.gr.dart' -o -name '*.config.dart' -o
 
 # Flutter Build
 fb:
-	cd "$(WORKDIR)" && flutter pub get && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && flutter pub get && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Dart Build Runner
 db:
-	cd "$(WORKDIR)" && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Flutter Rebuild
 frb:
-	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete && flutter pub get && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete && flutter pub get && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Clean
 clean:
@@ -21,6 +21,9 @@ clean:
 # Plain Rebuild
 mr:
 	cd "$(WORKDIR)" && melos rebuild:all
+
+slang:
+	cd "$(WORKDIR)" && dart run slang
 
 # Analyze (scoped)
 # Usage:
