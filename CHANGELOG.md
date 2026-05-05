@@ -1,3 +1,5 @@
-#315 - Update Feedback Functionality
+# 317 - Allow user to add Images to Feedback
 
-- Fix snackbars that stack over each other on the feedback page
+- Add support for picking and attaching multiple images to feedback submissions.
+- Store uploaded feedback images in Firebase Storage and save their URLs.
+- Update FeedbackDTO to include image URLs.

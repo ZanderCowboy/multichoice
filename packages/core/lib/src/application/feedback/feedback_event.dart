@@ -9,6 +9,9 @@ sealed class FeedbackEvent {
     required FeedbackField field,
     required Object? value,
   }) = FeedbackFieldChanged;
+  const factory FeedbackEvent.imageAdded(PlatformFile file) =
+      FeedbackImageAdded;
+  const factory FeedbackEvent.imageRemoved(int index) = FeedbackImageRemoved;
 }
 
 final class SubmitFeedback extends FeedbackEvent {
@@ -29,4 +32,16 @@ final class FeedbackFieldChanged extends FeedbackEvent {
 
   final FeedbackField field;
   final Object? value;
+}
+
+final class FeedbackImageAdded extends FeedbackEvent {
+  const FeedbackImageAdded(this.file);
+
+  final PlatformFile file;
+}
+
+final class FeedbackImageRemoved extends FeedbackEvent {
+  const FeedbackImageRemoved(this.index);
+
+  final int index;
 }

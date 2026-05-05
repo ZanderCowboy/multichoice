@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
+import 'package:file_picker/file_picker.dart';
 
 part 'feedback_event.dart';
 part 'feedback_state.dart';
@@ -34,8 +35,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                 isLoading: false,
                 isSuccess: false,
                 isError: true,
-                errorMessage:
-                    'Please choose a rating from 1 to 5 stars.',
+                errorMessage: 'Please choose a rating from 1 to 5 stars.',
               ),
             );
             return;
@@ -71,7 +71,10 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             ),
           );
 
-          final result = await _feedbackRepository.submitFeedback(feedback);
+          final result = await _feedbackRepository.submitFeedback(
+            feedback,
+            imageFiles: state.imageFiles,
+          );
 
           await result.fold(
             (error) async {
@@ -134,6 +137,28 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               ),
             );
           }
+        case FeedbackImageAdded(:final file):
+          emit(
+            state.copyWith(
+              imageFiles: [...state.imageFiles, file],
+              isLoading: false,
+              isSuccess: false,
+              isError: false,
+              errorMessage: null,
+            ),
+          );
+        case FeedbackImageRemoved(:final index):
+          final updatedFiles = List<PlatformFile>.from(state.imageFiles)
+            ..removeAt(index);
+          emit(
+            state.copyWith(
+              imageFiles: updatedFiles,
+              isLoading: false,
+              isSuccess: false,
+              isError: false,
+              errorMessage: null,
+            ),
+          );
       }
     });
   }

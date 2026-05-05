@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /feedback/{feedbackId}/{fileName} {
+      // Allow anyone (or only authenticated users) to upload images to the feedback folder
+      // Restrict file size to 5MB and ensure it's an image
+      allow create: if request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      
+      // Prevent public read access (only admins can view via the Firebase console)
+      // Note: allow read is required for getDownloadUrl() to work on the client
+      allow read: if true;
+      allow update, delete: if false;
+    }
+  }
+}

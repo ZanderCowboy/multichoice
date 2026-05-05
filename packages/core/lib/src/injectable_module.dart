@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
+import 'package:firebase_storage/firebase_storage.dart' show FirebaseStorage;
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:file_picker/file_picker.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,10 +44,13 @@ abstract class InjectableModule {
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
   @lazySingleton
+  FirebaseStorage get storage => FirebaseStorage.instance;
+
+  @lazySingleton
   FlutterSecureStorage get flutterSecureStorage => const FlutterSecureStorage();
 
   @lazySingleton
   GoogleSignIn get googleSignIn => GoogleSignIn(
-        scopes: const ['email', 'profile'],
-      );
+    scopes: const ['email', 'profile'],
+  );
 }

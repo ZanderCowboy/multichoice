@@ -64,7 +64,7 @@ void main() {
       'emits [loading, success] when feedback is submitted successfully',
       build: () {
         when(
-          mockRepository.submitFeedback(testFeedback),
+          mockRepository.submitFeedback(testFeedback, imageFiles: anyNamed('imageFiles')),
         ).thenAnswer((_) async => const Right(null));
         return feedbackBloc;
       },
@@ -99,7 +99,7 @@ void main() {
             ),
       ],
       verify: (_) {
-        verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verify(mockRepository.submitFeedback(testFeedback, imageFiles: const [])).called(1);
         verify(mockAppStorage.recordFeedbackSubmissionForToday()).called(1);
       },
     );
@@ -121,7 +121,7 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', false),
       ],
       verify: (_) {
-        verifyNever(mockRepository.submitFeedback(any));
+        verifyNever(mockRepository.submitFeedback(any, imageFiles: anyNamed('imageFiles')));
         verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
@@ -146,7 +146,7 @@ void main() {
             .having((s) => s.isLoading, 'isLoading', false),
       ],
       verify: (_) {
-        verifyNever(mockRepository.submitFeedback(any));
+        verifyNever(mockRepository.submitFeedback(any, imageFiles: anyNamed('imageFiles')));
         verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
@@ -155,7 +155,7 @@ void main() {
       'emits [loading, error] when feedback submission fails',
       build: () {
         when(
-          mockRepository.submitFeedback(testFeedback),
+          mockRepository.submitFeedback(testFeedback, imageFiles: anyNamed('imageFiles')),
         ).thenAnswer((_) async => Left(FeedbackException('Failed to submit')));
         return feedbackBloc;
       },
@@ -195,7 +195,7 @@ void main() {
             ),
       ],
       verify: (_) {
-        verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verify(mockRepository.submitFeedback(testFeedback, imageFiles: const [])).called(1);
         verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
