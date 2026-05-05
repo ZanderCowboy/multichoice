@@ -10,6 +10,10 @@ part 'feedback_event.dart';
 part 'feedback_state.dart';
 part 'feedback_bloc.g.dart';
 
+/// Shown in the UI when Firestore/network submission fails (details go to analytics only).
+const _feedbackSubmitFailedUserMessage =
+    "We couldn't send your feedback. Please check your connection and try again.";
+
 @Injectable()
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final IFeedbackRepository _feedbackRepository;
@@ -90,7 +94,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                   isLoading: false,
                   isSuccess: false,
                   isError: true,
-                  errorMessage: error.message,
+                  errorMessage: _feedbackSubmitFailedUserMessage,
                 ),
               );
             },

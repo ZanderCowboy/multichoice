@@ -17,26 +17,32 @@ class FeedbackPage extends StatelessWidget {
       create: (_) => coreSl<FeedbackBloc>(),
       child: BlocListener<FeedbackBloc, FeedbackState>(
         listener: (context, state) {
+          final messenger = ScaffoldMessenger.of(context);
+          if (state.isLoading) {
+            messenger.clearSnackBars();
+            return;
+          }
           if (state.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Thank you for your feedback!'),
-                action: SnackBarAction(
-                  label: 'Go Home',
-                  onPressed: () {
-                    context.router.popUntilRoot();
-                    scaffoldKey.currentState?.closeDrawer();
-                  },
+            messenger
+              ..clearSnackBars()
+              ..showSnackBar(
+                SnackBar(
+                  content: const Text('Thank you for your feedback!'),
+                  action: SnackBarAction(
+                    label: 'Go Home',
+                    onPressed: () {
+                      context.router.popUntilRoot();
+                      scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
                 ),
-              ),
-            );
+              );
           } else if (state.isError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Error submitting feedback: ${state.errorMessage}',
-                ),
-              ),
+            messenger.clearSnackBars();
+            final message = state.errorMessage?.trim();
+            if (message == null || message.isEmpty) return;
+            messenger.showSnackBar(
+              SnackBar(content: Text(message)),
             );
           }
         },

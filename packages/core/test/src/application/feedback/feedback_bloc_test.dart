@@ -186,7 +186,7 @@ void main() {
             .having(
               (state) => state.errorMessage,
               'errorMessage',
-              'Failed to submit',
+              "We couldn't send your feedback. Please check your connection and try again.",
             )
             .having(
               (state) => state.feedback,
