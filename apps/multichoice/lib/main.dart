@@ -11,8 +11,7 @@ import 'package:window_size/window_size.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await LocaleSettings.useDeviceLocale();
-  await LocaleSettings.setLocale(AppLocale.nl); // FOR TESTING
+  await LocaleSettings.useDeviceLocale();
   await bootstrap();
 
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
