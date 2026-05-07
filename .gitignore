@@ -6,6 +6,7 @@
 
 /apps/showcase/
 /tools/
+.agent/scratch/
 
 # Multichoice V2
 **/gradle-wrapper.jar

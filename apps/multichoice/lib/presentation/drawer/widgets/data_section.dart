@@ -25,7 +25,7 @@ class DataSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'Data',
+            context.t.drawer.data,
             style: context.appTextTheme.titleSmall?.copyWith(
               letterSpacing: 1.1,
             ),
@@ -40,16 +40,16 @@ class DataSection extends StatelessWidget {
 
               CustomDialog<AlertDialog>.show(
                 context: context,
-                title: const Text(
-                  'Delete all tabs and entries?',
+                title: Text(
+                  context.t.drawer.deleteAllDataTitle,
                 ),
-                content: const Text(
-                  'Are you sure you want to delete all tabs and their entries?',
+                content: Text(
+                  context.t.drawer.deleteAllDataContent,
                 ),
                 actions: [
                   OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('No, cancel'),
+                    child: Text(context.t.common.noCancel),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -65,7 +65,7 @@ class DataSection extends StatelessWidget {
                       );
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Yes, delete'),
+                    child: Text(context.t.common.yesDelete),
                   ),
                 ],
               );
@@ -73,7 +73,7 @@ class DataSection extends StatelessWidget {
 
             return ListTile(
               title: Text(
-                'Delete All Data',
+                context.t.drawer.deleteAllData,
                 style: context.appTextTheme.denseTitle,
               ),
               onTap: canDeleteAll ? showDeleteAllDialog : null,
@@ -96,7 +96,7 @@ class DataSection extends StatelessWidget {
         ),
         ListTile(
           title: Text(
-            'Import / Export Data',
+            context.t.drawer.importExportData,
             style: context.appTextTheme.denseTitle,
           ),
           onTap: () async => openDataTransfer(),

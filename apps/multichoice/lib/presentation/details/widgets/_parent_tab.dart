@@ -10,7 +10,7 @@ class _ParentTab extends StatelessWidget {
         final tab = state.parent;
 
         if (tab == null) {
-          return const Text('Failed to load parent tab');
+          return Text(context.t.common.failedToLoadParentTab);
         }
 
         return Padding(

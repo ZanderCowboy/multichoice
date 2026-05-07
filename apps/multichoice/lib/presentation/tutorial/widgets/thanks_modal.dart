@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ThanksModal extends StatelessWidget {
@@ -20,24 +21,23 @@ class ThanksModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Thanks for Completing the Tutorial!',
-                style: TextStyle(
+              Text(
+                context.t.tutorial.thanksTitle,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               gap16,
               Text(
-                'You now know the basics of using Multichoice. '
-                'Feel free to explore and create your own collections!',
+                context.t.tutorial.thanksBody,
                 textAlign: TextAlign.center,
                 style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               ElevatedButton(
                 onPressed: onGoHome,
-                child: const Text('Go Home'),
+                child: Text(context.t.common.goHome),
               ),
             ],
           ),

@@ -33,7 +33,7 @@ class _LightDarkModeButtonState extends State<LightDarkModeButton> {
     return SwitchListTile(
       key: context.keys.lightDarkModeSwitch,
       title: Text(
-        'Light / Dark Mode',
+        context.t.drawer.lightDarkMode,
         style: context.appTextTheme.denseTitle,
       ),
       value: _isDark,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class TutorialWelcomeModal extends StatelessWidget {
@@ -37,7 +38,7 @@ class TutorialWelcomeModal extends StatelessWidget {
               gap24,
               ElevatedButton(
                 onPressed: onStart,
-                child: const Text('Start'),
+                child: Text(context.t.common.start),
               ),
             ],
           ),

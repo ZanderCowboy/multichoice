@@ -1,9 +1,11 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 
 class Multichoice extends StatelessWidget {
@@ -32,10 +34,13 @@ class Multichoice extends StatelessWidget {
         ),
       ],
       builder: (context, child) => MaterialApp.router(
-        title: 'Multichoice',
+        onGenerateTitle: (context) => context.t.appTitle,
         theme: AppTheme.lightThemeData,
         darkTheme: AppTheme.darkThemeData,
         themeMode: context.watch<AppTheme>().themeMode,
+        locale: TranslationProvider.of(context).flutterLocale,
+        supportedLocales: AppLocaleUtils.supportedLocales,
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
         debugShowCheckedModeBanner: false,
         routerConfig: _appRouter.config(),
         builder: (context, child) => ColoredBox(

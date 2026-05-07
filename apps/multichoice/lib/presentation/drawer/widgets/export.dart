@@ -9,6 +9,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/generated/assets.gen.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'app_version.dart';

@@ -14,7 +14,7 @@ class HorizontalVerticalLayoutButton extends StatelessWidget {
     return SwitchListTile(
       key: context.keys.layoutSwitch,
       title: Text(
-        'Horizontal / Vertical Layout',
+        context.t.drawer.horizontalLayout,
         style: context.appTextTheme.denseTitle,
       ),
       value: appLayout.isLayoutVertical,

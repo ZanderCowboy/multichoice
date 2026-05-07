@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
@@ -24,17 +25,16 @@ class WelcomeModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Welcome to Multichoice',
-                style: TextStyle(
+              Text(
+                context.t.common.welcomeToMultichoice,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               gap16,
               Text(
-                'Multichoice helps you organize your thoughts and ideas into customizable collections. '
-                'Would you like to follow a quick tutorial to learn how to use the app?',
+                context.t.common.welcomeToMultichoiceBody,
                 textAlign: TextAlign.center,
                 style: context.theme.appTextTheme.bodyLarge,
               ),
@@ -54,7 +54,7 @@ class WelcomeModal extends StatelessWidget {
                       );
                       onGoHome();
                     },
-                    child: const Text('Go Home'),
+                    child: Text(context.t.common.goHome),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -68,7 +68,7 @@ class WelcomeModal extends StatelessWidget {
                       );
                       onFollowTutorial();
                     },
-                    child: const Text('Follow Tutorial'),
+                    child: Text(context.t.tutorial.followTutorial),
                   ),
                 ],
               ),

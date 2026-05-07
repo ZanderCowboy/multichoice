@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class SearchResultCard extends StatelessWidget {
@@ -73,13 +74,13 @@ class SearchResultCard extends StatelessWidget {
                   }
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'Edit',
-                    child: Text('Edit'),
+                    child: Text(context.t.common.edit),
                   ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'Delete',
-                    child: Text('Delete'),
+                    child: Text(context.t.common.delete),
                   ),
                 ],
               ),

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/feedback/widgets/feedback_form.dart';
 
 @RoutePage()
@@ -27,9 +28,9 @@ class FeedbackPage extends StatelessWidget {
               ..clearSnackBars()
               ..showSnackBar(
                 SnackBar(
-                  content: const Text('Thank you for your feedback!'),
+                  content: Text(context.t.feedback.thankYouMessage),
                   action: SnackBarAction(
-                    label: 'Go Home',
+                    label: context.t.common.goHome,
                     onPressed: () {
                       context.router.popUntilRoot();
                       scaffoldKey.currentState?.closeDrawer();
@@ -50,7 +51,7 @@ class FeedbackPage extends StatelessWidget {
           page: AnalyticsPage.feedback,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Send Feedback'),
+              title: Text(context.t.feedback.sendFeedback),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_outlined),
                 onPressed: () async {

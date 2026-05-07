@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -27,7 +28,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
   Future<void> _confirmAndRequest(BuildContext context) async {
     if (!_passwordValid || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter your password to continue')),
+        SnackBar(content: Text(context.t.common.enterYourPasswordToContinue)),
       );
       return;
     }
@@ -37,19 +38,18 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete account?'),
-        content: const Text(
-          'This submits a deletion request. You will be signed out on this '
-          'device. Your data may be removed after the request is processed.',
+        title: Text(context.t.profile.deleteConfirmation),
+        content: Text(
+          context.t.profile.deleteAccountConfirmationBody,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.t.common.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Request deletion'),
+            child: Text(context.t.profile.requestDeletion),
           ),
         ],
       ),
@@ -65,8 +65,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
     context.read<AuthNotifier>().notifyAuthChanged();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Deletion request submitted. You have been signed out.'),
+      SnackBar(
+        content: Text(context.t.common.deletionRequestSubmitted),
       ),
     );
 
@@ -77,7 +77,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Delete Account'),
+        title: Text(context.t.profile.deleteAccount),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.pop(),
@@ -91,14 +91,12 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
             children: [
               gap24,
               Text(
-                'Request account deletion',
+                context.t.profile.requestAccountDeletion,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               gap12,
               Text(
-                'You can request that your account and associated data be '
-                'deleted. This is processed on our side; you will be signed '
-                'out here after submitting.',
+                context.t.profile.requestAccountDeletionBody,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -106,7 +104,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
               gap24,
               PasswordField(
                 controller: _passwordController,
-                hintText: 'Enter your password to confirm',
+                hintText: context.t.profile.enterPasswordToConfirm,
                 validatePolicy: false,
                 onValidityChanged: (valid) {
                   setState(() => _passwordValid = valid);
@@ -117,7 +115,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                 onPressed: _passwordValid
                     ? () => _confirmAndRequest(context)
                     : null,
-                child: const Text('Request deletion'),
+                child: Text(context.t.profile.requestDeletion),
               ),
             ],
           ),

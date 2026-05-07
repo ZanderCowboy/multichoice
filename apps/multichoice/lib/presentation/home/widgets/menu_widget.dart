@@ -49,35 +49,23 @@ class MenuWidget extends StatelessWidget {
               case MenuItems.deleteEntries:
                 CustomDialog<AlertDialog>.show(
                   context: context,
-                  title: RichText(
-                    text: TextSpan(
-                      text: 'Delete all entries of ',
-                      style: DefaultTextStyle.of(
-                        context,
-                      ).style.copyWith(fontSize: 24),
-                      children: [
-                        TextSpan(
-                          text: tab.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  title: Text.rich(
+                    context.t.home.deleteAllEntriesTitle(
+                      title: TextSpan(
+                        text: tab.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextSpan(
-                          text: '?',
-                          style: DefaultTextStyle.of(
-                            context,
-                          ).style.copyWith(fontSize: 24),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   content: Text(
-                    'Are you sure you want to delete all the entries of ${tab.title}?',
+                    context.t.home.deleteAllEntriesContent(title: tab.title),
                   ),
                   actions: [
                     OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: Text(context.t.common.cancel),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -86,7 +74,7 @@ class MenuWidget extends StatelessWidget {
                         );
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Delete Entries'),
+                      child: Text(context.t.common.deleteEntries),
                     ),
                   ],
                 );
@@ -95,7 +83,7 @@ class MenuWidget extends StatelessWidget {
                   context: context,
                   title: tab.title,
                   content: Text(
-                    "Are you sure you want to delete ${tab.title} and all it's entries?",
+                    context.t.home.deleteTabAndEntriesContent(title: tab.title),
                   ),
                   onConfirm: () {
                     context.read<HomeBloc>().add(

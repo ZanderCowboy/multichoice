@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/debug/widgets/export.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -14,14 +15,14 @@ class DebugPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!kDebugMode) {
-      return const Scaffold(
-        body: Center(child: Text('Not available')),
+      return Scaffold(
+        body: Center(child: Text(context.t.debug.notAvailable)),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Debug'),
+        title: Text(context.t.debug.title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.maybePop(),
@@ -51,7 +52,7 @@ class _DebugBodyState extends State<_DebugBody> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Debug only – accessible via double-tap or long-press on version',
+              context.t.debug.description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontStyle: FontStyle.italic,
               ),
@@ -83,18 +84,18 @@ class _DebugBodyState extends State<_DebugBody> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear Storage Data'),
-        content: const Text(
-          'Are you sure you want to clear all storage data? This action cannot be undone.',
+        title: Text(context.t.debug.clearStorageDataTitle),
+        content: Text(
+          context.t.debug.clearStorageDataContent,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(context.t.common.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Clear'),
+            child: Text(context.t.debug.clearStorageDataAction),
           ),
         ],
       ),
@@ -105,7 +106,9 @@ class _DebugBodyState extends State<_DebugBody> {
       if (context.mounted) {
         context.read<AuthNotifier>().notifyStorageCleared();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage data cleared successfully')),
+          SnackBar(
+            content: Text(context.t.common.storageDataClearedSuccessfully),
+          ),
         );
       }
     }

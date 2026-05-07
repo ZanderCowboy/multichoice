@@ -41,7 +41,7 @@ class _NewTabState extends State<NewTab> {
       onPressed: () {
         CustomDialog<AlertDialog>.show(
           context: context,
-          title: const Text('Add New Tab'),
+          title: Text(context.t.home.addNewTab),
           content: BlocProvider.value(
             value: context.read<HomeBloc>(),
             child: BlocBuilder<HomeBloc, HomeState>(
