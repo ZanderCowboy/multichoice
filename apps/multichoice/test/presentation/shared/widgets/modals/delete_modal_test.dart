@@ -80,28 +80,26 @@ void main() {
     var confirmPressed = false;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Builder(
-            builder: (context) {
-              return ElevatedButton(
-                onPressed: () {
-                  deleteModal(
-                    context: context,
-                    title: 'Item',
-                    content: const Text(
-                      'Are you sure you want to delete this item?',
-                    ),
-                    onConfirm: () {
-                      confirmPressed = true;
-                      Navigator.of(context).pop();
-                    },
-                  );
-                },
-                child: const Text('Open Modal'),
-              );
-            },
-          ),
+      widgetWrapper(
+        child: Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () {
+                deleteModal(
+                  context: context,
+                  title: 'Item',
+                  content: const Text(
+                    'Are you sure you want to delete this item?',
+                  ),
+                  onConfirm: () {
+                    confirmPressed = true;
+                    Navigator.of(context).pop();
+                  },
+                );
+              },
+              child: const Text('Open Modal'),
+            );
+          },
         ),
       ),
     );
