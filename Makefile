@@ -23,7 +23,7 @@ mr:
 	cd "$(WORKDIR)" && melos rebuild:all
 
 slang:
-	cd "$(WORKDIR)" && dart run slang
+	cd "$(WORKDIR)/apps/multichoice" && dart run slang && cd "$(WORKDIR)"
 
 # Analyze (scoped)
 # Usage:

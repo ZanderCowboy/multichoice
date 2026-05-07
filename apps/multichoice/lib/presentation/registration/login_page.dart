@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/email_or_username_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/login_button.dart';
@@ -44,7 +45,9 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _emailOrUsernameController.addListener(_syncLoginFormValidity);
     _passwordController.addListener(_syncLoginFormValidity);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _syncLoginFormValidity());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _syncLoginFormValidity(),
+    );
   }
 
   @override
@@ -60,7 +63,8 @@ class _LoginPageState extends State<LoginPage> {
   void _syncLoginFormValidity() {
     if (!mounted) return;
     final ident = _emailOrUsernameController.text.trim();
-    final identOk = ident.isNotEmpty &&
+    final identOk =
+        ident.isNotEmpty &&
         EmailOrUsernameField.defaultValidator(ident) == null;
     final passOk = _passwordController.text.trim().isNotEmpty;
     final ready = identOk && passOk;
@@ -104,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
             context.read<AuthNotifier>().notifyAuthChanged();
             if (_loadingAction == _AuthAction.signIn) {
               _showLoginButtonMessage(
-                'Signed in successfully!',
+                context.t.auth.signInSuccessfully,
                 isSuccess: true,
               );
             }
@@ -186,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: Text(context.t.auth.signIn),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.maybePop(),
@@ -296,7 +300,7 @@ class _LoginPageContent extends StatelessWidget {
                           ? null
                           : () => _onForgotPassword(context),
                       child: Text(
-                        'Forgot Password?',
+                        context.t.auth.forgotPasswordQuestion,
                         style: context.appTextTheme.hyperlink,
                       ),
                     ),
@@ -324,7 +328,7 @@ class _LoginPageContent extends StatelessWidget {
                       Padding(
                         padding: horizontal16,
                         child: Text(
-                          'or',
+                          context.t.common.or,
                           style: context.appTextTheme.contrastBody,
                         ),
                       ),
@@ -343,11 +347,11 @@ class _LoginPageContent extends StatelessWidget {
                         style: promptStyle,
                         children: [
                           TextSpan(
-                            text: "Don't have an account? ",
+                            text: context.t.auth.dontHaveAnAccount,
                             style: context.appTextTheme.bodyLarge,
                           ),
                           TextSpan(
-                            text: 'Sign Up',
+                            text: context.t.auth.signUp,
                             style: context.appTextTheme.hyperlink,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {

@@ -6,6 +6,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:open_mail/open_mail.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -56,8 +57,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _syncEmailValidity() {
     if (!mounted) return;
     final email = _emailController.text.trim();
-    final ok =
-        email.isNotEmpty && EmailField.defaultValidator(email) == null;
+    final ok = email.isNotEmpty && EmailField.defaultValidator(email) == null;
     if (ok != _emailValid) {
       setState(() => _emailValid = ok);
     }
@@ -86,8 +86,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         sent = true;
         setState(() {
           _isLoading = false;
-          _successMessage =
-              'Reset link sent! Check your email or open your mail app.';
+          _successMessage = context.t.auth.resetLinkSent;
         });
       },
     );
@@ -111,8 +110,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     if (apps.isEmpty) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No email apps found on this device'),
+        SnackBar(
+          content: Text(context.t.auth.noEmailAppsFound),
         ),
       );
       return;
@@ -122,7 +121,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       final result = await OpenMail.openMailApp();
       if (!result.didOpen && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open email app')),
+          SnackBar(content: Text(context.t.auth.couldNotOpenEmailApp)),
         );
       }
       return;
@@ -132,13 +131,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final selectedApp = await showDialog<MailApp>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Open Email App'),
+        title: Text(context.t.auth.openEmailApp),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Choose an email app to check your inbox for the password reset link.',
+            Text(
+              context.t.auth.chooseEmailAppPrompt,
             ),
             gap16,
             SizedBox(
@@ -161,7 +160,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.t.common.cancel),
           ),
         ],
       ),
@@ -176,7 +175,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text(context.t.auth.forgotPassword),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.maybePop(),
@@ -201,7 +200,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             children: [
               gap24,
               Text(
-                "Enter your email and we'll send you a link to reset your password.",
+                context.t.auth.resetPasswordInstructions,
                 style: context.appTextTheme.bodyLarge,
               ),
               gap24,
@@ -220,7 +219,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         color: context.appColorsTheme.primary,
                       )
                     : null,
-                label: const Text('Send Reset Link'),
+                label: Text(context.t.auth.sendResetLink),
               ),
             ],
           ),
@@ -242,14 +241,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           gap24,
           Text(
-            'Check your email',
+            context.t.auth.checkYourEmail,
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           gap12,
           Text(
-            "We've sent a password reset link to ${_emailController.text}. "
-            'Open your email app or check your inbox.',
+            context.t.auth.passwordResetSentDescription(
+              email: _emailController.text,
+            ),
             style: context.appTextTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
@@ -259,7 +259,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             child: OutlinedButton.icon(
               onPressed: () => _openEmailApp(context),
               icon: const Icon(Icons.open_in_new),
-              label: const Text('Open Email App'),
+              label: Text(context.t.auth.openEmailApp),
             ),
           ),
           gap12,
@@ -267,13 +267,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             width: double.infinity,
             child: FilledButton(
               onPressed: () => _onGoToResetPage(context),
-              child: const Text('Go to Reset Password'),
+              child: Text(context.t.auth.goToResetPassword),
             ),
           ),
           gap16,
           TextButton(
             onPressed: () => context.router.maybePop(),
-            child: const Text('Back to Sign In'),
+            child: Text(context.t.auth.backToSignIn),
           ),
         ],
       ),

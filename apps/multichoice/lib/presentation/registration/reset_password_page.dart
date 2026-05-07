@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -54,8 +55,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final isChange = widget.isChangePassword;
-    final title = isChange ? 'Change Password' : 'Reset Password';
-    final primaryLabel = isChange ? 'Change Password' : 'Reset Password';
+    final title = isChange
+        ? context.t.profile.changePassword
+        : context.t.profile.resetPassword;
+    final primaryLabel = isChange
+        ? context.t.profile.changePassword
+        : context.t.profile.resetPassword;
 
     return BlocProvider(
       create: (_) => coreSl<ResetPasswordBloc>(),
@@ -78,9 +83,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           final canSubmitReset =
               validation.validatePassword(state.newPassword) == null &&
               validation.validatePasswordConfirmation(
-                password: state.newPassword,
-                confirmation: state.confirmPassword,
-              ) ==
+                    password: state.newPassword,
+                    confirmation: state.confirmPassword,
+                  ) ==
                   null;
 
           return Scaffold(
@@ -110,7 +115,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                             gap4,
                             Text(
-                              'New Password',
+                              context.t.profile.newPassword,
                               style: TextStyle(
                                 color: context
                                     .theme
@@ -121,7 +126,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                           ],
                         ),
-                        hintText: 'Enter new password',
+                        hintText: context.t.profile.enterNewPassword,
                         showRequirements: true,
                         autofillHints: const [AutofillHints.newPassword],
                         onChanged: (value) =>
@@ -141,7 +146,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                             gap4,
                             Text(
-                              'Confirm Password',
+                              context.t.profile.confirmPassword,
                               style: TextStyle(
                                 color: context
                                     .theme
@@ -152,7 +157,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                           ],
                         ),
-                        hintText: 'Re-enter password',
+                        hintText: context.t.auth.reenterPassword,
                         validatePolicy: false,
                         autofillHints: const [AutofillHints.newPassword],
                         onChanged: (value) =>
@@ -190,7 +195,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               state.isLoading || state.successMessage != null
                               ? null
                               : () => context.router.popUntilRoot(),
-                          child: const Text('Back to Sign In'),
+                          child: Text(context.t.auth.backToSignIn),
                         ),
                       ],
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class UpdateAvailableModal extends StatelessWidget {
@@ -29,12 +30,12 @@ class UpdateAvailableModal extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Update available',
+                  context.t.common.updateAvailable,
                   style: context.appTextTheme.titleMedium,
                 ),
                 gap4,
                 Text(
-                  'A newer version of Multichoice is available on the Play Store.',
+                  context.t.common.updateAvailableDescription,
                   style: context.appTextTheme.bodyMedium,
                 ),
                 gap12,
@@ -43,12 +44,12 @@ class UpdateAvailableModal extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: onLater,
-                      child: const Text('Later'),
+                      child: Text(context.t.home.later),
                     ),
                     gap8,
                     ElevatedButton(
                       onPressed: onUpdate,
-                      child: const Text('Update'),
+                      child: Text(context.t.common.update),
                     ),
                   ],
                 ),

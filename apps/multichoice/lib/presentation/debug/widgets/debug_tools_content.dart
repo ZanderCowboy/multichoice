@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -25,29 +26,33 @@ class DebugToolsContent extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.dataset),
-            title: const Text('Clear Storage Data'),
-            subtitle: const Text(
-              'Clears tour, layout, banners, permissions flags, email, etc.',
-            ),
+            title: Text(context.t.debug.clearStorageDataTitle),
+            subtitle: Text(context.t.debug.clearStorageDataSubtitle),
             onTap: () => onClearStorage(context),
           ),
           gap12,
           ListTile(
             leading: const Icon(Icons.cloud_sync_outlined),
-            title: const Text('Refetch Remote Config'),
-            subtitle: const Text('Force fetch + activate latest Remote Config'),
+            title: Text(context.t.debug.refetchRemoteConfigTitle),
+            subtitle: Text(context.t.debug.refetchRemoteConfigSubtitle),
             onTap: () async {
               try {
                 final firebaseService = coreSl<IFirebaseService>();
                 await firebaseService.forceFetchAndActivate();
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Remote Config refreshed')),
+                  SnackBar(
+                    content: Text(context.t.debug.remoteConfigRefreshed),
+                  ),
                 );
               } on Object catch (e) {
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to refresh: $e')),
+                  SnackBar(
+                    content: Text(
+                      context.t.common.failedToRefresh(error: e.toString()),
+                    ),
+                  ),
                 );
               }
             },
@@ -55,8 +60,8 @@ class DebugToolsContent extends StatelessWidget {
           gap12,
           ListTile(
             leading: const Icon(Icons.system_update_alt_outlined),
-            title: const Text('Show Update Prompt'),
-            subtitle: const Text('Show the update dialog (debug)'),
+            title: Text(context.t.debug.showUpdatePromptTitle),
+            subtitle: Text(context.t.debug.showUpdatePromptSubtitle),
             onTap: () async {
               await showUpdatePromptForDebug(context);
             },
@@ -64,8 +69,8 @@ class DebugToolsContent extends StatelessWidget {
           gap12,
           ListTile(
             leading: const Icon(Icons.lock_reset),
-            title: const Text('Reset Password'),
-            subtitle: const Text('Test reset password flow'),
+            title: Text(context.t.debug.resetPasswordTitle),
+            subtitle: Text(context.t.debug.resetPasswordSubtitle),
             onTap: () => context.router.push(ResetPasswordPageRoute()),
           ),
           gap12,
@@ -78,11 +83,11 @@ class DebugToolsContent extends StatelessWidget {
                   : sessionLoggedIn;
               return SwitchListTile(
                 secondary: const Icon(Icons.person_outline),
-                title: const Text('Force Logged In (debug)'),
+                title: Text(context.t.debug.forceLoggedInTitle),
                 subtitle: Text(
                   authNotifier.hasDebugOverride
-                      ? 'Manual override active'
-                      : 'Using stored session state',
+                      ? context.t.debug.forceLoggedInOverrideActive
+                      : context.t.debug.forceLoggedInStoredSession,
                 ),
                 value: value,
                 onChanged: (newValue) => authNotifier.setDebugLoggedInOverride(
@@ -95,7 +100,7 @@ class DebugToolsContent extends StatelessWidget {
             TextButton.icon(
               onPressed: authNotifier.clearDebugLoggedInOverride,
               icon: const Icon(Icons.refresh),
-              label: const Text('Use real session state'),
+              label: Text(context.t.debug.useRealSessionState),
             ),
         ],
       ),

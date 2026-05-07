@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -121,7 +122,7 @@ class AboutPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: context.theme.appColors.background,
           appBar: AppBar(
-            title: const Text('About'),
+            title: Text(context.t.about.title),
             backgroundColor: context.theme.appColors.appBarBackground,
           ),
           body: SafeArea(
@@ -144,7 +145,7 @@ class AboutPage extends StatelessWidget {
                       gap16,
                       Expanded(
                         child: Text(
-                          'Multichoice',
+                          context.t.about.appName,
                           style: context.appTextTheme.headingMedium,
                         ),
                       ),
@@ -162,61 +163,74 @@ class AboutPage extends StatelessWidget {
                                 constraints: const BoxConstraints(
                                   maxWidth: _sectionMaxWidth,
                                 ),
-                                child: snapshot.connectionState ==
+                                child:
+                                    snapshot.connectionState ==
                                         ConnectionState.waiting
                                     ? Center(child: CircularLoader.small())
                                     : (hasSocial
-                                        ? _sectionCard(
-                                            context: context,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    const Icon(
-                                                      Icons.share_outlined,
+                                          ? _sectionCard(
+                                              context: context,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.share_outlined,
+                                                      ),
+                                                      gap10,
+                                                      Text(
+                                                        context
+                                                            .t
+                                                            .about
+                                                            .socialTitle,
+                                                        style: context
+                                                            .appTextTheme
+                                                            .titleMedium,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  gap12,
+                                                  if (instagramUrl != null) ...[
+                                                    FilledButton.icon(
+                                                      onPressed: () =>
+                                                          _openExternalUrl(
+                                                            context,
+                                                            instagramUrl,
+                                                          ),
+                                                      icon: const Icon(
+                                                        Icons
+                                                            .camera_alt_outlined,
+                                                      ),
+                                                      label: Text(
+                                                        context
+                                                            .t
+                                                            .about
+                                                            .instagram,
+                                                      ),
                                                     ),
-                                                    gap10,
-                                                    Text(
-                                                      'Social',
-                                                      style: context
-                                                          .appTextTheme
-                                                          .titleMedium,
-                                                    ),
+                                                    if (websiteUrl != null)
+                                                      gap10,
                                                   ],
-                                                ),
-                                                gap12,
-                                                if (instagramUrl != null) ...[
-                                                  FilledButton.icon(
-                                                    onPressed: () =>
-                                                        _openExternalUrl(
-                                                      context,
-                                                      instagramUrl,
+                                                  if (websiteUrl != null)
+                                                    FilledButton.icon(
+                                                      onPressed: () =>
+                                                          _openExternalUrl(
+                                                            context,
+                                                            websiteUrl,
+                                                          ),
+                                                      icon: const Icon(
+                                                        Icons.public,
+                                                      ),
+                                                      label: Text(
+                                                        context.t.about.website,
+                                                      ),
                                                     ),
-                                                    icon: const Icon(
-                                                      Icons.camera_alt_outlined,
-                                                    ),
-                                                    label:
-                                                        const Text('Instagram'),
-                                                  ),
-                                                  if (websiteUrl != null) gap10,
                                                 ],
-                                                if (websiteUrl != null)
-                                                  FilledButton.icon(
-                                                    onPressed: () =>
-                                                        _openExternalUrl(
-                                                      context,
-                                                      websiteUrl,
-                                                    ),
-                                                    icon:
-                                                        const Icon(Icons.public),
-                                                    label: const Text('Website'),
-                                                  ),
-                                              ],
-                                            ),
-                                          )
-                                        : const SizedBox.shrink()),
+                                              ),
+                                            )
+                                          : const SizedBox.shrink()),
                               ),
                             ),
                           ),
@@ -242,7 +256,7 @@ class AboutPage extends StatelessWidget {
                                             const Icon(Icons.email_outlined),
                                             gap10,
                                             Text(
-                                              'Contact',
+                                              context.t.about.contactTitle,
                                               style: context
                                                   .appTextTheme
                                                   .titleMedium,
@@ -257,9 +271,8 @@ class AboutPage extends StatelessWidget {
                                           ),
                                           title: Text(
                                             emailAddress,
-                                            style: context
-                                                .appTextTheme
-                                                .bodyMedium,
+                                            style:
+                                                context.appTextTheme.bodyMedium,
                                           ),
                                           onTap: () => _openEmail(
                                             context,
@@ -283,7 +296,10 @@ class AboutPage extends StatelessWidget {
                                             gap10,
                                             Expanded(
                                               child: Text(
-                                                'Policies and acknowledgements',
+                                                context
+                                                    .t
+                                                    .about
+                                                    .policiesAndAcknowledgements,
                                                 style: context
                                                     .appTextTheme
                                                     .titleMedium,
@@ -298,7 +314,9 @@ class AboutPage extends StatelessWidget {
                                             leading: const Icon(
                                               Icons.privacy_tip_outlined,
                                             ),
-                                            title: const Text('Privacy Policy'),
+                                            title: Text(
+                                              context.t.about.privacyPolicy,
+                                            ),
                                             onTap: () => _openExternalUrl(
                                               context,
                                               privacyPolicyUrl,
@@ -310,7 +328,7 @@ class AboutPage extends StatelessWidget {
                                             leading: const Icon(
                                               Icons.description_outlined,
                                             ),
-                                            title: const Text('Terms'),
+                                            title: Text(context.t.about.terms),
                                             onTap: () => _openExternalUrl(
                                               context,
                                               termsUrl,
@@ -322,8 +340,8 @@ class AboutPage extends StatelessWidget {
                                             leading: const Icon(
                                               Icons.favorite_outline,
                                             ),
-                                            title: const Text(
-                                              'Acknowledgements',
+                                            title: Text(
+                                              context.t.about.acknowledgements,
                                             ),
                                             onTap: () => _openExternalUrl(
                                               context,

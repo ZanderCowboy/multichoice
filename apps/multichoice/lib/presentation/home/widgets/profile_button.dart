@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,7 @@ class ProfileButton extends StatelessWidget {
                         const ProfilePageRoute(),
                       );
                     },
-                    tooltip: 'Profile',
+                    tooltip: context.t.profile.title,
                     icon: const Icon(Icons.person_outline),
                     style: const ButtonStyle(
                       padding: WidgetStatePropertyAll(
@@ -52,7 +53,7 @@ class ProfileButton extends StatelessWidget {
                           EdgeInsets.zero,
                         ),
                       ),
-                      child: const Text('Log in'),
+                      child: Text(context.t.auth.signIn),
                     ),
                   );
           },

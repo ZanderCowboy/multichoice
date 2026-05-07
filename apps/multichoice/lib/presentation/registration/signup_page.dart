@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/utils/password_validator.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
@@ -73,7 +74,7 @@ class _SignupPageState extends State<SignupPage> {
             context.read<AuthNotifier>().notifyAuthChanged();
             if (_loadingAction == _AuthAction.google) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Signed in successfully!')),
+                SnackBar(content: Text(context.t.auth.signInSuccessfully)),
               );
               context.router.popUntilRoot();
             } else {
@@ -225,7 +226,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: Text(context.t.auth.signUp),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.maybePop(),
@@ -303,7 +304,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
                         overrideLabel:
                             widget.isSuccess &&
                                 widget.loadingAction == _AuthAction.signup
-                            ? 'Registration successful!'
+                            ? context.t.auth.registrationSuccessful
                             : null,
                         overrideIcon:
                             widget.isSuccess &&
@@ -322,7 +323,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
                           Padding(
                             padding: horizontal16,
                             child: Text(
-                              'or',
+                              context.t.common.or,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
                                     color: Theme.of(
@@ -354,11 +355,11 @@ class _SignupPageContentState extends State<_SignupPageContent> {
                                   ).colorScheme.onSurface,
                                 ),
                             children: [
-                              const TextSpan(
-                                text: 'Already have an account? ',
+                              TextSpan(
+                                text: context.t.auth.alreadyHaveAnAccount,
                               ),
                               TextSpan(
-                                text: 'Sign In',
+                                text: context.t.auth.signIn,
                                 style: TextStyle(
                                   color: context.theme.appColors.linkColor,
                                   decoration: TextDecoration.underline,

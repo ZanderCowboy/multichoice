@@ -15,7 +15,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     return BlocBuilder<DetailsBloc, DetailsState>(
       builder: (context, state) {
         return AppBar(
-          title: const Text('Details'),
+          title: Text(context.t.details.title),
           leading: IconButton(
             onPressed: onBack,
             icon: const Icon(Icons.arrow_back),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class DataTransferContent extends StatelessWidget {
@@ -25,16 +26,16 @@ class DataTransferContent extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error_outline,
                     color: Colors.red,
                   ),
                   gap10,
-                  Text('Failed to load data transfer state.'),
+                  Text(context.t.common.failedToLoadDataTransferState),
                 ],
               ),
             );
@@ -51,12 +52,12 @@ class DataTransferContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Move your data between devices',
+                context.t.dataTransfer.moveDataTitle,
                 style: textTheme.titleLarge,
               ),
               gap10,
               Text(
-                'Export creates a Multichoice backup file. Import restores your collections from that file.',
+                context.t.dataTransfer.moveDataDescription,
                 style: textTheme.bodyMedium,
               ),
               gap12,
@@ -72,7 +73,7 @@ class DataTransferContent extends StatelessWidget {
                       gap12,
                       Expanded(
                         child: Text(
-                          'Only Multichoice backup files can be imported (.multichoice).',
+                          context.t.dataTransfer.importOnlyBackupFiles,
                           style: textTheme.bodyMedium,
                         ),
                       ),
@@ -83,18 +84,18 @@ class DataTransferContent extends StatelessWidget {
               const Spacer(),
               ElevatedButton(
                 onPressed: onImportPressed,
-                child: const Text('Import backup'),
+                child: Text(context.t.dataTransfer.importBackup),
               ),
               gap10,
               ElevatedButton(
                 onPressed: dbIsEmpty ? null : onExportPressed,
-                child: const Text('Export backup'),
+                child: Text(context.t.dataTransfer.exportBackup),
               ),
               gap12,
               Text(
                 dbIsEmpty
-                    ? 'Export is disabled because there is no data to back up yet.'
-                    : 'Export will save a file you can import later.',
+                    ? context.t.dataTransfer.exportDisabledNoData
+                    : context.t.dataTransfer.exportSaveFileDescription,
                 textAlign: TextAlign.center,
                 style: textTheme.bodySmall,
               ),

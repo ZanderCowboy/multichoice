@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ReusableForm extends StatelessWidget {
@@ -71,8 +72,8 @@ class ReusableForm extends StatelessWidget {
                 color: textColor,
               ),
               decoration: baseDecoration.copyWith(
-                labelText: 'Enter a Title',
-                hintText: 'Title',
+                labelText: context.t.common.enterATitle,
+                hintText: context.t.common.title,
               ),
               maxLines: 3,
             ),
@@ -86,8 +87,8 @@ class ReusableForm extends StatelessWidget {
                 color: textColor,
               ),
               decoration: baseDecoration.copyWith(
-                labelText: 'Enter a Subtitle',
-                hintText: 'Subtitle',
+                labelText: context.t.common.enterASubtitle,
+                hintText: context.t.common.subtitle,
               ),
               maxLines: 3,
             ),
@@ -97,12 +98,12 @@ class ReusableForm extends StatelessWidget {
               children: [
                 OutlinedButton(
                   onPressed: onCancel,
-                  child: const Text('Cancel'),
+                  child: Text(context.t.common.cancel),
                 ),
                 gap4,
                 ElevatedButton(
                   onPressed: isValid && isTitleNotEmpty ? onAdd : null,
-                  child: const Text('Add'),
+                  child: Text(context.t.common.add),
                 ),
               ],
             ),

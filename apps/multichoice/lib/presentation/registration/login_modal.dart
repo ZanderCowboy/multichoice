@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/login_page.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -12,7 +13,7 @@ void showLoginModal(BuildContext context) {
     Future<void>.microtask(
       () => CustomDialog<AlertDialog>.show(
         context: context,
-        title: const Text('Sign In'),
+        title: Text(context.t.auth.signIn),
         content: const LoginPage(isModal: true),
       ),
     ),

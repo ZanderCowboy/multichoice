@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class LoginButton extends StatelessWidget {
@@ -26,7 +27,7 @@ class LoginButton extends StatelessWidget {
       successLabel: overrideLabel,
       successIcon: overrideIcon,
       height: 52,
-      label: const Text('Sign In'),
+      label: Text(context.t.auth.signIn),
     );
   }
 }

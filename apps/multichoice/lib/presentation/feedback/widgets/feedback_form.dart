@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatelessWidget {
@@ -28,12 +29,12 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   final _messageController = TextEditingController();
   final _emailController = TextEditingController();
 
-  final List<String> _categories = [
-    'Bug Report',
-    'Feature Request',
-    'General Feedback',
-    'UI/UX',
-    'Performance',
+  List<String> _categories(BuildContext context) => [
+    context.t.feedback.categories.bugReport,
+    context.t.feedback.categories.featureRequest,
+    context.t.feedback.categories.generalFeedback,
+    context.t.feedback.categories.uiUx,
+    context.t.feedback.categories.performance,
   ];
 
   @override
@@ -87,7 +88,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         gap16,
-        const Text('Attached Images:'),
+        Text(context.t.feedback.attachedImages),
         gap8,
         SizedBox(
           height: 100,
@@ -157,11 +158,11 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
               children: [
                 DropdownButtonFormField<String>(
                   initialValue: state.feedback.category,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.t.feedback.categoryLabel,
+                    border: const OutlineInputBorder(),
                   ),
-                  items: _categories.map((category) {
+                  items: _categories(context).map((category) {
                     return DropdownMenuItem(
                       value: category,
                       child: Text(category),
@@ -177,7 +178,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select a category';
+                      return context.t.feedback.selectCategory;
                     }
                     return null;
                   },
@@ -185,9 +186,9 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                 gap16,
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email (optional)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.t.feedback.emailLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -201,7 +202,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
                       if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return context.t.feedback.invalidEmail;
                       }
                     }
                     return null;
@@ -210,9 +211,9 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                 gap16,
                 TextFormField(
                   controller: _messageController,
-                  decoration: const InputDecoration(
-                    labelText: 'Your Feedback',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.t.feedback.messageLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 5,
                   onChanged: (value) {
@@ -225,7 +226,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your feedback';
+                      return context.t.feedback.enterFeedback;
                     }
                     return null;
                   },
@@ -262,7 +263,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                   OutlinedButton.icon(
                     onPressed: () => _pickImage(context),
                     icon: const Icon(Icons.image),
-                    label: const Text('Add Images'),
+                    label: Text(context.t.feedback.addImages),
                   ),
                   _buildImageThumbnails(context, state),
                   gap24,
@@ -275,7 +276,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                       : () => _submitFeedback(context),
                   child: state.isLoading
                       ? CircularLoader.small()
-                      : const Text('Submit Feedback'),
+                      : Text(context.t.feedback.submitFeedback),
                 ),
               ],
             ),

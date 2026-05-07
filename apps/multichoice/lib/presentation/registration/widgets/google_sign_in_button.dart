@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class GoogleSignInButton extends StatelessWidget {
@@ -23,7 +24,7 @@ class GoogleSignInButton extends StatelessWidget {
       isLoading: isLoading,
       successLabel: overrideLabel,
       icon: const Icon(Icons.g_mobiledata, size: 24),
-      label: const Text('Continue with Google'),
+      label: Text(context.t.auth.continueWithGoogle),
     );
   }
 }
