@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
-import 'package:provider/provider.dart';
+import 'package:multichoice/presentation/shared/widgets/shine_card.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -18,39 +19,18 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String? _email;
-  String? _username;
-  var _loaded = false;
+  late final ProfileBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_loadProfile());
+    _bloc = coreSl<ProfileBloc>()..add(const ProfileLoadStarted());
   }
 
-  Future<void> _loadProfile() async {
-    if (!coreSl.isRegistered<ILoginService>()) {
-      if (mounted) {
-        setState(() {
-          _loaded = true;
-        });
-      }
-      return;
-    }
-
-    final session = coreSl<ILoginService>();
-    var email = await session.getProfileEmail();
-    final username = await session.getProfileUsername();
-    if (email == null || email.isEmpty) {
-      email = await coreSl<IAppStorageService>().lastUsedEmail;
-    }
-
-    if (!mounted) return;
-    setState(() {
-      _email = email;
-      _username = username;
-      _loaded = true;
-    });
+  @override
+  void dispose() {
+    unawaited(_bloc.close());
+    super.dispose();
   }
 
   String _display(String? value) =>
@@ -58,167 +38,132 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.t.profile.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined),
-          onPressed: () {
-            if (!context.mounted) return;
-            context.router.pop();
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: allPadding16,
-          child: _ShineCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (!_loaded)
-                  const Center(
-                    child: Padding(
-                      padding: allPadding24,
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                else ...[
-                  ListTile(
-                    leading: const Icon(Icons.email_outlined),
-                    title: Text(context.t.profile.email),
-                    subtitle: Text(_display(_email)),
-                    tileColor: context.theme.appColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: borderCircular12,
-                    ),
-                  ),
-                  gap12,
-                  ListTile(
-                    leading: const Icon(Icons.person_outline),
-                    title: Text(context.t.profile.username),
-                    subtitle: Text(_display(_username)),
-                    tileColor: context.theme.appColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: borderCircular12,
-                    ),
-                  ),
-                  gap12,
-                  ListTile(
-                    leading: const Icon(Icons.lock_outline),
-                    title: Text(context.t.profile.changePassword),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () async {
-                      await context.router.push(
-                        ResetPasswordPageRoute(isChangePassword: true),
-                      );
-                      if (context.mounted) {
-                        await _loadProfile();
-                      }
-                    },
-                    tileColor: context.theme.appColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: borderCircular12,
-                    ),
-                  ),
-                  gap12,
-                  ListTile(
-                    leading: Icon(
-                      Icons.delete_outline,
-                      color: context.appColorsTheme.error,
-                    ),
-                    title: Text(
-                      context.t.profile.deleteAccount,
-                      style: TextStyle(
-                        color: context.appColorsTheme.error,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () async {
-                      await context.router.push(
-                        const AccountDeletionPageRoute(),
-                      );
-                      if (context.mounted) {
-                        await _loadProfile();
-                      }
-                    },
-                    tileColor: context.theme.appColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: borderCircular12,
-                    ),
-                  ),
-                  gap24,
-                  OutlinedButton.icon(
-                    onPressed: () async {
-                      if (coreSl.isRegistered<ILoginService>()) {
-                        await coreSl<ILoginService>().deleteLoginInfo();
-                      }
-                      if (!context.mounted) return;
-                      context.read<AuthNotifier>().notifyAuthChanged();
-                      if (!context.mounted) return;
-                      context.router.popUntilRoot();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(context.t.auth.signedOutSuccess),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.logout_outlined),
-                    label: Text(context.t.auth.logout),
-                  ),
-                ],
-              ],
+    return BlocProvider.value(
+      value: _bloc,
+      child: BlocListener<ProfileBloc, ProfileState>(
+        listener: (context, state) {
+          if (state.isLoggedOut) {
+            context.read<AuthNotifier>().notifyAuthChanged();
+            context.router.popUntilRoot();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.t.auth.signedOutSuccess),
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(context.t.profile.title),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_outlined),
+              onPressed: () {
+                if (!context.mounted) return;
+                context.router.pop();
+              },
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: allPadding16,
+              child: ShineCard(
+                child: BlocBuilder<ProfileBloc, ProfileState>(
+                  builder: (context, state) {
+                    final isLoading = state.isLoading;
+                    final email = state.email;
+                    final username = state.username;
 
-class _ShineCard extends StatelessWidget {
-  const _ShineCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: borderCircular16,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderCircular16,
-        child: Stack(
-          children: [
-            Container(
-              padding: allPadding20,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    colorScheme.primary,
-                    colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-                  ],
-                ),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.16),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (isLoading)
+                          const Center(
+                            child: Padding(
+                              padding: allPadding24,
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        else ...[
+                          ListTile(
+                            leading: const Icon(Icons.email_outlined),
+                            title: Text(context.t.profile.email),
+                            subtitle: Text(_display(email)),
+                            tileColor: context.theme.appColors.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: borderCircular12,
+                            ),
+                          ),
+                          gap12,
+                          ListTile(
+                            leading: const Icon(Icons.person_outline),
+                            title: Text(context.t.profile.username),
+                            subtitle: Text(_display(username)),
+                            tileColor: context.theme.appColors.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: borderCircular12,
+                            ),
+                          ),
+                          gap12,
+                          ListTile(
+                            leading: const Icon(Icons.lock_outline),
+                            title: Text(context.t.profile.changePassword),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () async {
+                              await context.router.push(
+                                ResetPasswordPageRoute(isChangePassword: true),
+                              );
+                              if (context.mounted) {
+                                _bloc.add(const ProfileLoadStarted());
+                              }
+                            },
+                            tileColor: context.theme.appColors.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: borderCircular12,
+                            ),
+                          ),
+                          gap12,
+                          ListTile(
+                            leading: Icon(
+                              Icons.delete_outline,
+                              color: context.appColorsTheme.error,
+                            ),
+                            title: Text(
+                              context.t.profile.deleteAccount,
+                              style: TextStyle(
+                                color: context.appColorsTheme.error,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () async {
+                              await context.router.push(
+                                const AccountDeletionPageRoute(),
+                              );
+                              if (context.mounted) {
+                                _bloc.add(const ProfileLoadStarted());
+                              }
+                            },
+                            tileColor: context.theme.appColors.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: borderCircular12,
+                            ),
+                          ),
+                          gap24,
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              _bloc.add(const ProfileLogoutRequested());
+                            },
+                            icon: const Icon(Icons.logout_outlined),
+                            label: Text(context.t.auth.logout),
+                          ),
+                        ],
+                      ],
+                    );
+                  },
                 ),
               ),
-              child: child,
             ),
-          ],
+          ),
         ),
       ),
     );
