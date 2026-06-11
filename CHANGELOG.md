@@ -1,9 +1,7 @@
-#372 - Implement App Localization
+#User Accounts - Feature Flagged Profile And Registration
 
-- Added `slang` and `slang_flutter` dependencies to `core` and `multichoice` app packages
-- Created base `en.i18n.json` for initial English translations
-- Configured code generation via `slang.yaml` and generated translation classes
-- Wrapped the app with `TranslationProvider` and initialized `LocaleSettings` in `main.dart`
-- Added localization delegates and locale parameters to `MaterialApp` in `multichoice.dart`
-- Set up Android 13+ per-app language preferences in `locales_config.xml` and `AndroidManifest.xml`
-- Replaced the hardcoded app title with generated slang property
+- Added `ProfileBloc` in core for profile load and logout flows
+- Refactored profile page to BLoC and extracted shared `ShineCard` widget
+- Gated sign-in, sign-up, password, and profile flows behind Remote Config `enable_user_accounts` (default false)
+- Added route guards and entry-point hiding for auth/profile when the flag is off
+- Added `ProfileBloc` unit tests and user-accounts feature-flag widget tests
