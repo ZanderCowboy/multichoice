@@ -12,6 +12,7 @@ import 'package:multichoice/presentation/registration/widgets/email_or_username_
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
 import 'package:multichoice/presentation/registration/widgets/login_button.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -43,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    guardUserAccountsRoute(context);
     _emailOrUsernameController.addListener(_syncLoginFormValidity);
     _passwordController.addListener(_syncLoginFormValidity);
     WidgetsBinding.instance.addPostFrameCallback(

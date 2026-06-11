@@ -8,6 +8,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/shared/widgets/shine_card.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -19,17 +20,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late final ProfileBloc _bloc;
+  ProfileBloc? _bloc;
 
   @override
   void initState() {
     super.initState();
+    if (!isUserAccountsEnabled()) {
+      guardUserAccountsRoute(context);
+      return;
+    }
     _bloc = coreSl<ProfileBloc>()..add(const ProfileLoadStarted());
   }
 
   @override
   void dispose() {
-    unawaited(_bloc.close());
+    final bloc = _bloc;
+    if (bloc != null) {
+      unawaited(bloc.close());
+    }
     super.dispose();
   }
 
@@ -38,8 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = _bloc;
+    if (bloc == null) {
+      return const Scaffold(body: SizedBox.shrink());
+    }
+
     return BlocProvider.value(
-      value: _bloc,
+      value: bloc,
       child: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state.isLoggedOut) {
@@ -113,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ResetPasswordPageRoute(isChangePassword: true),
                               );
                               if (context.mounted) {
-                                _bloc.add(const ProfileLoadStarted());
+                                bloc.add(const ProfileLoadStarted());
                               }
                             },
                             tileColor: context.theme.appColors.background,
@@ -140,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 const AccountDeletionPageRoute(),
                               );
                               if (context.mounted) {
-                                _bloc.add(const ProfileLoadStarted());
+                                bloc.add(const ProfileLoadStarted());
                               }
                             },
                             tileColor: context.theme.appColors.background,
@@ -151,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           gap24,
                           OutlinedButton.icon(
                             onPressed: () {
-                              _bloc.add(const ProfileLogoutRequested());
+                              bloc.add(const ProfileLogoutRequested());
                             },
                             icon: const Icon(Icons.logout_outlined),
                             label: Text(context.t.auth.logout),

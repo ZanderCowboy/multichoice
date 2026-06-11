@@ -7,6 +7,7 @@ import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -37,12 +38,14 @@ class HomeDrawer extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.t.auth.signedOutSuccess)),
     );
-    unawaited(
-      Future<void>.microtask(() {
-        if (!context.mounted) return;
-        showLoginModal(context);
-      }),
-    );
+    if (isUserAccountsEnabled()) {
+      unawaited(
+        Future<void>.microtask(() {
+          if (!context.mounted) return;
+          showLoginModal(context);
+        }),
+      );
+    }
   }
 
   @override
@@ -53,6 +56,7 @@ class HomeDrawer extends StatelessWidget {
       future: _drawerSessionLoggedIn(),
       builder: (context, snapshot) {
         final isLoggedIn = snapshot.data ?? false;
+        final userAccountsEnabled = isUserAccountsEnabled();
         return Drawer(
           width: MediaQuery.sizeOf(context).width,
           backgroundColor: context.theme.appColors.background,
@@ -72,7 +76,7 @@ class HomeDrawer extends StatelessWidget {
                           const AppearanceSection(),
                           const Divider(height: 32),
                           const DataSection(),
-                          if (isLoggedIn) ...[
+                          if (isLoggedIn && userAccountsEnabled) ...[
                             const Divider(height: 32),
                             const AccountSection(),
                           ],
@@ -85,7 +89,7 @@ class HomeDrawer extends StatelessWidget {
                               title: Text(context.t.auth.logout),
                               onTap: () => _onLogout(context),
                             ),
-                          ] else ...[
+                          ] else if (userAccountsEnabled) ...[
                             const Divider(height: 32),
                             ListTile(
                               leading: const Icon(Icons.login_outlined),

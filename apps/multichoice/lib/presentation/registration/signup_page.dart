@@ -15,6 +15,7 @@ import 'package:multichoice/presentation/registration/widgets/password_field.dar
 import 'package:multichoice/presentation/registration/widgets/signup_button.dart';
 import 'package:multichoice/presentation/registration/widgets/username_field.dart';
 import 'package:multichoice/presentation/shared/widgets/shine_card.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -34,6 +35,12 @@ class _SignupPageState extends State<SignupPage> {
   final _passwordController = TextEditingController();
   bool _hasOpenedSignupForm = false;
   _AuthAction? _loadingAction;
+
+  @override
+  void initState() {
+    super.initState();
+    guardUserAccountsRoute(context);
+  }
 
   @override
   void dispose() {

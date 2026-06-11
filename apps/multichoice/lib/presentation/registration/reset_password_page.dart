@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -33,6 +34,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _confirmPasswordController = TextEditingController();
 
   static const _successNavDelay = Duration(milliseconds: 1200);
+
+  @override
+  void initState() {
+    super.initState();
+    guardUserAccountsRoute(context);
+  }
 
   @override
   void dispose() {

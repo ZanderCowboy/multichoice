@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -18,6 +19,12 @@ class AccountDeletionPage extends StatefulWidget {
 class _AccountDeletionPageState extends State<AccountDeletionPage> {
   final _passwordController = TextEditingController();
   bool _passwordValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    guardUserAccountsRoute(context);
+  }
 
   @override
   void dispose() {

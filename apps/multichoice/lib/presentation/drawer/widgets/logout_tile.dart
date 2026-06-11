@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 
 class LogoutTile extends StatelessWidget {
   const LogoutTile({super.key});
@@ -30,11 +31,13 @@ class LogoutTile extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.t.auth.signedOutSuccess)),
     );
-    unawaited(
-      Future<void>.microtask(() {
-        if (!context.mounted) return;
-        showLoginModal(context);
-      }),
-    );
+    if (isUserAccountsEnabled()) {
+      unawaited(
+        Future<void>.microtask(() {
+          if (!context.mounted) return;
+          showLoginModal(context);
+        }),
+      );
+    }
   }
 }
