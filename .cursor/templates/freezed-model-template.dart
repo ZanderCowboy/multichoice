@@ -1,6 +1,7 @@
-// Template for creating a new Freezed model
-// Copy this file and replace <ModelName> with your actual model name
-// Run: melos build_runner to generate code
+// Freezed model template
+// Path: packages/models/lib/src/<area>/<model_name>.dart
+// Export from the appropriate models export.dart barrel.
+// Run: make db
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,7 +12,6 @@ part '<model_name>.g.dart';
 class <ModelName> with _$<ModelName> {
   const factory <ModelName>({
     required String id,
-    // Add your fields here
     String? optionalField,
   }) = _<ModelName>;
 

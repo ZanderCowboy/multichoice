@@ -1,0 +1,34 @@
+# Feature Flags (Firebase Remote Config)
+
+## Pattern
+
+1. Add key to [`FirebaseConfigKeys`](../../../packages/models/lib/src/enums/firebase/firebase_config_keys.dart).
+2. Read via `coreSl<IFirebaseService>().isEnabled(FirebaseConfigKeys.xxx)` for booleans.
+3. Hide UI entry points **and** guard routes when flag is off.
+
+## Current Keys (bools)
+
+| Enum | RC key | Usage |
+|------|--------|-------|
+| `usePillStyleBanner` | `use_pill_style_banner` | Home banner style |
+| `enableChangelogPage` | `enable_changelog_page` | Changelog drawer link + route |
+| `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback image attachments |
+| `enableUserAccounts` | `enable_user_accounts` | Auth, profile, related routes |
+
+## JSON / Strings
+
+- `changelog` — JSON for changelog content
+- `welcome_message`, `google_play_store_url`, `latest_app_version`
+- About URLs: `about_instagram_url`, `about_website_url`, `about_contact_email`, etc.
+
+## App Helpers
+
+- [`user_accounts_feature.dart`](../../../apps/multichoice/lib/utils/user_accounts_feature.dart) — central guard for user-account surfaces.
+
+## Rollout
+
+- Ship with safe defaults (usually `false` for new flags).
+- Enable in Firebase console after QA.
+- Debug page may expose overrides in dev builds only.
+
+See [`docs/setting-up-dev-prod-environments.md`](../../../docs/setting-up-dev-prod-environments.md).

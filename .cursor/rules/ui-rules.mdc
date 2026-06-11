@@ -6,45 +6,24 @@ alwaysApply: false
 
 # UI Development
 
-Respect the existing look and feel. Match nearby layouts, spacing, typography, interaction patterns, and loading/empty/error states.
+Match nearby layouts, spacing, typography, and loading/empty/error states.
 
-## Page Structure
+## Pages
 
-- Place `Scaffold` and `AppBar` in the public parent page class.
-- Keep main body content in a private child widget such as `_HomePage`.
-- Example:
-```dart
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+- Public page class owns `Scaffold` and `AppBar`; body in private `_FeaturePage` child.
+- `@RoutePage()` for auto_route pages. See `.cursor/templates/page-template.dart`.
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(...),
-      body: _HomePage(),
-    );
-  }
-}
+## Constants and theme
 
-class _HomePage extends StatelessWidget { ... }
-```
+- Spacing: `packages/ui_kit/lib/src/constants/spacing_constants.dart`
+- Borders: `packages/ui_kit/lib/src/constants/border_constants.dart`
+- Also check `ui_constants.dart`, theme extensions, app colors before adding values.
 
-## Constants And Theme
+## Widgets
 
-- Use `packages/ui_kit/lib/src/constants/spacing_constants.dart` for spacing.
-- Use `packages/ui_kit/lib/src/constants/border_constants.dart` for border radii.
-- Check `ui_constants.dart`, theme extensions, and app colors before adding new values.
-- Add a new constant only when an existing one does not fit and the value is reused or meaningful.
+- Feature widgets under the feature's `widgets/` folder.
+- Use `part`/`part of` only where the feature already does; keep `part` declarations alphabetical.
 
-## Widget Modularity
+## Widget tests
 
-- Break large widgets into smaller widgets when it improves readability.
-- Use private widget files and `part`/`part of` only where the surrounding feature already uses that pattern.
-- Keep `part` sections alphabetical.
-- Place feature-specific widgets under the feature's `widgets` folder.
-
-## Testing UI
-
-- Use existing widget keys or product tour keys where relevant.
-- Test user-visible behavior and interactions, not implementation details.
-- Keep widget tests focused and fast.
+- Test user-visible behavior; use existing widget/product-tour keys where relevant.

@@ -3,29 +3,22 @@ description: Dart code organization and architecture boundaries
 globs: ["apps/**/*.dart", "packages/**/*.dart"]
 alwaysApply: false
 ---
+
 # Code Organization
 
-## App Code
+## App
 
-- `apps/multichoice/lib/app` contains app setup, routing, theme wiring, auth/app layout, and app-level exports.
-- `apps/multichoice/lib/layouts` contains layout-level widgets such as the home layout and tabs.
-- `apps/multichoice/lib/presentation` contains pages, feature UI, feature widgets, dialogs, and presentation utilities.
-- `apps/multichoice/lib/utils` contains app-only utilities such as product tour helpers.
-- Follow the existing folder near the change before creating a new one.
+- `app/` — setup, routing, theme, auth layout, exports
+- `layouts/` — home layout, tabs
+- `presentation/` — pages, feature widgets, dialogs
+- `utils/` — app-only helpers (e.g. product tour)
 
-## Package Code
+## Packages
 
-- `packages/core/lib/src/application` contains Bloc state, events, and behavior coordination.
-- `packages/core/lib/src/services`, `repositories`, `controllers`, and `wrappers` use interfaces plus implementations.
-- `packages/models/lib/src` contains DTOs, database models, API models, enums, mappers, and analytics models.
-- `packages/ui_kit/lib/src` contains reusable UI components and constants.
-- `packages/theme/lib/src` contains theme extensions and color definitions.
+- `core/.../application` — blocs
+- `core/.../services`, `repositories`, `controllers`, `wrappers` — interfaces + implementations
+- `models/lib/src` — DTOs, DB models, enums, mappers
+- `ui_kit/lib/src` — widgets and constants
+- `theme/lib/src` — colors and extensions
 
-## File Shape
-
-- Keep files focused and consistent with nearby naming.
-- Prefer small private widget files with `part`/`part of` only where that pattern already exists locally.
-- Keep `part` declarations alphabetical.
-- Use `export.dart` barrel files rather than `index.dart`.
-- Add trailing commas for stable formatting.
-
+Follow the folder nearest the change before creating a new one. Keep files focused; use trailing commas.
