@@ -15,14 +15,14 @@ For a walkthrough of the TypeScript code, see [`setting-up-firebase-functions.md
 
 ## What gets deployed
 
-From the repo root, [`firebase.json`](../firebase.json) defines:
+From [`firebase/firebase.json`](../firebase/firebase.json) (pass `--config firebase/firebase.json` on CLI commands from the repo root):
 
 | Resource | File(s) | Notes |
 |----------|---------|-------|
 | Cloud Functions | `functions/src/index.ts` | Gen 2, region `europe-west1` |
-| Firestore rules | `firestore.rules` | Allows anonymous `feedback/` creates |
-| Firestore indexes | `firestore.indexes.json` | Deploy with rules when indexes change |
-| Storage rules | `storage.rules` | Feedback image uploads under `feedback/` |
+| Firestore rules | `firebase/firestore.rules` | Allows anonymous `feedback/` creates |
+| Firestore indexes | `firebase/firestore.indexes.json` | Deploy with rules when indexes change |
+| Storage rules | `firebase/storage.rules` | Feedback image uploads under `feedback/` |
 
 ### Current function: `onNewFeedback`
 
@@ -77,7 +77,7 @@ firebase login
 ### Firebase project requirements (each project: DEV and PROD)
 
 1. **Blaze (pay-as-you-go) plan** — required for Cloud Functions.
-2. **Firestore** — `(default)` database. Prefer location **eur3** to match [`firebase.json`](../firebase.json).
+2. **Firestore** — `(default)` database. Prefer location **eur3** to match [`firebase/firebase.json`](../firebase/firebase.json).
 3. **Cloud Storage** — default bucket (needed if feedback attachments use Storage).
 4. **Cloud Functions API** — enabled automatically on first deploy (or enable in Google Cloud Console).
 
@@ -95,7 +95,7 @@ You can use the same Gmail as prod for dev. Notification emails include `[DEV]` 
 
 ## Step 1: Configure Firebase project aliases
 
-Update [`.firebaserc`](../.firebaserc) at the repo root:
+Project aliases live in [`firebase/.firebaserc`](../firebase/.firebaserc):
 
 ```json
 {
@@ -107,11 +107,11 @@ Update [`.firebaserc`](../.firebaserc) at the repo root:
 }
 ```
 
-Switch active project:
+Switch active project (always pass `--config firebase/firebase.json` from the repo root):
 
 ```bash
-firebase use dev    # multichoice-app-develop
-firebase use prod   # multichoice-412309
+firebase use dev --config firebase/firebase.json    # multichoice-app-develop
+firebase use prod --config firebase/firebase.json   # multichoice-412309
 firebase projects:list
 ```
 
@@ -182,7 +182,7 @@ Run these once when standing up the dev Firebase project.
 ### 4.1 Select dev project
 
 ```bash
-firebase use dev
+firebase use dev --config firebase/firebase.json
 ```
 
 ### 4.2 Deploy Firestore rules and indexes
@@ -190,13 +190,13 @@ firebase use dev
 Required before the app can write to `feedback/` in dev:
 
 ```bash
-firebase deploy --only firestore:rules,firestore:indexes
+firebase deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes
 ```
 
 ### 4.3 Deploy Storage rules (if using feedback images)
 
 ```bash
-firebase deploy --only storage
+firebase deploy --config firebase/firebase.json --only storage
 ```
 
 ### 4.4 Deploy functions
@@ -204,17 +204,17 @@ firebase deploy --only storage
 Ensure `functions/.env.multichoice-app-develop` exists, then:
 
 ```bash
-firebase deploy --only functions --project multichoice-app-develop
+firebase deploy --config firebase/firebase.json --only functions --project multichoice-app-develop
 ```
 
 Or, with alias:
 
 ```bash
-firebase use dev
-firebase deploy --only functions
+firebase use dev --config firebase/firebase.json
+firebase deploy --config firebase/firebase.json --only functions
 ```
 
-Predeploy hooks (from `firebase.json`) run `npm run lint` and `npm run build` automatically.
+Predeploy hooks (from `firebase/firebase.json`) run `npm run lint` and `npm run build` automatically.
 
 ### 4.5 Verify in console
 
@@ -233,14 +233,14 @@ You should see:
 When deploying to production:
 
 ```bash
-firebase use prod
-firebase deploy --only firestore:rules,firestore:indexes,storage,functions
+firebase use prod --config firebase/firebase.json
+firebase deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes,storage,functions
 ```
 
 Or deploy only what changed:
 
 ```bash
-firebase deploy --only functions --project multichoice-412309
+firebase deploy --config firebase/firebase.json --only functions --project multichoice-412309
 ```
 
 Ensure `functions/.env.multichoice-412309` is configured before deploy.
@@ -256,8 +256,8 @@ Ensure `functions/.env.multichoice-412309` is configured before deploy.
 3. Check function logs:
 
    ```bash
-   firebase use dev
-   firebase functions:log --only onNewFeedback
+   firebase use dev --config firebase/firebase.json
+   firebase functions:log --config firebase/firebase.json --only onNewFeedback
    ```
 
 4. Confirm the notification email arrived (or inspect logs for Gmail auth errors).
@@ -307,10 +307,10 @@ Partial deploy:
 
 | Goal | Command |
 |------|---------|
-| Functions only (dev) | `firebase use dev && firebase deploy --only functions` |
-| Functions only (prod) | `firebase use prod && firebase deploy --only functions` |
-| Rules + functions (dev) | `firebase use dev && firebase deploy --only firestore:rules,firestore:indexes,storage,functions` |
-| View logs (dev) | `firebase use dev && firebase functions:log --only onNewFeedback` |
+| Functions only (dev) | `firebase use dev --config firebase/firebase.json && firebase deploy --config firebase/firebase.json --only functions` |
+| Functions only (prod) | `firebase use prod --config firebase/firebase.json && firebase deploy --config firebase/firebase.json --only functions` |
+| Rules + functions (dev) | `firebase use dev --config firebase/firebase.json && firebase deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes,storage,functions` |
+| View logs (dev) | `firebase use dev --config firebase/firebase.json && firebase functions:log --config firebase/firebase.json --only onNewFeedback` |
 | Local emulator | `cd functions && npm run serve` |
 
 ---
@@ -320,7 +320,7 @@ Partial deploy:
 Useful for testing function code without deploying:
 
 ```bash
-firebase use dev
+firebase use dev --config firebase/firebase.json
 cd functions
 npm run serve
 ```
@@ -353,7 +353,7 @@ First deploy to a **new** Firebase project often fails because Gen 2 functions n
 If you are Owner, wait 2–3 minutes after APIs were enabled, then:
 
 ```bash
-firebase deploy --only functions
+firebase deploy --config firebase/firebase.json --only functions
 ```
 
 **Option B — run the `gcloud` commands Firebase printed**
@@ -371,7 +371,7 @@ gcloud projects add-iam-policy-binding multichoice-app-develop --member=serviceA
 Then deploy again:
 
 ```bash
-firebase deploy --only functions
+firebase deploy --config firebase/firebase.json --only functions
 ```
 
 **Option C — Google Cloud Console**
@@ -402,7 +402,7 @@ cd functions && npm install --save firebase-functions@latest
 
 ### `Permission denied` writing to Firestore
 
-- Deploy rules: `firebase deploy --only firestore:rules`.
+- Deploy rules: `firebase deploy --config firebase/firebase.json --only firestore:rules`.
 - Ensure the app targets the project whose rules you deployed.
 
 ### `Billing account required`
@@ -417,7 +417,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 ### Wrong project deployed
 
-Always run `firebase use dev` or `firebase use prod` before deploy, or pass `--project multichoice-app-develop` explicitly.
+Always run `firebase use dev --config firebase/firebase.json` or `firebase use prod --config firebase/firebase.json` before deploy, or pass `--project multichoice-app-develop` explicitly with `--config firebase/firebase.json`.
 
 ---
 
@@ -428,7 +428,7 @@ Function deploys are **not** automated in CI today. Deploy manually from a maint
 If you add CI later:
 
 - Store `EMAIL_USER` / `EMAIL_PASS` as GitHub secrets (or use Secret Manager).
-- Use `firebase deploy --only functions --project <id> --non-interactive` with a service account.
+- Use `firebase deploy --config firebase/firebase.json --only functions --project <id> --non-interactive` with a service account.
 - Deploy to **dev** on merge to `develop`; deploy to **prod** on release/tag (or manual approval).
 
 App CI secrets (`DEV_CONFIG_B64`, etc.) are separate — see [`environment-config.md`](environment-config.md).
@@ -441,22 +441,30 @@ App CI secrets (`DEV_CONFIG_B64`, etc.) are separate — see [`environment-confi
 
 - [ ] Blaze plan on `multichoice-app-develop`
 - [ ] Firestore `(default)` database (eur3)
-- [ ] `.firebaserc` aliases added (`dev`, `prod`)
+- [ ] `firebase/.firebaserc` aliases added (`dev`, `prod`)
 - [ ] `functions/.env.multichoice-app-develop` created (gitignored)
 - [ ] `npm install && npm run build` in `functions/`
-- [ ] `firebase use dev`
-- [ ] `firebase deploy --only firestore:rules,firestore:indexes,storage`
-- [ ] `firebase deploy --only functions`
+- [ ] `firebase use dev --config firebase/firebase.json`
+- [ ] `firebase deploy --config firebase/firebase.json --only firestore:rules,firestore:indexes,storage`
+- [ ] `firebase deploy --config firebase/firebase.json --only functions`
 - [ ] Submit test feedback from DEV app build
 - [ ] Confirm logs + email
 
 ### PROD functions deploy (after code change)
 
 - [ ] `functions/.env.multichoice-412309` up to date
-- [ ] `firebase use prod`
+- [ ] `firebase use prod --config firebase/firebase.json`
 - [ ] `npm run lint && npm run build` in `functions/`
-- [ ] `firebase deploy --only functions` (or include rules if changed)
+- [ ] `firebase deploy --config firebase/firebase.json --only functions` (or include rules if changed)
 - [ ] Smoke-test feedback on PROD internal track
+
+---
+
+## FlutterFire CLI note
+
+`flutterfire configure` / `reconfigure` looks for `firebase.json` by walking up from the Flutter app directory — it will **not** auto-discover `firebase/firebase.json`. This project manages Firebase options via flavor entry points and `AppConfig`, so day-to-day deploys are unaffected.
+
+If you re-run FlutterFire later, either manually maintain the `flutter` block in `firebase/firebase.json`, or pass explicit `--project` / `--out` flags from `apps/multichoice`.
 
 ---
 

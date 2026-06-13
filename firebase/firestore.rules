@@ -9,4 +9,4 @@ service cloud.firestore {
       allow update, delete: if false;  // No one can modify or delete feedback
     }
   }
-} 
+}

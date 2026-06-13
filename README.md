@@ -238,7 +238,7 @@ Every PR from `develop` into `main` must have one of these labels:
 
 ### config.yml
 
-Located in the root directory, contains project configuration settings.
+Located at [`.github/config.yml`](.github/config.yml), contains project configuration settings for GitHub workflows.
 
 ### Makefile
 

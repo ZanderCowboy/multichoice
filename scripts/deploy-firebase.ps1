@@ -32,7 +32,7 @@ function Show-Usage {
     Write-Host @"
 Usage: deploy-firebase.ps1 <dev|prod|all> [options]
 
-Deploy Firebase resources defined in firebase.json:
+Deploy Firebase resources defined in firebase/firebase.json:
   - Cloud Functions (with predeploy lint + build)
   - Firestore rules and indexes
   - Storage rules
@@ -91,6 +91,7 @@ function Deploy-Project {
 
     $firebaseArgs = @(
         'deploy',
+        '--config', 'firebase/firebase.json',
         '--only', $Only,
         '--project', $ProjectId
     )

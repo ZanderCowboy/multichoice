@@ -19,7 +19,7 @@ The workflows to look into are:
 - [X] Set up **Deploy Apps** with `deploy_workflow.yml`
 - [X] Created **Reusable workflows** for `building`
 - [X] Created **Reusable workflows** for `deployments`
-- [X] Added a `config.yml` file with configurations used by `build`, `release`, `deploy` in the root directory
+- [X] Added a `config.yml` file with configurations used by `build`, `release`, `deploy` in [`.github/config.yml`](../.github/config.yml)
 - [X] Added `concurrency groups` to workflows to ensure that no conflicts arise when multiple workflows run at the same time
 - [X] Set up **Reusable actions** to `set up Flutter` and `set up Java`
 - [X] Created **Reusable actions** for `app versioning` and `auto commiting`

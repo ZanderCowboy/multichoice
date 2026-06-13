@@ -1,4 +1,4 @@
-# This file contains the config that is used by the Github Workflows.
+# Workflow configuration for GitHub Actions (reserved for future workflow wiring).
 
 # This can be used to control which platforms are build, release, and deployed.
 # It is preferable to set all values to 'true'.

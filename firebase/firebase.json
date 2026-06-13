@@ -10,7 +10,7 @@
     },
     "functions": [
         {
-            "source": "functions",
+            "source": "../functions",
             "codebase": "default",
             "ignore": [
                 "node_modules",
@@ -28,7 +28,7 @@
     "flutter": {
         "platforms": {
             "dart": {
-                "lib/firebase_options.dart": {
+                "../apps/multichoice/lib/firebase_options.dart": {
                     "projectId": "multichoice-412309",
                     "configurations": {
                         "android": "1:82796040762:android:7d86369ea3e82786e4db03"

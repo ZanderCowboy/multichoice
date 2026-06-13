@@ -28,7 +28,7 @@ usage() {
   cat <<EOF
 Usage: $(basename "$0") <dev|prod|all> [options]
 
-Deploy Firebase resources defined in firebase.json:
+Deploy Firebase resources defined in firebase/firebase.json:
   - Cloud Functions (with predeploy lint + build)
   - Firestore rules and indexes
   - Storage rules
@@ -112,7 +112,7 @@ deploy_project() {
   check_env_file "$project_id"
   ensure_functions_deps
 
-  local args=(deploy --only "$ONLY" --project "$project_id")
+  local args=(deploy --config firebase/firebase.json --only "$ONLY" --project "$project_id")
   if [[ "$NON_INTERACTIVE" == true ]]; then
     args+=(--non-interactive)
   fi
