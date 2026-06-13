@@ -4,6 +4,7 @@ enum FirebaseConfigKeys {
   usePillStyleBanner('use_pill_style_banner'),
   enableChangelogPage('enable_changelog_page'),
   feedbackImagesEnabled('feedback_images_enabled'),
+  enableUserAccounts('enable_user_accounts'),
 
   /// JSON configs
   // example: appConfig('app_config'),

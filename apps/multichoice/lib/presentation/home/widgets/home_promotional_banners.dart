@@ -10,6 +10,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/signup_banner.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -158,7 +159,8 @@ class _HomePromotionalBannersState extends State<HomePromotionalBanners> {
             final tabs = homeState.tabs ?? [];
             final showImport =
                 !_importDismissed! && tabs.isEmpty && !homeState.isLoading;
-            final showSignup = !_signupDismissed! && !_loggedIn;
+            final showSignup =
+                !_signupDismissed! && !_loggedIn && isUserAccountsEnabled();
 
             final usePillStyle = coreSl<IFirebaseService>().isEnabled(
               FirebaseConfigKeys.usePillStyleBanner,

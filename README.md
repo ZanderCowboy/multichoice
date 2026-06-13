@@ -126,20 +126,24 @@ Multichoice is a versatile Flutter application that helps users manage and organ
    Enable/disable platforms as needed (Android, Web, Windows).
 
 4. **Run the application**
+
+   Set up local config files first — see [docs/environment-config.md](docs/environment-config.md).
+
    ```sh
-   melos run --scope=multichoice flutter run
+   cd apps/multichoice
+   flutter run --target lib/main_develop.dart --flavor dev \
+     --dart-define-from-file=config/develop_config.json
    ```
 
 ### VS Code Setup
 
-The project includes a `.vscode/launch.json` configuration for easy debugging:
+The project includes `.vscode/launch.json` configurations for DEV and PROD (debug, profile, release):
 
-- **multichoice**: Standard debug mode
-- **multichoice (profile mode)**: Performance profiling
-- **multichoice (release mode)**: Release mode testing
-- **Run Integration Test with Emulator**: Integration testing
+- **multichoice debug/profile/release [DEV]**
+- **multichoice debug/profile/release [PROD]**
+- **Run Integration Test with Emulator**
 
-Simply press `F5` or use the Run and Debug panel in VS Code to start debugging.
+Press `F5` or use the Run and Debug panel. See [docs/environment-config.md](docs/environment-config.md) for config file setup.
 
 ## 🏗️ Project Structure
 
@@ -179,7 +183,8 @@ multichoice/
 ### Documentation
 
 - **[Integration Tests Setup](docs/setting-up-integration-tests.md)** - Guide for setting up integration tests
-- **[Firebase Functions Setup](docs/setting-up-firebase-functions.md)** - Guide for Firebase Functions configuration
+- **[Firebase Functions (DEV / PROD)](docs/firebase-functions-environments.md)** — Deploy Cloud Functions to dev and prod projects
+- **[Firebase Functions Setup](docs/setting-up-firebase-functions.md)** — Code walkthrough and TypeScript reference
 - **[Using Wrappers in Code](docs/using-wrappers-in-code.md)** - Documentation on wrapper usage
 - **[VS Code Configuration](docs/explaining-the-vscode-folder.md)** - Explanation of VS Code setup
 - **[Batch Scripts](docs/explaining-the-bat-scripts.md)** - Documentation for automation scripts
@@ -233,7 +238,7 @@ Every PR from `develop` into `main` must have one of these labels:
 
 ### config.yml
 
-Located in the root directory, contains project configuration settings.
+Located at [`.github/config.yml`](.github/config.yml), contains project configuration settings for GitHub workflows.
 
 ### Makefile
 

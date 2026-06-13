@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -5,7 +6,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/extensions/extension_getters.dart';
+import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:multichoice/i18n/strings.g.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatelessWidget {
@@ -29,6 +33,13 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   final _messageController = TextEditingController();
   final _emailController = TextEditingController();
 
+  static final RegExp _emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  );
+
+  bool _hasTypedEmail = false;
+  int _formVersion = 0;
+
   List<String> _categories(BuildContext context) => [
     context.t.feedback.categories.bugReport,
     context.t.feedback.categories.featureRequest,
@@ -36,6 +47,40 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
     context.t.feedback.categories.uiUx,
     context.t.feedback.categories.performance,
   ];
+
+  String? _messageHintForCategory(BuildContext context, String? category) {
+    if (category == null) return null;
+
+    final categories = context.t.feedback.categories;
+    final hints = context.t.feedback.messageHints;
+
+    if (category == categories.bugReport) return hints.bugReport;
+    if (category == categories.featureRequest) return hints.featureRequest;
+    if (category == categories.generalFeedback) return hints.generalFeedback;
+    if (category == categories.uiUx) return hints.uiUx;
+    if (category == categories.performance) return hints.performance;
+
+    return null;
+  }
+
+  String? _validateOptionalEmail(String? value) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) return null;
+    if (!_emailRegex.hasMatch(trimmed)) {
+      return context.t.feedback.invalidEmail;
+    }
+    return null;
+  }
+
+  void _resetFormFields() {
+    _messageController.clear();
+    _emailController.clear();
+    _formKey.currentState?.reset();
+    setState(() {
+      _hasTypedEmail = false;
+      _formVersion++;
+    });
+  }
 
   @override
   void dispose() {
@@ -77,6 +122,79 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
         for (final file in result.files) {
           context.read<FeedbackBloc>().add(FeedbackEvent.imageAdded(file));
         }
+      }
+    }
+  }
+
+  void _showNoImageInClipboardSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.t.feedback.noImageInClipboard)),
+    );
+  }
+
+  Future<void> _pasteImageFromClipboard(BuildContext context) async {
+    final clipboard = SystemClipboard.instance;
+    if (clipboard == null) {
+      if (context.mounted) {
+        _showNoImageInClipboardSnackBar(context);
+      }
+      return;
+    }
+
+    final reader = await clipboard.read();
+
+    final FileFormat? format;
+    final String extension;
+    if (reader.canProvide(Formats.png)) {
+      format = Formats.png;
+      extension = 'png';
+    } else if (reader.canProvide(Formats.jpeg)) {
+      format = Formats.jpeg;
+      extension = 'jpg';
+    } else {
+      if (context.mounted) {
+        _showNoImageInClipboardSnackBar(context);
+      }
+      return;
+    }
+
+    final completer = Completer<void>();
+    final progress = reader.getFile(format, (file) async {
+      try {
+        final bytes = await file.readAll();
+        if (!context.mounted) return;
+        context.read<FeedbackBloc>().add(
+          FeedbackEvent.imageAdded(
+            PlatformFile(
+              name:
+                  'screenshot_${DateTime.now().millisecondsSinceEpoch}.$extension',
+              size: bytes.length,
+              bytes: bytes,
+            ),
+          ),
+        );
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      } on Object {
+        if (!completer.isCompleted) {
+          completer.completeError(Object());
+        }
+      }
+    });
+
+    if (progress == null) {
+      if (context.mounted) {
+        _showNoImageInClipboardSnackBar(context);
+      }
+      return;
+    }
+
+    try {
+      await completer.future;
+    } on Object {
+      if (context.mounted) {
+        _showNoImageInClipboardSnackBar(context);
       }
     }
   }
@@ -147,142 +265,185 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedbackBloc, FeedbackState>(
-      builder: (context, state) {
-        return Form(
-          key: _formKey,
-          child: Padding(
-            padding: allPadding16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                DropdownButtonFormField<String>(
-                  initialValue: state.feedback.category,
-                  decoration: InputDecoration(
-                    labelText: context.t.feedback.categoryLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  items: _categories(context).map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    context.read<FeedbackBloc>().add(
-                      FeedbackEvent.fieldChanged(
-                        field: FeedbackField.category,
-                        value: value,
-                      ),
-                    );
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return context.t.feedback.selectCategory;
-                    }
-                    return null;
-                  },
-                ),
-                gap16,
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: context.t.feedback.emailLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    context.read<FeedbackBloc>().add(
-                      FeedbackEvent.fieldChanged(
-                        field: FeedbackField.email,
-                        value: value,
-                      ),
-                    );
-                  },
-                  validator: (value) {
-                    if (value != null && value.isNotEmpty) {
-                      if (!value.contains('@')) {
-                        return context.t.feedback.invalidEmail;
-                      }
-                    }
-                    return null;
-                  },
-                ),
-                gap16,
-                TextFormField(
-                  controller: _messageController,
-                  decoration: InputDecoration(
-                    labelText: context.t.feedback.messageLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLines: 5,
-                  onChanged: (value) {
-                    context.read<FeedbackBloc>().add(
-                      FeedbackEvent.fieldChanged(
-                        field: FeedbackField.message,
-                        value: value,
-                      ),
-                    );
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return context.t.feedback.enterFeedback;
-                    }
-                    return null;
-                  },
-                ),
-                gap16,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(5, (index) {
-                    return IconButton(
-                      icon: Icon(
-                        index < state.feedback.rating
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: index < state.feedback.rating
-                            ? Colors.amber
-                            : Colors.grey,
-                        size: 32,
-                      ),
-                      onPressed: () {
-                        context.read<FeedbackBloc>().add(
-                          FeedbackEvent.fieldChanged(
-                            field: FeedbackField.rating,
-                            value: index + 1,
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                ),
-                gap16,
-                if (coreSl<IFirebaseService>().isEnabled(
-                  FirebaseConfigKeys.feedbackImagesEnabled,
-                )) ...[
-                  OutlinedButton.icon(
-                    onPressed: () => _pickImage(context),
-                    icon: const Icon(Icons.image),
-                    label: Text(context.t.feedback.addImages),
-                  ),
-                  _buildImageThumbnails(context, state),
-                  gap24,
-                ] else ...[
-                  gap24,
-                ],
-                ElevatedButton(
-                  onPressed: state.isLoading
-                      ? null
-                      : () => _submitFeedback(context),
-                  child: state.isLoading
-                      ? CircularLoader.small()
-                      : Text(context.t.feedback.submitFeedback),
-                ),
-              ],
-            ),
-          ),
-        );
+    return BlocListener<FeedbackBloc, FeedbackState>(
+      listenWhen: (previous, current) =>
+          !previous.isSuccess && current.isSuccess,
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _resetFormFields();
+          context.read<FeedbackBloc>().add(const FeedbackEvent.reset());
+        });
       },
+      child: BlocBuilder<FeedbackBloc, FeedbackState>(
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: Padding(
+              padding: allPadding16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DropdownButtonFormField<String>(
+                    key: ValueKey(_formVersion),
+                    initialValue: state.feedback.category,
+                    decoration: InputDecoration(
+                      labelText: context.t.feedback.categoryLabelRequired,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: _categories(context).map((category) {
+                      return DropdownMenuItem(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      context.read<FeedbackBloc>().add(
+                        FeedbackEvent.fieldChanged(
+                          field: FeedbackField.category,
+                          value: value,
+                        ),
+                      );
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.t.feedback.selectCategory;
+                      }
+                      return null;
+                    },
+                  ),
+                  gap16,
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: context.t.feedback.emailLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    autovalidateMode: _hasTypedEmail
+                        ? AutovalidateMode.onUserInteraction
+                        : AutovalidateMode.disabled,
+                    onChanged: (value) {
+                      if (!_hasTypedEmail && value.trim().isNotEmpty) {
+                        setState(() {
+                          _hasTypedEmail = true;
+                        });
+                      }
+                      context.read<FeedbackBloc>().add(
+                        FeedbackEvent.fieldChanged(
+                          field: FeedbackField.email,
+                          value: value,
+                        ),
+                      );
+                    },
+                    validator: _validateOptionalEmail,
+                  ),
+                  gap16,
+                  TextFormField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      labelText: context.t.feedback.messageLabelRequired,
+                      hintText: _messageHintForCategory(
+                        context,
+                        state.feedback.category,
+                      ),
+                      alignLabelWithHint: true,
+                      border: const OutlineInputBorder(),
+                    ),
+                    maxLines: 5,
+                    textAlignVertical: TextAlignVertical.top,
+                    onChanged: (value) {
+                      context.read<FeedbackBloc>().add(
+                        FeedbackEvent.fieldChanged(
+                          field: FeedbackField.message,
+                          value: value,
+                        ),
+                      );
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return context.t.feedback.enterFeedback;
+                      }
+                      return null;
+                    },
+                  ),
+                  gap16,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      context.t.feedback.ratingLabel,
+                      style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                        color: context.theme.appColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  gap8,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        icon: Icon(
+                          index < state.feedback.rating
+                              ? Icons.star
+                              : Icons.star_border,
+                          color: index < state.feedback.rating
+                              ? Colors.amber
+                              : Colors.grey,
+                          size: 32,
+                        ),
+                        onPressed: () {
+                          context.read<FeedbackBloc>().add(
+                            FeedbackEvent.fieldChanged(
+                              field: FeedbackField.rating,
+                              value: index + 1,
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                  gap16,
+                  if (coreSl<IFirebaseService>().isEnabled(
+                    FirebaseConfigKeys.feedbackImagesEnabled,
+                  )) ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => _pickImage(context),
+                            icon: const Icon(Icons.image),
+                            label: Text(context.t.feedback.addImages),
+                          ),
+                        ),
+                        gap8,
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => _pasteImageFromClipboard(context),
+                            icon: const Icon(Icons.content_paste),
+                            label: Text(context.t.feedback.pasteScreenshot),
+                          ),
+                        ),
+                      ],
+                    ),
+                    _buildImageThumbnails(context, state),
+                    gap24,
+                  ] else ...[
+                    gap24,
+                  ],
+                  ElevatedButton(
+                    onPressed: state.isLoading
+                        ? null
+                        : () => _submitFeedback(context),
+                    child: state.isLoading
+                        ? CircularLoader.small()
+                        : Text(context.t.feedback.submitFeedback),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

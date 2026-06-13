@@ -13,6 +13,7 @@ dependencies:
   core: ^0.0.1
   file_picker: ^10.1.9
   firebase_analytics: ^12.1.1
+  firebase_app_check: ^0.4.1+2
   firebase_core: ^4.4.0
   firebase_crashlytics: ^5.0.7
   firebase_performance: ^0.11.1+4
@@ -35,6 +36,7 @@ dependencies:
   showcaseview: ^5.0.1
   slang: ^4.14.0
   slang_flutter: ^4.14.0
+  super_clipboard: ^0.9.1
   theme: ^0.0.1
   ui_kit: ^0.0.1
   url_launcher: ^6.2.0

@@ -14,6 +14,8 @@ import 'package:multichoice/presentation/registration/widgets/google_sign_in_but
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:multichoice/presentation/registration/widgets/signup_button.dart';
 import 'package:multichoice/presentation/registration/widgets/username_field.dart';
+import 'package:multichoice/presentation/shared/widgets/shine_card.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -33,6 +35,12 @@ class _SignupPageState extends State<SignupPage> {
   final _passwordController = TextEditingController();
   bool _hasOpenedSignupForm = false;
   _AuthAction? _loadingAction;
+
+  @override
+  void initState() {
+    super.initState();
+    guardUserAccountsRoute(context);
+  }
 
   @override
   void dispose() {
@@ -235,7 +243,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: allPadding16,
-          child: _ShineCard(
+          child: ShineCard(
             child: Theme(
               data: theme.copyWith(inputDecorationTheme: signupInputTheme),
               child: AutofillGroup(
@@ -384,54 +392,6 @@ class _SignupPageContentState extends State<_SignupPageContent> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ShineCard extends StatelessWidget {
-  const _ShineCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: borderCircular16,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderCircular16,
-        child: Stack(
-          children: [
-            Container(
-              padding: allPadding20,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    colorScheme.primary,
-                    colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
-                  ],
-                ),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.16),
-                ),
-              ),
-              child: child,
-            ),
-          ],
         ),
       ),
     );

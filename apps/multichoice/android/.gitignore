@@ -12,3 +12,4 @@ key.properties
 **/*.keystore
 **/*.jks
 **/google-services.json
+.kotlin/sessions/kotlin-compiler-**.salive

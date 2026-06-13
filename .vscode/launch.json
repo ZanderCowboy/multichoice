@@ -1,34 +1,86 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "multichoice",
+            "name": "Debug [DEV]",
             "request": "launch",
             "type": "dart",
-            "program": "apps/multichoice/lib/main.dart"
+            "program": "apps/multichoice/lib/main_develop.dart",
+            "toolArgs": [
+                "--flavor",
+                "dev",
+                "--dart-define-from-file=config/develop_config.json"
+            ]
         },
         {
-            "name": "multichoice (profile mode)",
+            "name": "Profile [DEV]",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "program": "apps/multichoice/lib/main.dart"
+            "program": "apps/multichoice/lib/main_develop.dart",
+            "toolArgs": [
+                "--flavor",
+                "dev",
+                "--dart-define-from-file=config/develop_config.json"
+            ]
         },
         {
-            "name": "multichoice (release mode)",
+            "name": "Release [DEV]",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "program": "apps/multichoice/lib/main.dart"
+            "program": "apps/multichoice/lib/main_develop.dart",
+            "toolArgs": [
+                "--flavor",
+                "dev",
+                "--dart-define-from-file=config/develop_config.json"
+            ]
         },
         {
-            "name": "Run Integration Test with Emulator",
+            "name": "Debug [PROD]",
+            "request": "launch",
+            "type": "dart",
+            "program": "apps/multichoice/lib/main_production.dart",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file=config/production_config.json"
+            ]
+        },
+        {
+            "name": "Profile [PROD]",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "apps/multichoice/lib/main_production.dart",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file=config/production_config.json"
+            ]
+        },
+        {
+            "name": "Release [PROD]",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "apps/multichoice/lib/main_production.dart",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file=config/production_config.json"
+            ]
+        },
+        {
+            "name": "Run Integration Test with Emulator [PROD]",
             "type": "dart",
             "request": "launch",
-            "program": "${workspaceFolder}/lib/main.dart",
+            "program": "apps/multichoice/lib/main_production.dart",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file=config/production_config.json"
+            ],
             "preLaunchTask": "Start Emulator and Run Integration Test"
         }
     ]

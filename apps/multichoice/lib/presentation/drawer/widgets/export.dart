@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';

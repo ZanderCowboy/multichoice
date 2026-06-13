@@ -2,31 +2,24 @@
 description: Current Flutter monorepo structure and ownership boundaries
 alwaysApply: true
 ---
+
 # Project Structure
 
-This is a Flutter monorepo managed by Melos.
+Flutter monorepo managed by Melos.
 
-## Main Areas
+## Ownership
 
-- `apps/multichoice` is the main Flutter app.
-- `apps/showcase` is a showcase app and is ignored by Melos.
-- `packages/core` owns application state, services, repositories, controllers, wrappers, exceptions, and utilities.
-- `packages/models` owns DTOs, database models, API models, enums, and mappers.
-- `packages/theme` owns shared theme extensions and app colors.
-- `packages/ui_kit` owns reusable widgets, dialogs, loaders, scroll behavior, and UI constants.
-- `functions`, `docs`, and `designs` are separate support areas.
+- `apps/multichoice` — main app (`apps/showcase` ignored by Melos)
+- `packages/core` — blocs, services, repositories, controllers, wrappers
+- `packages/models` — DTOs, DB models, enums, mappers
+- `packages/theme` — theme extensions and colors
+- `packages/ui_kit` — reusable widgets and UI constants
+- `functions`, `docs`, `designs` — support areas
 
 ## Boundaries
 
-- App UI belongs in `apps/multichoice/lib/presentation`, `layouts`, `app`, or `utils` following nearby structure.
-- Shared business logic belongs in `packages/core`, not directly in the app presentation layer.
-- Shared models belong in `packages/models`; do not duplicate model shapes in app code.
-- Reusable styling and widgets belong in `packages/theme` or `packages/ui_kit`.
-- Use `export.dart` barrel files where the package or folder already uses them.
-
-## Required Patterns
-
-- Services, wrappers, controllers, and repositories use `interfaces/` and `implementations/` or existing repository `interfaces/` and `implementation/` folders.
-- UI constants live in `packages/ui_kit/lib/src/constants`.
-- Tests mirror the source structure and use existing mocks when available.
-
+- App UI → `apps/multichoice/lib/presentation`, `layouts`, `app`, `utils`
+- Business logic → `packages/core`, not presentation
+- Shared models → `packages/models` only
+- Shared styling/widgets → `packages/theme` or `packages/ui_kit`
+- Use `export.dart` barrels where the package already does

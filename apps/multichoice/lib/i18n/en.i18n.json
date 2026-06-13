@@ -159,14 +159,26 @@
     },
     "attachedImages": "Attached Images:",
     "addImages": "Add Images",
+    "pasteScreenshot": "Paste Screenshot",
+    "noImageInClipboard": "No image found in clipboard",
     "submitFeedback": "Submit Feedback",
     "categoryLabel": "Category",
+    "categoryLabelRequired": "Category *",
     "selectCategory": "Please select a category",
     "emailLabel": "Email (optional)",
     "emailHint": "Email (optional)",
     "invalidEmail": "Please enter a valid email",
     "messageLabel": "Your Feedback",
-    "enterFeedback": "Please enter your feedback"
+    "messageLabelRequired": "Your Feedback *",
+    "enterFeedback": "Please enter your feedback",
+    "ratingLabel": "Rating *",
+    "messageHints": {
+      "bugReport": "Describe what happened, steps to reproduce, and when it occurs.",
+      "featureRequest": "Describe the feature you want and how it would help you.",
+      "generalFeedback": "Share your overall thoughts about the app.",
+      "uiUx": "Describe layout, navigation, or design issues.",
+      "performance": "Slow app, crashing, freezing, battery drain, etc."
+    }
   },
   "about": {
     "title": "About",

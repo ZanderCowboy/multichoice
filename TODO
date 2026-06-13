@@ -1,0 +1,18 @@
+Update CICD process:
+- I want to get rid of the RC branch
+- Instead, the flow will be as follows: active development and fixes into `develop`. Once enough or all work for the next release is done (like Milestone 5 for Release 4 on GitHub), create a new branch called `release-4` from `develop`. PR this into `main`.
+- For RC builds, we will still use staging-workflow. but now pointing to release-X branch
+- For PROD builds, after merging `release-X` branch into `main`, manually trigger workflow. Allow a text field to enter next semantic version. Like 1.4.5 etc. Add validation to ensure , and other characters does not work. 
+
+Confirm that the semantic versioning works as follows:
+- Labels `bug` `patch` etc bumps patch version. `dev-ops` and `documentation` only gets a new build
+- Only `feature` and `minor` label bumps minor version
+
+- Manual trigger on `develop-workflow` to deploy to Google Play DEV Internal Track
+
+
+Dev workflow: distributes to firebase, manual trigger for google play internal track dev
+stg workflow: distributes to google play internal track prod
+prod workflow: distributes to google play prod
+
+- check if we can remove the `Upload Android App Bundle` steps etc to improve speed in develop_workflow. Same for the other workflows. 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:multichoice/app/export.dart';
-import 'package:multichoice/main.dart' as app;
+import 'package:multichoice/main_production.dart' as app;
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 
 import 'shared/export.dart';

@@ -5,6 +5,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -66,13 +67,15 @@ class DebugToolsContent extends StatelessWidget {
               await showUpdatePromptForDebug(context);
             },
           ),
-          gap12,
-          ListTile(
-            leading: const Icon(Icons.lock_reset),
-            title: Text(context.t.debug.resetPasswordTitle),
-            subtitle: Text(context.t.debug.resetPasswordSubtitle),
-            onTap: () => context.router.push(ResetPasswordPageRoute()),
-          ),
+          if (isUserAccountsEnabled()) ...[
+            gap12,
+            ListTile(
+              leading: const Icon(Icons.lock_reset),
+              title: Text(context.t.debug.resetPasswordTitle),
+              subtitle: Text(context.t.debug.resetPasswordSubtitle),
+              onTap: () => context.router.push(ResetPasswordPageRoute()),
+            ),
+          ],
           gap12,
           FutureBuilder<bool>(
             future: authNotifier.isUserLoggedIn,

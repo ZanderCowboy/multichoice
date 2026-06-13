@@ -6,7 +6,7 @@ First, run `git branch --show-current` to get the current branch name and extrac
 
 Follow this structure:
 ```md
-#<ticket-number> - GitHub Issue Title
+# <ticket-number> - GitHub Issue Title
 
 - Item
 - Item

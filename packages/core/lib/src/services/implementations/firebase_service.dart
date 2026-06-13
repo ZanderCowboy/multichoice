@@ -30,7 +30,9 @@ class FirebaseService implements IFirebaseService {
       );
 
       // Set default values if needed
-      await _remoteConfig.setDefaults({});
+      await _remoteConfig.setDefaults({
+        FirebaseConfigKeys.enableUserAccounts.key: false,
+      });
 
       _isInitialized = true;
     } catch (e) {
