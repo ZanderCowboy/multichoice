@@ -57,6 +57,49 @@ flutter run --target lib/main_production.dart --flavor prod \
 
 Use the VS Code launch configs under **Run and Debug** (six DEV/PROD × debug/profile/release options).
 
+## Emulator behavior (DEV + PROD side by side)
+
+Android treats each flavor as a **separate app** because DEV uses `applicationIdSuffix ".dev"`:
+
+| Flavor | Package ID | Launcher name |
+|--------|------------|---------------|
+| DEV | `co.za.zanderkotze.multichoice.dev` | `[DEV] Multichoice` |
+| PROD | `co.za.zanderkotze.multichoice` | `Multichoice` |
+
+Expected behavior (same as a typical multi-flavor work setup):
+
+- **Same flavor → same flavor** (e.g. Debug DEV twice): in-place update via `adb install -r`; local data kept.
+- **Different flavor → different flavor** (e.g. Debug DEV then Debug PROD): only the target flavor is updated; the other stays installed with its own data.
+- **No uninstall** unless install fails or the emulator is out of storage.
+
+Signing matches a standard Flutter project: only `release` uses `signingConfigs.release`; debug/profile use the default debug keystore for all flavors.
+
+Verify both apps are installed:
+
+```powershell
+adb shell pm list packages | findstr multichoice
+```
+
+You should see both `co.za.zanderkotze.multichoice.dev` and `co.za.zanderkotze.multichoice`.
+
+### `INSTALL_FAILED_UPDATE_INCOMPATIBLE` / "Uninstalling old version..."
+
+This is **not** normal flavor switching. Flutter prints `Uninstalling old version...` only when `adb install` fails, then retries after uninstalling **that package ID** (which wipes that flavor's local data).
+
+Cause: the target package was previously installed with a **different signing key** — e.g. Play Store / internal testing build, a one-off **Release [PROD]** run, or CI APK — while you are now installing a **debug** build of the same package ID.
+
+Fix (one-time per emulator, for the affected package only):
+
+```powershell
+adb uninstall co.za.zanderkotze.multichoice
+# or, if DEV is affected:
+adb uninstall co.za.zanderkotze.multichoice.dev
+```
+
+Then run the debug flavor again. After that, debug-to-debug and cross-flavor switches should update in place without uninstall.
+
+Avoid mixing **Release [PROD]** and **Debug [PROD]** on the same emulator unless you uninstall prod first.
+
 ## GitHub secrets
 
 Create four base64 secrets (one file each):
@@ -100,6 +143,8 @@ base64 -w0 apps/multichoice/android/app/src/dev/google-services.json
 | PROD | [multichoice-412309](https://console.firebase.google.com/u/0/project/multichoice-412309/overview) | `co.za.zanderkotze.multichoice` |
 
 Register debug/release SHA-1 fingerprints in the dev Firebase project before Google Sign-In works on DEV builds.
+
+**App Check:** DEV setup guide [app-check-dev.md](app-check-dev.md); PROD checklist [app-check-prod-todo.md](app-check-prod-todo.md). DEV Play Internal testing listing: [play-console-dev-internal-testing.md](play-console-dev-internal-testing.md).
 
 ## Banner and debug tooling
 
