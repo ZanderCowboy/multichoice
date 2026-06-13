@@ -213,6 +213,12 @@ jobs:
     if: failure() && needs.preBuild.result != 'skipped'
     steps:
       ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      ##############################################
       # Send Failure Notification
       ##############################################
       - name: Send Failure Notification
