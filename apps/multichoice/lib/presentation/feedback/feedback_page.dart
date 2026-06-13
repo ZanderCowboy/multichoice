@@ -32,6 +32,7 @@ class FeedbackPage extends StatelessWidget {
                   action: SnackBarAction(
                     label: context.t.common.goHome,
                     onPressed: () {
+                      messenger.clearSnackBars();
                       context.router.popUntilRoot();
                       scaffoldKey.currentState?.closeDrawer();
                     },
@@ -78,6 +79,7 @@ class FeedbackPage extends StatelessWidget {
                       ),
                     );
                     if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     context.router.popUntilRoot();
                     scaffoldKey.currentState?.closeDrawer();
                   },
