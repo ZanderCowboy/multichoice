@@ -206,8 +206,8 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{ secrets.APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          appId: ${{ secrets.DEV_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.DEV_SERVICE_CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: ./apps/multichoice/build/app/outputs/flutter-apk/app-dev-release.apk
           releaseNotesFile: ./CHANGELOG.md

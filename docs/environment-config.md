@@ -127,7 +127,7 @@ base64 -w0 apps/multichoice/android/app/src/dev/google-services.json
 ### Other secrets (unchanged)
 
 - `ANDROID_KEYSTORE_BASE64`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS` — signing
-- `APP_ID`, `CREDENTIAL_FILE_CONTENT` — Firebase App Distribution (develop workflow, dev project)
+- `DEV_APP_ID`, `DEV_SERVICE_CREDENTIAL_FILE_CONTENT` — Firebase App Distribution (develop workflow, dev project)
 - `SERVICE_ACCOUNT_JSON` — Play Store upload (staging/production)
 - `VERSION_BOT_APP_ID`, `VERSION_BOT_APP_PRIVATE_KEY`, `DEPLOYMENT_WEBHOOK_URL`, `DEPLOYMENT_EMAIL_RECIPIENTS`, `CODECOV_TOKEN`
 
