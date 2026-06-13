@@ -50,6 +50,20 @@ android {
         }
     }
 
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            resValue "string", "app_name", "[DEV] Multichoice"
+        }
+        prod {
+            dimension "environment"
+            resValue "string", "app_name", "Multichoice"
+        }
+    }
+
     signingConfigs {
         release {
             keyAlias = keystoreProperties['keyAlias']

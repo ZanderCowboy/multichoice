@@ -126,20 +126,24 @@ Multichoice is a versatile Flutter application that helps users manage and organ
    Enable/disable platforms as needed (Android, Web, Windows).
 
 4. **Run the application**
+
+   Set up local config files first — see [docs/environment-config.md](docs/environment-config.md).
+
    ```sh
-   melos run --scope=multichoice flutter run
+   cd apps/multichoice
+   flutter run --target lib/main_develop.dart --flavor dev \
+     --dart-define-from-file=config/develop_config.json
    ```
 
 ### VS Code Setup
 
-The project includes a `.vscode/launch.json` configuration for easy debugging:
+The project includes `.vscode/launch.json` configurations for DEV and PROD (debug, profile, release):
 
-- **multichoice**: Standard debug mode
-- **multichoice (profile mode)**: Performance profiling
-- **multichoice (release mode)**: Release mode testing
-- **Run Integration Test with Emulator**: Integration testing
+- **multichoice debug/profile/release [DEV]**
+- **multichoice debug/profile/release [PROD]**
+- **Run Integration Test with Emulator**
 
-Simply press `F5` or use the Run and Debug panel in VS Code to start debugging.
+Press `F5` or use the Run and Debug panel. See [docs/environment-config.md](docs/environment-config.md) for config file setup.
 
 ## 🏗️ Project Structure
 

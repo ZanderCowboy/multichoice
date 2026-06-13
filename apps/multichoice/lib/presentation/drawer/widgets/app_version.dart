@@ -21,7 +21,7 @@ class AppVersion extends StatelessWidget {
 
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
-            return kDebugMode
+            return AppFlavor.allowsDebugPage
                 ? GestureDetector(
                     onLongPress: () =>
                         context.router.push(const DebugPageRoute()),

@@ -143,7 +143,7 @@ build
 - Downloads pubspec file
 - Downloads Android Keystore.jks file
 - Create key.properties
-- Create secrets.dart
+- Decode DEV/PROD config and google-services B64 secrets (see docs/environment-config.md)
 - Builds appbundle
 - Builds APK
 - Uploads AAB artifact

@@ -9,12 +9,12 @@ import 'package:multichoice/crashlytics_setup.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:window_size/window_size.dart';
 
-void main() async {
+Future<void> runMultichoice() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocaleSettings.useDeviceLocale();
   await bootstrap();
 
-  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+  if (!kIsWeb && Platform.isAndroid) {
     setupCrashlytics();
   }
 

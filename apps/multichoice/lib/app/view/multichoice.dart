@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 
@@ -43,12 +44,25 @@ class Multichoice extends StatelessWidget {
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         debugShowCheckedModeBanner: false,
         routerConfig: _appRouter.config(),
-        builder: (context, child) => ColoredBox(
-          color:
-              context.theme.appColors.appBarBackground ??
-              Theme.of(context).scaffoldBackgroundColor,
-          child: child ?? const SizedBox.shrink(),
-        ),
+        builder: (context, child) {
+          final content = ColoredBox(
+            color:
+                context.theme.appColors.appBarBackground ??
+                Theme.of(context).scaffoldBackgroundColor,
+            child: child ?? const SizedBox.shrink(),
+          );
+
+          if (!AppFlavor.showsEnvironmentBanner) {
+            return content;
+          }
+
+          return Banner(
+            message: AppFlavor.isDev ? 'DEV' : 'PROD',
+            location: BannerLocation.topEnd,
+            color: AppFlavor.isDev ? Colors.orange : Colors.red,
+            child: content,
+          );
+        },
       ),
     );
   }

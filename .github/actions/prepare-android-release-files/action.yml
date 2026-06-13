@@ -1,5 +1,5 @@
 name: "Prepare Android Release Files"
-description: "Creates keystore, key.properties, secrets.dart, and validates google-services.json"
+description: "Creates keystore, key.properties, environment config JSON, and validates google-services.json"
 
 inputs:
   android_keystore_base64:
@@ -14,31 +14,18 @@ inputs:
   key_alias:
     description: "Android keystore alias"
     required: true
-  web_api_key:
-    description: "Firebase Web API key"
+  config_b64:
+    description: "Base64-encoded flat environment config JSON (dart-defines)"
     required: true
-  web_app_id:
-    description: "Firebase Web App ID"
-    required: true
-  android_api_key:
-    description: "Firebase Android API key"
-    required: true
-  android_app_id:
-    description: "Firebase Android App ID"
-    required: true
-  ios_api_key:
-    description: "Firebase iOS API key"
-    required: true
-  ios_app_id:
-    description: "Firebase iOS App ID"
-    required: true
-  google_services_json_b64:
+  google_services_b64:
     description: "Base64-encoded google-services.json"
+    required: true
+  flavor:
+    description: "Android product flavor (dev or prod)"
     required: true
   package_name:
     description: "Android package name to validate in google-services.json"
-    required: false
-    default: "co.za.zanderkotze.multichoice"
+    required: true
 
 runs:
   using: "composite"
@@ -66,72 +53,78 @@ runs:
         keyAlias=${KEY_ALIAS}
         EOF
 
-    - name: Create secrets.dart
+    - name: Decode environment config and google-services.json
       shell: bash
-      working-directory: apps/multichoice/lib/
       env:
-        WEB_API_KEY: ${{ inputs.web_api_key }}
-        WEB_APP_ID: ${{ inputs.web_app_id }}
-        ANDROID_API_KEY: ${{ inputs.android_api_key }}
-        ANDROID_APP_ID: ${{ inputs.android_app_id }}
-        IOS_API_KEY: ${{ inputs.ios_api_key }}
-        IOS_APP_ID: ${{ inputs.ios_app_id }}
-      run: |
-        mkdir -p auth
-        cat > auth/secrets.dart <<EOF
-        String webApiKey = '${WEB_API_KEY}';
-        String webAppId = '${WEB_APP_ID}';
-        String androidApiKey = '${ANDROID_API_KEY}';
-        String androidAppId = '${ANDROID_APP_ID}';
-        String iosApiKey = '${IOS_API_KEY}';
-        String iosAppId = '${IOS_APP_ID}';
-        EOF
-
-    - name: Create and validate google-services.json
-      shell: bash
-      working-directory: apps/multichoice/android/app/
-      env:
-        ANDROID_APP_ID: ${{ inputs.android_app_id }}
-        ANDROID_API_KEY: ${{ inputs.android_api_key }}
+        CONFIG_B64: ${{ inputs.config_b64 }}
+        GOOGLE_SERVICES_B64: ${{ inputs.google_services_b64 }}
+        FLAVOR: ${{ inputs.flavor }}
         PACKAGE_NAME: ${{ inputs.package_name }}
-        GOOGLE_SERVICES_JSON_B64: ${{ inputs.google_services_json_b64 }}
       run: |
         set -euo pipefail
-        printf '%s' "$GOOGLE_SERVICES_JSON_B64" | base64 --decode > google-services.json
+
+        if [ "$FLAVOR" = "dev" ]; then
+          CONFIG_FILE="apps/multichoice/config/develop_config.json"
+        else
+          CONFIG_FILE="apps/multichoice/config/production_config.json"
+        fi
+
+        mkdir -p apps/multichoice/config
+        mkdir -p "apps/multichoice/android/app/src/${FLAVOR}"
+
+        printf '%s' "$CONFIG_B64" | base64 --decode > "$CONFIG_FILE"
+        printf '%s' "$GOOGLE_SERVICES_B64" | base64 --decode > "apps/multichoice/android/app/src/${FLAVOR}/google-services.json"
+
         python3 - <<'PY'
         import json
         import os
 
-        with open('google-services.json', encoding='utf-8') as f:
-          config = json.load(f)
-
+        flavor = os.environ['FLAVOR']
         package_name = os.environ['PACKAGE_NAME']
+        config_file = (
+          'apps/multichoice/config/develop_config.json'
+          if flavor == 'dev'
+          else 'apps/multichoice/config/production_config.json'
+        )
+        google_services_file = f'apps/multichoice/android/app/src/{flavor}/google-services.json'
+
+        with open(config_file, encoding='utf-8') as f:
+          dart_config = json.load(f)
+
+        android_app_id = dart_config.get('ANDROID_APP_ID')
+        android_api_key = dart_config.get('ANDROID_API_KEY')
+        if not android_app_id or not android_api_key:
+          raise SystemExit(f'{config_file} must contain ANDROID_APP_ID and ANDROID_API_KEY.')
+
+        with open(google_services_file, encoding='utf-8') as f:
+          google_services = json.load(f)
+
         matching_clients = [
-          client for client in config.get('client', [])
+          client for client in google_services.get('client', [])
           if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == package_name
         ]
 
         if not matching_clients:
-          raise SystemExit(f'google-services.json does not contain package {package_name}.')
+          raise SystemExit(f'{google_services_file} does not contain package {package_name}.')
 
         client = matching_clients[0]
         mobilesdk_app_id = client.get('client_info', {}).get('mobilesdk_app_id')
-        if mobilesdk_app_id != os.environ['ANDROID_APP_ID']:
+        if mobilesdk_app_id != android_app_id:
           raise SystemExit(
-            'ANDROID_APP_ID secret does not match google-services.json '
-            f'({os.environ["ANDROID_APP_ID"]} != {mobilesdk_app_id}).'
+            'ANDROID_APP_ID in config does not match google-services.json '
+            f'({android_app_id} != {mobilesdk_app_id}).'
           )
 
         api_keys = client.get('api_key', [])
         if not api_keys:
-          raise SystemExit('google-services.json does not contain an Android API key.')
+          raise SystemExit(f'{google_services_file} does not contain an Android API key.')
 
         current_api_key = api_keys[0].get('current_key')
-        if current_api_key != os.environ['ANDROID_API_KEY']:
+        if current_api_key != android_api_key:
           raise SystemExit(
-            'ANDROID_API_KEY secret does not match google-services.json '
-            f'({os.environ["ANDROID_API_KEY"]} != {current_api_key}).'
+            'ANDROID_API_KEY in config does not match google-services.json '
+            f'({android_api_key} != {current_api_key}).'
           )
 
-        print('google-services.json parsed and validated successfully.')
+        print('Environment config and google-services.json validated successfully.')
         PY

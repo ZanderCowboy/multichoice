@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/debug/widgets/export.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ class DebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode) {
+    if (!AppFlavor.allowsDebugPage) {
       return Scaffold(
         body: Center(child: Text(context.t.debug.notAvailable)),
       );
