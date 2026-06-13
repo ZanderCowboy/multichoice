@@ -330,6 +330,9 @@ jobs:
     needs: [preBuild, build, create-release]
     runs-on: ubuntu-latest
     if: failure() && needs.preBuild.result != 'skipped'
+    permissions:
+      contents: read
+      issues: write
     steps:
       ##############################################
       # Checkout Repository
