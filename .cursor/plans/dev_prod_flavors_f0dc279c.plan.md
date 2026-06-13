@@ -40,9 +40,9 @@ isProject: false
 
 ## Current state
 
-- Single Android app ID [`co.za.zanderkotze.multichoice`](apps/multichoice/android/app/build.gradle) with prod `google-services.json` at `android/app/`.
-- [`firebase_options.dart`](apps/multichoice/lib/firebase_options.dart) imports [`secrets.dart`](apps/multichoice/lib/auth/secrets.dart) and hardcodes prod `projectId`.
-- [`secrets.dart`](apps/multichoice/lib/auth/secrets.dart) is gitignored; CI writes it field-by-field from many GitHub secrets.
+- Single Android app ID `[co.za.zanderkotze.multichoice](apps/multichoice/android/app/build.gradle)` with prod `google-services.json` at `android/app/`.
+- `[firebase_options.dart](apps/multichoice/lib/firebase_options.dart)` imports `[secrets.dart](apps/multichoice/lib/auth/secrets.dart)` and hardcodes prod `projectId`.
+- `[secrets.dart](apps/multichoice/lib/auth/secrets.dart)` is gitignored; CI writes it field-by-field from many GitHub secrets.
 - Dev `google-services.json` is available (project `multichoice-app-develop`, package `co.za.zanderkotze.multichoice.dev`).
 - No Android `productFlavors` exist.
 
@@ -66,30 +66,34 @@ flowchart LR
   ProdCfg --> ProdMain --> ProdFlavor --> ProdFB
 ```
 
+
+
 ## Architecture decisions
 
-| Concern | Approach |
-|---------|----------|
-| Entry points | [`main_develop.dart`](apps/multichoice/lib/main_develop.dart) + [`main_production.dart`](apps/multichoice/lib/main_production.dart) only — **delete [`main.dart`](apps/multichoice/lib/main.dart)** |
-| Config source | **`--dart-define-from-file`** — replaces entire `lib/auth/secrets.dart` pattern |
-| Local config files | Gitignored [`apps/multichoice/config/develop_config.json`](apps/multichoice/config/develop_config.json) and [`production_config.json`](apps/multichoice/config/production_config.json) |
-| CI secrets | **`DEV_CONFIG_B64`** / **`PROD_CONFIG_B64`** (flat dart-define JSON) + **`DEV_GOOGLE_SERVICES_B64`** / **`PROD_GOOGLE_SERVICES_B64`** (native config); other concerns stay as separate secrets |
-| Flavor signal | `APP_FLAVOR` key inside each config JSON → `String.fromEnvironment('APP_FLAVOR')` in [`AppFlavor`](apps/multichoice/lib/config/app_flavor.dart) |
-| Firebase Dart init | [`firebase_options.dart`](apps/multichoice/lib/firebase_options.dart) reads all values via `AppConfig` / `fromEnvironment` |
-| Native Firebase | `android/app/src/dev/google-services.json` and `android/app/src/prod/google-services.json` (gitignored) |
-| Dev package ID | `applicationIdSuffix ".dev"` → `co.za.zanderkotze.multichoice.dev` |
-| Onboarding | New doc (e.g. [`docs/environment-config.md`](docs/environment-config.md)) with JSON schema + setup steps — **no** `*.example` secret/config files |
-| Platform | Android only |
-| sandbox_workflow | Unchanged (may break until updated later) |
+
+| Concern            | Approach                                                                                                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entry points       | `[main_develop.dart](apps/multichoice/lib/main_develop.dart)` + `[main_production.dart](apps/multichoice/lib/main_production.dart)` only — **delete `[main.dart](apps/multichoice/lib/main.dart)`** |
+| Config source      | `**--dart-define-from-file**` — replaces entire `lib/auth/secrets.dart` pattern                                                                                                                     |
+| Local config files | Gitignored `[apps/multichoice/config/develop_config.json](apps/multichoice/config/develop_config.json)` and `[production_config.json](apps/multichoice/config/production_config.json)`              |
+| CI secrets         | `**DEV_CONFIG_B64**` / `**PROD_CONFIG_B64**` (flat dart-define JSON) + `**DEV_GOOGLE_SERVICES_B64**` / `**PROD_GOOGLE_SERVICES_B64**` (native config); other concerns stay as separate secrets      |
+| Flavor signal      | `APP_FLAVOR` key inside each config JSON → `String.fromEnvironment('APP_FLAVOR')` in `[AppFlavor](apps/multichoice/lib/config/app_flavor.dart)`                                                     |
+| Firebase Dart init | `[firebase_options.dart](apps/multichoice/lib/firebase_options.dart)` reads all values via `AppConfig` / `fromEnvironment`                                                                          |
+| Native Firebase    | `android/app/src/dev/google-services.json` and `android/app/src/prod/google-services.json` (gitignored)                                                                                             |
+| Dev package ID     | `applicationIdSuffix ".dev"` → `co.za.zanderkotze.multichoice.dev`                                                                                                                                  |
+| Onboarding         | New doc (e.g. `[docs/environment-config.md](docs/environment-config.md)`) with JSON schema + setup steps — **no** `*.example` secret/config files                                                   |
+| Platform           | Android only                                                                                                                                                                                        |
+| sandbox_workflow   | Unchanged (may break until updated later)                                                                                                                                                           |
+
 
 ### Why `--dart-define-from-file` instead of `secrets.dart`?
 
-**Yes — this is the recommended approach.** Flutter SDK `>=3.7` supports [`--dart-define-from-file`](https://docs.flutter.dev/deployment/flavors#using-dart-defines) (your SDK `>=3.10.8` qualifies).
+**Yes — this is the recommended approach.** Flutter SDK `>=3.7` supports `[--dart-define-from-file](https://docs.flutter.dev/deployment/flavors#using-dart-defines)` (your SDK `>=3.10.8` qualifies).
 
 - Removes generated/hand-maintained Dart secret files.
 - Same mechanism locally (launch.json) and in CI (`flutter build --dart-define-from-file=...`).
-- Values accessed via `const String.fromEnvironment('WEB_API_KEY')` etc. in a small [`AppConfig`](apps/multichoice/lib/config/app_config.dart) class.
-- [`firebase_options.dart`](apps/multichoice/lib/firebase_options.dart) imports `AppConfig` instead of `secrets.dart`.
+- Values accessed via `const String.fromEnvironment('WEB_API_KEY')` etc. in a small `[AppConfig](apps/multichoice/lib/config/app_config.dart)` class.
+- `[firebase_options.dart](apps/multichoice/lib/firebase_options.dart)` imports `AppConfig` instead of `secrets.dart`.
 
 **Caveat:** `--dart-define-from-file` only accepts **flat string/bool** entries — no nested objects. So `google-services.json` is always a **separate file** on disk (`android/app/src/{dev,prod}/`). It is never passed to Flutter as a dart-define.
 
@@ -97,9 +101,9 @@ flowchart LR
 
 ## 1. Main entry points
 
-**Delete** [`apps/multichoice/lib/main.dart`](apps/multichoice/lib/main.dart) — no backward-compat alias.
+**Delete** `[apps/multichoice/lib/main.dart](apps/multichoice/lib/main.dart)` — no backward-compat alias.
 
-**[`apps/multichoice/lib/app/run_multichoice.dart`](apps/multichoice/lib/app/run_multichoice.dart)** — shared startup (extract current main.dart body):
+`**[apps/multichoice/lib/app/run_multichoice.dart](apps/multichoice/lib/app/run_multichoice.dart)`** — shared startup (extract current main.dart body):
 
 ```dart
 Future<void> runMultichoice() async {
@@ -110,7 +114,7 @@ Future<void> runMultichoice() async {
 }
 ```
 
-**[`apps/multichoice/lib/main_develop.dart`](apps/multichoice/lib/main_develop.dart)** and **`main_production.dart`** — thin wrappers:
+`**[apps/multichoice/lib/main_develop.dart](apps/multichoice/lib/main_develop.dart)**` and `**main_production.dart**` — thin wrappers:
 
 ```dart
 import 'package:multichoice/app/run_multichoice.dart';
@@ -130,7 +134,7 @@ The `assert` catches entry-point / config-file mismatches during debug builds.
 
 ## 2. App flavor + AppConfig modules
 
-**[`apps/multichoice/lib/config/app_flavor.dart`](apps/multichoice/lib/config/app_flavor.dart)** — driven by dart-define, not runtime `useDev()`:
+`**[apps/multichoice/lib/config/app_flavor.dart](apps/multichoice/lib/config/app_flavor.dart)**` — driven by dart-define, not runtime `useDev()`:
 
 ```dart
 abstract final class AppFlavor {
@@ -142,7 +146,7 @@ abstract final class AppFlavor {
 }
 ```
 
-**[`apps/multichoice/lib/config/app_config.dart`](apps/multichoice/lib/config/app_config.dart)** — thin `fromEnvironment` accessors:
+`**[apps/multichoice/lib/config/app_config.dart](apps/multichoice/lib/config/app_config.dart)**` — thin `fromEnvironment` accessors:
 
 ```dart
 abstract final class AppConfig {
@@ -158,16 +162,18 @@ abstract final class AppConfig {
 }
 ```
 
-**Remove** the entire [`lib/auth/`](apps/multichoice/lib/auth/) secrets pattern (`secrets.dart`, `secrets_develop.dart`, `secrets_production.dart`). Update [`.gitignore`](apps/multichoice/.gitignore): drop `lib/auth/` rule; add `config/develop_config.json` and `config/production_config.json`.
+**Remove** the entire `[lib/auth/](apps/multichoice/lib/auth/)` secrets pattern (`secrets.dart`, `secrets_develop.dart`, `secrets_production.dart`). Update `[.gitignore](apps/multichoice/.gitignore)`: drop `lib/auth/` rule; add `config/develop_config.json` and `config/production_config.json`.
 
 ## 3. Environment config JSON (local + CI)
 
 ### Two files per environment (not one nested blob)
 
-| File | Purpose | Used by |
-|------|---------|---------|
-| `config/develop_config.json` | **Flat** dart-defines only | `--dart-define-from-file` (local + CI) |
-| `android/app/src/dev/google-services.json` | Native Firebase config | Gradle / Google Services plugin |
+
+| File                                       | Purpose                    | Used by                                |
+| ------------------------------------------ | -------------------------- | -------------------------------------- |
+| `config/develop_config.json`               | **Flat** dart-defines only | `--dart-define-from-file` (local + CI) |
+| `android/app/src/dev/google-services.json` | Native Firebase config     | Gradle / Google Services plugin        |
+
 
 Same pattern for prod: `production_config.json` + `android/app/src/prod/google-services.json`.
 
@@ -178,10 +184,10 @@ Same pattern for prod: `production_config.json` + `android/app/src/prod/google-s
   "APP_FLAVOR": "dev",
   "WEB_API_KEY": "...",
   "WEB_APP_ID": "...",
-  "ANDROID_API_KEY": "AIzaSyBubUjVay3aR6q4VrYDuJPWlTRQj4yJfQ8",
-  "ANDROID_APP_ID": "1:663305224058:android:ec2b1bdcb110b9b99760c3",
+  "ANDROID_API_KEY": "AIza...JfQ8",
+  "ANDROID_APP_ID": "1:66...58:android:ec...c3",
   "FIREBASE_PROJECT_ID": "multichoice-app-develop",
-  "MESSAGING_SENDER_ID": "663305224058",
+  "MESSAGING_SENDER_ID": "66...58",
   "AUTH_DOMAIN": "multichoice-app-develop.firebaseapp.com",
   "STORAGE_BUCKET": "multichoice-app-develop.firebasestorage.app",
   "REVENUE_CAT_ANDROID_API_KEY": "..."
@@ -192,12 +198,14 @@ No `jq` step — locally or in CI.
 
 ### GitHub secrets mapping (one secret per artifact)
 
-| GitHub secret | Decodes to | Same file you use locally |
-|---------------|------------|---------------------------|
-| `DEV_CONFIG_B64` | `config/develop_config.json` | yes — flat dart-defines |
-| `PROD_CONFIG_B64` | `config/production_config.json` | yes |
-| `DEV_GOOGLE_SERVICES_B64` | `android/app/src/dev/google-services.json` | yes |
-| `PROD_GOOGLE_SERVICES_B64` | `android/app/src/prod/google-services.json` | yes |
+
+| GitHub secret              | Decodes to                                  | Same file you use locally |
+| -------------------------- | ------------------------------------------- | ------------------------- |
+| `DEV_CONFIG_B64`           | `config/develop_config.json`                | yes — flat dart-defines   |
+| `PROD_CONFIG_B64`          | `config/production_config.json`             | yes                       |
+| `DEV_GOOGLE_SERVICES_B64`  | `android/app/src/dev/google-services.json`  | yes                       |
+| `PROD_GOOGLE_SERVICES_B64` | `android/app/src/prod/google-services.json` | yes                       |
+
 
 CI decode (develop example — direct, no wrapping):
 
@@ -209,20 +217,22 @@ printf '%s' "${{ secrets.DEV_GOOGLE_SERVICES_B64 }}" | base64 --decode > apps/mu
 
 ### Known dev values (from your `google-services.json`)
 
-| Key | Value |
-|-----|-------|
-| `ANDROID_API_KEY` | `AIzaSyBubUjVay3aR6q4VrYDuJPWlTRQj4yJfQ8` |
-| `ANDROID_APP_ID` | `1:663305224058:android:ec2b1bdcb110b9b99760c3` |
-| `FIREBASE_PROJECT_ID` | `multichoice-app-develop` |
-| `MESSAGING_SENDER_ID` | `663305224058` |
-| `STORAGE_BUCKET` | `multichoice-app-develop.firebasestorage.app` |
-| `google-services` package | `co.za.zanderkotze.multichoice.dev` |
+
+| Key                       | Value                                           |
+| ------------------------- | ----------------------------------------------- |
+| `ANDROID_API_KEY`         | `AIzaSyBubUjVay3aR6q4VrYDuJPWlTRQj4yJfQ8`       |
+| `ANDROID_APP_ID`          | `1:663305224058:android:ec2b1bdcb110b9b99760c3` |
+| `FIREBASE_PROJECT_ID`     | `multichoice-app-develop`                       |
+| `MESSAGING_SENDER_ID`     | `663305224058`                                  |
+| `STORAGE_BUCKET`          | `multichoice-app-develop.firebasestorage.app`   |
+| `google-services` package | `co.za.zanderkotze.multichoice.dev`             |
+
 
 Populate `WEB_*` and `AUTH_DOMAIN` from Firebase Console / FlutterFire as needed.
 
 ### Onboarding doc (no `.example` files)
 
-Add [`docs/environment-config.md`](docs/environment-config.md) covering:
+Add `[docs/environment-config.md](docs/environment-config.md)` covering:
 
 - JSON schema above with placeholder values
 - How to create local `develop_config.json` / `production_config.json`
@@ -236,11 +246,11 @@ Add [`docs/environment-config.md`](docs/environment-config.md) covering:
 - SHA-1 setup for Google Sign-In on dev project
 - Note: dev `google_services.oauth_client` is empty until SHA-1 is registered
 
-Optionally add a short pointer in [`.github/README.md`](.github/README.md).
+Optionally add a short pointer in `[.github/README.md](.github/README.md)`.
 
 ## 4. Firebase options
 
-Update [`firebase_options.dart`](apps/multichoice/lib/firebase_options.dart):
+Update `[firebase_options.dart](apps/multichoice/lib/firebase_options.dart)`:
 
 - Remove `import 'package:multichoice/auth/secrets.dart'`
 - Use `AppConfig.androidApiKey`, `AppConfig.firebaseProjectId`, etc.
@@ -249,7 +259,7 @@ Update [`firebase_options.dart`](apps/multichoice/lib/firebase_options.dart):
 
 ## 5. Android flavors
 
-Update [`apps/multichoice/android/app/build.gradle`](apps/multichoice/android/app/build.gradle):
+Update `[apps/multichoice/android/app/build.gradle](apps/multichoice/android/app/build.gradle)`:
 
 ```gradle
 flavorDimensions "environment"
@@ -267,7 +277,7 @@ productFlavors {
 }
 ```
 
-Update [`AndroidManifest.xml`](apps/multichoice/android/app/src/main/AndroidManifest.xml): `android:label="@string/app_name"`.
+Update `[AndroidManifest.xml](apps/multichoice/android/app/src/main/AndroidManifest.xml)`: `android:label="@string/app_name"`.
 
 Move native configs:
 
@@ -280,30 +290,34 @@ Remove legacy `android/app/google-services.json` once flavor dirs are in place.
 
 ## 6. VS Code launch configs
 
-Replace multichoice entries in [`.vscode/launch.json`](.vscode/launch.json):
+Replace multichoice entries in `[.vscode/launch.json](.vscode/launch.json)`:
 
-| Name | program | flutterMode | toolArgs / args |
-|------|---------|-------------|-----------------|
-| multichoice debug [DEV] | `apps/multichoice/lib/main_develop.dart` | debug | `--flavor dev`, `--dart-define-from-file=apps/multichoice/config/develop_config.json` |
-| multichoice profile [DEV] | `main_develop.dart` | profile | same |
-| multichoice release [DEV] | `main_develop.dart` | release | same |
-| multichoice debug [PROD] | `main_production.dart` | debug | `--flavor prod`, `--dart-define-from-file=apps/multichoice/config/production_config.json` |
-| multichoice profile [PROD] | `main_production.dart` | profile | same |
-| multichoice release [PROD] | `main_production.dart` | release | same |
+
+| Name                       | program                                  | flutterMode | toolArgs / args                                                                           |
+| -------------------------- | ---------------------------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| multichoice debug [DEV]    | `apps/multichoice/lib/main_develop.dart` | debug       | `--flavor dev`, `--dart-define-from-file=apps/multichoice/config/develop_config.json`     |
+| multichoice profile [DEV]  | `main_develop.dart`                      | profile     | same                                                                                      |
+| multichoice release [DEV]  | `main_develop.dart`                      | release     | same                                                                                      |
+| multichoice debug [PROD]   | `main_production.dart`                   | debug       | `--flavor prod`, `--dart-define-from-file=apps/multichoice/config/production_config.json` |
+| multichoice profile [PROD] | `main_production.dart`                   | profile     | same                                                                                      |
+| multichoice release [PROD] | `main_production.dart`                   | release     | same                                                                                      |
+
 
 > VS Code Dart extension passes extra args via `"toolArgs"` (preferred) or `"args"` depending on extension version — use whichever matches your existing launch.json pattern.
 
 ## 7. Debug page + banner UI
 
-- [`app_version.dart`](apps/multichoice/lib/presentation/drawer/widgets/app_version.dart): `AppFlavor.allowsDebugPage` instead of `kDebugMode`
-- [`debug_page.dart`](apps/multichoice/lib/presentation/debug/debug_page.dart): same
-- [`multichoice.dart`](apps/multichoice/lib/app/view/multichoice.dart): environment `Banner` when `AppFlavor.showsEnvironmentBanner`
+- `[app_version.dart](apps/multichoice/lib/presentation/drawer/widgets/app_version.dart)`: `AppFlavor.allowsDebugPage` instead of `kDebugMode`
+- `[debug_page.dart](apps/multichoice/lib/presentation/debug/debug_page.dart)`: same
+- `[multichoice.dart](apps/multichoice/lib/app/view/multichoice.dart)`: environment `Banner` when `AppFlavor.showsEnvironmentBanner`
 
-| Build | Banner |
-|-------|--------|
-| DEV debug/profile/release | DEV |
-| PROD debug/profile | PROD |
-| PROD release | none |
+
+| Build                     | Banner |
+| ------------------------- | ------ |
+| DEV debug/profile/release | DEV    |
+| PROD debug/profile        | PROD   |
+| PROD release              | none   |
+
 
 Keep `kDebugMode` for build-mode behavior (Remote Config fetch, changelog refresh, `clearAllData`).
 
@@ -327,7 +341,7 @@ printf '%s' "${{ secrets.PROD_GOOGLE_SERVICES_B64 }}" | base64 --decode > apps/m
 - Decode `DEV_CONFIG_B64` + `DEV_GOOGLE_SERVICES_B64`
 - Build: `flutter build apk --target lib/main_develop.dart --flavor dev --dart-define-from-file=config/develop_config.json`
 - Artifacts: `app-dev-release.apk`, `bundle/devRelease/app-dev-release.aab`
-- Firebase App Distribution: keep **`APP_ID`** + **`CREDENTIAL_FILE_CONTENT`** as separate secrets (dev project values)
+- Firebase App Distribution: keep `**APP_ID**` + `**CREDENTIAL_FILE_CONTENT**` as separate secrets (dev project values)
 
 ### staging_workflow.yml + production_workflow.yml → PROD
 
@@ -335,7 +349,7 @@ printf '%s' "${{ secrets.PROD_GOOGLE_SERVICES_B64 }}" | base64 --decode > apps/m
 - Build: `--target lib/main_production.dart --flavor prod --dart-define-from-file=config/production_config.json`
 - Artifacts: `app-prod-release.apk`, `bundle/prodRelease/...`
 
-### Refactor [`prepare-android-release-files`](.github/actions/prepare-android-release-files/action.yml)
+### Refactor `[prepare-android-release-files](.github/actions/prepare-android-release-files/action.yml)`
 
 Replace per-field secret inputs with:
 
@@ -360,24 +374,28 @@ After migration, **remove** (values now in config JSON or renamed B64 secrets):
 
 ### New / renamed (required per environment)
 
-| Secret | Contents |
-|--------|----------|
-| **`DEV_CONFIG_B64`** | Base64 of flat `develop_config.json` only |
-| **`PROD_CONFIG_B64`** | Base64 of flat `production_config.json` only |
-| **`DEV_GOOGLE_SERVICES_B64`** | Base64 of dev `google-services.json` |
-| **`PROD_GOOGLE_SERVICES_B64`** | Base64 of prod `google-services.json` |
+
+| Secret                         | Contents                                     |
+| ------------------------------ | -------------------------------------------- |
+| `**DEV_CONFIG_B64`**           | Base64 of flat `develop_config.json` only    |
+| `**PROD_CONFIG_B64**`          | Base64 of flat `production_config.json` only |
+| `**DEV_GOOGLE_SERVICES_B64**`  | Base64 of dev `google-services.json`         |
+| `**PROD_GOOGLE_SERVICES_B64**` | Base64 of prod `google-services.json`        |
+
 
 ### Keep as separate secrets (not in config JSON)
 
-| Secret | Used by | Notes |
-|--------|---------|-------|
-| `ANDROID_KEYSTORE_BASE64`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS` | All release builds | Signing |
-| `APP_ID` | develop_workflow | Firebase App Distribution app ID (**dev** project) |
-| `CREDENTIAL_FILE_CONTENT` | develop_workflow | App Distribution service account (**dev** project) |
-| `SERVICE_ACCOUNT_JSON` | staging/production | Play Store upload (**prod**) |
-| `VERSION_BOT_APP_ID`, `VERSION_BOT_APP_PRIVATE_KEY` | All versioned workflows | Version bot |
-| `DEPLOYMENT_WEBHOOK_URL`, `DEPLOYMENT_EMAIL_RECIPIENTS` | Post-deploy notifications | |
-| `CODECOV_TOKEN` | CI coverage | |
+
+| Secret                                                                   | Used by                   | Notes                                              |
+| ------------------------------------------------------------------------ | ------------------------- | -------------------------------------------------- |
+| `ANDROID_KEYSTORE_BASE64`, `STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS` | All release builds        | Signing                                            |
+| `APP_ID`                                                                 | develop_workflow          | Firebase App Distribution app ID (**dev** project) |
+| `CREDENTIAL_FILE_CONTENT`                                                | develop_workflow          | App Distribution service account (**dev** project) |
+| `SERVICE_ACCOUNT_JSON`                                                   | staging/production        | Play Store upload (**prod**)                       |
+| `VERSION_BOT_APP_ID`, `VERSION_BOT_APP_PRIVATE_KEY`                      | All versioned workflows   | Version bot                                        |
+| `DEPLOYMENT_WEBHOOK_URL`, `DEPLOYMENT_EMAIL_RECIPIENTS`                  | Post-deploy notifications |                                                    |
+| `CODECOV_TOKEN`                                                          | CI coverage               |                                                    |
+
 
 Consider renaming dev distribution secrets to `DEV_APP_ID` / `DEV_CREDENTIAL_FILE_CONTENT` for clarity (optional — not required for implementation).
 
@@ -394,9 +412,9 @@ Consider renaming dev distribution secrets to `DEV_APP_ID` / `DEV_CREDENTIAL_FIL
 ## Gaps / footguns
 
 - **Entry point + config + flavor must stay paired** — `main_develop.dart` + `develop_config.json` + `--flavor dev`.
-- **`develop_config.json` must be flat** — `DEV_CONFIG_B64` is a direct base64 copy of that file; do not nest `google_services` inside it.
+- `**develop_config.json` must be flat** — `DEV_CONFIG_B64` is a direct base64 copy of that file; do not nest `google_services` inside it.
 - **Keep config and google-services secrets in sync** — `ANDROID_APP_ID` / `ANDROID_API_KEY` in config must match the decoded `google-services.json`.
-- **`debug_page.dart`** must change alongside `app_version.dart`.
+- `**debug_page.dart`** must change alongside `app_version.dart`.
 - **Remove iOS references** from `firebase_options.dart`, pubspec platform notes, and any desktop `Platform.isIOS` crashlytics branch if desired.
 - **sandbox_workflow** still uses old pattern until updated.
 - **No `main.dart`** — update any docs/scripts that reference it (integration test launch config, README, etc.).
@@ -410,3 +428,4 @@ Consider renaming dev distribution secrets to `DEV_APP_ID` / `DEV_CREDENTIAL_FIL
 5. Banner + debug page gating
 6. `launch.json` + `docs/environment-config.md`
 7. CI decode script + workflow updates (after local verification)
+
