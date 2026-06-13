@@ -243,9 +243,12 @@ gcloud functions deploy onNewFeedback --set-env-vars EMAIL_USER="your-gmail@gmai
 ## Deployment
 
 Deploy the functions using:
+
 ```bash
 firebase deploy --only functions
 ```
+
+For **DEV vs PROD** project setup, environment files, and checklists, see [firebase-functions-environments.md](firebase-functions-environments.md).
 
 ## Troubleshooting
 

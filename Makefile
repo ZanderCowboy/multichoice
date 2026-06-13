@@ -58,3 +58,14 @@ kill_emulator:
 # Launch emulator
 launch_emulator:
 	flutter emulators --launch Pixel_9_36.1
+
+# Firebase deploy (functions, Firestore rules/indexes, Storage rules)
+# Usage: make firebase_deploy_dev | firebase_deploy_prod | firebase_deploy_all
+firebase_deploy_dev:
+	bash scripts/deploy-firebase.sh dev
+
+firebase_deploy_prod:
+	bash scripts/deploy-firebase.sh prod
+
+firebase_deploy_all:
+	bash scripts/deploy-firebase.sh all

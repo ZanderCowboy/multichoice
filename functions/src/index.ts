@@ -7,15 +7,39 @@ import * as nodemailer from "nodemailer";
 const emailUser = defineString("EMAIL_USER");
 const emailPass = defineString("EMAIL_PASS");
 
+const DEV_PROJECT_ID = "multichoice-app-develop";
+const PROD_PROJECT_ID = "multichoice-412309";
+
 admin.initializeApp();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: emailUser.value(),
-    pass: emailPass.value(),
-  },
-});
+/**
+ * Returns a short environment label for the deployed Firebase project.
+ * @return {string} DEV, PROD, or the raw project ID when unknown.
+ */
+function getEnvironmentLabel(): string {
+  const projectId = process.env.GCLOUD_PROJECT;
+  if (projectId === DEV_PROJECT_ID) {
+    return "DEV";
+  }
+  if (projectId === PROD_PROJECT_ID) {
+    return "PROD";
+  }
+  return projectId ?? "UNKNOWN";
+}
+
+/**
+ * Creates a Nodemailer transporter for sending emails using Gmail.
+ * @return {nodemailer.Transporter} A configured Nodemailer transporter
+ */
+function createTransporter() {
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: emailUser.value(),
+      pass: emailPass.value(),
+    },
+  });
+}
 
 export const onNewFeedback = onDocumentCreated({
   document: "feedback/{feedbackId}",
@@ -27,12 +51,15 @@ export const onNewFeedback = onDocumentCreated({
     return;
   }
 
+  const environment = getEnvironmentLabel();
+
   const mailOptions = {
     from: emailUser.value(),
     to: emailUser.value(),
-    subject: `New Feedback: ${feedback.category || "General"}`,
+    subject: `[${environment}] New Feedback: ${feedback.category || "General"}`,
     html: `
       <h2>New Feedback Received</h2>
+      <p><strong>Environment:</strong> ${environment}</p>
       <p><strong>Category:</strong> ${feedback.category || "General"}</p>
       <p><strong>Rating:</strong> ${feedback.rating || "N/A"}/5</p>
       <p><strong>Message:</strong> ${feedback.message || "No message"}</p>
@@ -54,7 +81,7 @@ export const onNewFeedback = onDocumentCreated({
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await createTransporter().sendMail(mailOptions);
     console.log("Feedback notification email sent successfully");
   } catch (error) {
     console.error("Error sending feedback notification email:", error);

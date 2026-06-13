@@ -183,7 +183,8 @@ multichoice/
 ### Documentation
 
 - **[Integration Tests Setup](docs/setting-up-integration-tests.md)** - Guide for setting up integration tests
-- **[Firebase Functions Setup](docs/setting-up-firebase-functions.md)** - Guide for Firebase Functions configuration
+- **[Firebase Functions (DEV / PROD)](docs/firebase-functions-environments.md)** — Deploy Cloud Functions to dev and prod projects
+- **[Firebase Functions Setup](docs/setting-up-firebase-functions.md)** — Code walkthrough and TypeScript reference
 - **[Using Wrappers in Code](docs/using-wrappers-in-code.md)** - Documentation on wrapper usage
 - **[VS Code Configuration](docs/explaining-the-vscode-folder.md)** - Explanation of VS Code setup
 - **[Batch Scripts](docs/explaining-the-bat-scripts.md)** - Documentation for automation scripts

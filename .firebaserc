@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "multichoice-412309"
+    "default": "multichoice-412309",
+    "prod": "multichoice-412309",
+    "dev": "multichoice-app-develop"
   }
 }
