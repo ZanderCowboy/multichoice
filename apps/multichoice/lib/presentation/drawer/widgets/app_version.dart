@@ -41,7 +41,7 @@ class AppVersion extends StatelessWidget {
                   );
           }
           return Text(
-            'Unknown version',
+            context.t.common.unknownVersion,
             style: versionTextStyle,
           );
         },

@@ -6,6 +6,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/utils/user_accounts_feature.dart';
@@ -81,7 +82,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       (err) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(err.message)),
+          SnackBar(
+            content: Text(localizeCoreMessage(context, err.message)),
+          ),
         );
       },
       (_) {

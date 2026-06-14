@@ -113,7 +113,8 @@
     "noCancel": "No, cancel",
     "yesDelete": "Yes, delete",
     "dismiss": "Dismiss",
-    "none": "None"
+    "none": "None",
+    "unknownVersion": "Unknown version"
   },
   "validation": {
     "emailRequired": "Email is required",
@@ -148,7 +149,8 @@
     "noChangelogAvailable": "No changelog available",
     "checkBackLater": "Check back later for updates",
     "failedToLoad": "Failed to load changelog",
-    "refreshRemoteConfig": "Refresh Remote Config"
+    "refreshRemoteConfig": "Refresh Remote Config",
+    "versionLabel": "Version $version"
   },
   "tooltips": {
     "back": "Back",
@@ -170,7 +172,8 @@
     "export": "Export",
     "settings": "Settings",
     "home": "Home",
-    "editOrder": "Edit order"
+    "editOrder": "Edit order",
+    "finishEditing": "Finish editing"
   },
   "errors": {
     "generic": "Error",
@@ -248,7 +251,8 @@
     "editModeReorderTabs": "Drag and drop collections to reorder. Long press and drag entries to reorder them.",
     "refreshed": "Refreshed",
     "scrollToTop": "Scroll to top",
-    "scrollToStart": "Scroll to start"
+    "scrollToStart": "Scroll to start",
+    "addNewEntry": "Add New Entry"
   },
   "tutorial": {
     "followTutorial": "Follow Tutorial",
@@ -328,6 +332,7 @@
     "failedToImportData": "Failed to import data"
   },
   "modals": {
-    "deleteItem": "Delete ${item}?"
+    "deleteItem": "Delete ${item}?",
+    "deleteItemTitle(rich)": "Delete ${item}?"
   }
 }

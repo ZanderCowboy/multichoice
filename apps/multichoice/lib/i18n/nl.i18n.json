@@ -114,7 +114,8 @@
     "noCancel": "Nee, annuleren",
     "yesDelete": "Ja, verwijderen",
     "dismiss": "Sluiten",
-    "none": "Geen"
+    "none": "Geen",
+    "unknownVersion": "Onbekende versie"
   },
   "validation": {
     "emailRequired": "E-mail is verplicht",
@@ -149,7 +150,8 @@
     "noChangelogAvailable": "Geen wijzigingslogboek beschikbaar",
     "checkBackLater": "Kom later terug voor updates",
     "failedToLoad": "Wijzigingslogboek laden mislukt",
-    "refreshRemoteConfig": "Remote Config vernieuwen"
+    "refreshRemoteConfig": "Remote Config vernieuwen",
+    "versionLabel": "Versie $version"
   },
   "tooltips": {
     "back": "Terug",
@@ -171,7 +173,8 @@
     "export": "Exporteren",
     "settings": "Instellingen",
     "home": "Startpagina",
-    "editOrder": "Volgorde bewerken"
+    "editOrder": "Volgorde bewerken",
+    "finishEditing": "Bewerken voltooien"
   },
   "errors": {
     "generic": "Fout",
@@ -249,7 +252,8 @@
     "editModeReorderTabs": "Sleep collecties om ze opnieuw te ordenen. Houd items ingedrukt en sleep om ze opnieuw te ordenen.",
     "refreshed": "Vernieuwd",
     "scrollToTop": "Scroll naar boven",
-    "scrollToStart": "Scroll naar begin"
+    "scrollToStart": "Scroll naar begin",
+    "addNewEntry": "Nieuwe invoer toevoegen"
   },
   "tutorial": {
     "followTutorial": "Volg tutorial",
@@ -275,14 +279,26 @@
     },
     "attachedImages": "Bijgevoegde afbeeldingen:",
     "addImages": "Afbeeldingen toevoegen",
+    "pasteScreenshot": "Plak screenshot",
+    "noImageInClipboard": "Geen afbeelding gevonden in klembord",
     "submitFeedback": "Verstuur feedback",
     "categoryLabel": "Categorie",
+    "categoryLabelRequired": "Categorie *",
     "selectCategory": "Selecteer een categorie",
     "emailLabel": "E-mail (optioneel)",
     "emailHint": "E-mail (optioneel)",
     "invalidEmail": "Voer een geldig e-mailadres in",
     "messageLabel": "Je feedback",
-    "enterFeedback": "Voer je feedback in"
+    "messageLabelRequired": "Je feedback *",
+    "enterFeedback": "Voer je feedback in",
+    "ratingLabel": "Beoordeling *",
+    "messageHints": {
+      "bugReport": "Beschrijf wat er gebeurde, stappen om te reproduceren en wanneer het voorkomt.",
+      "featureRequest": "Beschrijf de gewenste functie en hoe deze je zou helpen.",
+      "generalFeedback": "Deel je algemene mening over de app.",
+      "uiUx": "Beschrijf lay-out-, navigatie- of ontwerpproblemen.",
+      "performance": "Trage app, crashes, vastlopen, batterijverbruik, enz."
+    }
   },
   "about": {
     "title": "Over",
@@ -317,6 +333,7 @@
     "failedToImportData": "Gegevens importeren mislukt"
   },
   "modals": {
-    "deleteItem": "Verwijder ${item}?"
+    "deleteItem": "Verwijder ${item}?",
+    "deleteItemTitle(rich)": "Verwijder ${item}?"
   }
 }

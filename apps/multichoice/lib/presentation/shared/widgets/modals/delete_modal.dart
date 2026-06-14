@@ -14,27 +14,18 @@ void deleteModal({
 }) {
   CustomDialog<AlertDialog>.show(
     context: context,
-    title: RichText(
+    title: Text.rich(
       key: context.keys.deleteModalTitle,
-      text: TextSpan(
-        text: 'Delete ',
-        style: DefaultTextStyle.of(context).style.copyWith(
-          fontSize: 24,
+      context.t.modals.deleteItemTitle(
+        item: TextSpan(
+          text: title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        children: [
-          TextSpan(
-            text: title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextSpan(
-            text: '?',
-            style: DefaultTextStyle.of(context).style.copyWith(
-              fontSize: 24,
-            ),
-          ),
-        ],
+      ),
+      style: DefaultTextStyle.of(context).style.copyWith(
+        fontSize: 24,
       ),
     ),
     content: content,

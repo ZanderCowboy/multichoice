@@ -21,13 +21,13 @@ class DismissibleBannerBar extends StatelessWidget {
     required this.body,
     required this.onDismiss,
     required this.backgroundColor,
+    required this.dismissTooltip,
     super.key,
     this.leading,
     this.trailing,
     this.bottomBorderColor,
     this.dismissIconColor,
     this.titleStyle,
-    this.dismissTooltip = 'Dismiss',
   });
 
   final BannerBarVariant variant;

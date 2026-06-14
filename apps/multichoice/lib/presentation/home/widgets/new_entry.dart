@@ -49,13 +49,11 @@ class _NewEntryState extends State<NewEntry> {
           onPressed: () {
             CustomDialog<AlertDialog>.show(
               context: context,
-              title: RichText(
+              title: Text(
                 key: context.keys.addNewEntryTitle,
-                text: TextSpan(
-                  text: 'Add New Entry',
-                  style: DefaultTextStyle.of(context).style.copyWith(
-                    fontSize: 24,
-                  ),
+                context.t.home.addNewEntry,
+                style: DefaultTextStyle.of(context).style.copyWith(
+                  fontSize: 24,
                 ),
               ),
               content: BlocProvider.value(
