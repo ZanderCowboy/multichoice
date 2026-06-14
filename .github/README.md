@@ -98,7 +98,7 @@ Version bumps are controlled through PR labels:
 
 ## Security
 
-- Uses GitHub App tokens for authentication
+- Uses a dedicated GitHub App (`VERSION_BOT_APP_ID` / `VERSION_BOT_APP_PRIVATE_KEY`) to commit version bumps to protected branches — see [Protected Branch and GitHub App setup](../docs/protected-branch-and-github-app.md)
 - Securely handles Android keystore and secrets
 - Implements proper permission scopes for GitHub Actions
 
