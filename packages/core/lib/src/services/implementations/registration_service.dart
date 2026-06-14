@@ -38,6 +38,12 @@ class RegistrationService implements IRegistrationService {
         await user.updateDisplayName(dto.username);
       }
 
+      try {
+        await user.sendEmailVerification();
+      } catch (_) {
+        // Verification email failure must not block registration.
+      }
+
       final idToken = await user.getIdToken();
       if (idToken == null) {
         return const Left(AuthException.tokenUnavailable());

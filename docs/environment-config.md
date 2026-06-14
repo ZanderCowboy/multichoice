@@ -144,6 +144,39 @@ base64 -w0 apps/multichoice/android/app/src/dev/google-services.json
 
 Register debug/release SHA-1 fingerprints in the dev Firebase project before Google Sign-In works on DEV builds.
 
+## Firebase Authentication (DEV first-time setup)
+
+Auth is implemented in code (`RegistrationService`); each Firebase project needs console configuration before sign-up, sign-in, or Google works on that flavor.
+
+### 1. Local files
+
+Create the gitignored files listed above (`develop_config.json`, `android/app/src/dev/google-services.json`, `lib/firebase_options.dart`). `ANDROID_APP_ID` and `ANDROID_API_KEY` in `develop_config.json` must match `google-services.json`.
+
+### 2. Firebase Console — [multichoice-app-develop](https://console.firebase.google.com/u/0/project/multichoice-app-develop/overview)
+
+1. **Project Settings → Your apps:** Android app `co.za.zanderkotze.multichoice.dev` must exist. Download `google-services.json` → `android/app/src/dev/`.
+2. **Authentication → Sign-in method:** enable **Email/Password** and **Google**.
+3. **Project Settings → SHA certificate fingerprints:** add debug (and release if testing release) **SHA-1 and SHA-256** for the dev package.
+
+   ```powershell
+   cd apps/multichoice/android
+   .\gradlew signingReport
+   ```
+
+4. **Remote Config:** set `enable_user_accounts` to `true` for DEV testing (gates all auth UI).
+
+### 3. Verify
+
+Run **Debug [DEV]** and test email sign-up and **Continue with Google**. Common failures without the steps above:
+
+| Symptom | Likely cause |
+|---------|----------------|
+| `ApiException: 10` (DEVELOPER_ERROR) | Missing or wrong SHA fingerprints in Firebase |
+| `operation-not-allowed` | Email/Password or Google provider not enabled |
+| Auth UI hidden | `enable_user_accounts` Remote Config off |
+
+Email verification emails are sent automatically after sign-up once Email/Password is enabled (optional template under Authentication → Templates).
+
 **App Check:** DEV setup guide [app-check-dev.md](app-check-dev.md); PROD checklist [app-check-prod-todo.md](app-check-prod-todo.md). DEV Play Internal testing listing: [play-console-dev-internal-testing.md](play-console-dev-internal-testing.md).
 
 ## Banner and debug tooling

@@ -161,6 +161,7 @@ class _PasswordFieldState extends State<PasswordField> {
     final effectiveLabel = widget.labelText ?? validation.password;
     final effectiveHint = widget.hintText ?? validation.enterYourPassword;
     final appColors = context.theme.appColors;
+    final colorScheme = Theme.of(context).colorScheme;
     final inputTheme = Theme.of(context).inputDecorationTheme;
     final textColor =
         inputTheme.labelStyle?.color ??
@@ -284,6 +285,21 @@ class _PasswordFieldState extends State<PasswordField> {
                       key: _passwordRequirementsTooltipKey,
                       triggerMode: TooltipTriggerMode.manual,
                       preferBelow: true,
+                      decoration: BoxDecoration(
+                        color:
+                            appColors.modalBackground ??
+                            appColors.scaffoldBackground ??
+                            colorScheme.surface,
+                        borderRadius: borderCircular8,
+                        border: Border.all(
+                          color: (appColors.textTertiary ?? colorScheme.outline)
+                              .withValues(alpha: 0.35),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                       richMessage: TextSpan(
                         children: [
                           TextSpan(

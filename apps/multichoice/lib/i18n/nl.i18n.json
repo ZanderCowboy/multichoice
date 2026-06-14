@@ -27,7 +27,8 @@
     "resetLinkSent": "Resetlink verzonden! Controleer je e-mail of open je e-mailapp.",
     "signInSuccessfully": "Succesvol ingelogd!",
     "registrationSuccessful": "Registratie succesvol!",
-    "resetPassword": "Wachtwoord opnieuw instellen"
+    "resetPassword": "Wachtwoord opnieuw instellen",
+    "verificationEmailSent": "We hebben een verificatielink naar je e-mail gestuurd. Je kunt op elk moment verifiëren via je inbox."
   },
   "drawer": {
     "account": "Account",

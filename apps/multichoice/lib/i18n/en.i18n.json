@@ -26,7 +26,8 @@
     "goToResetPassword": "Go to Reset Password",
     "checkYourEmail": "Check your email",
     "passwordResetSentDescription": "We've sent a password reset link to $email. Open your email app or check your inbox.",
-    "resetLinkSent": "Reset link sent! Check your email or open your mail app."
+    "resetLinkSent": "Reset link sent! Check your email or open your mail app.",
+    "verificationEmailSent": "We sent a verification link to your email. You can verify anytime from your inbox."
   },
   "drawer": {
     "account": "Account",

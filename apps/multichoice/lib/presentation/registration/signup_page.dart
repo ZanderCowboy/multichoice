@@ -9,6 +9,7 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
 import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:multichoice/presentation/registration/utils/password_validator.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
@@ -34,6 +35,7 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _hasOpenedSignupForm = false;
   _AuthAction? _loadingAction;
 
@@ -48,6 +50,7 @@ class _SignupPageState extends State<SignupPage> {
     _emailController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -70,6 +73,12 @@ class _SignupPageState extends State<SignupPage> {
         offset: _passwordController.text.length,
       );
     }
+    if (_confirmPasswordController.text != state.confirmPassword) {
+      _confirmPasswordController.text = state.confirmPassword;
+      _confirmPasswordController.selection = TextSelection.collapsed(
+        offset: _confirmPasswordController.text.length,
+      );
+    }
   }
 
   @override
@@ -87,6 +96,11 @@ class _SignupPageState extends State<SignupPage> {
               );
               context.router.popUntilRoot();
             } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.t.auth.verificationEmailSent),
+                ),
+              );
               Future<void>.delayed(const Duration(milliseconds: 800), () {
                 if (!mounted) return;
                 context.router.popUntilRoot();
@@ -109,6 +123,7 @@ class _SignupPageState extends State<SignupPage> {
             previous.email != current.email ||
             previous.username != current.username ||
             previous.password != current.password ||
+            previous.confirmPassword != current.confirmPassword ||
             previous.isLoading != current.isLoading ||
             previous.isSuccess != current.isSuccess,
         builder: (context, state) {
@@ -126,6 +141,7 @@ class _SignupPageState extends State<SignupPage> {
             emailController: _emailController,
             usernameController: _usernameController,
             passwordController: _passwordController,
+            confirmPasswordController: _confirmPasswordController,
             loadingAction: _loadingAction,
             isLoading: state.isLoading,
             isSuccess: state.isSuccess,
@@ -154,6 +170,7 @@ class _SignupPageContent extends StatefulWidget {
     required this.emailController,
     required this.usernameController,
     required this.passwordController,
+    required this.confirmPasswordController,
     required this.loadingAction,
     required this.isLoading,
     required this.isSuccess,
@@ -165,6 +182,7 @@ class _SignupPageContent extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController usernameController;
   final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
   final _AuthAction? loadingAction;
   final bool isLoading;
   final bool isSuccess;
@@ -179,8 +197,10 @@ class _SignupPageContentState extends State<_SignupPageContent> {
   bool _emailValid = false;
   bool _usernameValid = false;
   bool _passwordValid = false;
+  bool _confirmPasswordValid = false;
 
-  bool get _formReady => _emailValid && _usernameValid && _passwordValid;
+  bool get _formReady =>
+      _emailValid && _usernameValid && _passwordValid && _confirmPasswordValid;
 
   @override
   void initState() {
@@ -188,6 +208,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
     widget.emailController.addListener(_onControllerTextChanged);
     widget.usernameController.addListener(_onControllerTextChanged);
     widget.passwordController.addListener(_onControllerTextChanged);
+    widget.confirmPasswordController.addListener(_onControllerTextChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onControllerTextChanged();
     });
@@ -198,6 +219,7 @@ class _SignupPageContentState extends State<_SignupPageContent> {
     widget.emailController.removeListener(_onControllerTextChanged);
     widget.usernameController.removeListener(_onControllerTextChanged);
     widget.passwordController.removeListener(_onControllerTextChanged);
+    widget.confirmPasswordController.removeListener(_onControllerTextChanged);
     super.dispose();
   }
 
@@ -210,10 +232,14 @@ class _SignupPageContentState extends State<_SignupPageContent> {
     final userOk =
         user.isNotEmpty && UsernameField.defaultValidator(user, context.t) == null;
     final passOk = PasswordValidator.isValid(widget.passwordController.text);
+    final confirm = widget.confirmPasswordController.text;
+    final confirmOk =
+        confirm.isNotEmpty && confirm == widget.passwordController.text;
     setState(() {
       _emailValid = emailOk;
       _usernameValid = userOk;
       _passwordValid = passOk;
+      _confirmPasswordValid = confirmOk;
     });
   }
 
@@ -244,6 +270,21 @@ class _SignupPageContentState extends State<_SignupPageContent> {
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => context.router.maybePop(),
         ),
+        actions: [
+          SizedBox(
+            height: 28,
+            width: 60,
+            child: TextButton(
+              onPressed: widget.isLoading || widget.isSuccess
+                  ? null
+                  : () => showLoginModal(context),
+              style: const ButtonStyle(
+                padding: WidgetStatePropertyAll(EdgeInsets.zero),
+              ),
+              child: Text(context.t.auth.signIn),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -297,6 +338,34 @@ class _SignupPageContentState extends State<_SignupPageContent> {
                             context.read<RegistrationBloc>().add(
                               RegistrationEvent.fieldsChanged(
                                 field: RegistrationField.password,
+                                value: value,
+                              ),
+                            ),
+                      ),
+                      gap16,
+                      PasswordField(
+                        controller: widget.confirmPasswordController,
+                        labelText: context.t.auth.confirmPassword,
+                        hintText: context.t.auth.reenterPassword,
+                        validatePolicy: false,
+                        showErrorText: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        onValidityChanged: (valid) {
+                          setState(() => _confirmPasswordValid = valid);
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return context.t.validation.confirmPasswordRequired;
+                          }
+                          if (value != widget.passwordController.text) {
+                            return context.t.validation.passwordsDoNotMatch;
+                          }
+                          return null;
+                        },
+                        onChanged: (value) =>
+                            context.read<RegistrationBloc>().add(
+                              RegistrationEvent.fieldsChanged(
+                                field: RegistrationField.confirmPassword,
                                 value: value,
                               ),
                             ),
