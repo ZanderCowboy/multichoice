@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -36,12 +37,12 @@ class TutorialDrawer extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Multichoice',
+                        context.t.about.appName,
                         style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(
-                        'Welcome back!',
+                        context.t.drawer.welcomeBack,
                         style: context.appTextTheme.subtitleMedium,
                       ),
                     ],
@@ -53,7 +54,7 @@ class TutorialDrawer extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    tooltip: TooltipEnums.close.tooltip,
+                    tooltip: TooltipEnums.close.label(context.t),
                     icon: const Icon(
                       Icons.close_outlined,
                       size: 28,

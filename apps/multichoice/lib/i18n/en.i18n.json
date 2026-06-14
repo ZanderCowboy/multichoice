@@ -110,7 +110,88 @@
     "failedToRefresh": "Failed to refresh: $error",
     "update": "Update",
     "noCancel": "No, cancel",
-    "yesDelete": "Yes, delete"
+    "yesDelete": "Yes, delete",
+    "dismiss": "Dismiss",
+    "none": "None"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "invalidEmail": "Enter a valid email address",
+    "usernameRequired": "Username is required",
+    "usernameMinLength": "Username must be at least 2 characters",
+    "emailOrUsernameRequired": "Email or username is required",
+    "emailOrUsername": "Email or Username",
+    "enterEmailOrUsername": "Enter email or username",
+    "password": "Password",
+    "enterPassword": "Enter password",
+    "enterYourPassword": "Enter your password",
+    "enterYourEmail": "Enter your email",
+    "enterUsername": "Enter username",
+    "passwordRequired": "Password is required",
+    "passwordMustInclude": "Password must include: $requirements",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordRequirementsTitle": "Password requirements",
+    "atLeast8Characters": "At least 8 characters",
+    "oneUppercaseLetter": "1 uppercase letter",
+    "oneLowercaseLetter": "1 lowercase letter",
+    "oneNumber": "1 number",
+    "oneSpecialCharacter": "1 special character"
+  },
+  "search": {
+    "hint": "Search...",
+    "emptyPrompt": "Start typing to search for collections and items",
+    "noResults": "No results found"
+  },
+  "changelog": {
+    "noChangelogAvailable": "No changelog available",
+    "checkBackLater": "Check back later for updates",
+    "failedToLoad": "Failed to load changelog",
+    "refreshRemoteConfig": "Refresh Remote Config"
+  },
+  "tooltips": {
+    "back": "Back",
+    "newTab": "New Tab",
+    "newEntry": "New Entry",
+    "search": "Search",
+    "tabOptions": "Tab Options",
+    "ok": "Ok",
+    "cancel": "Cancel",
+    "close": "Close",
+    "lightDarkMode": "Light/Dark Mode",
+    "deleteAllData": "Delete All Data",
+    "deleteTab": "Delete Tab",
+    "deleteEntry": "Delete Entry",
+    "editTab": "Edit Tab",
+    "editEntry": "Edit Entry",
+    "importExport": "Import/Export",
+    "import": "Import",
+    "export": "Export",
+    "settings": "Settings",
+    "home": "Home",
+    "editOrder": "Edit order"
+  },
+  "errors": {
+    "generic": "Error",
+    "failedToAddCollection": "Failed to add collection.",
+    "failedToAddItem": "Failed to add item.",
+    "tabEntriesFailedToDelete": "Tab entries failed to delete.",
+    "failedToDeleteAllTabs": "Failed to delete all tabs.",
+    "passwordChangedSuccessfully": "Password changed successfully!",
+    "passwordResetSuccessfully": "Password reset successfully!",
+    "chooseRating": "Please choose a rating from 1 to 5 stars.",
+    "feedbackDailyLimit": "You can submit up to 5 feedback reports per day. Try again tomorrow.",
+    "feedbackSubmitFailed": "We couldn't send your feedback. Please check your connection and try again.",
+    "accountAlreadyExists": "An account already exists for this email.",
+    "invalidEmailAddress": "Invalid email address.",
+    "emailPasswordNotEnabled": "Email/password accounts are not enabled.",
+    "passwordTooWeak": "Password is too weak.",
+    "accountDisabled": "This account has been disabled.",
+    "noAccountFound": "No account found for this email.",
+    "incorrectPassword": "Incorrect password.",
+    "invalidEmailOrPassword": "Invalid email or password.",
+    "resetLinkExpired": "This reset link has expired. Request a new one.",
+    "resetLinkInvalid": "This reset link is invalid or was already used."
   },
   "debug": {
     "notAvailable": "Not available",
@@ -133,19 +214,39 @@
     "useRealSessionState": "Use real session state"
   },
   "details": {
-    "title": "Details"
+    "title": "Details",
+    "dateAdded": "Date Added",
+    "editTitle": "Edit Title",
+    "editSubtitle": "Edit Subtitle",
+    "noChildrenAvailable": "No children available",
+    "noChildrenFound": "No children found"
   },
   "home": {
     "addNewTab": "Add New Tab",
+    "noCollectionsYet": "No collections yet",
+    "noCollectionsYetQuestion": "No collections yet?",
+    "importDataOrCreate": "Import data or create a new collection",
     "deleteAllEntriesTitle(rich)": "Delete all entries of ${title}?",
     "deleteAllEntriesContent": "Are you sure you want to delete all the entries of $title?",
     "deleteTabAndEntriesContent": "Are you sure you want to delete $title and all its entries?",
-    "later": "Later"
+    "later": "Later",
+    "editModeReorderCollections": "Drag and drop collections and entries to reorder them.",
+    "editModeReorderTabs": "Drag and drop collections to reorder. Long press and drag entries to reorder them.",
+    "refreshed": "Refreshed",
+    "scrollToTop": "Scroll to top",
+    "scrollToStart": "Scroll to start"
   },
   "tutorial": {
     "followTutorial": "Follow Tutorial",
     "thanksTitle": "Thanks for Completing the Tutorial!",
-    "thanksBody": "You now know the basics of using Multichoice. Feel free to explore and create your own collections!"
+    "thanksBody": "You now know the basics of using Multichoice. Feel free to explore and create your own collections!",
+    "welcomeTitle": "Welcome to the Tutorial",
+    "welcomeBody": "Let's walk through the main features of Multichoice. We'll show you how to create collections and add entries.",
+    "bannerLabel": "TUTORIAL",
+    "exitTitle": "Exit tutorial?",
+    "exitBody": "Are you sure you want to exit the tutorial? Your tutorial progress will be skipped.",
+    "stay": "Stay",
+    "exit": "Exit"
   },
   "feedback": {
     "sendFeedback": "Send Feedback",
@@ -204,7 +305,13 @@
     "exportDisabledNoData": "Export is disabled because there is no data to back up yet.",
     "exportSaveFileDescription": "Export will save a file you can import later.",
     "fileNameHint": "File Name",
-    "importConfirmationBody": "Importing data will alter existing data. Do you want to overwrite or append?"
+    "importConfirmationBody": "Importing data will alter existing data. Do you want to overwrite or append?",
+    "noFileSelected": "No file selected",
+    "abortedImport": "Aborted import operation",
+    "exportCancelled": "Export cancelled",
+    "fileSavedSuccessfully": "File saved successfully!",
+    "dataImportedSuccessfully": "Data imported successfully",
+    "failedToImportData": "Failed to import data"
   },
   "modals": {
     "deleteItem": "Delete ${item}?"

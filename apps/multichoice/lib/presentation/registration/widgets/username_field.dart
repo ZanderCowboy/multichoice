@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class UsernameField extends StatefulWidget {
@@ -15,8 +16,8 @@ class UsernameField extends StatefulWidget {
     this.validator,
     this.autofocus = false,
     this.enabled = true,
-    this.hintText = 'Enter username',
-    this.labelText = 'Username',
+    this.hintText,
+    this.labelText,
     this.onValidityChanged,
     this.autofillHints = const [AutofillHints.newUsername],
   });
@@ -28,17 +29,17 @@ class UsernameField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final bool autofocus;
   final bool enabled;
-  final String hintText;
-  final String labelText;
+  final String? hintText;
+  final String? labelText;
   final ValueChanged<bool>? onValidityChanged;
   final Iterable<String>? autofillHints;
 
-  static String? defaultValidator(String? value) {
+  static String? defaultValidator(String? value, Translations t) {
     if (value == null || value.isEmpty) {
-      return 'Username is required';
+      return t.validation.usernameRequired;
     }
     if (value.trim().length < 2) {
-      return 'Username must be at least 2 characters';
+      return t.validation.usernameMinLength;
     }
     return null;
   }
@@ -56,11 +57,17 @@ class _UsernameFieldState extends State<UsernameField> {
     if (trimmedValue.isEmpty) {
       return null;
     }
-    return (widget.validator ?? UsernameField.defaultValidator)(trimmedValue);
+    return (widget.validator ??
+        (v) => UsernameField.defaultValidator(v, context.t))(
+      trimmedValue,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final validation = context.t.validation;
+    final effectiveLabel = widget.labelText ?? context.t.profile.username;
+    final effectiveHint = widget.hintText ?? validation.enterUsername;
     final appColors = context.theme.appColors;
     final inputTheme = Theme.of(context).inputDecorationTheme;
     final textColor =
@@ -95,7 +102,7 @@ class _UsernameFieldState extends State<UsernameField> {
                 ),
                 gap4,
                 Text(
-                  'Username',
+                  effectiveLabel,
                   style: TextStyle(
                     color: textColor,
                   ),
@@ -105,7 +112,7 @@ class _UsernameFieldState extends State<UsernameField> {
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            hintText: widget.hintText,
+            hintText: effectiveHint,
             errorStyle: TextStyle(fontWeight: FontWeight.bold),
             hintStyle: TextStyle(
               color: textColor,

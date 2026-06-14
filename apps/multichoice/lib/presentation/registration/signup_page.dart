@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/utils/password_validator.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
@@ -94,7 +95,11 @@ class _SignupPageState extends State<SignupPage> {
           } else if (state.isError && state.errorMessage != null) {
             setState(() => _loadingAction = null);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
+              SnackBar(
+                content: Text(
+                  localizeCoreMessage(context, state.errorMessage!),
+                ),
+              ),
             );
           } else if (!state.isLoading) {
             setState(() => _loadingAction = null);
@@ -200,10 +205,10 @@ class _SignupPageContentState extends State<_SignupPageContent> {
     if (!mounted) return;
     final email = widget.emailController.text.trim();
     final emailOk =
-        email.isNotEmpty && EmailField.defaultValidator(email) == null;
+        email.isNotEmpty && EmailField.defaultValidator(email, context.t) == null;
     final user = widget.usernameController.text.trim();
     final userOk =
-        user.isNotEmpty && UsernameField.defaultValidator(user) == null;
+        user.isNotEmpty && UsernameField.defaultValidator(user, context.t) == null;
     final passOk = PasswordValidator.isValid(widget.passwordController.text);
     setState(() {
       _emailValid = emailOk;

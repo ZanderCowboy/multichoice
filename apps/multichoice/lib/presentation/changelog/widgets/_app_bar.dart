@@ -11,7 +11,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('Changelog'),
+      title: Text(context.t.drawer.changelog),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_new_outlined),
         onPressed: () => context.router.pop(),
@@ -20,7 +20,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         if (kDebugMode)
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh Remote Config',
+            tooltip: context.t.changelog.refreshRemoteConfig,
             onPressed: () => _refreshChangelog(outerContext),
           ),
         IconButton(

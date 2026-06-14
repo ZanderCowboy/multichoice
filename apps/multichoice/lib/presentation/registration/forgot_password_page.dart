@@ -59,7 +59,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _syncEmailValidity() {
     if (!mounted) return;
     final email = _emailController.text.trim();
-    final ok = email.isNotEmpty && EmailField.defaultValidator(email) == null;
+    final ok = email.isNotEmpty && EmailField.defaultValidator(email, context.t) == null;
     if (ok != _emailValid) {
       setState(() => _emailValid = ok);
     }

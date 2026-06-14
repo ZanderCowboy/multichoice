@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/email_or_username_field.dart';
 import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     final ident = _emailOrUsernameController.text.trim();
     final identOk =
         ident.isNotEmpty &&
-        EmailOrUsernameField.defaultValidator(ident) == null;
+        EmailOrUsernameField.defaultValidator(ident, context.t) == null;
     final passOk = _passwordController.text.trim().isNotEmpty;
     final ready = identOk && passOk;
     if (ready != _loginFormReady) {
@@ -134,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
           } else if (state.isError && state.errorMessage != null) {
             if (_loadingAction == _AuthAction.signIn) {
               _showLoginButtonMessage(
-                state.errorMessage!,
+                localizeCoreMessage(context, state.errorMessage!),
                 isSuccess: false,
               );
             }

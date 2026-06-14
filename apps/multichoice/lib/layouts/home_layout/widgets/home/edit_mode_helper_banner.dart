@@ -10,8 +10,8 @@ class _EditModeHelperBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final helperText = isLayoutVertical
-        ? 'Drag and drop collections and entries to reorder them.'
-        : 'Drag and drop collections to reorder. Long press and drag entries to reorder them.';
+        ? context.t.home.editModeReorderCollections
+        : context.t.home.editModeReorderTabs;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),

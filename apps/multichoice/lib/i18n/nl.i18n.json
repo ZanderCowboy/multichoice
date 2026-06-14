@@ -111,7 +111,88 @@
     "failedToRefresh": "Vernieuwen mislukt: $error",
     "update": "Bijwerken",
     "noCancel": "Nee, annuleren",
-    "yesDelete": "Ja, verwijderen"
+    "yesDelete": "Ja, verwijderen",
+    "dismiss": "Sluiten",
+    "none": "Geen"
+  },
+  "validation": {
+    "emailRequired": "E-mail is verplicht",
+    "invalidEmail": "Voer een geldig e-mailadres in",
+    "usernameRequired": "Gebruikersnaam is verplicht",
+    "usernameMinLength": "Gebruikersnaam moet minimaal 2 tekens bevatten",
+    "emailOrUsernameRequired": "E-mail of gebruikersnaam is verplicht",
+    "emailOrUsername": "E-mail of gebruikersnaam",
+    "enterEmailOrUsername": "Voer e-mail of gebruikersnaam in",
+    "password": "Wachtwoord",
+    "enterPassword": "Voer wachtwoord in",
+    "enterYourPassword": "Voer je wachtwoord in",
+    "enterYourEmail": "Voer je e-mail in",
+    "enterUsername": "Voer gebruikersnaam in",
+    "passwordRequired": "Wachtwoord is verplicht",
+    "passwordMustInclude": "Wachtwoord moet bevatten: $requirements",
+    "confirmPasswordRequired": "Bevestig je wachtwoord",
+    "passwordsDoNotMatch": "Wachtwoorden komen niet overeen",
+    "passwordRequirementsTitle": "Wachtwoordvereisten",
+    "atLeast8Characters": "Minimaal 8 tekens",
+    "oneUppercaseLetter": "1 hoofdletter",
+    "oneLowercaseLetter": "1 kleine letter",
+    "oneNumber": "1 cijfer",
+    "oneSpecialCharacter": "1 speciaal teken"
+  },
+  "search": {
+    "hint": "Zoeken...",
+    "emptyPrompt": "Begin met typen om collecties en items te zoeken",
+    "noResults": "Geen resultaten gevonden"
+  },
+  "changelog": {
+    "noChangelogAvailable": "Geen wijzigingslogboek beschikbaar",
+    "checkBackLater": "Kom later terug voor updates",
+    "failedToLoad": "Wijzigingslogboek laden mislukt",
+    "refreshRemoteConfig": "Remote Config vernieuwen"
+  },
+  "tooltips": {
+    "back": "Terug",
+    "newTab": "Nieuw tabblad",
+    "newEntry": "Nieuwe invoer",
+    "search": "Zoeken",
+    "tabOptions": "Tabbladopties",
+    "ok": "Ok",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "lightDarkMode": "Lichte/donkere modus",
+    "deleteAllData": "Alle gegevens verwijderen",
+    "deleteTab": "Tabblad verwijderen",
+    "deleteEntry": "Invoer verwijderen",
+    "editTab": "Tabblad bewerken",
+    "editEntry": "Invoer bewerken",
+    "importExport": "Importeren/exporteren",
+    "import": "Importeren",
+    "export": "Exporteren",
+    "settings": "Instellingen",
+    "home": "Startpagina",
+    "editOrder": "Volgorde bewerken"
+  },
+  "errors": {
+    "generic": "Fout",
+    "failedToAddCollection": "Collectie toevoegen mislukt.",
+    "failedToAddItem": "Item toevoegen mislukt.",
+    "tabEntriesFailedToDelete": "Tabbladitems verwijderen mislukt.",
+    "failedToDeleteAllTabs": "Alle tabbladen verwijderen mislukt.",
+    "passwordChangedSuccessfully": "Wachtwoord succesvol gewijzigd!",
+    "passwordResetSuccessfully": "Wachtwoord succesvol opnieuw ingesteld!",
+    "chooseRating": "Kies een beoordeling van 1 tot 5 sterren.",
+    "feedbackDailyLimit": "Je kunt maximaal 5 feedbackrapporten per dag indienen. Probeer het morgen opnieuw.",
+    "feedbackSubmitFailed": "We konden je feedback niet verzenden. Controleer je verbinding en probeer het opnieuw.",
+    "accountAlreadyExists": "Er bestaat al een account voor dit e-mailadres.",
+    "invalidEmailAddress": "Ongeldig e-mailadres.",
+    "emailPasswordNotEnabled": "E-mail/wachtwoord-accounts zijn niet ingeschakeld.",
+    "passwordTooWeak": "Wachtwoord is te zwak.",
+    "accountDisabled": "Dit account is uitgeschakeld.",
+    "noAccountFound": "Geen account gevonden voor dit e-mailadres.",
+    "incorrectPassword": "Onjuist wachtwoord.",
+    "invalidEmailOrPassword": "Ongeldig e-mailadres of wachtwoord.",
+    "resetLinkExpired": "Deze resetlink is verlopen. Vraag een nieuwe aan.",
+    "resetLinkInvalid": "Deze resetlink is ongeldig of is al gebruikt."
   },
   "debug": {
     "notAvailable": "Niet beschikbaar",
@@ -134,19 +215,39 @@
     "useRealSessionState": "Gebruik echte sessiestatus"
   },
   "details": {
-    "title": "Details"
+    "title": "Details",
+    "dateAdded": "Datum toegevoegd",
+    "editTitle": "Titel bewerken",
+    "editSubtitle": "Subtitel bewerken",
+    "noChildrenAvailable": "Geen onderliggende items beschikbaar",
+    "noChildrenFound": "Geen onderliggende items gevonden"
   },
   "home": {
     "addNewTab": "Nieuwe tab toevoegen",
+    "noCollectionsYet": "Nog geen collecties",
+    "noCollectionsYetQuestion": "Nog geen collecties?",
+    "importDataOrCreate": "Importeer gegevens of maak een nieuwe collectie",
     "deleteAllEntriesTitle(rich)": "Verwijder alle items van ${title}?",
     "deleteAllEntriesContent": "Weet je zeker dat je alle items van $title wilt verwijderen?",
     "deleteTabAndEntriesContent": "Weet je zeker dat je $title en alle bijbehorende items wilt verwijderen?",
-    "later": "Later"
+    "later": "Later",
+    "editModeReorderCollections": "Sleep collecties en items om ze opnieuw te ordenen.",
+    "editModeReorderTabs": "Sleep collecties om ze opnieuw te ordenen. Houd items ingedrukt en sleep om ze opnieuw te ordenen.",
+    "refreshed": "Vernieuwd",
+    "scrollToTop": "Scroll naar boven",
+    "scrollToStart": "Scroll naar begin"
   },
   "tutorial": {
     "followTutorial": "Volg tutorial",
     "thanksTitle": "Dank je voor het voltooien van de tutorial!",
-    "thanksBody": "Je kent nu de basis van het gebruik van Multichoice. Voel je vrij om te ontdekken en je eigen collecties te maken!"
+    "thanksBody": "Je kent nu de basis van het gebruik van Multichoice. Voel je vrij om te ontdekken en je eigen collecties te maken!",
+    "welcomeTitle": "Welkom bij de tutorial",
+    "welcomeBody": "Laten we de belangrijkste functies van Multichoice doorlopen. We laten je zien hoe je collecties maakt en items toevoegt.",
+    "bannerLabel": "TUTORIAL",
+    "exitTitle": "Tutorial afsluiten?",
+    "exitBody": "Weet je zeker dat je de tutorial wilt afsluiten? Je tutorialvoortgang wordt overgeslagen.",
+    "stay": "Blijven",
+    "exit": "Afsluiten"
   },
   "feedback": {
     "sendFeedback": "Stuur feedback",
@@ -193,7 +294,13 @@
     "exportDisabledNoData": "Export is uitgeschakeld omdat er nog geen gegevens zijn om te back-uppen.",
     "exportSaveFileDescription": "Export slaat een bestand op dat je later kunt importeren.",
     "fileNameHint": "Bestandsnaam",
-    "importConfirmationBody": "Het importeren van gegevens zal bestaande gegevens wijzigen. Wil je overschrijven of toevoegen?"
+    "importConfirmationBody": "Het importeren van gegevens zal bestaande gegevens wijzigen. Wil je overschrijven of toevoegen?",
+    "noFileSelected": "Geen bestand geselecteerd",
+    "abortedImport": "Importbewerking afgebroken",
+    "exportCancelled": "Export geannuleerd",
+    "fileSavedSuccessfully": "Bestand succesvol opgeslagen!",
+    "dataImportedSuccessfully": "Gegevens succesvol geïmporteerd",
+    "failedToImportData": "Gegevens importeren mislukt"
   },
   "modals": {
     "deleteItem": "Verwijder ${item}?"

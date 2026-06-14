@@ -27,6 +27,7 @@ class DismissibleBannerBar extends StatelessWidget {
     this.bottomBorderColor,
     this.dismissIconColor,
     this.titleStyle,
+    this.dismissTooltip = 'Dismiss',
   });
 
   final BannerBarVariant variant;
@@ -39,6 +40,7 @@ class DismissibleBannerBar extends StatelessWidget {
   final Color? bottomBorderColor;
   final Color? dismissIconColor;
   final TextStyle? titleStyle;
+  final String dismissTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class DismissibleBannerBar extends StatelessWidget {
             size: 20,
           ),
           onPressed: onDismiss,
-          tooltip: 'Dismiss',
+          tooltip: dismissTooltip,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
         ),

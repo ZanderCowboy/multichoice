@@ -4,6 +4,8 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -30,7 +32,12 @@ class HomeLayout extends StatelessWidget {
         if (state.errorMessage?.isNotEmpty ?? false) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.errorMessage ?? 'Error'),
+              content: Text(
+                localizeCoreMessage(
+                  context,
+                  state.errorMessage ?? context.t.errors.generic,
+                ),
+              ),
               backgroundColor: context.theme.appColors.error,
             ),
           );

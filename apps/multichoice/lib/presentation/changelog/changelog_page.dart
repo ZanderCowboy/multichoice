@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_refresh_changelog.dart';
