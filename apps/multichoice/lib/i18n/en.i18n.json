@@ -211,7 +211,20 @@
     "forceLoggedInTitle": "Force Logged In (debug)",
     "forceLoggedInOverrideActive": "Manual override active",
     "forceLoggedInStoredSession": "Using stored session state",
-    "useRealSessionState": "Use real session state"
+    "useRealSessionState": "Use real session state",
+    "featureFlagsTab": "Feature Flags",
+    "featureFlags": {
+      "description": "Mirror Firebase Remote Config booleans. Overrides apply in-memory until cleared or the app restarts.",
+      "firebaseValueOn": "Firebase: on",
+      "firebaseValueOff": "Firebase: off",
+      "overrideActive": "Override active",
+      "useFirebaseValue": "Use Firebase value",
+      "clearAllOverrides": "Clear all overrides",
+      "usePillStyleBanner": "Pill-style home banners",
+      "enableChangelogPage": "Changelog page",
+      "feedbackImagesEnabled": "Feedback image attachments",
+      "enableUserAccounts": "User accounts"
+    }
   },
   "details": {
     "title": "Details",

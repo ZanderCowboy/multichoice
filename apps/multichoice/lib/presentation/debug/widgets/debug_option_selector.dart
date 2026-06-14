@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
-enum DebugView { debugTools, appColors, appTextThemes }
+enum DebugView { debugTools, featureFlags, appColors, appTextThemes }
 
 class DebugOptionSelector extends StatelessWidget {
   const DebugOptionSelector({
@@ -22,6 +23,11 @@ class DebugOptionSelector extends StatelessWidget {
           label: 'Debug Tools',
           isSelected: selectedView == DebugView.debugTools,
           onTap: () => onSelect(DebugView.debugTools),
+        ),
+        _OptionChip(
+          label: context.t.debug.featureFlagsTab,
+          isSelected: selectedView == DebugView.featureFlags,
+          onTap: () => onSelect(DebugView.featureFlags),
         ),
         _OptionChip(
           label: 'App Colors',

@@ -277,6 +277,118 @@ void main() {
     });
   });
 
+  group('FirebaseService - debug overrides', () {
+    setUp(() async {
+      await firebaseService.initialize();
+    });
+
+    test('isEnabled should return override when set', () {
+      when(
+        mockRemoteConfig.getBool(FirebaseConfigKeys.enableUserAccounts.key),
+      ).thenReturn(false);
+
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        true,
+      );
+
+      expect(
+        firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
+        isTrue,
+      );
+      verifyNever(
+        mockRemoteConfig.getBool(FirebaseConfigKeys.enableUserAccounts.key),
+      );
+    });
+
+    test('isEnabled should honor false override', () {
+      when(
+        mockRemoteConfig.getBool(FirebaseConfigKeys.enableUserAccounts.key),
+      ).thenReturn(true);
+
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        false,
+      );
+
+      expect(
+        firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
+        isFalse,
+      );
+    });
+
+    test('getRemoteBool should bypass overrides', () {
+      when(
+        mockRemoteConfig.getBool(FirebaseConfigKeys.enableUserAccounts.key),
+      ).thenReturn(true);
+
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        false,
+      );
+
+      expect(
+        firebaseService.getRemoteBool(FirebaseConfigKeys.enableUserAccounts),
+        isTrue,
+      );
+      expect(
+        firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
+        isFalse,
+      );
+    });
+
+    test('setDebugOverride with null clears override', () {
+      when(
+        mockRemoteConfig.getBool(FirebaseConfigKeys.enableUserAccounts.key),
+      ).thenReturn(true);
+
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        false,
+      );
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        null,
+      );
+
+      expect(firebaseService.hasDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+      ), isFalse);
+      expect(
+        firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
+        isTrue,
+      );
+    });
+
+    test('clearAllDebugOverrides removes all overrides', () {
+      when(
+        mockRemoteConfig.getBool(any),
+      ).thenReturn(true);
+
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+        false,
+      );
+      firebaseService.setDebugOverride(
+        FirebaseConfigKeys.enableChangelogPage,
+        false,
+      );
+
+      firebaseService.clearAllDebugOverrides();
+
+      expect(firebaseService.hasDebugOverride(
+        FirebaseConfigKeys.enableUserAccounts,
+      ), isFalse);
+      expect(firebaseService.hasDebugOverride(
+        FirebaseConfigKeys.enableChangelogPage,
+      ), isFalse);
+      expect(
+        firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
+        isTrue,
+      );
+    });
+  });
+
   group('FirebaseService - getString', () {
     test('should initialize before getting string', () async {
       when(

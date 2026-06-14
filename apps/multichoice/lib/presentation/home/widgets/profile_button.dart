@@ -3,6 +3,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 import 'package:multichoice/utils/user_accounts_feature.dart';
@@ -20,6 +21,7 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
     if (!isUserAccountsEnabled()) {
       return const SizedBox.shrink();
     }

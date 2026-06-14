@@ -212,7 +212,20 @@
     "forceLoggedInTitle": "Gedwongen ingelogd (debug)",
     "forceLoggedInOverrideActive": "Handmatige override actief",
     "forceLoggedInStoredSession": "Gemaakt met opgeslagen sessiestatus",
-    "useRealSessionState": "Gebruik echte sessiestatus"
+    "useRealSessionState": "Gebruik echte sessiestatus",
+    "featureFlagsTab": "Featureflags",
+    "featureFlags": {
+      "description": "Spiegelt Firebase Remote Config-booleans. Overrides gelden in het geheugen tot ze worden gewist of de app opnieuw start.",
+      "firebaseValueOn": "Firebase: aan",
+      "firebaseValueOff": "Firebase: uit",
+      "overrideActive": "Override actief",
+      "useFirebaseValue": "Gebruik Firebase-waarde",
+      "clearAllOverrides": "Alle overrides wissen",
+      "usePillStyleBanner": "Pill-stijl home-banners",
+      "enableChangelogPage": "Changelogpagina",
+      "feedbackImagesEnabled": "Feedback-afbeeldingsbijlagen",
+      "enableUserAccounts": "Gebruikersaccounts"
+    }
   },
   "details": {
     "title": "Details",

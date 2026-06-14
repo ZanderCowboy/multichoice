@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:models/models.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/presentation/home/widgets/profile_button.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +16,7 @@ void main() {
   late FakeFirebaseService firebaseService;
   late FakeLoginService loginService;
   late AuthNotifier authNotifier;
+  late RemoteConfigDebugNotifier remoteConfigDebugNotifier;
 
   setUp(() {
     firebaseService = FakeFirebaseService();
@@ -23,16 +26,23 @@ void main() {
       loginService: loginService,
     )..register();
     authNotifier = AuthNotifier();
+    remoteConfigDebugNotifier = RemoteConfigDebugNotifier();
   });
 
   tearDown(() {
     helper.unregister();
     authNotifier.dispose();
+    remoteConfigDebugNotifier.dispose();
   });
 
   Widget buildSubject() {
-    return ChangeNotifierProvider<AuthNotifier>.value(
-      value: authNotifier,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthNotifier>.value(value: authNotifier),
+        ChangeNotifierProvider<RemoteConfigDebugNotifier>.value(
+          value: remoteConfigDebugNotifier,
+        ),
+      ],
       child: widgetWrapper(child: const ProfileButton()),
     );
   }
@@ -72,6 +82,26 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.person_outline), findsOneWidget);
+    expect(find.text('Sign In'), findsNothing);
+  });
+
+  testWidgets('hides sign in when user accounts flag is overridden off', (
+    tester,
+  ) async {
+    firebaseService.userAccountsEnabled = true;
+    loginService.loggedIn = false;
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sign In'), findsOneWidget);
+
+    remoteConfigDebugNotifier.setOverride(
+      key: FirebaseConfigKeys.enableUserAccounts,
+      value: false,
+    );
+    await tester.pump();
+
     expect(find.text('Sign In'), findsNothing);
   });
 }
