@@ -5,7 +5,10 @@ class AppVersion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appVersion = coreSl<IAppInfoService>().getAppVersion();
+    final appInfoService = coreSl<IAppInfoService>();
+    final appVersion = AppFlavor.allowsDebugPage
+        ? appInfoService.getAppVersion()
+        : appInfoService.getDisplayAppVersion();
     final versionTextStyle = context.appTextTheme.bodyMedium?.copyWith(
       color: context.theme.colorScheme.onSurface,
     );

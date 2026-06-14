@@ -13,6 +13,13 @@ class AppInfoService implements IAppInfoService {
   }
 
   @override
+  Future<String> getDisplayAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final version = Version.parse(packageInfo.version);
+    return '${version.major}.${version.minor}.${version.patch}';
+  }
+
+  @override
   Future<bool> isUpdateAvailable(String latestVersion) async {
     if (latestVersion.trim().isEmpty) {
       return false;
