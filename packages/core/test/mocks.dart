@@ -25,7 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<FilePicker>(as: #MockFilePicker),
   MockSpec<PathProviderPlatform>(as: #MockPathProviderPlatform),
   MockSpec<PackageInfo>(as: #MockPackageInfo),
-  MockSpec<IProductTourController>(as: #MockProductTourController),
+  MockSpec<IAppTipsController>(as: #MockAppTipsController),
   MockSpec<SharedPreferences>(as: #MockSharedPreferences),
   MockSpec<IAppStorageService>(as: #MockAppStorageService),
   MockSpec<IFeedbackRepository>(as: #MockFeedbackRepository),

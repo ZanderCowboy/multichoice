@@ -1,1 +1,1 @@
-export 'interfaces/i_product_tour_controller.dart';
+export 'interfaces/i_app_tips_controller.dart';

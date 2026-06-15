@@ -12,139 +12,90 @@ part 'product_bloc.g.dart';
 @Singleton()
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(
-    this._productTourController,
-    this._tutorialRepository,
+    this._appTipsController,
     this._analyticsService,
   ) : super(ProductState.initial()) {
     on<ProductEvent>((event, emit) async {
       switch (event) {
         case OnInit():
-          final currentStep = await _productTourController.currentStep;
+          final activeTip = await _appTipsController.activeTip;
           await _analyticsService.logEvent(
             TutorialEventData(
-              page: AnalyticsPage.tutorial,
+              page: AnalyticsPage.home,
               action: AnalyticsAction.open,
-              step: currentStep,
+              tip: activeTip,
             ),
           );
 
           emit(
             state.copyWith(
-              currentStep: currentStep,
+              activeTip: activeTip,
               isLoading: false,
               errorMessage: null,
             ),
           );
           break;
-        case OnNextStep():
-          await _productTourController.nextStep();
-          final currentStep = await _productTourController.currentStep;
+        case OnDismissTip(:final tip):
+          await _appTipsController.dismissTip(tip);
+          final activeTip = await _appTipsController.activeTip;
           await _analyticsService.logEvent(
             TutorialEventData(
-              page: AnalyticsPage.tutorial,
+              page: AnalyticsPage.home,
               action: AnalyticsAction.next,
-              step: currentStep,
+              tip: activeTip,
             ),
           );
 
           emit(
             state.copyWith(
-              currentStep: currentStep,
-              isLoading: false,
-              errorMessage: null,
-            ),
-          );
-
-          break;
-        case OnPreviousStep():
-          await _productTourController.previousStep();
-          final currentStep = await _productTourController.currentStep;
-          await _analyticsService.logEvent(
-            TutorialEventData(
-              page: AnalyticsPage.tutorial,
-              action: AnalyticsAction.previous,
-              step: currentStep,
-            ),
-          );
-
-          emit(
-            state.copyWith(
-              currentStep: currentStep,
+              activeTip: activeTip,
               isLoading: false,
               errorMessage: null,
             ),
           );
           break;
-        case OnSkipTour():
-          await _productTourController.completeTour();
+        case OnSkipAllTips():
+          await _appTipsController.completeTips();
           await _analyticsService.logEvent(
             const TutorialEventData(
-              page: AnalyticsPage.tutorial,
+              page: AnalyticsPage.home,
               action: AnalyticsAction.skip,
-              step: ProductTourStep.noneCompleted,
             ),
           );
 
           emit(
             state.copyWith(
-              currentStep: ProductTourStep.noneCompleted,
+              activeTip: null,
               isLoading: false,
               errorMessage: null,
             ),
           );
           break;
-        case OnResetTour():
+        case OnResetTips():
           emit(state.copyWith(isLoading: true));
 
-          await _productTourController.resetTour();
+          await _appTipsController.resetTips();
+          final activeTip = await _appTipsController.activeTip;
           await _analyticsService.logEvent(
-            const TutorialEventData(
-              page: AnalyticsPage.tutorial,
+            TutorialEventData(
+              page: AnalyticsPage.home,
               action: AnalyticsAction.reset,
-              step: ProductTourStep.reset,
+              tip: activeTip,
             ),
           );
 
           emit(
             state.copyWith(
-              currentStep: ProductTourStep.reset,
+              activeTip: activeTip,
               isLoading: false,
               errorMessage: null,
             ),
           );
-          break;
-        case OnLoadData():
-          final tabs = await _tutorialRepository.loadTutorialData();
-          await _analyticsService.logEvent(
-            CrudEventData(
-              page: AnalyticsPage.tutorial,
-              entity: AnalyticsEntity.tab,
-              action: AnalyticsAction.open,
-              itemCount: tabs.length,
-            ),
-          );
-
-          emit(
-            state.copyWith(
-              tabs: tabs,
-              isLoading: false,
-            ),
-          );
-          break;
-        case OnClearData():
-          emit(
-            state.copyWith(
-              tabs: null,
-              isLoading: true,
-            ),
-          );
-
           break;
       }
     });
   }
 
-  final IProductTourController _productTourController;
-  final ITutorialRepository _tutorialRepository;
+  final IAppTipsController _appTipsController;
   final IAnalyticsService _analyticsService;
 }

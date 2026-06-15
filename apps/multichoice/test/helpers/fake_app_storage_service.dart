@@ -20,6 +20,12 @@ class FakeAppStorageService implements IAppStorageService {
   Future<void> setIsCompleted(bool isCompleted) async {}
 
   @override
+  Future<int> get dismissedAppTipsMask async => 0;
+
+  @override
+  Future<void> setDismissedAppTipsMask(int mask) async {}
+
+  @override
   Future<void> resetTour() async {}
 
   @override

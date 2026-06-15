@@ -121,9 +121,13 @@ class _HorizontalHomeState extends State<_HorizontalHome> {
 
                     return Padding(
                       padding: vertical6,
-                      child: CollectionTab(
-                        tab: tab,
-                        isEditMode: isEditMode,
+                      child: AppTipShowcase(
+                        tip: AppTip.collections,
+                        enabled: index == 0,
+                        child: CollectionTab(
+                          tab: tab,
+                          isEditMode: isEditMode,
+                        ),
                       ),
                     );
                   },
@@ -132,7 +136,10 @@ class _HorizontalHomeState extends State<_HorizontalHome> {
               SliverPadding(
                 padding: horizontal12 + bottom24,
                 sliver: const SliverToBoxAdapter(
-                  child: NewTab(),
+                  child: AppTipShowcase(
+                    tip: AppTip.addCollection,
+                    child: NewTab(),
+                  ),
                 ),
               ),
             ],

@@ -3,24 +3,21 @@ part of 'product_bloc.dart';
 @CopyWith()
 class ProductState extends Equatable {
   const ProductState({
-    required this.currentStep,
-    required this.tabs,
+    required this.activeTip,
     required this.isLoading,
     required this.errorMessage,
   });
 
   factory ProductState.initial() => const ProductState(
-    currentStep: ProductTourStep.noneCompleted,
-    tabs: null,
+    activeTip: null,
     isLoading: false,
     errorMessage: null,
   );
 
-  final ProductTourStep currentStep;
-  final List<TabsDTO>? tabs;
+  final AppTip? activeTip;
   final bool isLoading;
   final String? errorMessage;
 
   @override
-  List<Object?> get props => [currentStep, tabs, isLoading, errorMessage];
+  List<Object?> get props => [activeTip, isLoading, errorMessage];
 }
