@@ -40,6 +40,7 @@ void main() {
       act: (b) => b.add(
         const ResetPasswordEvent.submitPressed(
           isChangePassword: true,
+          isSetPassword: false,
           oobCode: null,
         ),
       ),
@@ -55,7 +56,7 @@ void main() {
     );
 
     blocTest<ResetPasswordBloc, ResetPasswordState>(
-      'submitPressed emits success when change password succeeds',
+      'submitPressed emits success when update password succeeds',
       build: () {
         when(
           mockCredentialValidationService.validatePassword(any),
@@ -67,6 +68,12 @@ void main() {
           ),
         ).thenReturn(null);
         when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn(null);
+        when(
+          mockRepository.reauthenticateWithPassword(any),
+        ).thenAnswer((_) async => const Right(null));
+        when(
           mockRepository.updatePassword(any),
         ).thenAnswer((_) async => const Right(null));
         return bloc;
@@ -74,6 +81,7 @@ void main() {
       seed: () => const ResetPasswordState(
         newPassword: 'ValidPass1!',
         confirmPassword: 'ValidPass1!',
+        currentPassword: 'OldPass1!',
         isLoading: false,
         isError: false,
         errorMessage: null,
@@ -83,6 +91,7 @@ void main() {
       act: (b) => b.add(
         const ResetPasswordEvent.submitPressed(
           isChangePassword: true,
+          isSetPassword: false,
           oobCode: null,
         ),
       ),
@@ -93,12 +102,56 @@ void main() {
             .having(
               (s) => s.successMessage,
               'successMessage',
-              'Password changed successfully!',
+              'Password updated successfully!',
             )
             .having(
               (s) => s.shouldNavigateOnSuccess,
               'shouldNavigateOnSuccess',
               true,
+            ),
+      ],
+    );
+
+    blocTest<ResetPasswordBloc, ResetPasswordState>(
+      'submitPressed emits error when reset link has no oobCode',
+      build: () {
+        when(
+          mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: anyNamed('password'),
+            confirmation: anyNamed('confirmation'),
+          ),
+        ).thenReturn(null);
+        return bloc;
+      },
+      seed: () => const ResetPasswordState(
+        newPassword: 'ValidPass1!',
+        confirmPassword: 'ValidPass1!',
+        currentPassword: '',
+        isLoading: false,
+        isError: false,
+        errorMessage: null,
+        successMessage: null,
+        shouldNavigateOnSuccess: false,
+      ),
+      act: (b) => b.add(
+        const ResetPasswordEvent.submitPressed(
+          isChangePassword: false,
+          isSetPassword: false,
+          oobCode: null,
+        ),
+      ),
+      expect: () => [
+        isA<ResetPasswordState>().having((s) => s.isLoading, 'isLoading', true),
+        isA<ResetPasswordState>()
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              contains('invalid or missing'),
             ),
       ],
     );

@@ -459,6 +459,7 @@ void main() {
       when(mockGoogleAccount.id).thenReturn('acc-id');
       when(mockGoogleAccount.email).thenReturn('g@mail.com');
       when(mockGoogleAccount.displayName).thenReturn('G User');
+      when(mockLogin.isUsernameConfirmed(any)).thenAnswer((_) async => false);
       when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
       when(
         mockLogin.storeUserProfile(
@@ -476,13 +477,13 @@ void main() {
         (r) {
           expect(r.accessToken, 'google_local_acc-id');
           expect(r.userId, 'acc-id');
+          expect(r.needsUsernameSetup, true);
         },
       );
       verify(mockLogin.storeLoginInfo('google_local_acc-id')).called(1);
       verify(
         mockLogin.storeUserProfile(
           email: 'g@mail.com',
-          username: 'G User',
         ),
       ).called(1);
       verify(mockAppStorage.setLastUsedEmail('g@mail.com')).called(1);
@@ -503,6 +504,7 @@ void main() {
         when(mockGoogleAccount.id).thenReturn('id');
         when(mockGoogleAccount.email).thenReturn('person@example.com');
         when(mockGoogleAccount.displayName).thenReturn('');
+        when(mockLogin.isUsernameConfirmed(any)).thenAnswer((_) async => false);
         when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
         when(
           mockLogin.storeUserProfile(
@@ -516,7 +518,6 @@ void main() {
         verify(
           mockLogin.storeUserProfile(
             email: 'person@example.com',
-            username: 'person',
           ),
         ).called(1);
       },
@@ -541,6 +542,7 @@ void main() {
       when(mockUser.getIdToken()).thenAnswer((_) async => 'firebase-token');
       when(mockUser.email).thenReturn('firebase@mail.com');
       when(mockUser.displayName).thenReturn('Firebase Name');
+      when(mockLogin.isUsernameConfirmed('fb-uid')).thenAnswer((_) async => false);
       when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
       when(
         mockLogin.storeUserProfile(
@@ -557,7 +559,6 @@ void main() {
       verify(
         mockLogin.storeUserProfile(
           email: 'firebase@mail.com',
-          username: 'Firebase Name',
         ),
       ).called(1);
       verify(mockAppStorage.setLastUsedEmail('firebase@mail.com')).called(1);
@@ -584,7 +585,8 @@ void main() {
         when(mockUser.uid).thenReturn('fb-uid');
         when(mockUser.getIdToken()).thenAnswer((_) async => 't');
         when(mockUser.email).thenReturn('user@mail.com');
-        when(mockUser.displayName).thenReturn(null);
+        when(mockUser.displayName).thenReturn('Saved Username');
+        when(mockLogin.isUsernameConfirmed('fb-uid')).thenAnswer((_) async => true);
         when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
         when(
           mockLogin.storeUserProfile(
@@ -599,7 +601,7 @@ void main() {
         verify(
           mockLogin.storeUserProfile(
             email: 'user@mail.com',
-            username: 'From Google',
+            username: 'Saved Username',
           ),
         ).called(1);
       },
@@ -674,6 +676,7 @@ void main() {
         when(mockGoogleAccount.id).thenReturn('fallback-id');
         when(mockGoogleAccount.email).thenReturn('fb@mail.com');
         when(mockGoogleAccount.displayName).thenReturn('Fb');
+        when(mockLogin.isUsernameConfirmed(any)).thenAnswer((_) async => false);
         when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
         when(
           mockLogin.storeUserProfile(

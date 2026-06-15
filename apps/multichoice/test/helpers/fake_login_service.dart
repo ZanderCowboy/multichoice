@@ -29,4 +29,21 @@ class FakeLoginService implements ILoginService {
 
   @override
   Future<void> storeUserProfile({String? email, String? username}) async {}
+
+  @override
+  Future<void> storeUsernameEmailMapping(String username, String email) async {}
+
+  @override
+  Future<String?> resolveEmailForLogin(String identifier) async {
+    if (identifier.contains('@')) {
+      return identifier;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> markUsernameConfirmed(String userId) async {}
+
+  @override
+  Future<bool> isUsernameConfirmed(String userId) async => false;
 }

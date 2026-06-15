@@ -21,6 +21,23 @@ void main() {
       );
     });
 
+    test('validateOptionalEmail allows empty input', () {
+      expect(service.validateOptionalEmail(''), isNull);
+      expect(service.validateOptionalEmail(null), isNull);
+      expect(service.validateOptionalEmail('   '), isNull);
+    });
+
+    test('validateOptionalEmail returns format message when invalid', () {
+      expect(
+        service.validateOptionalEmail('invalid-email'),
+        'Enter a valid email address',
+      );
+    });
+
+    test('validateOptionalEmail accepts valid email', () {
+      expect(service.validateOptionalEmail('user@example.com'), isNull);
+    });
+
     test('validateUsername returns length message when too short', () {
       expect(
         service.validateUsername('a'),
