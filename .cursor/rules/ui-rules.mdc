@@ -12,6 +12,8 @@ Match nearby layouts, spacing, typography, and loading/empty/error states.
 
 - Public page class owns `Scaffold` and `AppBar`; body in private `_FeaturePage` child.
 - `@RoutePage()` for auto_route pages. See `.cursor/templates/page-template.dart`.
+- Page-scoped blocs: `BlocProvider(create: (_) => coreSl<FeatureBloc>(), …)` — never nullable `_bloc`, manual `close()`, or null checks in `build`. See `.cursor/references/architecture/codegen-and-di.md`.
+- Feature-flagged auth routes: `guardUserAccountsRoute(context)` in `initState`; still create the bloc via `BlocProvider`.
 
 ## Constants and theme
 

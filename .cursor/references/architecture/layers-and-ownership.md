@@ -31,6 +31,6 @@
 | Bloc | `packages/core/.../profile/profile_bloc.dart` |
 | Thin repository | `.../registration/registration_repository.dart` |
 | Isar repository | `.../search/search_repository.dart` |
-| Page + bloc | `apps/multichoice/.../profile/profile_page.dart` |
+| Page + bloc | `apps/multichoice/.../search/search_page.dart`, `.../registration/reset_password_page.dart` |
 
 See `.cursor/templates/` for scaffolds.

@@ -39,6 +39,41 @@ Do **not** flag “missing codegen” because `git status` shows no changes to `
 - `@LazySingleton(as: I*)` on services and repositories
 - Register via build_runner; resolve with `coreSl<T>()`
 
+### What `@Injectable()` does *not* do
+
+`@Injectable()` registers a **factory** in GetIt. It wires constructor dependencies only. It does **not**:
+
+- Provide the bloc to the widget tree
+- Close the bloc when a route is popped
+- Make `coreSl<T>()` return a non-null “always there” instance in the UI layer
+
+Every `coreSl<MyBloc>()` call creates a **new** bloc instance (unless you explicitly register a singleton, which page-scoped blocs should not use).
+
+## Bloc lifecycle in pages
+
+**Always** wrap page-scoped blocs in `BlocProvider` and resolve from DI in `create`:
+
+```dart
+return BlocProvider(
+  create: (_) => coreSl<SearchBloc>(),
+  child: _SearchView(...),
+);
+```
+
+`BlocProvider` closes the bloc when its provider is disposed. **Do not** store blocs in nullable fields, null-check them in `build`, or call `bloc.close()` in `State.dispose`.
+
+Use `BlocProvider.value` only when re-providing a bloc owned elsewhere (e.g. app-level `HomeBloc`, product tour).
+
+Initial events belong in `create`:
+
+```dart
+create: (_) => coreSl<ProfileBloc>()..add(const ProfileLoadStarted()),
+```
+
+### Feature-flagged auth routes
+
+For user-accounts pages, call `guardUserAccountsRoute(context)` in `initState` (same as `LoginPage`, `ResetPasswordPage`). Do **not** skip bloc creation with an early `return` — that forces nullable blocs and manual lifecycle code for no benefit.
+
 ## Bloc State
 
 - `@CopyWith()` + `Equatable` (not Freezed for bloc states)
