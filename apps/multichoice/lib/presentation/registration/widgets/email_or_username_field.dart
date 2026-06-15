@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/email_field.dart';
 import 'package:multichoice/presentation/registration/widgets/username_field.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -29,15 +30,15 @@ class EmailOrUsernameField extends StatefulWidget {
   final ValueChanged<bool>? onValidityChanged;
   final Iterable<String>? autofillHints;
 
-  static String? defaultValidator(String? value) {
+  static String? defaultValidator(String? value, Translations t) {
     if (value == null || value.isEmpty) {
-      return 'Email or username is required';
+      return t.validation.emailOrUsernameRequired;
     }
     final trimmed = value.trim();
     if (trimmed.contains('@')) {
-      return EmailField.defaultValidator(value);
+      return EmailField.defaultValidator(value, t);
     }
-    return UsernameField.defaultValidator(value);
+    return UsernameField.defaultValidator(value, t);
   }
 
   @override
@@ -61,13 +62,15 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
     if (trimmedValue.isEmpty) {
       return null;
     }
-    return (widget.validator ?? EmailOrUsernameField.defaultValidator)(
+    return (widget.validator ??
+        (v) => EmailOrUsernameField.defaultValidator(v, context.t))(
       trimmedValue,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final validation = context.t.validation;
     final appColors = context.theme.appColors;
     final inputTheme = Theme.of(context).inputDecorationTheme;
     final textColor =
@@ -100,14 +103,14 @@ class _EmailOrUsernameFieldState extends State<EmailOrUsernameField> {
                 ),
                 gap4,
                 Text(
-                  'Email or Username',
+                  validation.emailOrUsername,
                   style: TextStyle(
                     color: textColor,
                   ),
                 ),
               ],
             ),
-            hintText: 'Enter email or username',
+            hintText: validation.enterEmailOrUsername,
             labelStyle: TextStyle(color: textColor),
             floatingLabelStyle: TextStyle(color: textColor),
             hintStyle: TextStyle(color: textColor),

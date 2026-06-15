@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({super.key});
@@ -73,7 +74,7 @@ class SearchButton extends StatelessWidget {
           ),
         );
       },
-      tooltip: TooltipEnums.search.tooltip,
+      tooltip: TooltipEnums.search.label(context.t),
       icon: const Icon(Icons.search_outlined),
     );
   }

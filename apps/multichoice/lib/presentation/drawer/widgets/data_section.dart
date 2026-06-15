@@ -80,7 +80,7 @@ class DataSection extends StatelessWidget {
               trailing: IconButton(
                 key: context.keys.deleteAllDataButton,
                 onPressed: canDeleteAll ? showDeleteAllDialog : null,
-                tooltip: TooltipEnums.deleteAllData.tooltip,
+                tooltip: TooltipEnums.deleteAllData.label(context.t),
                 icon: state.tabs == null || state.tabs!.isEmpty
                     ? Icon(
                         Icons.delete_sweep_outlined,
@@ -103,7 +103,7 @@ class DataSection extends StatelessWidget {
           trailing: IconButton(
             key: context.keys.importExportDataButton,
             onPressed: () async => openDataTransfer(),
-            tooltip: TooltipEnums.importExport.tooltip,
+            tooltip: TooltipEnums.importExport.label(context.t),
             icon: const Icon(
               Icons.import_export_outlined,
             ),

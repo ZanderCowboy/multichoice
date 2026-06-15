@@ -7,21 +7,19 @@
 # - Reads the current version from apps/multichoice/pubspec.yaml on the target branch
 # - Expects an RC version (X.Y.Z-RC+N) and promotes it to production (X.Y.Z+N+1)
 #   Example: 2.4.1-RC+125 -> 2.4.1+126
+# - Optional release_version input overrides the semver (X.Y.Z) while still incrementing build
+# - Semantic bumps are handled in the staging (RC) workflow; this workflow only strips RC
 # - Creates a version-only tag from the finalized version (for example, v2.4.1)
 #
-name: main-workflow
+name: production-workflow
 on:
   workflow_dispatch:
     inputs:
-      release_type:
-        description: "Deprecated: semantic bump is handled in the RC workflow via labels"
-        required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
+      release_version:
+        description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
+        required: false
+        type: string
+        default: ""
       dry_run:
         description: "Dry run (manual testing): do not commit, tag, or publish"
         required: true
@@ -106,6 +104,16 @@ jobs:
           if ! echo "$version_without_rc" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::Invalid version after removing RC: $version_without_rc"
             exit 1
+          fi
+
+          manual_override="$(echo "${{ inputs.release_version }}" | tr -d '\r' | xargs || true)"
+          if [[ -n "$manual_override" ]]; then
+            if ! echo "$manual_override" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::Invalid release_version override: $manual_override. Expected format: X.Y.Z"
+              exit 1
+            fi
+            echo "Using manual version override: $manual_override (pubspec RC semver was $version_without_rc)"
+            version_without_rc="$manual_override"
           fi
 
           if ! echo "$build_number" | grep -qE '^[0-9]+$'; then
@@ -302,7 +310,6 @@ jobs:
             - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
 
             ### Technical Details
-            - Build Number: ${{ needs.build.outputs.build_number }}
             - Platform: Android
 
             ### Release Notes

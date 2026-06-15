@@ -169,7 +169,7 @@ class _HorizontalTabState extends State<_HorizontalTab> {
                 child: _scrollToStartButton(
                   context: context,
                   scrollController: _scrollController,
-                  label: 'Scroll to start',
+                  label: context.t.home.scrollToStart,
                   icon: Icons.keyboard_arrow_left,
                 ),
               ),

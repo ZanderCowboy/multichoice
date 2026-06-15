@@ -19,6 +19,7 @@ void main() {
     String email = 'test@example.com',
     String username = 'user1',
     String password = 'Secure1!',
+    String confirmPassword = 'Secure1!',
     bool isLoading = false,
     bool isSuccess = false,
     bool isError = false,
@@ -27,6 +28,7 @@ void main() {
     email: email,
     username: username,
     password: password,
+    confirmPassword: confirmPassword,
     isLoading: isLoading,
     isSuccess: isSuccess,
     isError: isError,
@@ -124,6 +126,54 @@ void main() {
         verify(
           mockCredentialValidationService.validatePassword('Secure1!'),
         ).called(1);
+        verifyNever(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: anyNamed('password'),
+            confirmation: anyNamed('confirmation'),
+          ),
+        );
+        verifyNever(mockRepository.signUp(any));
+      },
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signupClicked emits error when confirm password does not match',
+      build: () {
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateUsername(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: anyNamed('password'),
+            confirmation: anyNamed('confirmation'),
+          ),
+        ).thenReturn('Passwords do not match');
+        return bloc;
+      },
+      seed: () => seededState(confirmPassword: 'Mismatch1!'),
+      act: (b) => b.add(const RegistrationEvent.signupClicked()),
+      expect: () => [
+        isA<RegistrationState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Passwords do not match',
+            ),
+      ],
+      verify: (_) {
+        verify(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: 'Secure1!',
+            confirmation: 'Mismatch1!',
+          ),
+        ).called(1);
         verifyNever(mockRepository.signUp(any));
       },
     );
@@ -139,6 +189,12 @@ void main() {
         ).thenReturn(null);
         when(
           mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: anyNamed('password'),
+            confirmation: anyNamed('confirmation'),
+          ),
         ).thenReturn(null);
         when(
           mockRepository.signUp(any),
@@ -180,6 +236,12 @@ void main() {
         ).thenReturn(null);
         when(
           mockCredentialValidationService.validatePassword(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordConfirmation(
+            password: anyNamed('password'),
+            confirmation: anyNamed('confirmation'),
+          ),
         ).thenReturn(null);
         when(mockRepository.signUp(any)).thenAnswer(
           (_) async => const Left(AuthException('Email in use')),

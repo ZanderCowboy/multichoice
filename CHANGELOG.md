@@ -1,22 +1,12 @@
-# Maintenance And Clean Up - Dev Prod Environments Firebase Reorg And Feature Gating
+# Localization, App Icon, DevOps
 
-- Added `ProfileBloc` in core for profile load and logout flows; refactored `profile_page.dart` to BLoC and extracted shared `ShineCard` widget
-- Gated sign-in, sign-up, forgot/reset password, profile, drawer account section, and home profile button behind Remote Config `enable_user_accounts` (default false) via `isUserAccountsEnabled()` and `guardUserAccountsRoute()`
-- Added `FirebaseConfigKeys.enableUserAccounts` and route guards on auth/profile pages so deep links and navigation auto-pop when the flag is off
-- Added `ProfileBloc` unit tests plus widget tests for profile button, login modal, profile page, home drawer, and `user_accounts_feature` helpers
-- Introduced DEV and PROD Android product flavors with `applicationIdSuffix ".dev"`, `[DEV] Multichoice` app label, and separate entry points `main_develop.dart` / `main_production.dart`
-- Added `AppConfig` and `AppFlavor` for compile-time `--dart-define` Firebase/RevenueCat credentials and environment-specific debug page and banner behavior
-- Refactored `firebase_options.dart` to read from `AppConfig` instead of committed `secrets.dart`; removed hardcoded API keys from the repo
-- Moved Firebase config (`firebase.json`, `.firebaserc`, Firestore rules/indexes, Storage rules) from the repo root into a dedicated `firebase/` directory
-- Added `scripts/deploy-firebase.sh` / `deploy-firebase.ps1` and Makefile targets (`firebase_deploy_dev`, `firebase_deploy_prod`, `firebase_deploy_all`) for environment-aware deploys
-- Updated Cloud Functions feedback email handler to prefix subject/body with DEV or PROD based on `GCLOUD_PROJECT`; create Nodemailer transporter per send instead of module singleton
-- Integrated Firebase App Check on Android via `setupAppCheck()`: debug provider in debug builds, Play Integrity in profile/release, wired into app bootstrap
-- Removed iOS and Windows platform folders — multichoice is Android-only for now; dropped iOS/macOS/Windows options from `firebase_options.dart`
-- Refactored app icon assets into `docs/Draw IO/app_icon/` with a distinct DEV icon (`app_icon_dev.drawio` / PNG); removed stale drawio duplicates from app and play_store folders
-- Overhauled feedback form UI in `feedback_form.dart` with improved layout and submission UX
-- Overhauled `.cursor/` for context engineering: specialized agents, reference docs, user-journey maps, architecture guides, bloc/page templates, simplified commands, and implementation plans
-- Reorganized `docs/` — ticket markdown moved to `docs/tickets/`; added guides for App Check, environment config, dev/prod setup, Firebase Functions environments, and Play Console internal testing
-- Added Android Studio `.run/` configs and VS Code `launch.json` entries for Debug, Profile, and Release across DEV and PROD flavors
-- Updated CI workflows (`develop`, `staging`, `production`) and `prepare-android-release-files` action for flavor-based Android builds and the new Firebase directory layout
-- Added root `TODO` tracking follow-ups; updated README and Makefile for Firebase deploy workflows and emulator launch
-- Tightened `analysis_options.yaml` and multichoice `.gitignore` for flavor-specific build artifacts and codegen exclusions
+- Completed slang string migration (#388, child of #372): localized remaining presentation strings across changelog, drawer, home, search, tutorial, data transfer, delete modal, and tooltips; added `localizeCoreMessage()` to map core validation/auth/feedback errors to en/nl at the presentation boundary; Dutch feedback strings aligned with English; forgot-password errors localized; dismiss tooltip required on `DismissibleBannerBar`
+- Migrated the rest of the app UI to slang i18n (en/nl): registration fields and validation, password rules, modals, banners, product tour, and debug copy; removed direct `slang` dependency from `packages/core`
+- Updated app launcher icons: refreshed prod/main mipmaps, added dev-flavor launcher assets, reorganized Play Store icons into `play_store/app_icon/dev` and `prod`, and updated Draw.io source files (`app_icon.drawio`, `app_icon_dev.drawio`)
+- Debug page: added Feature Flags tab with per-flag Remote Config overrides, refetch action, and clear-all; `RemoteConfigDebugNotifier` and `IFirebaseService` debug-override APIs (`setDebugOverride`, `hasDebugOverride`, `clearAllDebugOverrides`)
+- Sign-up: password confirmation field with bloc/state validation; Continue with Google on the sign-up page (reuses `RegistrationGoogleSignInClicked` / `signInWithGoogle`); documented Google Sign-In setup in `docs/environment-config.md`
+- Prod drawer shows semver-only version (`vX.Y.Z`) via `getDisplayAppVersion()`; DEV still shows full `X.Y.Z+build`; feedback submissions still include build number (#216)
+- Production workflow renamed to `production-workflow`; removed deprecated `release_type` input; optional `release_version` manual override with `X.Y.Z` validation takes precedence over RC suffix removal (#326)
+- SonarCloud analysis now runs on pushes to `main` in addition to pull requests; dropped `rc` from PR trigger branches (#350)
+- Documented GitHub App setup and protected-branch bypass for CI version commits in `docs/protected-branch-and-github-app.md` (#215)
+- Cleared root `TODO` (CI/CD notes absorbed into docs and workflow changes)

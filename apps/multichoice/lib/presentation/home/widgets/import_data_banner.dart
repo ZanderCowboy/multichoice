@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 /// Single carousel page: prompts users to import data when they have no collections.
@@ -33,7 +34,9 @@ class ImportDataBannerPage extends StatelessWidget {
           color: context.theme.appColors.iconColor,
           size: 20,
         ),
-        title: usePillStyle ? 'No collections yet?' : 'No collections yet',
+        title: usePillStyle
+            ? context.t.home.noCollectionsYetQuestion
+            : context.t.home.noCollectionsYet,
         titleStyle: context.appTextTheme.bodyMedium!.copyWith(
           fontWeight: FontWeight.w600,
           color: titleColor,
@@ -41,7 +44,7 @@ class ImportDataBannerPage extends StatelessWidget {
         body: GestureDetector(
           onTap: onImportTap,
           child: Text(
-            'Import data or create a new collection',
+            context.t.home.importDataOrCreate,
             style: context.appTextTheme.denseSubtitle!.copyWith(
               color: context.theme.appColors.linkColor,
               decoration: TextDecoration.underline,
@@ -49,6 +52,7 @@ class ImportDataBannerPage extends StatelessWidget {
             ),
           ),
         ),
+        dismissTooltip: context.t.common.dismiss,
         onDismiss: onDismiss,
         backgroundColor: backgroundColor,
         bottomBorderColor: bottomBorder,

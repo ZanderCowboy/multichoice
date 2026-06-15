@@ -44,6 +44,14 @@ void main() {
     expect(result, expectedVersion);
   });
 
+  test('should return display app version without build number', () async {
+    const expectedVersion = '1.0.0';
+
+    final result = await appInfoService.getDisplayAppVersion();
+
+    expect(result, expectedVersion);
+  });
+
   group('isUpdateAvailable', () {
     test('returns false when latest version is empty', () async {
       final result = await appInfoService.isUpdateAvailable('');

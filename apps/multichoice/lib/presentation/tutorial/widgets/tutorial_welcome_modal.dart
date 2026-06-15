@@ -21,17 +21,16 @@ class TutorialWelcomeModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Welcome to the Tutorial',
-                style: TextStyle(
+              Text(
+                context.t.tutorial.welcomeTitle,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               gap16,
               Text(
-                "Let's walk through the main features of Multichoice. "
-                "We'll show you how to create collections and add entries.",
+                context.t.tutorial.welcomeBody,
                 textAlign: TextAlign.center,
                 style: context.theme.appTextTheme.bodyLarge,
               ),

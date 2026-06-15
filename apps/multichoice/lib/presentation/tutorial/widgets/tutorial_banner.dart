@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
 class TutorialBanner extends StatelessWidget {
   const TutorialBanner({super.key});
@@ -21,7 +22,7 @@ class TutorialBanner extends StatelessWidget {
             vertical: 2,
           ),
           child: Text(
-            'TUTORIAL',
+            context.t.tutorial.bannerLabel,
             style: TextStyle(
               color: onPrimary,
               fontSize: 10,

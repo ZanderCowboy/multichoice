@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
 import 'package:multichoice/presentation/shared/data_transfer/widgets/file_name_dialog.dart';
 import 'package:multichoice/presentation/shared/data_transfer/widgets/import_confirmation_dialog.dart';
@@ -17,9 +18,10 @@ Future<void> handleImport({
   required VoidCallback onImportSuccess,
   required DataTransferMessage showMessage,
 }) async {
+  final t = context.t.dataTransfer;
   final filePath = await service.pickFile();
   if (filePath == null) {
-    showMessage('No file selected');
+    showMessage(t.noFileSelected);
     return;
   }
 
@@ -31,7 +33,7 @@ Future<void> handleImport({
     );
 
     if (shouldAppend == null) {
-      showMessage('Aborted import operation');
+      showMessage(t.abortedImport);
       return;
     }
 
@@ -60,6 +62,7 @@ Future<void> handleExport({
   required DataTransferService service,
   required DataTransferMessage showMessage,
 }) async {
+  final t = context.t.dataTransfer;
   final jsonString = await service.exportDataToJSON();
   final fileName = await showDialog<String>(
     context: context,
@@ -67,7 +70,7 @@ Future<void> handleExport({
   );
 
   if (fileName == null) {
-    showMessage('Export cancelled');
+    showMessage(t.exportCancelled);
     return;
   }
 
@@ -81,7 +84,7 @@ Future<void> handleExport({
       source: 'export',
     ),
   );
-  if (context.mounted) showMessage('File saved successfully!');
+  if (context.mounted) showMessage(t.fileSavedSuccessfully);
 }
 
 Future<void> _handleImportFeedback({
@@ -92,6 +95,7 @@ Future<void> _handleImportFeedback({
   required VoidCallback onImportSuccess,
   required DataTransferMessage showMessage,
 }) async {
+  final t = context.t.dataTransfer;
   final result = await service.importDataFromJSON(
     filePath,
     shouldAppend: shouldAppend,
@@ -109,7 +113,7 @@ Future<void> _handleImportFeedback({
       ),
     );
     onImportSuccess.call();
-    showMessage('Data imported successfully');
+    showMessage(t.dataImportedSuccessfully);
     context.router.popUntilRoot();
     scaffoldKey.currentState?.closeDrawer();
   } else {
@@ -121,6 +125,6 @@ Future<void> _handleImportFeedback({
         source: 'import',
       ),
     );
-    showMessage('Failed to import data');
+    showMessage(t.failedToImportData);
   }
 }

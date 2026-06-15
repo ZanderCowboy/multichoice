@@ -17,7 +17,7 @@ Future<void> _onHomeRefresh(BuildContext context) async {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Refreshed',
+                context.t.home.refreshed,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: context.theme.appColors.textPrimary,

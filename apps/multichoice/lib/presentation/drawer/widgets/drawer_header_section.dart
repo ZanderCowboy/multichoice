@@ -48,7 +48,7 @@ class DrawerHeaderSection extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  tooltip: TooltipEnums.close.tooltip,
+                  tooltip: TooltipEnums.close.label(context.t),
                   icon: const Icon(
                     Icons.close_outlined,
                     size: 28,

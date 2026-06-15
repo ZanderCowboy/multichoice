@@ -3,6 +3,8 @@ import 'package:multichoice/app/export.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
+enum _SearchMenuAction { edit, delete }
+
 class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
     required this.title,
@@ -64,22 +66,23 @@ class SearchResultCard extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuButton<String>(
+              PopupMenuButton<_SearchMenuAction>(
                 icon: const Icon(Icons.more_vert),
                 onSelected: (value) {
-                  if (value == 'Edit') {
-                    onEdit();
-                  } else if (value == 'Delete') {
-                    onDelete();
+                  switch (value) {
+                    case _SearchMenuAction.edit:
+                      onEdit();
+                    case _SearchMenuAction.delete:
+                      onDelete();
                   }
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                    value: 'Edit',
+                    value: _SearchMenuAction.edit,
                     child: Text(context.t.common.edit),
                   ),
                   PopupMenuItem(
-                    value: 'Delete',
+                    value: _SearchMenuAction.delete,
                     child: Text(context.t.common.delete),
                   ),
                 ],

@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
@@ -51,6 +52,7 @@ class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthNotifier>();
+    context.watch<RemoteConfigDebugNotifier>();
     return FutureBuilder<bool>(
       key: ValueKey(auth.authEpoch),
       future: _drawerSessionLoggedIn(),

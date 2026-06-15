@@ -48,7 +48,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
           title: Text(context.t.dataTransfer.title),
           leading: IconButton(
             onPressed: _handleBackNavigation,
-            tooltip: TooltipEnums.back.tooltip,
+            tooltip: TooltipEnums.back.label(context.t),
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
           actions: [
@@ -57,7 +57,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
                 context.router.popUntilRoot();
                 scaffoldKey.currentState?.closeDrawer();
               },
-              tooltip: TooltipEnums.home.tooltip,
+              tooltip: TooltipEnums.home.label(context.t),
               icon: const Icon(Icons.home),
             ),
           ],
