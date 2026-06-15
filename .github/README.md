@@ -54,14 +54,16 @@ Version bumps are controlled through PR labels:
 - Adds RC suffix to version
 - Version bumping based on PR labels (major, minor, patch)
 
-### Production Workflow
+### Production Workflow (`production-workflow`)
 
 - #### Triggers
   - Manual trigger via `workflow_dispatch`
+- Reads RC version from pubspec and strips `-RC` suffix (semantic bumps happen in staging)
+- Optional `release_version` input overrides semver with validated `X.Y.Z`
 - Runs tests, analysis, and builds Android app
 - Creates both APK and AAB artifacts
-- Removes RC suffix from version
-- Uploads to Google Play production track (currently commented out)
+- Uploads to Google Play production track
+- Creates GitHub Release with version-only tag (`vX.Y.Z`)
 
 ## Common Features Across Workflows
 
@@ -96,7 +98,7 @@ Version bumps are controlled through PR labels:
 
 ## Security
 
-- Uses GitHub App tokens for authentication
+- Uses a dedicated GitHub App (`VERSION_BOT_APP_ID` / `VERSION_BOT_APP_PRIVATE_KEY`) to commit version bumps to protected branches — see [Protected Branch and GitHub App setup](../docs/protected-branch-and-github-app.md)
 - Securely handles Android keystore and secrets
 - Implements proper permission scopes for GitHub Actions
 

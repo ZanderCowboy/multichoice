@@ -24,4 +24,12 @@ enum FirebaseConfigKeys {
   const FirebaseConfigKeys(this.key);
 
   final String key;
+
+  /// Boolean feature flags exposed in Firebase Remote Config.
+  static const List<FirebaseConfigKeys> featureFlags = [
+    usePillStyleBanner,
+    enableChangelogPage,
+    feedbackImagesEnabled,
+    enableUserAccounts,
+  ];
 }

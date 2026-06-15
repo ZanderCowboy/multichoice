@@ -35,7 +35,7 @@ class _ChangelogList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Version $version',
+                            context.t.changelog.versionLabel(version: version),
                             style: context.theme.appTextTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),

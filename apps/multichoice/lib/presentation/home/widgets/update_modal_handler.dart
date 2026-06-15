@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/widgets/update_available_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,7 +25,9 @@ Future<void> showUpdatePromptForDebug(BuildContext context) async {
   } on Object catch (e) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to show update prompt: $e')),
+        SnackBar(
+          content: Text(context.t.common.failedToShowUpdatePrompt(error: '$e')),
+        ),
       );
     }
   }

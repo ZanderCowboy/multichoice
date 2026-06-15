@@ -102,7 +102,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.edit_outlined,
-                label: MenuItems.edit.name,
+                label: context.t.common.editTab,
               ),
             ),
             PopupMenuItem<MenuItems>(
@@ -111,7 +111,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.delete_sweep_outlined,
-                label: MenuItems.deleteEntries.name,
+                label: context.t.common.deleteEntries,
               ),
             ),
             PopupMenuItem<MenuItems>(
@@ -119,7 +119,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.delete_outline,
-                label: MenuItems.delete.name,
+                label: context.t.tooltips.deleteTab,
               ),
             ),
           ],

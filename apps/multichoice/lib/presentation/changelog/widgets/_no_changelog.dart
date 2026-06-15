@@ -18,7 +18,7 @@ class _NoChangelog extends StatelessWidget {
             ),
             gap16,
             Text(
-              'No changelog available',
+              context.t.changelog.noChangelogAvailable,
               style:
                   context.theme.appTextTheme.titleMedium ??
                   Theme.of(context).textTheme.titleMedium,
@@ -26,7 +26,7 @@ class _NoChangelog extends StatelessWidget {
             ),
             gap8,
             Text(
-              'Check back later for updates',
+              context.t.changelog.checkBackLater,
               style:
                   context.theme.appTextTheme.bodySmall ??
                   Theme.of(context).textTheme.bodySmall,

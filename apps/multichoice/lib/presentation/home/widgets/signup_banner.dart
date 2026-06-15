@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 /// Single carousel page: sign up CTA for guests on the home screen.
@@ -33,13 +34,13 @@ class SignupBannerPage extends StatelessWidget {
           color: context.theme.appColors.iconColor,
           size: 20,
         ),
-        title: 'Sign up for Multichoice',
+        title: context.t.common.signUpForMultichoice,
         titleStyle: context.appTextTheme.bodyMedium!.copyWith(
           fontWeight: FontWeight.w600,
           color: titleColor,
         ),
         body: Text(
-          'Create a free account to sync and keep your collections safe.',
+          context.t.common.createFreeAccount,
           style: context.appTextTheme.bodySmall?.copyWith(
             color: (titleColor ?? Theme.of(context).colorScheme.onSurface)
                 .withValues(alpha: 0.9),
@@ -52,8 +53,9 @@ class SignupBannerPage extends StatelessWidget {
             minimumSize: const Size(0, 36),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          child: const Text('Sign up'),
+          child: Text(context.t.auth.signUp),
         ),
+        dismissTooltip: context.t.common.dismiss,
         onDismiss: onDismiss,
         backgroundColor: backgroundColor,
         bottomBorderColor: bottomBorder,

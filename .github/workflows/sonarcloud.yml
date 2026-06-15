@@ -1,8 +1,10 @@
 name: SonarCloud analysis
 
 on:
+  push:
+    branches: [main]
   pull_request:
-    branches: ["develop", "rc", "main"]
+    branches: ["develop", "main"]
     types:
       - opened
       - synchronize

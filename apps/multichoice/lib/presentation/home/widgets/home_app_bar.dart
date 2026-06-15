@@ -58,7 +58,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   );
                   scaffoldKey.currentState?.openDrawer();
                 },
-                tooltip: TooltipEnums.settings.tooltip,
+                tooltip: TooltipEnums.settings.label(context.t),
                 icon: const Icon(Icons.settings_outlined),
               ),
             ),

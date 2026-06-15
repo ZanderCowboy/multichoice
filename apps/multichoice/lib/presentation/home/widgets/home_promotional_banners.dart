@@ -8,6 +8,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/presentation/home/widgets/import_data_banner.dart';
 import 'package:multichoice/presentation/home/widgets/signup_banner.dart';
 import 'package:multichoice/utils/user_accounts_feature.dart';
@@ -142,6 +143,7 @@ class _HomePromotionalBannersState extends State<HomePromotionalBanners> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
     final storageReady = _importDismissed != null && _signupDismissed != null;
     if (!storageReady) {
       return const SizedBox.shrink();

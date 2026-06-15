@@ -5,6 +5,7 @@ class MoreSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
     final isChangelogEnabled = coreSl<IFirebaseService>().isEnabled(
       FirebaseConfigKeys.enableChangelogPage,
     );

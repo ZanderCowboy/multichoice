@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/presentation/registration/utils/password_validation_messages.dart';
 import 'package:multichoice/presentation/registration/utils/password_validator.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -16,8 +18,8 @@ class PasswordField extends StatefulWidget {
     this.autofocus = false,
     this.enabled = true,
     this.customLabel,
-    this.labelText = 'Password',
-    this.hintText = 'Enter password',
+    this.labelText,
+    this.hintText,
     this.showRequirements = false,
     this.showErrorText = false,
     this.validatePolicy = true,
@@ -63,13 +65,6 @@ class _PasswordFieldState extends State<PasswordField> {
   String _currentPassword = '';
   final GlobalKey<TooltipState> _passwordRequirementsTooltipKey =
       GlobalKey<TooltipState>();
-  static const List<String> _requirements = [
-    'At least 8 characters',
-    '1 uppercase letter',
-    '1 lowercase letter',
-    '1 number',
-    '1 special character',
-  ];
 
   @override
   void initState() {
@@ -77,8 +72,11 @@ class _PasswordFieldState extends State<PasswordField> {
     _currentPassword = widget.controller?.text ?? widget.initialValue ?? '';
     _isValidPassword =
         _currentPassword.trim().isNotEmpty &&
-        _validator(_currentPassword.trim()) == null;
+        PasswordValidator.isValid(_currentPassword.trim());
   }
+
+  PasswordValidationMessages get _messages =>
+      PasswordValidationMessages.fromTranslations(context.t);
 
   Color _requirementColor({
     required bool hasInput,
@@ -93,14 +91,6 @@ class _PasswordFieldState extends State<PasswordField> {
         : appColors.error ?? Colors.red;
   }
 
-  /// Returns true if the password meets the full strength policy:
-  /// - At least 8 characters
-  /// - 1 uppercase letter
-  /// - 1 lowercase letter
-  /// - 1 number
-  /// - 1 special character
-  ///
-  /// Used only for policy success styling;
   bool get _meetsPolicy {
     final trimmed = _currentPassword.trim();
     return trimmed.isNotEmpty && PasswordValidator.isValid(trimmed);
@@ -116,12 +106,17 @@ class _PasswordFieldState extends State<PasswordField> {
     return PasswordValidator.isValid(trimmed) ? successColor : errorColor;
   }
 
-  List<InlineSpan> _buildTooltipRequirements() {
+  List<InlineSpan> _buildTooltipRequirements(
+    PasswordValidationMessages messages,
+  ) {
     final trimmed = _currentPassword.trim();
     final hasInput = trimmed.isNotEmpty;
-    final unmet = PasswordValidator.getUnmetRequirements(trimmed).toSet();
+    final unmet = PasswordValidator.getUnmetRequirements(
+      trimmed,
+      messages: messages,
+    ).toSet();
 
-    return _requirements
+    return messages.allRequirements
         .map(
           (requirement) => TextSpan(
             text: '\n• $requirement',
@@ -146,7 +141,7 @@ class _PasswordFieldState extends State<PasswordField> {
         : appColors.error ?? Colors.red;
   }
 
-  String? _validator(String? value) {
+  String? _validator(String? value, PasswordValidationMessages messages) {
     final trimmedValue = value?.trim() ?? '';
     if (trimmedValue.isEmpty) {
       return null;
@@ -155,13 +150,18 @@ class _PasswordFieldState extends State<PasswordField> {
       return widget.validator!(trimmedValue);
     }
     return widget.validatePolicy
-        ? PasswordValidator.validate(trimmedValue)
-        : _requiredOnly(trimmedValue);
+        ? PasswordValidator.validate(trimmedValue, messages: messages)
+        : _requiredOnly(trimmedValue, messages);
   }
 
   @override
   Widget build(BuildContext context) {
+    final messages = _messages;
+    final validation = context.t.validation;
+    final effectiveLabel = widget.labelText ?? validation.password;
+    final effectiveHint = widget.hintText ?? validation.enterYourPassword;
     final appColors = context.theme.appColors;
+    final colorScheme = Theme.of(context).colorScheme;
     final inputTheme = Theme.of(context).inputDecorationTheme;
     final textColor =
         inputTheme.labelStyle?.color ??
@@ -210,7 +210,7 @@ class _PasswordFieldState extends State<PasswordField> {
                     ),
                     gap4,
                     Text(
-                      widget.labelText ?? 'Password',
+                      effectiveLabel,
                       style: TextStyle(
                         color: textColor,
                       ),
@@ -220,11 +220,10 @@ class _PasswordFieldState extends State<PasswordField> {
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            hintText: widget.hintText ?? 'Enter your password',
+            hintText: effectiveHint,
             hintStyle: TextStyle(
               color: textColor,
             ),
-
             errorMaxLines: 3,
             errorStyle: widget.showErrorText
                 ? null
@@ -286,16 +285,31 @@ class _PasswordFieldState extends State<PasswordField> {
                       key: _passwordRequirementsTooltipKey,
                       triggerMode: TooltipTriggerMode.manual,
                       preferBelow: true,
+                      decoration: BoxDecoration(
+                        color:
+                            appColors.modalBackground ??
+                            appColors.scaffoldBackground ??
+                            colorScheme.surface,
+                        borderRadius: borderCircular8,
+                        border: Border.all(
+                          color: (appColors.textTertiary ?? colorScheme.outline)
+                              .withValues(alpha: 0.35),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                       richMessage: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Password requirements\n',
+                            text: '${validation.passwordRequirementsTitle}\n',
                             style: TextStyle(
                               color: appColors.textPrimary ?? appColors.white,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          ..._buildTooltipRequirements(),
+                          ..._buildTooltipRequirements(messages),
                         ],
                       ),
                       child: IconButton(
@@ -335,7 +349,8 @@ class _PasswordFieldState extends State<PasswordField> {
               : AutovalidateMode.disabled,
           onChanged: (value) {
             final trimmed = value.trim();
-            final isValid = trimmed.isNotEmpty && _validator(trimmed) == null;
+            final isValid =
+                trimmed.isNotEmpty && _validator(trimmed, messages) == null;
             final previousValidState = _isValidPassword;
 
             setState(() {
@@ -350,14 +365,17 @@ class _PasswordFieldState extends State<PasswordField> {
 
             widget.onChanged?.call(value);
           },
-          validator: _validator,
+          validator: (value) => _validator(value, messages),
         ),
       ],
     );
   }
 
-  static String? _requiredOnly(String? value) {
-    if (value == null || value.isEmpty) return 'Password is required';
+  static String? _requiredOnly(
+    String? value,
+    PasswordValidationMessages messages,
+  ) {
+    if (value == null || value.isEmpty) return messages.passwordRequired;
     return null;
   }
 }

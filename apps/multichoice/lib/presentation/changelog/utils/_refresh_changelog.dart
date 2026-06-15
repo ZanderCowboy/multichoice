@@ -14,7 +14,7 @@ Future<void> _refreshChangelog(BuildContext context) async {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to refresh: $e'),
+          content: Text(context.t.common.failedToRefresh(error: '$e')),
           duration: const Duration(seconds: 3),
         ),
       );

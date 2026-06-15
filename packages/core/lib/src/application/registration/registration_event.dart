@@ -4,6 +4,7 @@ enum RegistrationField {
   email,
   username,
   password,
+  confirmPassword,
 }
 
 sealed class RegistrationEvent {
