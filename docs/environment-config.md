@@ -175,7 +175,20 @@ Run **Debug [DEV]** and test email sign-up and **Continue with Google**. Common 
 | `operation-not-allowed` | Email/Password or Google provider not enabled |
 | Auth UI hidden | `enable_user_accounts` Remote Config off |
 
-Email verification emails are sent automatically after sign-up once Email/Password is enabled (optional template under Authentication → Templates).
+Email verification emails are sent automatically after sign-up once Email/Password is enabled (optional template under Authentication → Templates). The app sends verification email on sign-up but does **not** block unverified users.
+
+### Firebase Auth setup checklist (#335)
+
+Complete for **each** Firebase project ([DEV](https://console.firebase.google.com/u/0/project/multichoice-app-develop/overview), [PROD](https://console.firebase.google.com/u/0/project/multichoice-412309/overview)):
+
+| Step | Action |
+|------|--------|
+| Sign-in methods | Enable **Email/Password** and **Google** (Authentication → Sign-in method) |
+| SHA fingerprints | Add debug + **release** SHA-1 and SHA-256 (Project Settings → Your apps → SHA certificate fingerprints). Run `.\gradlew signingReport` in `apps/multichoice/android`. PROD release SHA-1 is required for Play Store Google Sign-In ([Google client auth](https://developers.google.com/android/guides/client-auth)). |
+| Remote Config | Set `enable_user_accounts` = `true` when ready to test or ship |
+| Password reset / deep links | Full setup: [password-reset-deep-links.md](password-reset-deep-links.md). Optional branded domains: [stackmint-app-auth-domain-checklist.md](stackmint-app-auth-domain-checklist.md). |
+| Email verification | Sent on email sign-up; enforcement deferred (users are not blocked if unverified) |
+| SMS MFA | Evaluated and **deferred** — not implemented in the app |
 
 **App Check:** DEV setup guide [app-check-dev.md](app-check-dev.md); PROD checklist [app-check-prod-todo.md](app-check-prod-todo.md). DEV Play Internal testing listing: [play-console-dev-internal-testing.md](play-console-dev-internal-testing.md).
 
