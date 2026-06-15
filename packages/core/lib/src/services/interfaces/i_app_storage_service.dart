@@ -6,6 +6,8 @@ abstract class IAppStorageService {
   Future<void> setCurrentStep(int step);
   Future<bool> get isCompleted;
   Future<void> setIsCompleted(bool isCompleted);
+  Future<int> get dismissedAppTipsMask;
+  Future<void> setDismissedAppTipsMask(int mask);
   Future<void> resetTour();
 
   Future<bool> get isLayoutVertical;

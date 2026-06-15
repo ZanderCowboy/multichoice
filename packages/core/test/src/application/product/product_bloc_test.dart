@@ -9,15 +9,12 @@ import '../../../mocks.mocks.dart';
 
 void main() {
   late ProductBloc productBloc;
-  late MockProductTourController mockProductTourController;
-  late MockTutorialRepository mockTutorialRepository;
+  late MockAppTipsController mockAppTipsController;
 
   setUp(() {
-    mockProductTourController = MockProductTourController();
-    mockTutorialRepository = MockTutorialRepository();
+    mockAppTipsController = MockAppTipsController();
     productBloc = ProductBloc(
-      mockProductTourController,
-      mockTutorialRepository,
+      mockAppTipsController,
       const NoopAnalyticsService(),
     );
   });
@@ -26,160 +23,77 @@ void main() {
     productBloc.close();
   });
 
-  group('ProductBloc Tour Events', () {
+  group('ProductBloc Tip Events', () {
     blocTest<ProductBloc, ProductState>(
-      'emits [currentStep: step, isLoading: false, errorMessage: null] when OnInit is added',
+      'emits active tip when OnInit is added',
       build: () {
         when(
-          mockProductTourController.currentStep,
-        ).thenAnswer((_) async => ProductTourStep.welcomePopup);
+          mockAppTipsController.activeTip,
+        ).thenAnswer((_) async => AppTip.collections);
         return productBloc;
       },
       act: (bloc) => bloc.add(const ProductEvent.init()),
       expect: () => [
         isA<ProductState>()
-            .having(
-              (s) => s.currentStep,
-              'currentStep',
-              ProductTourStep.welcomePopup,
-            )
+            .having((s) => s.activeTip, 'activeTip', AppTip.collections)
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.errorMessage, 'errorMessage', null),
       ],
     );
 
     blocTest<ProductBloc, ProductState>(
-      'emits [currentStep: nextStep, isLoading: false, errorMessage: null] when OnNextStep is added',
+      'emits next active tip when OnDismissTip is added',
       build: () {
         when(
-          mockProductTourController.nextStep(),
+          mockAppTipsController.dismissTip(AppTip.collections),
         ).thenAnswer((_) async => null);
         when(
-          mockProductTourController.currentStep,
-        ).thenAnswer((_) async => ProductTourStep.showCollection);
+          mockAppTipsController.activeTip,
+        ).thenAnswer((_) async => AppTip.addCollection);
         return productBloc;
       },
-      act: (bloc) => bloc.add(const ProductEvent.nextStep()),
+      act: (bloc) => bloc.add(const ProductEvent.dismissTip(AppTip.collections)),
       expect: () => [
         isA<ProductState>()
-            .having(
-              (s) => s.currentStep,
-              'currentStep',
-              ProductTourStep.showCollection,
-            )
+            .having((s) => s.activeTip, 'activeTip', AppTip.addCollection)
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.errorMessage, 'errorMessage', null),
       ],
     );
 
     blocTest<ProductBloc, ProductState>(
-      'emits [currentStep: previousStep, isLoading: false, errorMessage: null] when OnPreviousStep is added',
+      'clears active tip when OnSkipAllTips is added',
       build: () {
         when(
-          mockProductTourController.previousStep(),
+          mockAppTipsController.completeTips(),
         ).thenAnswer((_) async => null);
-        when(
-          mockProductTourController.currentStep,
-        ).thenAnswer((_) async => ProductTourStep.welcomePopup);
         return productBloc;
       },
-      act: (bloc) => bloc.add(const ProductEvent.previousStep()),
+      act: (bloc) => bloc.add(const ProductEvent.skipAllTips()),
       expect: () => [
         isA<ProductState>()
-            .having(
-              (s) => s.currentStep,
-              'currentStep',
-              ProductTourStep.welcomePopup,
-            )
+            .having((s) => s.activeTip, 'activeTip', isNull)
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.errorMessage, 'errorMessage', null),
       ],
     );
 
     blocTest<ProductBloc, ProductState>(
-      'emits [currentStep: noneCompleted, isLoading: false, errorMessage: null] when OnSkipTour is added',
+      'reloads tips when OnResetTips is added',
       build: () {
+        when(mockAppTipsController.resetTips()).thenAnswer((_) async => null);
         when(
-          mockProductTourController.completeTour(),
-        ).thenAnswer((_) async => null);
+          mockAppTipsController.activeTip,
+        ).thenAnswer((_) async => AppTip.collections);
         return productBloc;
       },
-      act: (bloc) => bloc.add(const ProductEvent.skipTour()),
-      expect: () => [
-        isA<ProductState>()
-            .having(
-              (s) => s.currentStep,
-              'currentStep',
-              ProductTourStep.noneCompleted,
-            )
-            .having((s) => s.isLoading, 'isLoading', false)
-            .having((s) => s.errorMessage, 'errorMessage', null),
-      ],
-    );
-
-    blocTest<ProductBloc, ProductState>(
-      'emits [isLoading: true, currentStep: reset, isLoading: false, errorMessage: null] when OnResetTour is added',
-      build: () {
-        when(
-          mockProductTourController.resetTour(),
-        ).thenAnswer((_) async => null);
-        return productBloc;
-      },
-      act: (bloc) => bloc.add(const ProductEvent.resetTour()),
+      act: (bloc) => bloc.add(const ProductEvent.resetTips()),
       expect: () => [
         isA<ProductState>().having((s) => s.isLoading, 'isLoading', true),
         isA<ProductState>()
-            .having((s) => s.currentStep, 'currentStep', ProductTourStep.reset)
+            .having((s) => s.activeTip, 'activeTip', AppTip.collections)
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.errorMessage, 'errorMessage', null),
-      ],
-    );
-  });
-
-  group('ProductBloc Data Events', () {
-    final mockTabs = [
-      TabsDTO(
-        id: 1,
-        title: 'Movies',
-        subtitle: 'My favorite movies',
-        timestamp: DateTime.now(),
-        entries: [],
-        order: 0,
-      ),
-      TabsDTO(
-        id: 2,
-        title: 'Books',
-        subtitle: 'Must-read books',
-        timestamp: DateTime.now(),
-        entries: [],
-        order: 1,
-      ),
-    ];
-
-    blocTest<ProductBloc, ProductState>(
-      'emits [tabs: tabs, isLoading: false] when OnLoadData is added',
-      build: () {
-        when(
-          mockTutorialRepository.loadTutorialData(),
-        ).thenAnswer((_) async => mockTabs);
-        return productBloc;
-      },
-      act: (bloc) => bloc.add(const ProductEvent.onLoadData()),
-      expect: () => [
-        isA<ProductState>()
-            .having((s) => s.tabs, 'tabs', mockTabs)
-            .having((s) => s.isLoading, 'isLoading', false),
-      ],
-    );
-
-    blocTest<ProductBloc, ProductState>(
-      'emits [tabs: null, isLoading: true] when OnClearData is added',
-      build: () => productBloc,
-      act: (bloc) => bloc.add(const ProductEvent.onClearData()),
-      expect: () => [
-        isA<ProductState>()
-            .having((s) => s.tabs, 'tabs', null)
-            .having((s) => s.isLoading, 'isLoading', true),
       ],
     );
   });

@@ -94,8 +94,22 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<int> get dismissedAppTipsMask async {
+    return _sharedPreferences.getInt(StorageKeys.dismissedAppTipsMask.key) ?? 0;
+  }
+
+  @override
+  Future<void> setDismissedAppTipsMask(int mask) async {
+    await _sharedPreferences.setInt(
+      StorageKeys.dismissedAppTipsMask.key,
+      mask,
+    );
+  }
+
+  @override
   Future<void> resetTour() async {
     await setCurrentStep(-1);
+    await setDismissedAppTipsMask(0);
     await setIsCompleted(false);
   }
 
