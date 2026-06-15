@@ -8,6 +8,7 @@ environment:
   sdk: ">=3.10.8 <4.0.0"
 
 dependencies:
+  app_links: ^6.4.0
   auto_route: ^11.1.0
   bloc: ^9.0.0
   core: ^0.0.1

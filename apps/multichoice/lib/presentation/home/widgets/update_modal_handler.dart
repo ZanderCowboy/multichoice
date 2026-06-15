@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/widgets/update_available_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -84,6 +86,7 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
       );
 
       if (!mounted || _hasShownModal || !updateAvailable) return;
+      if (context.router.topRoute.name != HomePageWrapperRoute.name) return;
 
       _hasShownModal = true;
 

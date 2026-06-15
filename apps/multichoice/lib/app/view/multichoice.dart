@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/auth/password_reset_deep_link_listener.dart';
 import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/config/app_flavor.dart';
@@ -53,7 +54,10 @@ class Multichoice extends StatelessWidget {
             color:
                 context.theme.appColors.appBarBackground ??
                 Theme.of(context).scaffoldBackgroundColor,
-            child: child ?? const SizedBox.shrink(),
+            child: PasswordResetDeepLinkListener(
+              router: _appRouter,
+              child: child ?? const SizedBox.shrink(),
+            ),
           );
 
           if (!AppFlavor.showsEnvironmentBanner) {

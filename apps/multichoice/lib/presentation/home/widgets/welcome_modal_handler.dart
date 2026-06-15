@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/engine/app_router.gr.dart';
 import 'package:multichoice/presentation/home/widgets/continue_tour_modal.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
 import 'package:multichoice/utils/tutorial_feature.dart';
@@ -25,6 +27,10 @@ class _WelcomeModalHandlerState extends State<WelcomeModalHandler> {
   bool _hasScheduledModalCheck = false;
 
   Future<void> _checkAndShowWelcomeModal(BuildContext context) async {
+    if (context.router.topRoute.name != HomePageWrapperRoute.name) {
+      return;
+    }
+
     final appStorageService = coreSl<IAppStorageService>();
     final productTourController = coreSl<IProductTourController>();
     final isExistingUser = await appStorageService.isExistingUser;
@@ -37,6 +43,10 @@ class _WelcomeModalHandlerState extends State<WelcomeModalHandler> {
         currentStep != ProductTourStep.reset;
 
     if (!isExistingUser && !isCompleted && context.mounted) {
+      if (context.router.topRoute.name != HomePageWrapperRoute.name) {
+        return;
+      }
+
       if (!isTutorialEnabled() && hasStartedTutorial) {
         await widget.onSkipTour();
         return;
