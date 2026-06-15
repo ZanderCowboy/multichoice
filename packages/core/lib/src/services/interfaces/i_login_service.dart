@@ -10,4 +10,16 @@ abstract class ILoginService {
   Future<String?> getProfileEmail();
 
   Future<String?> getProfileUsername();
+
+  /// Maps username (lowercase) to email for local username login.
+  Future<void> storeUsernameEmailMapping(String username, String email);
+
+  /// Resolves [identifier] to an email when it is a stored username.
+  Future<String?> resolveEmailForLogin(String identifier);
+
+  /// Records that [userId] completed the post-Google username setup flow.
+  Future<void> markUsernameConfirmed(String userId);
+
+  /// Whether [userId] already completed username setup on this device.
+  Future<bool> isUsernameConfirmed(String userId);
 }
