@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/registration/widgets/password_field.dart';
 import 'package:multichoice/utils/user_accounts_feature.dart';
@@ -75,7 +76,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         listener: (context, state) {
           if (state.isError && state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
+              SnackBar(
+                content: Text(
+                  localizeCoreMessage(context, state.errorMessage!),
+                ),
+              ),
             );
           }
           if (state.shouldNavigateOnSuccess) {
@@ -184,7 +189,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               ),
                         enabled: canSubmitReset,
                         isLoading: state.isLoading,
-                        successLabel: state.successMessage,
+                        successLabel: state.successMessage != null
+                            ? localizeCoreMessage(
+                                context,
+                                state.successMessage!,
+                              )
+                            : null,
                         successIcon: state.successMessage != null
                             ? Icon(
                                 Icons.check_circle_outline,

@@ -205,7 +205,7 @@ class _VerticalTabState extends State<_VerticalTab> {
                 child: _scrollToStartButton(
                   context: context,
                   scrollController: _scrollController,
-                  label: 'Scroll to top',
+                  label: context.t.home.scrollToTop,
                   icon: Icons.keyboard_arrow_up,
                 ),
               ),

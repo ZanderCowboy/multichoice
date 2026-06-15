@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:super_clipboard/super_clipboard.dart';
@@ -265,6 +266,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
     return BlocListener<FeedbackBloc, FeedbackState>(
       listenWhen: (previous, current) =>
           !previous.isSuccess && current.isSuccess,

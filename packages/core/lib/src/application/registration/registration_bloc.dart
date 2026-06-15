@@ -38,6 +38,9 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
             password: field == RegistrationField.password
                 ? value
                 : state.password,
+            confirmPassword: field == RegistrationField.confirmPassword
+                ? value
+                : state.confirmPassword,
             isError: false,
             errorMessage: null,
           ),
@@ -104,6 +107,21 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         state.copyWith(
           isError: true,
           errorMessage: validationError,
+        ),
+      );
+      return;
+    }
+
+    final confirmError =
+        _credentialValidationService.validatePasswordConfirmation(
+      password: state.password,
+      confirmation: state.confirmPassword,
+    );
+    if (confirmError != null) {
+      emit(
+        state.copyWith(
+          isError: true,
+          errorMessage: confirmError,
         ),
       );
       return;

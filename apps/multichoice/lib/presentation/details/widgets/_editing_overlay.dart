@@ -49,8 +49,10 @@ class _EditingOverlay extends StatelessWidget {
                     onPressed: () {
                       final title = state.title;
                       final message = isTab
-                          ? 'Are you sure you want to delete $title and all its entries?'
-                          : 'Are you sure you want to delete $title?';
+                          ? context.t.home.deleteTabAndEntriesContent(
+                              title: title,
+                            )
+                          : context.t.modals.deleteItem(item: title);
 
                       deleteModal(
                         context: context,

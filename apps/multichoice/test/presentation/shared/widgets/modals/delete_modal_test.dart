@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 
 import '../../../../helpers/export.dart';
@@ -10,6 +11,7 @@ void main() {
   ) async {
     var confirmPressed = false;
     var cancelPressed = false;
+    final t = LocaleSettings.instance.currentTranslations;
 
     await tester.pumpWidget(
       widgetWrapper(
@@ -44,40 +46,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
-
-    final richTextWidget = tester.widget<RichText>(
-      find.byKey(keys.deleteModalTitle),
-    );
-
-    final textSpan = richTextWidget.text as TextSpan;
-    expect(textSpan.text, 'Delete ');
-    expect((textSpan.children![0] as TextSpan).text, 'Item');
-    expect((textSpan.children![1] as TextSpan).text, '?');
-
+    expect(find.byKey(keys.deleteModalTitle), findsOneWidget);
+    expect(find.text('Delete Item?'), findsOneWidget);
     expect(
       find.text('Are you sure you want to delete this item?'),
       findsOneWidget,
     );
+    expect(find.text(t.common.cancel), findsOneWidget);
+    expect(find.text(t.common.delete), findsOneWidget);
 
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Delete'), findsOneWidget);
-
-    await tester.tap(find.text('Cancel'));
+    await tester.tap(find.text(t.common.cancel));
     await tester.pumpAndSettle();
     expect(cancelPressed, isTrue);
 
     await tester.tap(find.text('Open Modal'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text(t.common.delete));
     await tester.pumpAndSettle();
     expect(confirmPressed, isTrue);
   });
 
-  testWidgets('deleteModal displays correctly and handles actions', (
+  testWidgets('deleteModal uses default cancel when onCancel is omitted', (
     tester,
   ) async {
     var confirmPressed = false;
+    final t = LocaleSettings.instance.currentTranslations;
 
     await tester.pumpWidget(
       widgetWrapper(
@@ -108,32 +102,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.text(t.modals.deleteItem(item: 'Item')), findsOneWidget);
+    expect(find.text(t.common.cancel), findsOneWidget);
+    expect(find.text(t.common.delete), findsOneWidget);
 
-    final richTextWidget = tester.widget<RichText>(
-      find.byKey(keys.deleteModalTitle),
-    );
-
-    final textSpan = richTextWidget.text as TextSpan;
-    expect(textSpan.text, 'Delete ');
-    expect((textSpan.children![0] as TextSpan).text, 'Item');
-    expect((textSpan.children![1] as TextSpan).text, '?');
-
-    expect(
-      find.text('Are you sure you want to delete this item?'),
-      findsOneWidget,
-    );
-
-    expect(find.text('Cancel'), findsOneWidget);
-    expect(find.text('Delete'), findsOneWidget);
-
-    await tester.tap(find.text('Cancel'));
+    await tester.tap(find.text(t.common.cancel));
     await tester.pumpAndSettle();
     expect(find.text('Open Modal'), findsOneWidget);
 
     await tester.tap(find.text('Open Modal'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text(t.common.delete));
     await tester.pumpAndSettle();
     expect(confirmPressed, isTrue);
   });

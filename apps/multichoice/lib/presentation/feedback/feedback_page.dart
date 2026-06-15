@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/feedback/widgets/feedback_form.dart';
 
@@ -44,7 +45,9 @@ class FeedbackPage extends StatelessWidget {
             final message = state.errorMessage?.trim();
             if (message == null || message.isEmpty) return;
             messenger.showSnackBar(
-              SnackBar(content: Text(message)),
+              SnackBar(
+                content: Text(localizeCoreMessage(context, message)),
+              ),
             );
           }
         },

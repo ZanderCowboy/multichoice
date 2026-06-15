@@ -13,7 +13,7 @@ class _ChildrenListView extends StatelessWidget {
           return SliverToBoxAdapter(
             child: Center(
               child: Text(
-                'No children available',
+                context.t.details.noChildrenAvailable,
                 style: context.theme.appTextTheme.bodyLarge,
               ),
             ),
@@ -24,7 +24,7 @@ class _ChildrenListView extends StatelessWidget {
           return SliverToBoxAdapter(
             child: Center(
               child: Text(
-                'No children found',
+                context.t.details.noChildrenFound,
                 style: context.theme.appTextTheme.bodyLarge,
               ),
             ),

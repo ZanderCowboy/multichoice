@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class EmailField extends StatefulWidget {
@@ -28,15 +29,15 @@ class EmailField extends StatefulWidget {
   final ValueChanged<bool>? onValidityChanged;
   final Iterable<String>? autofillHints;
 
-  static String? defaultValidator(String? value) {
+  static String? defaultValidator(String? value, Translations t) {
     if (value == null || value.isEmpty) {
-      return 'Email is required';
+      return t.validation.emailRequired;
     }
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email address';
+      return t.validation.invalidEmail;
     }
     return null;
   }
@@ -55,11 +56,15 @@ class _EmailFieldState extends State<EmailField> {
     if (trimmedValue.isEmpty) {
       return null;
     }
-    return (widget.validator ?? EmailField.defaultValidator)(trimmedValue);
+    return (widget.validator ??
+        (v) => EmailField.defaultValidator(v, context.t))(
+      trimmedValue,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final validation = context.t.validation;
     final appColors = context.theme.appColors;
     final inputTheme = Theme.of(context).inputDecorationTheme;
     final textColor =
@@ -94,7 +99,7 @@ class _EmailFieldState extends State<EmailField> {
                 ),
                 gap4,
                 Text(
-                  'Email',
+                  context.t.profile.email,
                   style: TextStyle(
                     color: textColor,
                   ),
@@ -104,7 +109,7 @@ class _EmailFieldState extends State<EmailField> {
             floatingLabelStyle: TextStyle(
               color: textColor,
             ),
-            hintText: 'Enter your email',
+            hintText: validation.enterYourEmail,
             hintStyle: TextStyle(
               color: textColor,
             ),
@@ -170,7 +175,6 @@ class _EmailFieldState extends State<EmailField> {
         }
         widget.onChanged?.call(value);
       },
-
       autofillHints: widget.autofillHints,
       validator: _validator,
     );

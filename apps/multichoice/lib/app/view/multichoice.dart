@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/i18n/strings.g.dart';
@@ -20,6 +21,9 @@ class Multichoice extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RemoteConfigDebugNotifier(),
         ),
         ChangeNotifierProvider(
           create: (context) => AppTheme(),

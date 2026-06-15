@@ -6,6 +6,7 @@ class RegistrationState extends Equatable {
     required this.email,
     required this.username,
     required this.password,
+    required this.confirmPassword,
     required this.isLoading,
     required this.isSuccess,
     required this.isError,
@@ -16,6 +17,7 @@ class RegistrationState extends Equatable {
         email: '',
         username: '',
         password: '',
+        confirmPassword: '',
         isLoading: false,
         isSuccess: false,
         isError: false,
@@ -25,6 +27,7 @@ class RegistrationState extends Equatable {
   final String email;
   final String username;
   final String password;
+  final String confirmPassword;
   final bool isLoading;
   final bool isSuccess;
   final bool isError;
@@ -35,6 +38,7 @@ class RegistrationState extends Equatable {
         email,
         username,
         password,
+        confirmPassword,
         isLoading,
         isSuccess,
         isError,
