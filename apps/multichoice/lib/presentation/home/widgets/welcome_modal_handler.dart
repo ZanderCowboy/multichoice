@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/presentation/home/widgets/continue_tour_modal.dart';
 import 'package:multichoice/presentation/home/widgets/welcome_modal.dart';
+import 'package:multichoice/utils/tutorial_feature.dart';
 
 class WelcomeModalHandler extends StatefulWidget {
   const WelcomeModalHandler({
@@ -36,6 +37,11 @@ class _WelcomeModalHandlerState extends State<WelcomeModalHandler> {
         currentStep != ProductTourStep.reset;
 
     if (!isExistingUser && !isCompleted && context.mounted) {
+      if (!isTutorialEnabled() && hasStartedTutorial) {
+        await widget.onSkipTour();
+        return;
+      }
+
       if (hasStartedTutorial) {
         await showDialog<void>(
           context: context,

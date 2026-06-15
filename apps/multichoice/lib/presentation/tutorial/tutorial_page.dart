@@ -9,6 +9,7 @@ import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/tutorial/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
+import 'package:multichoice/utils/tutorial_feature.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -30,6 +31,7 @@ class _TutorialPageState extends State<TutorialPage> {
   @override
   void initState() {
     super.initState();
+    guardTutorialRoute(context);
 
     /// Dispatch init events once so that rebuilds do not re-trigger
     /// them and cause inconsistent tour state.

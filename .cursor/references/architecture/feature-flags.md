@@ -14,6 +14,7 @@
 | `enableChangelogPage` | `enable_changelog_page` | Changelog drawer link + route |
 | `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback image attachments |
 | `enableUserAccounts` | `enable_user_accounts` | Auth, profile, related routes |
+| `enableTutorial` | `enable_tutorial` | Guided product-tour journey, welcome Follow Tutorial, drawer Restart |
 
 ## JSON / Strings
 
