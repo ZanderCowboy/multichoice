@@ -60,7 +60,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _syncEmailValidity() {
     if (!mounted) return;
     final email = _emailController.text.trim();
-    final ok = email.isNotEmpty && EmailField.defaultValidator(email, context.t) == null;
+    final ok =
+        email.isNotEmpty &&
+        EmailField.defaultValidator(email, context.t) == null;
     if (ok != _emailValid) {
       setState(() => _emailValid = ok);
     }
@@ -133,31 +135,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     }
 
     // Show picker when multiple email apps are available
+    // TODO: Why is this here and not elsewhere in the codebase?
     final selectedApp = await showDialog<MailApp>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(context.t.auth.openEmailApp),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               context.t.auth.chooseEmailAppPrompt,
             ),
             gap16,
-            SizedBox(
-              width: double.maxFinite,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: apps.length,
-                itemBuilder: (ctx, index) {
-                  final app = apps[index];
-                  return ListTile(
-                    leading: const Icon(Icons.email_outlined),
-                    title: Text(app.name),
-                    onTap: () => Navigator.of(ctx).pop(app),
-                  );
-                },
+            ...apps.map(
+              (app) => ListTile(
+                leading: const Icon(Icons.email_outlined),
+                title: Text(app.name),
+                onTap: () => Navigator.of(ctx).pop(app),
               ),
             ),
           ],
