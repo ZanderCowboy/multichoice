@@ -13,12 +13,25 @@
 
 ## Generated Artifacts (do not hand-edit)
 
-- `*.g.dart` — JSON, copy_with_extension
-- `*.freezed.dart` — Freezed models (in `models`, not blocs)
-- `*.config.dart` — injectable (`get_it_injection.config.dart`)
-- `*.gr.dart` — auto_route
-- `*.mocks.dart` — mockito (`packages/core/test/mocks.mocks.dart`)
-- `strings.g.dart` — slang (`apps/multichoice/lib/i18n/`)
+All patterns below are **gitignored** (root `.gitignore`). They exist on disk after codegen but **never appear in `git diff`**. Reviewers and agents must read files on disk to verify codegen — absence from the diff is normal.
+
+| Pattern | Generator | Typical location |
+|---------|-----------|------------------|
+| `*.g.dart` | build_runner (JSON, copy_with_extension) | Same directory as source (e.g. `packages/core/lib/src/application/<feature>/<feature>_bloc.g.dart`) |
+| `*.freezed.dart` | Freezed | `packages/models/` (not blocs) |
+| `*.config.dart` | injectable | `packages/core/lib/src/get_it_injection.config.dart` |
+| `*.gr.dart` | auto_route | `apps/multichoice/lib/app/engine/app_router.gr.dart` |
+| `*.mocks.dart` | mockito | `packages/core/test/mocks.mocks.dart` |
+| `strings*.g.dart` | slang | `apps/multichoice/lib/i18n/` — see [i18n.md](i18n.md) |
+
+### Verifying codegen is up to date
+
+1. Identify what source changed (bloc `part`, `@RoutePage`, `@injectable`, `MockSpec`, i18n keys).
+2. Read the matching generated file on disk.
+3. Confirm expected symbols/keys exist in the generated output.
+4. Run `make db` / `melos slang` only if the file is missing or content is stale.
+
+Do **not** flag “missing codegen” because `git status` shows no changes to `*.g.dart` / `*.gr.dart`.
 
 ## Dependency Injection
 

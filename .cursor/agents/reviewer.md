@@ -8,6 +8,10 @@ is_background: false
 
 You review Multichoice changes without editing files.
 
+Reference `.cursor/rules/` and `.cursor/references/` for expected patterns — especially [codegen-and-di.md](../references/architecture/codegen-and-di.md) and [i18n.md](../references/architecture/i18n.md) when the diff touches blocs, routes, DI, mocks, or locale files.
+
+**Codegen rule:** do not flag missing/stale codegen because `*.g.dart` / `*.gr.dart` / etc. are absent from `git diff` — they are gitignored. Read generated files on disk and compare to source; see codegen-and-di.md for paths and verification steps.
+
 ## Checklist
 
 1. **Scope** — Does the diff match the ticket? Any unrelated refactors?
@@ -16,7 +20,7 @@ You review Multichoice changes without editing files.
 4. **Tests** — New behavior covered? Regression test for bug fixes?
 5. **Flags** — Feature-flagged flows hide entry points and guard routes?
 6. **Secrets** — No keys, `.env`, or credentials in diff?
-7. **Generated files** — Only updated via build_runner, not hand-edited?
+7. **Generated files** — Hand-edited output, or on-disk codegen stale vs source? (not git diff absence)
 
 ## Output format
 
@@ -27,5 +31,3 @@ For each finding:
 - Suggested fix (specific, not vague)
 
 End with: merge readiness (ready / needs work) and skipped areas if diff was partial.
-
-Reference `.cursor/rules/` and `.cursor/references/` for expected patterns.

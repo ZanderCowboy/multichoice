@@ -10,11 +10,11 @@ Never commit: `.cursor/plans/*.plan.md`, `debug-log-*.md`, secrets, `.env`.
 
 | Layer | Paths | Message prefix |
 |-------|-------|----------------|
-| Platform | `apps/multichoice/android/**`, `ios/**` | `feat(android\|ios):` |
-| Models | `packages/models/**` | `feat(models):` |
-| Core | `packages/core/**` (bloc, repo, service) | `feat(<feature>):` or `fix(<feature>):` |
-| App UI | `apps/multichoice/lib/**` | `feat(<area>):` or `refactor(<area>):` |
-| Tests | `**/*_test.dart`, `**/mocks.mocks.dart` | `test(<scope>):` |
+| Platform | `apps/multichoice/android/**`, `ios/**` | `feat: (android\|ios) -` |
+| Models | `packages/models/**` | `feat: (models) -` |
+| Core | `packages/core/**` (bloc, repo, service) | `feat: (<feature>) -` or `fix: (<feature>) -` |
+| App UI | `apps/multichoice/lib/**` | `feat: (<area>) -` or `refactor: (<area>) -` |
+| Tests | `**/*_test.dart`, `**/mocks.mocks.dart` | `test: (<scope>) -` |
 | Chore | `pubspec.yaml`, `melos.yaml`, `Makefile`, `*.yaml` | `chore:` |
 
 ## Process
@@ -24,4 +24,4 @@ Never commit: `.cursor/plans/*.plan.md`, `debug-log-*.md`, secrets, `.env`.
 3. Do not push unless asked.
 4. Summary: `git log --oneline -N`.
 
-Use `type(scope): description` — `feat`, `fix`, `refactor`, `test`, `chore`.
+Use `type: (scope) - description` — `feat`, `fix`, `refactor`, `test`, `chore`.
