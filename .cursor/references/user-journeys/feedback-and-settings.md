@@ -26,9 +26,11 @@
 - Backup and restore user data (tabs/entries).
 - Service: data exchange patterns in `packages/core`.
 
-## Debug (dev)
+## Debug (DEV flavor only)
 
-- **Route**: `DebugPageRoute` — internal tools, feature flag overrides in debug builds.
+- **Route**: `DebugPageRoute` (`AppFlavor.allowsDebugPage`).
+- **Feature Flags tab**: toggle Remote Config bool flags via `RemoteConfigDebugNotifier`; refetch + clear-all overrides.
+- See [architecture/feature-flags.md](../architecture/feature-flags.md#debug-overrides-dev-only).
 
 ## Settings Pattern
 

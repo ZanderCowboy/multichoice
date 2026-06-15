@@ -19,6 +19,11 @@ Match nearby layouts, spacing, typography, and loading/empty/error states.
 - Borders: `packages/ui_kit/lib/src/constants/border_constants.dart`
 - Also check `ui_constants.dart`, theme extensions, app colors before adding values.
 
+## Copy and localization
+
+- User-facing strings: `lib/i18n/*.i18n.json` + `context.t` — see `.cursor/references/architecture/i18n.md`.
+- Core error/success strings: `localizeCoreMessage(context, message)` at the presentation boundary.
+
 ## Widgets
 
 - Feature widgets under the feature's `widgets/` folder.

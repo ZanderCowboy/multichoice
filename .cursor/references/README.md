@@ -12,6 +12,7 @@ On-demand product and architecture context. **Rules** (`.cursor/rules/`) say how
 | [architecture/layers-and-ownership.md](architecture/layers-and-ownership.md) | Where code belongs |
 | [architecture/feature-flags.md](architecture/feature-flags.md) | Firebase Remote Config flags |
 | [architecture/codegen-and-di.md](architecture/codegen-and-di.md) | Build runner, injectable, mocks |
+| [architecture/i18n.md](architecture/i18n.md) | slang strings, locales, core error mapping |
 | [glossary.md](glossary.md) | Domain terms |
 
 Full docs: [`docs/`](../../docs/), [`README.md`](../../README.md), [`CONTRIBUTING.md`](../../CONTRIBUTING.md).

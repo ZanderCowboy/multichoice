@@ -11,6 +11,7 @@ alwaysApply: false
 - `app/` — setup, routing, theme, auth layout, exports
 - `layouts/` — home layout, tabs
 - `presentation/` — pages, feature widgets, dialogs
+- `i18n/` — slang locale files (`*.i18n.json`), `localize_core_message.dart`
 - `utils/` — app-only helpers (e.g. product tour)
 
 ## Packages

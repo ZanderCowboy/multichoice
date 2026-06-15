@@ -9,6 +9,7 @@
 | Scoped analyze | `melos exec --scope=<pkg> -- flutter analyze` |
 | Core tests | `melos test:core` |
 | App tests | `melos test:multichoice` |
+| i18n | `make slang` or `melos slang` (after `*.i18n.json` edits) |
 
 ## Generated Artifacts (do not hand-edit)
 
@@ -17,6 +18,7 @@
 - `*.config.dart` — injectable (`get_it_injection.config.dart`)
 - `*.gr.dart` — auto_route
 - `*.mocks.dart` — mockito (`packages/core/test/mocks.mocks.dart`)
+- `strings.g.dart` — slang (`apps/multichoice/lib/i18n/`)
 
 ## Dependency Injection
 

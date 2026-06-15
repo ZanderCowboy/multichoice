@@ -23,6 +23,7 @@ You design and implement shared architecture in the Multichoice monorepo.
 - Services: `interfaces/` + `implementations/` with `@LazySingleton(as: I*)`.
 - Models/DTOs/enums only in `packages/models`; use Freezed where siblings do.
 - Auth flows return `Either<AuthException, T>` via dartz.
+- User-facing copy stays out of core — English messages only; app localizes via `localizeCoreMessage`.
 
 ## Do not
 
