@@ -64,7 +64,7 @@ jobs:
       ##############################################
       - name: Generate GitHub App Token
         id: generate_token
-        uses: peter-murray/workflow-application-token-action@v4
+        uses: peter-murray/workflow-application-token-action@v5
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
@@ -219,7 +219,7 @@ jobs:
       - name: Generate GitHub App Token (for version commit)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         id: generate_token_commit
-        uses: peter-murray/workflow-application-token-action@v4
+        uses: peter-murray/workflow-application-token-action@v5
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
