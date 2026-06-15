@@ -8,6 +8,7 @@ import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/drawer/widgets/export.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
+import 'package:multichoice/utils/app_tips/app_tip_drawer_showcase.dart';
 import 'package:multichoice/utils/user_accounts_feature.dart';
 import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -18,7 +19,12 @@ Future<bool> _drawerSessionLoggedIn() async {
 }
 
 class HomeDrawer extends StatelessWidget {
-  const HomeDrawer({super.key});
+  const HomeDrawer({
+    this.isDrawerOpen = true,
+    super.key,
+  });
+
+  final bool isDrawerOpen;
 
   void _onLogin(BuildContext context) {
     Navigator.of(context).pop();
@@ -75,7 +81,10 @@ class HomeDrawer extends StatelessWidget {
                         physics: const BouncingScrollPhysics(),
                         padding: EdgeInsets.zero,
                         children: [
-                          const AppearanceSection(),
+                          AppTipDrawerShowcase(
+                            isDrawerOpen: isDrawerOpen,
+                            child: const AppearanceSection(),
+                          ),
                           const Divider(height: 32),
                           const DataSection(),
                           if (isLoggedIn && userAccountsEnabled) ...[

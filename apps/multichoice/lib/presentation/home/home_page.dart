@@ -9,7 +9,6 @@ import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/utils/trigger_edit_mode_haptic.dart';
-import 'package:multichoice/presentation/home/widgets/app_tips_handler.dart';
 import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
 import 'package:multichoice/presentation/home/widgets/home_promotional_banners.dart';
 import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
@@ -17,6 +16,7 @@ import 'package:multichoice/presentation/home/widgets/welcome_modal_handler.dart
 import 'package:multichoice/presentation/shared/widgets/add_widgets/_base.dart';
 import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
+import 'package:multichoice/utils/app_tips/app_tip_coordinator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -56,43 +56,50 @@ class _HomePage extends StatefulWidget {
 
 class _HomePageState extends State<_HomePage> {
   bool _isDrawerOpen = false;
+  final GlobalKey<AppTipCoordinatorState> _tipCoordinatorKey =
+      GlobalKey<AppTipCoordinatorState>();
 
   @override
   Widget build(BuildContext context) {
     return AnalyticsPageTracker(
       page: AnalyticsPage.home,
-      child: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-            previous.isEditMode != current.isEditMode,
-        builder: (context, state) {
-          return PopScope(
-            canPop: !state.isEditMode && !_isDrawerOpen,
-            onPopInvokedWithResult: (didPop, _) {
-              if (didPop) return;
+      child: AppTipCoordinator(
+        key: _tipCoordinatorKey,
+        child: BlocBuilder<HomeBloc, HomeState>(
+          buildWhen: (previous, current) =>
+              previous.isEditMode != current.isEditMode,
+          builder: (context, state) {
+            return PopScope(
+              canPop: !state.isEditMode && !_isDrawerOpen,
+              onPopInvokedWithResult: (didPop, _) {
+                if (didPop) return;
 
-              if (_isDrawerOpen) {
-                Navigator.of(context).pop();
-                return;
-              }
+                if (_isDrawerOpen) {
+                  Navigator.of(context).pop();
+                  return;
+                }
 
-              if (state.isEditMode) {
-                context.read<HomeBloc>().add(
-                  const HomeEvent.onToggleEditMode(),
-                );
-              }
-            },
-            child: Scaffold(
-              key: scaffoldKey,
-              onDrawerChanged: (isOpened) {
-                if (_isDrawerOpen == isOpened) return;
-                setState(() {
-                  _isDrawerOpen = isOpened;
-                });
+                if (state.isEditMode) {
+                  context.read<HomeBloc>().add(
+                    const HomeEvent.onToggleEditMode(),
+                  );
+                }
               },
-              appBar: const HomeAppBar(),
-              drawer: const HomeDrawer(),
-              body: AppTipsHandler(
-                builder: (_) => const Column(
+              child: Scaffold(
+                key: scaffoldKey,
+                onDrawerChanged: (isOpened) {
+                  if (_isDrawerOpen != isOpened) {
+                    setState(() {
+                      _isDrawerOpen = isOpened;
+                    });
+                  }
+                  _tipCoordinatorKey.currentState?.handleDrawerChanged(
+                    isOpened: isOpened,
+                  );
+                },
+                appBar: HomeAppBar(isDrawerOpen: _isDrawerOpen),
+                drawer: HomeDrawer(isDrawerOpen: _isDrawerOpen),
+                body: const Column(
                   children: [
                     HomePromotionalBanners(),
                     Expanded(
@@ -103,9 +110,9 @@ class _HomePageState extends State<_HomePage> {
                   ],
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

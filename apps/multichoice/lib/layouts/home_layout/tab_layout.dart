@@ -6,6 +6,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/home/home_page.dart';
+import 'package:multichoice/utils/app_tips/app_tip_showcase.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
 import 'package:ui_kit/ui_kit.dart';
 

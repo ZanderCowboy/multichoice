@@ -16,6 +16,10 @@ class EntriesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFirstTab = context.select<HomeBloc, bool>(
+      (bloc) => bloc.state.tabs?.firstOrNull?.id == tabId,
+    );
+
     return SliverPadding(
       padding: vertical4,
       sliver: SliverGrid.builder(
@@ -25,25 +29,33 @@ class EntriesGrid extends StatelessWidget {
         itemCount: entries.length + 1,
         itemBuilder: (context, index) {
           if (index == entries.length) {
-            return NewEntry(
-              tabId: tabId,
+            return AppTipShowcase(
+              tip: AppTip.addEntry,
+              enabled: isFirstTab,
+              child: NewEntry(
+                tabId: tabId,
+              ),
             );
           }
 
           final entry = entries[index];
 
-          return EntryCard(
-            entry: entry,
-            isLayoutVertical: isLayoutVertical,
-            isEditMode: isEditMode,
-            onDoubleTap: () async {
-              context.read<HomeBloc>().add(
-                HomeEvent.onUpdateEntry(entry.id),
-              );
-              await context.router.push(
-                EditEntryPageRoute(ctx: context),
-              );
-            },
+          return AppTipShowcase(
+            tip: AppTip.entryActions,
+            enabled: isFirstTab && index == 0,
+            child: EntryCard(
+              entry: entry,
+              isLayoutVertical: isLayoutVertical,
+              isEditMode: isEditMode,
+              onDoubleTap: () async {
+                context.read<HomeBloc>().add(
+                  HomeEvent.onUpdateEntry(entry.id),
+                );
+                await context.router.push(
+                  EditEntryPageRoute(ctx: context),
+                );
+              },
+            ),
           );
         },
       ),
