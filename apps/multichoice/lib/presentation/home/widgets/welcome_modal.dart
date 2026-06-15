@@ -7,13 +7,13 @@ import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
   const WelcomeModal({
-    required this.onGoHome,
-    required this.onFollowTutorial,
+    required this.onSkipTips,
+    required this.onStartTips,
     super.key,
   });
 
-  final VoidCallback onGoHome;
-  final VoidCallback onFollowTutorial;
+  final VoidCallback onSkipTips;
+  final VoidCallback onStartTips;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,9 @@ class WelcomeModal extends StatelessWidget {
                           source: 'welcome_modal',
                         ),
                       );
-                      onGoHome();
+                      onSkipTips();
                     },
-                    child: Text(context.t.common.goHome),
+                    child: Text(context.t.common.skipTips),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -63,12 +63,12 @@ class WelcomeModal extends StatelessWidget {
                           page: AnalyticsPage.home,
                           button: AnalyticsButton.followTutorial,
                           action: AnalyticsAction.tap,
-                          source: 'tutorial',
+                          source: 'welcome_modal',
                         ),
                       );
-                      onFollowTutorial();
+                      onStartTips();
                     },
-                    child: Text(context.t.tutorial.followTutorial),
+                    child: Text(context.t.common.showTips),
                   ),
                 ],
               ),

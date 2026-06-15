@@ -1,3 +1,9 @@
+# 314 - Improve Tutorial UX
+
+- Replaced the blocking showcase tutorial with dismissible contextual tips on the home screen; users can interact with the app while tips are visible
+- Removed the dedicated tutorial sandbox page, `showcaseview` dependency, and linear `ProductTourStep` flow; drawer "Show app tips" replays tips in place
+- Added `AppTip` model, `IAppTipsController`, legacy tour migration, and updated welcome modal copy (en/nl)
+
 # Localization, App Icon, DevOps
 
 - Completed slang string migration (#388, child of #372): localized remaining presentation strings across changelog, drawer, home, search, tutorial, data transfer, delete modal, and tooltips; added `localizeCoreMessage()` to map core validation/auth/feedback errors to en/nl at the presentation boundary; Dutch feedback strings aligned with English; forgot-password errors localized; dismiss tooltip required on `DismissibleBannerBar`

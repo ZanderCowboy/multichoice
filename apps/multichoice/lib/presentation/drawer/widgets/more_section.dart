@@ -33,27 +33,9 @@ class MoreSection extends StatelessWidget {
           ),
           trailing: IconButton(
             onPressed: () async {
-              final appLayout = context.read<AppLayout>();
-              final originalLayout = appLayout.isLayoutVertical;
-              await appLayout.setLayoutVertical(isVertical: false);
-
-              await Future.value(
-                coreSl<IProductTourController>().resetTour(),
-              ).whenComplete(() async {
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-
-                  await context.router.push(
-                    TutorialPageRoute(
-                      onCallback: () async {
-                        await appLayout.setLayoutVertical(
-                          isVertical: originalLayout,
-                        );
-                      },
-                    ),
-                  );
-                }
-              });
+              Navigator.of(context).pop();
+              if (!context.mounted) return;
+              context.read<ProductBloc>().add(const ProductEvent.resetTips());
             },
             icon: const Icon(
               Icons.refresh_outlined,

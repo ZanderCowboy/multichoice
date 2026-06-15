@@ -33,7 +33,6 @@ dependencies:
   provider: ^6.1.1
   reorderable_grid: ^1.0.13
   shared_preferences: ^2.2.2
-  showcaseview: ^5.0.1
   slang: ^4.14.0
   slang_flutter: ^4.14.0
   super_clipboard: ^0.9.1

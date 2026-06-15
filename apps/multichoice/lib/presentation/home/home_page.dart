@@ -9,6 +9,7 @@ import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/layouts/export.dart';
 import 'package:multichoice/presentation/drawer/home_drawer.dart';
 import 'package:multichoice/presentation/home/utils/trigger_edit_mode_haptic.dart';
+import 'package:multichoice/presentation/home/widgets/app_tips_handler.dart';
 import 'package:multichoice/presentation/home/widgets/home_app_bar.dart';
 import 'package:multichoice/presentation/home/widgets/home_promotional_banners.dart';
 import 'package:multichoice/presentation/home/widgets/update_modal_handler.dart';
@@ -18,7 +19,6 @@ import 'package:multichoice/presentation/shared/widgets/forms/reusable_form.dart
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_check_and_request_permissions.dart';
@@ -36,17 +36,11 @@ class HomePage extends StatelessWidget {
     return UpdateModalHandler(
       builder: (_) => WelcomeModalHandler(
         builder: (_) => const _HomePage(),
-        onSkipTour: () async {
-          context.read<ProductBloc>().add(const ProductEvent.skipTour());
+        onSkipTips: () async {
+          context.read<ProductBloc>().add(const ProductEvent.skipAllTips());
         },
-        onFollowTutorial: () async {
-          await context.router.push(
-            TutorialPageRoute(
-              onCallback: () {
-                context.read<HomeBloc>().add(const HomeEvent.onGetTabs());
-              },
-            ),
-          );
+        onStartTips: () async {
+          context.read<ProductBloc>().add(const ProductEvent.init());
         },
       ),
     );
@@ -67,41 +61,38 @@ class _HomePageState extends State<_HomePage> {
   Widget build(BuildContext context) {
     return AnalyticsPageTracker(
       page: AnalyticsPage.home,
-      // this ShowCaseWidget is here to fix an issue where it complains
-      // about ShowCaseView context not being available
-      // ignore: deprecated_member_use
-      child: ShowCaseWidget(
-        builder: (context) => BlocBuilder<HomeBloc, HomeState>(
-          buildWhen: (previous, current) =>
-              previous.isEditMode != current.isEditMode,
-          builder: (context, state) {
-            return PopScope(
-              canPop: !state.isEditMode && !_isDrawerOpen,
-              onPopInvokedWithResult: (didPop, _) {
-                if (didPop) return;
+      child: BlocBuilder<HomeBloc, HomeState>(
+        buildWhen: (previous, current) =>
+            previous.isEditMode != current.isEditMode,
+        builder: (context, state) {
+          return PopScope(
+            canPop: !state.isEditMode && !_isDrawerOpen,
+            onPopInvokedWithResult: (didPop, _) {
+              if (didPop) return;
 
-                if (_isDrawerOpen) {
-                  Navigator.of(context).pop();
-                  return;
-                }
+              if (_isDrawerOpen) {
+                Navigator.of(context).pop();
+                return;
+              }
 
-                if (state.isEditMode) {
-                  context.read<HomeBloc>().add(
-                    const HomeEvent.onToggleEditMode(),
-                  );
-                }
+              if (state.isEditMode) {
+                context.read<HomeBloc>().add(
+                  const HomeEvent.onToggleEditMode(),
+                );
+              }
+            },
+            child: Scaffold(
+              key: scaffoldKey,
+              onDrawerChanged: (isOpened) {
+                if (_isDrawerOpen == isOpened) return;
+                setState(() {
+                  _isDrawerOpen = isOpened;
+                });
               },
-              child: Scaffold(
-                key: scaffoldKey,
-                onDrawerChanged: (isOpened) {
-                  if (_isDrawerOpen == isOpened) return;
-                  setState(() {
-                    _isDrawerOpen = isOpened;
-                  });
-                },
-                appBar: const HomeAppBar(),
-                drawer: const HomeDrawer(),
-                body: const Column(
+              appBar: const HomeAppBar(),
+              drawer: const HomeDrawer(),
+              body: AppTipsHandler(
+                builder: (_) => const Column(
                   children: [
                     HomePromotionalBanners(),
                     Expanded(
@@ -112,9 +103,9 @@ class _HomePageState extends State<_HomePage> {
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
