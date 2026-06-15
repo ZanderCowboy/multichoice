@@ -1,6 +1,6 @@
 part of '../home_page.dart';
 
-class NewEntry extends StatefulWidget {
+class NewEntry extends StatelessWidget {
   const NewEntry({
     required this.tabId,
     super.key,
@@ -9,10 +9,43 @@ class NewEntry extends StatefulWidget {
   final int tabId;
 
   @override
-  State<NewEntry> createState() => _NewEntryState();
+  Widget build(BuildContext context) {
+    return AddEntryCard(
+      key: context.keys.addNewEntryButton,
+      padding: zeroPadding,
+      onPressed: () {
+        final homeBloc = context.read<HomeBloc>();
+        CustomDialog<AlertDialog>.show(
+          context: context,
+          title: Text(
+            key: context.keys.addNewEntryTitle,
+            context.t.home.addNewEntry,
+            style: DefaultTextStyle.of(context).style.copyWith(
+              fontSize: 24,
+            ),
+          ),
+          content: BlocProvider.value(
+            value: homeBloc,
+            child: _AddEntryDialogContent(tabId: tabId),
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _NewEntryState extends State<NewEntry> {
+class _AddEntryDialogContent extends StatefulWidget {
+  const _AddEntryDialogContent({
+    required this.tabId,
+  });
+
+  final int tabId;
+
+  @override
+  State<_AddEntryDialogContent> createState() => _AddEntryDialogContentState();
+}
+
+class _AddEntryDialogContentState extends State<_AddEntryDialogContent> {
   late final TextEditingController _titleTextController;
   late final TextEditingController _subtitleTextController;
 
@@ -30,11 +63,13 @@ class _NewEntryState extends State<NewEntry> {
     super.dispose();
   }
 
-  Future<void> onPressed() async {
+  Future<void> _closeDialog() async {
     Navigator.of(context).pop();
     await Future.microtask(() {
-      _titleTextController.clear();
-      _subtitleTextController.clear();
+      if (mounted) {
+        _titleTextController.clear();
+        _subtitleTextController.clear();
+      }
     });
   }
 
@@ -42,55 +77,31 @@ class _NewEntryState extends State<NewEntry> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final homeBloc = context.read<HomeBloc>();
-        return AddEntryCard(
-          key: context.keys.addNewEntryButton,
-          padding: zeroPadding,
-          onPressed: () {
-            CustomDialog<AlertDialog>.show(
-              context: context,
-              title: Text(
-                key: context.keys.addNewEntryTitle,
-                context.t.home.addNewEntry,
-                style: DefaultTextStyle.of(context).style.copyWith(
-                  fontSize: 24,
-                ),
-              ),
-              content: BlocProvider.value(
-                value: homeBloc,
-                child: BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    return ReusableForm(
-                      titleController: _titleTextController,
-                      subtitleController: _subtitleTextController,
-                      onTitleChanged: (value) => context.read<HomeBloc>().add(
-                        HomeEvent.onChangedEntryTitle(value),
-                      ),
-                      onTitleTap: () => context.read<HomeBloc>().add(
-                        HomeEvent.onGetTab(widget.tabId),
-                      ),
-                      onSubtitleChanged: (value) => context
-                          .read<HomeBloc>()
-                          .add(HomeEvent.onChangedEntrySubtitle(value)),
-                      onCancel: () async {
-                        context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedCancel(),
-                        );
-                        await onPressed();
-                      },
-                      onAdd: () async {
-                        context.read<HomeBloc>().add(
-                          const HomeEvent.onPressedAddEntry(),
-                        );
-                        await onPressed();
-                      },
-                      isValid: state.isValid,
-                    );
-                  },
-                ),
-              ),
+        return ReusableForm(
+          titleController: _titleTextController,
+          subtitleController: _subtitleTextController,
+          onTitleChanged: (value) => context.read<HomeBloc>().add(
+            HomeEvent.onChangedEntryTitle(value),
+          ),
+          onTitleTap: () => context.read<HomeBloc>().add(
+            HomeEvent.onGetTab(widget.tabId),
+          ),
+          onSubtitleChanged: (value) => context.read<HomeBloc>().add(
+            HomeEvent.onChangedEntrySubtitle(value),
+          ),
+          onCancel: () async {
+            context.read<HomeBloc>().add(
+              const HomeEvent.onPressedCancel(),
             );
+            await _closeDialog();
           },
+          onAdd: () async {
+            context.read<HomeBloc>().add(
+              const HomeEvent.onPressedAddEntry(),
+            );
+            await _closeDialog();
+          },
+          isValid: state.isValid,
         );
       },
     );

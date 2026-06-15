@@ -9,12 +9,10 @@ import 'package:showcaseview/showcaseview.dart';
 class AppTipCoordinator extends StatefulWidget {
   const AppTipCoordinator({
     required this.child,
-    this.onDrawerOpened,
     super.key,
   });
 
   final Widget child;
-  final ValueChanged<bool>? onDrawerOpened;
 
   @override
   State<AppTipCoordinator> createState() => AppTipCoordinatorState();
@@ -41,7 +39,10 @@ class AppTipCoordinatorState extends State<AppTipCoordinator> {
           listenWhen: (previous, current) =>
               previous.activeTip != current.activeTip,
           listener: (context, state) {
-            _handleActiveTipChanged(state.activeTip);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              _handleActiveTipChanged(state.activeTip);
+            });
           },
           child: widget.child,
         );
@@ -50,8 +51,6 @@ class AppTipCoordinatorState extends State<AppTipCoordinator> {
   }
 
   void handleDrawerChanged({required bool isOpened}) {
-    widget.onDrawerOpened?.call(isOpened);
-
     if (!isOpened || !mounted) {
       return;
     }
@@ -61,8 +60,11 @@ class AppTipCoordinatorState extends State<AppTipCoordinator> {
       return;
     }
 
-    ShowcaseView.get().dismiss();
-    _startShowcase([appTipKeys.drawerAppearance]);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ShowcaseView.get().dismiss();
+      _startShowcase([appTipKeys.drawerAppearance]);
+    });
   }
 
   void _handleActiveTipChanged(AppTip? tip) {

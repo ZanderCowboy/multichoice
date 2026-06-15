@@ -12,12 +12,7 @@ import 'package:multichoice/utils/app_tips/app_tip_showcase.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({
-    this.isDrawerOpen = false,
-    super.key,
-  });
-
-  final bool isDrawerOpen;
+  const HomeAppBar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -34,9 +29,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               duration: const Duration(milliseconds: 180),
               child: IgnorePointer(
                 ignoring: state.isEditMode,
-                child: AppTipShowcase(
+                child: const AppTipShowcase(
                   tip: AppTip.editAndSearch,
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       EditModeButton(),
@@ -63,7 +58,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               ignoring: state.isEditMode,
               child: AppTipShowcase(
                 tip: AppTip.drawer,
-                enabled: !isDrawerOpen,
                 child: IconButton(
                   onPressed: () async {
                     await coreSl<IAnalyticsService>().logEvent(

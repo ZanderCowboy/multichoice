@@ -55,7 +55,6 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> {
-  bool _isDrawerOpen = false;
   final GlobalKey<AppTipCoordinatorState> _tipCoordinatorKey =
       GlobalKey<AppTipCoordinatorState>();
 
@@ -70,11 +69,12 @@ class _HomePageState extends State<_HomePage> {
               previous.isEditMode != current.isEditMode,
           builder: (context, state) {
             return PopScope(
-              canPop: !state.isEditMode && !_isDrawerOpen,
+              canPop: !state.isEditMode,
               onPopInvokedWithResult: (didPop, _) {
                 if (didPop) return;
 
-                if (_isDrawerOpen) {
+                final isDrawerOpen = scaffoldKey.currentState?.isDrawerOpen;
+                if (isDrawerOpen ?? false) {
                   Navigator.of(context).pop();
                   return;
                 }
@@ -88,17 +88,12 @@ class _HomePageState extends State<_HomePage> {
               child: Scaffold(
                 key: scaffoldKey,
                 onDrawerChanged: (isOpened) {
-                  if (_isDrawerOpen != isOpened) {
-                    setState(() {
-                      _isDrawerOpen = isOpened;
-                    });
-                  }
                   _tipCoordinatorKey.currentState?.handleDrawerChanged(
                     isOpened: isOpened,
                   );
                 },
-                appBar: HomeAppBar(isDrawerOpen: _isDrawerOpen),
-                drawer: HomeDrawer(isDrawerOpen: _isDrawerOpen),
+                appBar: const HomeAppBar(),
+                drawer: const HomeDrawer(),
                 body: const Column(
                   children: [
                     HomePromotionalBanners(),

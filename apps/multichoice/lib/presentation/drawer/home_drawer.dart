@@ -19,12 +19,7 @@ Future<bool> _drawerSessionLoggedIn() async {
 }
 
 class HomeDrawer extends StatelessWidget {
-  const HomeDrawer({
-    this.isDrawerOpen = true,
-    super.key,
-  });
-
-  final bool isDrawerOpen;
+  const HomeDrawer({super.key});
 
   void _onLogin(BuildContext context) {
     Navigator.of(context).pop();
@@ -81,9 +76,8 @@ class HomeDrawer extends StatelessWidget {
                         physics: const BouncingScrollPhysics(),
                         padding: EdgeInsets.zero,
                         children: [
-                          AppTipDrawerShowcase(
-                            isDrawerOpen: isDrawerOpen,
-                            child: const AppearanceSection(),
+                          const AppTipDrawerShowcase(
+                            child: AppearanceSection(),
                           ),
                           const Divider(height: 32),
                           const DataSection(),
