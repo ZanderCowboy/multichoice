@@ -11,6 +11,7 @@ class RegistrationState extends Equatable {
     required this.isSuccess,
     required this.isError,
     required this.errorMessage,
+    required this.needsUsernameSetup,
   });
 
   factory RegistrationState.initial() => const RegistrationState(
@@ -22,6 +23,7 @@ class RegistrationState extends Equatable {
         isSuccess: false,
         isError: false,
         errorMessage: null,
+        needsUsernameSetup: false,
       );
 
   final String email;
@@ -32,6 +34,7 @@ class RegistrationState extends Equatable {
   final bool isSuccess;
   final bool isError;
   final String? errorMessage;
+  final bool needsUsernameSetup;
 
   @override
   List<Object?> get props => [
@@ -43,5 +46,6 @@ class RegistrationState extends Equatable {
         isSuccess,
         isError,
         errorMessage,
+        needsUsernameSetup,
       ];
 }

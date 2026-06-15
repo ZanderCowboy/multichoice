@@ -8,7 +8,7 @@ part 'reset_password_event.dart';
 part 'reset_password_state.dart';
 part 'reset_password_bloc.g.dart';
 
-@injectable
+@Injectable()
 class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   ResetPasswordBloc(
     this._registrationRepository,
@@ -41,13 +41,23 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
             errorMessage: null,
           ),
         );
+      case ResetPasswordCurrentPasswordChanged(:final value):
+        emit(
+          state.copyWith(
+            currentPassword: value,
+            isError: false,
+            errorMessage: null,
+          ),
+        );
       case ResetPasswordSubmitPressed(
         :final isChangePassword,
+        :final isSetPassword,
         :final oobCode,
       ):
         await _handleSubmit(
           emit: emit,
           isChangePassword: isChangePassword,
+          isSetPassword: isSetPassword,
           oobCode: oobCode,
         );
       case ResetPasswordSuccessConsumed():
@@ -62,6 +72,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   Future<void> _handleSubmit({
     required Emitter<ResetPasswordState> emit,
     required bool isChangePassword,
+    required bool isSetPassword,
     required String? oobCode,
   }) async {
     final passwordError = _credentialValidationService.validatePassword(
@@ -92,6 +103,22 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
       return;
     }
 
+    if (isChangePassword && !isSetPassword) {
+      final currentPasswordError = _credentialValidationService
+          .validatePasswordRequired(
+            state.currentPassword,
+          );
+      if (currentPasswordError != null) {
+        emit(
+          state.copyWith(
+            isError: true,
+            errorMessage: currentPasswordError,
+          ),
+        );
+        return;
+      }
+    }
+
     emit(
       state.copyWith(
         isLoading: true,
@@ -105,6 +132,42 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     final password = state.newPassword;
 
     if (isChangePassword) {
+      if (isSetPassword) {
+        final result = await _registrationRepository.linkPassword(password);
+        result.fold(
+          (error) => emit(
+            state.copyWith(
+              isLoading: false,
+              isError: true,
+              errorMessage: error.message,
+            ),
+          ),
+          (_) =>
+              _emitSuccess(emit, isChangePassword: true, isSetPassword: true),
+        );
+        return;
+      }
+
+      final reauthResult = await _registrationRepository
+          .reauthenticateWithPassword(state.currentPassword);
+      var reauthFailed = false;
+      reauthResult.fold(
+        (error) {
+          reauthFailed = true;
+          emit(
+            state.copyWith(
+              isLoading: false,
+              isError: true,
+              errorMessage: error.message,
+            ),
+          );
+        },
+        (_) {},
+      );
+      if (reauthFailed) {
+        return;
+      }
+
       final result = await _registrationRepository.updatePassword(password);
       result.fold(
         (error) => emit(
@@ -114,7 +177,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
             errorMessage: error.message,
           ),
         ),
-        (_) => _emitSuccess(emit, isChangePassword: true),
+        (_) => _emitSuccess(emit, isChangePassword: true, isSetPassword: false),
       );
       return;
     }
@@ -133,27 +196,39 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
             errorMessage: error.message,
           ),
         ),
-        (_) => _emitSuccess(emit, isChangePassword: false),
+        (_) =>
+            _emitSuccess(emit, isChangePassword: false, isSetPassword: false),
       );
       return;
     }
 
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    _emitSuccess(emit, isChangePassword: false);
+    emit(
+      state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage:
+            'This reset link is invalid or missing. Request a new reset email.',
+      ),
+    );
   }
 
   void _emitSuccess(
     Emitter<ResetPasswordState> emit, {
     required bool isChangePassword,
+    required bool isSetPassword,
   }) {
+    final successMessage = isChangePassword
+        ? (isSetPassword
+              ? 'Password set successfully!'
+              : 'Password updated successfully!')
+        : 'Password reset successfully!';
+
     emit(
       state.copyWith(
         isLoading: false,
         isError: false,
         errorMessage: null,
-        successMessage: isChangePassword
-            ? 'Password changed successfully!'
-            : 'Password reset successfully!',
+        successMessage: successMessage,
         shouldNavigateOnSuccess: true,
       ),
     );

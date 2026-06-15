@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:core/src/config/auth_environment.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -54,6 +55,9 @@ class RegistrationService implements IRegistrationService {
         email: dto.email,
         username: dto.username.isNotEmpty ? dto.username : null,
       );
+      if (dto.username.isNotEmpty) {
+        await _loginService.storeUsernameEmailMapping(dto.username, dto.email);
+      }
       await _appStorageService.setIsExistingUser(true);
       await _appStorageService.setHasPreviouslySignedIn(true);
       await _appStorageService.setLastUsedEmail(dto.email);
@@ -93,10 +97,17 @@ class RegistrationService implements IRegistrationService {
 
       final trimmed = email.trim();
       final resolvedEmail = user.email;
+      final username = user.displayName;
       await _loginService.storeUserProfile(
         email: resolvedEmail ?? (trimmed.contains('@') ? trimmed : null),
-        username: user.displayName ?? (!trimmed.contains('@') ? trimmed : null),
+        username: username ?? (!trimmed.contains('@') ? trimmed : null),
       );
+      if (resolvedEmail != null &&
+          resolvedEmail.isNotEmpty &&
+          username != null &&
+          username.isNotEmpty) {
+        await _loginService.storeUsernameEmailMapping(username, resolvedEmail);
+      }
       if (resolvedEmail != null && resolvedEmail.isNotEmpty) {
         await _appStorageService.setLastUsedEmail(resolvedEmail);
       } else if (trimmed.contains('@')) {
@@ -134,6 +145,111 @@ class RegistrationService implements IRegistrationService {
     }
   }
 
+  @override
+  Future<Either<AuthException, void>> setUsername(String username) async {
+    try {
+      final trimmed = username.trim();
+      if (trimmed.isEmpty) {
+        return const Left(AuthException('Username is required'));
+      }
+
+      final user = _auth.currentUser;
+      String? userId = user?.uid;
+      if (user != null) {
+        await user.updateDisplayName(trimmed);
+      } else {
+        final token = await _loginService.getAccessToken();
+        if (token.startsWith('google_local_')) {
+          userId = token.substring('google_local_'.length);
+        }
+      }
+
+      if (userId != null && userId.isNotEmpty) {
+        await _loginService.markUsernameConfirmed(userId);
+      }
+
+      final email = user?.email ?? await _loginService.getProfileEmail();
+      await _loginService.storeUserProfile(
+        email: email,
+        username: trimmed,
+      );
+      if (email != null && email.isNotEmpty) {
+        await _loginService.storeUsernameEmailMapping(trimmed, email);
+      }
+
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
+  @override
+  Future<bool> hasPasswordProvider() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return false;
+    }
+    return _userHasPasswordProvider(user);
+  }
+
+  @override
+  Future<Either<AuthException, void>> linkPassword(String newPassword) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        return const Left(AuthException.noSignedInUser());
+      }
+
+      final email = user.email;
+      if (email == null || email.isEmpty) {
+        return const Left(
+          AuthException('No email on this account. Cannot set a password.'),
+        );
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: newPassword,
+      );
+      await user.linkWithCredential(credential);
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
+  @override
+  Future<Either<AuthException, void>> reauthenticateWithPassword(
+    String currentPassword,
+  ) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        return const Left(AuthException.noSignedInUser());
+      }
+
+      final email = user.email;
+      if (email == null || email.isEmpty) {
+        return const Left(AuthException.noSignedInUser());
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
+    } catch (e) {
+      return Left(AuthException.emailSignInFailed(e));
+    }
+  }
+
   static bool _hasUsableGoogleTokens(GoogleSignInAuthentication auth) {
     final idToken = auth.idToken;
     final accessToken = auth.accessToken;
@@ -165,14 +281,19 @@ class RegistrationService implements IRegistrationService {
 
       await _loginService.storeLoginInfo(token);
       final email = user.email ?? account.email;
-      final resolvedName = _firstNonEmptyDisplayName(
-        user.displayName,
-        account.displayName,
+      final usernameConfirmed = await _loginService.isUsernameConfirmed(
+        user.uid,
       );
+      final resolvedUsername = usernameConfirmed ? user.displayName : null;
       await _loginService.storeUserProfile(
         email: email.isNotEmpty ? email : null,
-        username: resolvedName,
+        username: resolvedUsername,
       );
+      if (resolvedUsername != null &&
+          resolvedUsername.isNotEmpty &&
+          email.isNotEmpty) {
+        await _loginService.storeUsernameEmailMapping(resolvedUsername, email);
+      }
       await _appStorageService.setIsExistingUser(true);
       await _appStorageService.setHasPreviouslySignedIn(true);
       if (email.isNotEmpty) {
@@ -180,22 +301,15 @@ class RegistrationService implements IRegistrationService {
       }
 
       return Right(
-        AuthResultDTO(accessToken: token, userId: user.uid),
+        AuthResultDTO(
+          accessToken: token,
+          userId: user.uid,
+          needsUsernameSetup: !usernameConfirmed,
+        ),
       );
     } catch (_) {
       return _completeGoogleLocalSession(account);
     }
-  }
-
-  /// Prefers [primary] when non-empty, otherwise [secondary] if non-empty.
-  static String? _firstNonEmptyDisplayName(String? primary, String? secondary) {
-    if (primary != null && primary.isNotEmpty) {
-      return primary;
-    }
-    if (secondary != null && secondary.isNotEmpty) {
-      return secondary;
-    }
-    return null;
   }
 
   Future<Either<AuthException, AuthResultDTO>> _completeGoogleLocalSession(
@@ -205,19 +319,13 @@ class RegistrationService implements IRegistrationService {
     await _loginService.storeLoginInfo(syntheticToken);
 
     final email = account.email;
-    final display = account.displayName ?? '';
-    String? username;
-    if (display.isNotEmpty) {
-      username = display;
-    } else if (email.contains('@')) {
-      username = email.split('@').first;
-    } else if (email.isNotEmpty) {
-      username = email;
-    }
-
+    final usernameConfirmed = await _loginService.isUsernameConfirmed(
+      account.id,
+    );
+    final resolvedUsername = usernameConfirmed ? account.displayName : null;
     await _loginService.storeUserProfile(
       email: email.isNotEmpty ? email : null,
-      username: username,
+      username: resolvedUsername,
     );
     await _appStorageService.setIsExistingUser(true);
     await _appStorageService.setHasPreviouslySignedIn(true);
@@ -225,10 +333,14 @@ class RegistrationService implements IRegistrationService {
       await _appStorageService.setLastUsedEmail(email);
     }
 
+    await _loginService.getProfileUsername();
+    final needsUsernameSetup = !usernameConfirmed;
+
     return Right(
       AuthResultDTO(
         accessToken: syntheticToken,
         userId: account.id,
+        needsUsernameSetup: needsUsernameSetup,
       ),
     );
   }
@@ -272,13 +384,44 @@ class RegistrationService implements IRegistrationService {
     String email,
   ) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email.trim());
+      final continueUrl = AuthEnvironment.passwordResetContinueUrl;
+      if (continueUrl.isNotEmpty) {
+        await _auth.sendPasswordResetEmail(
+          email: email.trim(),
+          actionCodeSettings: ActionCodeSettings(
+            url: continueUrl,
+            handleCodeInApp: true,
+            androidPackageName: AuthEnvironment.androidPackageName,
+            iOSBundleId: AuthEnvironment.iosBundleId,
+          ),
+        );
+      } else {
+        await _auth.sendPasswordResetEmail(email: email.trim());
+      }
       return const Right(null);
     } on FirebaseAuthException catch (e) {
       return Left(AuthException.firebaseMessage(_mapFirebaseAuthError(e)));
     } catch (e) {
       return Left(AuthException.emailSignInFailed(e));
     }
+  }
+
+  @override
+  Future<Either<AuthException, void>> signOut() async {
+    try {
+      await Future.wait([
+        _auth.signOut(),
+        _googleSignIn.signOut(),
+      ]);
+    } catch (_) {
+      // Always clear local session even if remote sign-out fails.
+    }
+    await _loginService.deleteLoginInfo();
+    return const Right(null);
+  }
+
+  static bool _userHasPasswordProvider(User user) {
+    return user.providerData.any((info) => info.providerId == 'password');
   }
 
   String _mapFirebaseAuthError(FirebaseAuthException e) {
@@ -292,6 +435,12 @@ class RegistrationService implements IRegistrationService {
       'wrong-password' => 'Incorrect password.',
       'invalid-credential' => 'Invalid email or password.',
       'invalid-login-credentials' => 'Invalid email or password.',
+      'requires-recent-login' =>
+        'Please sign in again before changing your password.',
+      'credential-already-in-use' =>
+        'This email is already linked to another sign-in method.',
+      'provider-already-linked' =>
+        'A password is already set for this account.',
       'expired-action-code' =>
         'This reset link has expired. Request a new one.',
       'invalid-action-code' =>

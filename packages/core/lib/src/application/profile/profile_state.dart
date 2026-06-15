@@ -7,6 +7,7 @@ class ProfileState extends Equatable {
     required this.username,
     required this.isLoading,
     required this.isLoggedOut,
+    required this.hasPasswordProvider,
   });
 
   factory ProfileState.initial() => const ProfileState(
@@ -14,12 +15,14 @@ class ProfileState extends Equatable {
         username: null,
         isLoading: false,
         isLoggedOut: false,
+        hasPasswordProvider: true,
       );
 
   final String? email;
   final String? username;
   final bool isLoading;
   final bool isLoggedOut;
+  final bool hasPasswordProvider;
 
   @override
   List<Object?> get props => [
@@ -27,5 +30,6 @@ class ProfileState extends Equatable {
         username,
         isLoading,
         isLoggedOut,
+        hasPasswordProvider,
       ];
 }

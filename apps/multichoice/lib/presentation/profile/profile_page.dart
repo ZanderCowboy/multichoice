@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
@@ -20,25 +18,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  ProfileBloc? _bloc;
-
   @override
   void initState() {
     super.initState();
-    if (!isUserAccountsEnabled()) {
-      guardUserAccountsRoute(context);
-      return;
-    }
-    _bloc = coreSl<ProfileBloc>()..add(const ProfileLoadStarted());
-  }
-
-  @override
-  void dispose() {
-    final bloc = _bloc;
-    if (bloc != null) {
-      unawaited(bloc.close());
-    }
-    super.dispose();
+    guardUserAccountsRoute(context);
   }
 
   String _display(String? value) =>
@@ -46,13 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = _bloc;
-    if (bloc == null) {
-      return const Scaffold(body: SizedBox.shrink());
-    }
-
-    return BlocProvider.value(
-      value: bloc,
+    return BlocProvider(
+      create: (_) => coreSl<ProfileBloc>()..add(const ProfileLoadStarted()),
       child: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state.isLoggedOut) {
@@ -119,14 +97,23 @@ class _ProfilePageState extends State<ProfilePage> {
                           gap12,
                           ListTile(
                             leading: const Icon(Icons.lock_outline),
-                            title: Text(context.t.profile.changePassword),
+                            title: Text(
+                              state.hasPasswordProvider
+                                  ? context.t.profile.updatePassword
+                                  : context.t.profile.setPassword,
+                            ),
                             trailing: const Icon(Icons.chevron_right),
                             onTap: () async {
                               await context.router.push(
-                                ResetPasswordPageRoute(isChangePassword: true),
+                                ResetPasswordPageRoute(
+                                  isChangePassword: true,
+                                  isSetPassword: !state.hasPasswordProvider,
+                                ),
                               );
                               if (context.mounted) {
-                                bloc.add(const ProfileLoadStarted());
+                                context.read<ProfileBloc>().add(
+                                  const ProfileLoadStarted(),
+                                );
                               }
                             },
                             tileColor: context.theme.appColors.background,
@@ -153,7 +140,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 const AccountDeletionPageRoute(),
                               );
                               if (context.mounted) {
-                                bloc.add(const ProfileLoadStarted());
+                                context.read<ProfileBloc>().add(
+                                  const ProfileLoadStarted(),
+                                );
                               }
                             },
                             tileColor: context.theme.appColors.background,
@@ -164,7 +153,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           gap24,
                           OutlinedButton.icon(
                             onPressed: () {
-                              bloc.add(const ProfileLogoutRequested());
+                              context.read<ProfileBloc>().add(
+                                const ProfileLogoutRequested(),
+                              );
                             },
                             icon: const Icon(Icons.logout_outlined),
                             label: Text(context.t.auth.logout),

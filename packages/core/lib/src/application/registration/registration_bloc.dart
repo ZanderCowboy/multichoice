@@ -15,6 +15,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     this._registrationRepository,
     this._credentialValidationService,
     this._appStorageService,
+    this._loginService,
   ) : super(RegistrationState.initial()) {
     on<RegistrationEvent>(_onEvent);
   }
@@ -22,6 +23,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   final IRegistrationRepository _registrationRepository;
   final ICredentialValidationService _credentialValidationService;
   final IAppStorageService _appStorageService;
+  final ILoginService _loginService;
 
   Future<void> _onEvent(
     RegistrationEvent event,
@@ -89,6 +91,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     final usernameError = _credentialValidationService.validateUsername(
       state.username,
     );
+
     if (usernameError != null) {
       emit(
         state.copyWith(
@@ -102,6 +105,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     final validationError = _credentialValidationService.validatePassword(
       state.password,
     );
+
     if (validationError != null) {
       emit(
         state.copyWith(
@@ -112,11 +116,11 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       return;
     }
 
-    final confirmError =
-        _credentialValidationService.validatePasswordConfirmation(
-      password: state.password,
-      confirmation: state.confirmPassword,
-    );
+    final confirmError = _credentialValidationService
+        .validatePasswordConfirmation(
+          password: state.password,
+          confirmation: state.confirmPassword,
+        );
     if (confirmError != null) {
       emit(
         state.copyWith(
@@ -152,18 +156,22 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isSuccess: true,
           isError: false,
           errorMessage: null,
+          needsUsernameSetup: false,
         ),
       ),
     );
   }
 
   Future<void> _handleSignIn(Emitter<RegistrationState> emit) async {
-    final emailError = _credentialValidationService.validateEmail(state.email);
-    if (emailError != null) {
+    final identifierError = _credentialValidationService
+        .validateLoginIdentifier(
+          state.email,
+        );
+    if (identifierError != null) {
       emit(
         state.copyWith(
           isError: true,
-          errorMessage: emailError,
+          errorMessage: identifierError,
         ),
       );
       return;
@@ -184,8 +192,22 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
 
     emit(state.copyWith(isLoading: true, isError: false, errorMessage: null));
 
-    final result = await _registrationRepository.signIn(
+    final resolvedEmail = await _loginService.resolveEmailForLogin(
       state.email.trim(),
+    );
+    if (resolvedEmail == null || resolvedEmail.isEmpty) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          isError: true,
+          errorMessage: 'No account found for this username.',
+        ),
+      );
+      return;
+    }
+
+    final result = await _registrationRepository.signIn(
+      resolvedEmail,
       state.password,
     );
 
@@ -196,6 +218,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isSuccess: false,
           isError: true,
           errorMessage: error.message,
+          needsUsernameSetup: false,
         ),
       ),
       (_) => emit(
@@ -204,6 +227,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isSuccess: true,
           isError: false,
           errorMessage: null,
+          needsUsernameSetup: false,
         ),
       ),
     );
@@ -221,14 +245,16 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           isSuccess: false,
           isError: true,
           errorMessage: error.message,
+          needsUsernameSetup: false,
         ),
       ),
-      (_) => emit(
+      (authResult) => emit(
         state.copyWith(
           isLoading: false,
           isSuccess: true,
           isError: false,
           errorMessage: null,
+          needsUsernameSetup: authResult.needsUsernameSetup,
         ),
       ),
     );

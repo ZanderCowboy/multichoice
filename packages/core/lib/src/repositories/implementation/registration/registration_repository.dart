@@ -27,6 +27,23 @@ class RegistrationRepository implements IRegistrationRepository {
       _registrationService.signInWithGoogle();
 
   @override
+  Future<Either<AuthException, void>> setUsername(String username) =>
+      _registrationService.setUsername(username);
+
+  @override
+  Future<bool> hasPasswordProvider() => _registrationService.hasPasswordProvider();
+
+  @override
+  Future<Either<AuthException, void>> linkPassword(String newPassword) =>
+      _registrationService.linkPassword(newPassword);
+
+  @override
+  Future<Either<AuthException, void>> reauthenticateWithPassword(
+    String currentPassword,
+  ) =>
+      _registrationService.reauthenticateWithPassword(currentPassword);
+
+  @override
   Future<Either<AuthException, void>> updatePassword(String newPassword) =>
       _registrationService.updatePassword(newPassword);
 
@@ -43,4 +60,8 @@ class RegistrationRepository implements IRegistrationRepository {
   @override
   Future<Either<AuthException, void>> sendPasswordResetEmail(String email) =>
       _registrationService.sendPasswordResetEmail(email);
+
+  @override
+  Future<Either<AuthException, void>> signOut() =>
+      _registrationService.signOut();
 }

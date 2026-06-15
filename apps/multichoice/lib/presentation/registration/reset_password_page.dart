@@ -16,14 +16,17 @@ class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({
     super.key,
     this.isChangePassword = false,
+    this.isSetPassword = false,
     this.oobCode,
   });
 
   /// True when opened from profile (signed-in user changing password).
   final bool isChangePassword;
 
-  /// OOB code from the password-reset email link; when null, reset flow uses a
-  /// dev fallback until deep links supply this value.
+  /// True when the account has no password provider (Google-only).
+  final bool isSetPassword;
+
+  /// OOB code from the password-reset email link.
   final String? oobCode;
 
   @override
@@ -31,6 +34,7 @@ class ResetPasswordPage extends StatefulWidget {
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
+  final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -44,9 +48,24 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   void dispose() {
+    _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  bool get _isEmailResetFlow =>
+      !widget.isChangePassword &&
+      widget.oobCode != null &&
+      widget.oobCode!.isNotEmpty;
+
+  void _exitToHome(BuildContext context) {
+    context.router.popUntilRoot();
+  }
+
+  void _navigateToSignInAfterSuccess(BuildContext context) {
+    context.router.popUntilRoot();
+    unawaited(context.router.push(LoginPageRoute()));
   }
 
   void _navigateOnSuccess(BuildContext context) {
@@ -54,6 +73,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       if (!context.mounted) return;
       if (widget.isChangePassword) {
         unawaited(context.router.maybePop());
+      } else if (_isEmailResetFlow) {
+        _navigateToSignInAfterSuccess(context);
       } else {
         context.router.popUntilRoot();
       }
@@ -63,12 +84,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final isChange = widget.isChangePassword;
+    final isSet = widget.isSetPassword;
     final title = isChange
-        ? context.t.profile.changePassword
+        ? (isSet
+              ? context.t.profile.setPassword
+              : context.t.profile.updatePassword)
         : context.t.profile.resetPassword;
-    final primaryLabel = isChange
-        ? context.t.profile.changePassword
-        : context.t.profile.resetPassword;
+    final primaryLabel = title;
 
     return BlocProvider(
       create: (_) => coreSl<ResetPasswordBloc>(),
@@ -98,14 +120,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     password: state.newPassword,
                     confirmation: state.confirmPassword,
                   ) ==
-                  null;
+                  null &&
+              (!isChange ||
+                  isSet ||
+                  validation.validatePasswordRequired(state.currentPassword) ==
+                      null);
 
           return Scaffold(
             appBar: AppBar(
               title: Text(title),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                onPressed: () => context.router.maybePop(),
+                onPressed: _isEmailResetFlow
+                    ? () => _exitToHome(context)
+                    : () => context.router.maybePop(),
               ),
             ),
             body: SafeArea(
@@ -116,6 +144,39 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       gap24,
+                      if (isChange && !isSet) ...[
+                        PasswordField(
+                          controller: _currentPasswordController,
+                          customLabel: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.lock_outline,
+                                color: context.appColorsTheme.iconColor,
+                              ),
+                              gap4,
+                              Text(
+                                context.t.profile.enterPasswordToConfirm,
+                                style: TextStyle(
+                                  color: context
+                                      .theme
+                                      .inputDecorationTheme
+                                      .labelStyle
+                                      ?.color,
+                                ),
+                              ),
+                            ],
+                          ),
+                          hintText: context.t.profile.enterPasswordToConfirm,
+                          onChanged: (value) =>
+                              context.read<ResetPasswordBloc>().add(
+                                ResetPasswordEvent.currentPasswordChanged(
+                                  value,
+                                ),
+                              ),
+                        ),
+                        gap16,
+                      ],
                       PasswordField(
                         controller: _newPasswordController,
                         customLabel: Row(
@@ -184,6 +245,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             : () => context.read<ResetPasswordBloc>().add(
                                 ResetPasswordEvent.submitPressed(
                                   isChangePassword: widget.isChangePassword,
+                                  isSetPassword: widget.isSetPassword,
                                   oobCode: widget.oobCode,
                                 ),
                               ),
@@ -211,8 +273,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           onPressed:
                               state.isLoading || state.successMessage != null
                               ? null
-                              : () => context.router.popUntilRoot(),
-                          child: Text(context.t.auth.backToSignIn),
+                              : () => _isEmailResetFlow
+                              ? _exitToHome(context)
+                              : context.router.popUntilRoot(),
+                          child: Text(
+                            _isEmailResetFlow
+                                ? context.t.common.goHome
+                                : context.t.auth.backToSignIn,
+                          ),
                         ),
                       ],
                     ],
