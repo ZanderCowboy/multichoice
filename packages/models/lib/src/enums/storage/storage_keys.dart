@@ -9,6 +9,7 @@ enum StorageKeys {
   analyticsUserId('_analyticsUserId'),
   isImportDataBannerDismissed('_isImportDataBannerDismissed'),
   isSignupBannerDismissed('_isSignupBannerDismissed'),
+  dismissedAppTipsMask('_dismissedAppTipsMask'),
   lastUsedEmail('_lastUsedEmail'),
   feedbackSubmissionDay('_feedbackSubmissionDay'),
   feedbackSubmissionCount('_feedbackSubmissionCount'),
