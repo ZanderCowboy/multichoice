@@ -34,7 +34,7 @@ jobs:
           cat coverage/lcov.info
 
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarqube-scan-action@v8.1.0
+        uses: SonarSource/sonarqube-scan-action@v8.2.0
         with:
           args: -Dproject.settings=config/sonar-project.properties
         env:
