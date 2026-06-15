@@ -1,4 +1,5 @@
-# Workflow configuration for GitHub Actions (reserved for future workflow wiring).
+# Workflow configuration for GitHub Actions.
+# Play Console URLs are also set on deploy jobs via GitHub environment.url (staging/production workflows).
 
 # This can be used to control which platforms are build, release, and deployed.
 # It is preferable to set all values to 'true'.

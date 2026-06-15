@@ -5,8 +5,9 @@
 ![GitHub Tag](https://img.shields.io/github/v/tag/ZanderCowboy/multichoice)
 
 ![Linting](https://github.com/ZanderCowboy/multichoice/actions/workflows/linting_workflow.yml/badge.svg)
-![Build](https://github.com/ZanderCowboy/multichoice/actions/workflows/build_workflow.yml/badge.svg)
-![Deploy](https://github.com/ZanderCowboy/multichoice/actions/workflows/deploy_workflow.yml/badge.svg)
+![Develop](https://github.com/ZanderCowboy/multichoice/actions/workflows/develop_workflow.yml/badge.svg)
+![Staging](https://github.com/ZanderCowboy/multichoice/actions/workflows/staging_workflow.yml/badge.svg)
+![Production](https://github.com/ZanderCowboy/multichoice/actions/workflows/production_workflow.yml/badge.svg)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ZanderCowboy_multichoice&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ZanderCowboy_multichoice)
 [![codecov](https://codecov.io/gh/ZanderCowboy/multichoice/graph/badge.svg?token=1DW57BV8D5)](https://codecov.io/gh/ZanderCowboy/multichoice)

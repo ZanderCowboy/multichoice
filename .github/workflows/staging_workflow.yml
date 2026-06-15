@@ -94,6 +94,9 @@ jobs:
     name: Builds Android App
     needs: [preBuild]
     runs-on: ubuntu-latest
+    environment:
+      name: google-play-internal
+      url: https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/tracks/internal-testing
     permissions:
       contents: write
       packages: read
