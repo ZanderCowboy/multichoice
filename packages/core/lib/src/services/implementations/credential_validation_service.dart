@@ -20,6 +20,19 @@ class CredentialValidationService implements ICredentialValidationService {
     if (trimmed.isEmpty) {
       return 'Email is required';
     }
+    return _emailFormatError(trimmed);
+  }
+
+  @override
+  String? validateOptionalEmail(String? value) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    return _emailFormatError(trimmed);
+  }
+
+  String? _emailFormatError(String trimmed) {
     if (!_emailRegex.hasMatch(trimmed)) {
       return 'Enter a valid email address';
     }
@@ -68,5 +81,17 @@ class CredentialValidationService implements ICredentialValidationService {
     }
 
     return null;
+  }
+
+  @override
+  String? validateLoginIdentifier(String? value) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) {
+      return 'Email or username is required';
+    }
+    if (trimmed.contains('@')) {
+      return validateEmail(trimmed);
+    }
+    return validateUsername(trimmed);
   }
 }

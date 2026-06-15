@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -30,16 +32,9 @@ class EmailField extends StatefulWidget {
   final Iterable<String>? autofillHints;
 
   static String? defaultValidator(String? value, Translations t) {
-    if (value == null || value.isEmpty) {
-      return t.validation.emailRequired;
-    }
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    if (!emailRegex.hasMatch(value.trim())) {
-      return t.validation.invalidEmail;
-    }
-    return null;
+    final error = coreSl<ICredentialValidationService>().validateEmail(value);
+    if (error == null) return null;
+    return localizeCoreMessageWithTranslations(t, error);
   }
 
   @override
