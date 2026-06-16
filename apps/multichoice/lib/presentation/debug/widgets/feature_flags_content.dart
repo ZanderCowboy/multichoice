@@ -130,6 +130,9 @@ class _FeatureFlagTile extends StatelessWidget {
       FirebaseConfigKeys.enableChangelogPage => t.enableChangelogPage,
       FirebaseConfigKeys.feedbackImagesEnabled => t.feedbackImagesEnabled,
       FirebaseConfigKeys.enableUserAccounts => t.enableUserAccounts,
+      FirebaseConfigKeys.enableTutorial => t.enableTutorial,
+      FirebaseConfigKeys.enableUpdatePrompt => t.enableUpdatePrompt,
+      FirebaseConfigKeys.enableAboutPage => t.enableAboutPage,
       _ => key.key,
     };
   }

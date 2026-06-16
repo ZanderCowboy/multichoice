@@ -99,7 +99,27 @@ class MoreSection extends StatelessWidget {
               ),
             );
             if (!context.mounted) return;
-            await context.router.push(const AboutPageRoute());
+            if (isAboutPageEnabled()) {
+              await context.router.push(const AboutPageRoute());
+              return;
+            }
+
+            final appVersion = await coreSl<IAppInfoService>().getAppVersion();
+            if (!context.mounted) return;
+
+            showAboutDialog(
+              context: context,
+              applicationName: context.t.about.appName,
+              applicationVersion: appVersion,
+              applicationIcon: Image.asset(
+                Assets.images.playstore.path,
+                width: 64,
+                height: 64,
+              ),
+              children: [
+                Text(context.t.about.dialogDescription),
+              ],
+            );
           },
         ),
       ],

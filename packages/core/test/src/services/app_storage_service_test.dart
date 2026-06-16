@@ -361,6 +361,9 @@ void main() {
         mockSharedPreferences.remove(StorageKeys.lastUsedEmail.key),
       ).called(1);
       verify(
+        mockSharedPreferences.remove(StorageKeys.appLocale.key),
+      ).called(1);
+      verify(
         mockSharedPreferences.remove(StorageKeys.feedbackSubmissionDay.key),
       ).called(1);
       verify(
@@ -500,5 +503,40 @@ void main() {
         ).called(1);
       },
     );
+  });
+
+  group('AppStorageService - App locale', () {
+    test('should return null when app locale is not set', () async {
+      when(mockSharedPreferences.getString(any)).thenReturn(null);
+
+      final result = await appStorageService.appLocale;
+
+      expect(result, isNull);
+      verify(
+        mockSharedPreferences.getString(StorageKeys.appLocale.key),
+      ).called(1);
+    });
+
+    test('should persist app locale', () async {
+      when(
+        mockSharedPreferences.setString(any, any),
+      ).thenAnswer((_) async => true);
+
+      await appStorageService.setAppLocale('nl');
+
+      verify(
+        mockSharedPreferences.setString(StorageKeys.appLocale.key, 'nl'),
+      ).called(1);
+    });
+
+    test('should clear app locale when set to null', () async {
+      when(mockSharedPreferences.remove(any)).thenAnswer((_) async => true);
+
+      await appStorageService.setAppLocale(null);
+
+      verify(
+        mockSharedPreferences.remove(StorageKeys.appLocale.key),
+      ).called(1);
+    });
   });
 }
