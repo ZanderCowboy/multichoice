@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
 class FileNameDialog extends StatefulWidget {
   const FileNameDialog({super.key});
@@ -13,21 +14,21 @@ class _FileNameDialogState extends State<FileNameDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Enter File Name'),
+      title: Text(context.t.dataTransfer.enterFileName),
       content: TextField(
         onChanged: (value) => _fileName = value,
-        decoration: const InputDecoration(
-          hintText: 'File Name',
+        decoration: InputDecoration(
+          hintText: context.t.dataTransfer.fileNameHint,
         ),
       ),
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.t.common.cancel),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(_fileName ?? 'default'),
-          child: const Text('Save Export'),
+          child: Text(context.t.dataTransfer.saveExport),
         ),
       ],
     );

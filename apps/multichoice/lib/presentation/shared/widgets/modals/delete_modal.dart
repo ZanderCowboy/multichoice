@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 void deleteModal({
@@ -13,38 +14,29 @@ void deleteModal({
 }) {
   CustomDialog<AlertDialog>.show(
     context: context,
-    title: RichText(
+    title: Text.rich(
       key: context.keys.deleteModalTitle,
-      text: TextSpan(
-        text: 'Delete ',
-        style: DefaultTextStyle.of(context).style.copyWith(
-              fontSize: 24,
-            ),
-        children: [
-          TextSpan(
-            text: title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+      context.t.modals.deleteItemTitle(
+        item: TextSpan(
+          text: title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          TextSpan(
-            text: '?',
-            style: DefaultTextStyle.of(context).style.copyWith(
-                  fontSize: 24,
-                ),
-          ),
-        ],
+        ),
+      ),
+      style: DefaultTextStyle.of(context).style.copyWith(
+        fontSize: 24,
       ),
     ),
     content: content,
     actions: [
       OutlinedButton(
         onPressed: onCancel ?? () => Navigator.of(context).pop(),
-        child: const Text('Cancel'),
+        child: Text(cancelText ?? context.t.common.cancel),
       ),
       ElevatedButton(
         onPressed: onConfirm,
-        child: const Text('Delete'),
+        child: Text(confirmText ?? context.t.common.delete),
       ),
     ],
   );

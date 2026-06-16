@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:core/core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:isar_community/isar.dart';
@@ -24,8 +28,11 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IProductTourController>(as: #MockProductTourController),
   MockSpec<SharedPreferences>(as: #MockSharedPreferences),
   MockSpec<IAppStorageService>(as: #MockAppStorageService),
+  MockSpec<IAppInfoService>(as: #MockAppInfoService),
   MockSpec<IFeedbackRepository>(as: #MockFeedbackRepository),
   MockSpec<FirebaseFirestore>(as: #MockFirebaseFirestore),
+  MockSpec<FirebaseStorage>(as: #MockFirebaseStorage),
+  MockSpec<Reference>(as: #MockFirebaseStorageReference),
   MockSpec<CollectionReference<Map<String, dynamic>>>(
     as: #MockCollectionReference,
   ),
@@ -39,5 +46,18 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IChangelogRepository>(as: #MockChangelogRepository),
   MockSpec<FirebaseRemoteConfig>(as: #MockFirebaseRemoteConfig),
   MockSpec<FirebaseAnalytics>(as: #MockFirebaseAnalytics),
+  MockSpec<IRegistrationRepository>(as: #MockRegistrationRepository),
+  MockSpec<IRegistrationService>(as: #MockRegistrationService),
+  MockSpec<IPasswordService>(as: #MockPasswordService),
+  MockSpec<ICredentialValidationService>(as: #MockCredentialValidationService),
+  MockSpec<FirebaseAuth>(as: #MockFirebaseAuth),
+  MockSpec<User>(as: #MockFirebaseUser),
+  MockSpec<UserCredential>(as: #MockUserCredential),
+  MockSpec<ILoginService>(as: #MockLoginService),
+  MockSpec<FlutterSecureStorage>(as: #MockFlutterSecureStorage),
+  MockSpec<GoogleSignIn>(as: #MockGoogleSignIn),
+  MockSpec<GoogleSignInAccount>(as: #MockGoogleSignInAccount),
+  MockSpec<GoogleSignInAuthentication>(as: #MockGoogleSignInAuthentication),
+  MockSpec<FeedbackBloc>(as: #MockFeedbackBloc),
 ])
 void main() {}

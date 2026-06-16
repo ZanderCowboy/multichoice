@@ -1,4 +1,10 @@
-part of '../home_page.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({super.key});
@@ -6,6 +12,7 @@ class SearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      visualDensity: VisualDensity.compact,
       onPressed: () async {
         await coreSl<IAnalyticsService>().logEvent(
           const UiActionEventData(
@@ -67,7 +74,7 @@ class SearchButton extends StatelessWidget {
           ),
         );
       },
-      tooltip: TooltipEnums.search.tooltip,
+      tooltip: TooltipEnums.search.label(context.t),
       icon: const Icon(Icons.search_outlined),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -23,7 +24,7 @@ class EditEntryPage extends StatelessWidget {
         page: AnalyticsPage.editEntry,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Edit entry'),
+            title: Text(context.t.common.editEntry),
             centerTitle: false,
             leading: IconButton(
               onPressed: () {
@@ -71,8 +72,8 @@ class _EditEntryPage extends StatelessWidget {
                       HomeEvent.onChangedEntryTitle(value),
                     );
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
+                  decoration: InputDecoration(
+                    labelText: context.t.common.title,
                   ),
                 ),
                 gap20,
@@ -83,8 +84,8 @@ class _EditEntryPage extends StatelessWidget {
                       HomeEvent.onChangedEntrySubtitle(value),
                     );
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Subtitle',
+                  decoration: InputDecoration(
+                    labelText: context.t.common.subtitle,
                   ),
                 ),
                 gap20,
@@ -98,7 +99,7 @@ class _EditEntryPage extends StatelessWidget {
                         );
                         context.router.popUntilRoot();
                       },
-                      child: const Text('Cancel'),
+                      child: Text(context.t.common.cancel),
                     ),
                     ElevatedButton(
                       onPressed: state.isValid && state.entry.title.isNotEmpty
@@ -110,7 +111,7 @@ class _EditEntryPage extends StatelessWidget {
                               context.router.popUntilRoot();
                             }
                           : null,
-                      child: const Text('Ok'),
+                      child: Text(context.t.common.ok),
                     ),
                   ],
                 ),

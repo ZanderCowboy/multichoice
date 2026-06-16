@@ -1,0 +1,118 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/config/app_flavor.dart';
+import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/presentation/debug/widgets/export.dart';
+import 'package:provider/provider.dart';
+import 'package:ui_kit/ui_kit.dart';
+
+@RoutePage()
+class DebugPage extends StatelessWidget {
+  const DebugPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!AppFlavor.allowsDebugPage) {
+      return Scaffold(
+        body: Center(child: Text(context.t.debug.notAvailable)),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.t.debug.title),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () => context.router.maybePop(),
+        ),
+      ),
+      body: const _DebugBody(),
+    );
+  }
+}
+
+class _DebugBody extends StatefulWidget {
+  const _DebugBody();
+
+  @override
+  State<_DebugBody> createState() => _DebugBodyState();
+}
+
+class _DebugBodyState extends State<_DebugBody> {
+  DebugView _selectedView = DebugView.debugTools;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: allPadding16,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              context.t.debug.description,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            gap12,
+            DebugOptionSelector(
+              selectedView: _selectedView,
+              onSelect: (view) => setState(() => _selectedView = view),
+            ),
+            gap16,
+            Expanded(
+              child: switch (_selectedView) {
+                DebugView.debugTools => DebugToolsContent(
+                  onClearStorage: _clearStorageData,
+                ),
+                DebugView.featureFlags => const FeatureFlagsContent(),
+                DebugView.appColors => const AppColorsContent(),
+                DebugView.appTextThemes => const AppTextThemesContent(),
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _clearStorageData(BuildContext context) async {
+    if (!kDebugMode) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.t.debug.clearStorageDataTitle),
+        content: Text(
+          context.t.debug.clearStorageDataContent,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(context.t.common.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.t.debug.clearStorageDataAction),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      await coreSl<IAppStorageService>().clearAllData();
+      if (context.mounted) {
+        context.read<AuthNotifier>().notifyStorageCleared();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.t.common.storageDataClearedSuccessfully),
+          ),
+        );
+      }
+    }
+  }
+}

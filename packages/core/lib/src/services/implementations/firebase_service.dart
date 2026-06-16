@@ -14,6 +14,7 @@ class FirebaseService implements IFirebaseService {
 
   late final FirebaseRemoteConfig _remoteConfig;
   bool _isInitialized = false;
+  final Map<FirebaseConfigKeys, bool> _debugOverrides = {};
 
   @override
   Future<void> initialize() async {
@@ -30,7 +31,13 @@ class FirebaseService implements IFirebaseService {
       );
 
       // Set default values if needed
-      await _remoteConfig.setDefaults({});
+      await _remoteConfig.setDefaults({
+        FirebaseConfigKeys.enableUserAccounts.key: false,
+        FirebaseConfigKeys.enableTutorial.key: false,
+        FirebaseConfigKeys.enableUpdatePrompt.key: false,
+        FirebaseConfigKeys.enableAboutPage.key: false,
+        FirebaseConfigKeys.feedbackImagesEnabled.key: false,
+      });
 
       _isInitialized = true;
     } catch (e) {
@@ -106,6 +113,15 @@ class FirebaseService implements IFirebaseService {
 
   @override
   bool isEnabled(FirebaseConfigKeys key) {
+    if (_debugOverrides.containsKey(key)) {
+      return _debugOverrides[key]!;
+    }
+
+    return getRemoteBool(key);
+  }
+
+  @override
+  bool getRemoteBool(FirebaseConfigKeys key) {
     if (!_isInitialized) {
       log('FirebaseService not initialized. Call initialize() first.');
       return false;
@@ -117,6 +133,26 @@ class FirebaseService implements IFirebaseService {
       log('Error getting feature flag for key "${key.key}": $e');
       return false;
     }
+  }
+
+  @override
+  void setDebugOverride(FirebaseConfigKeys key, bool? value) {
+    if (value == null) {
+      _debugOverrides.remove(key);
+      return;
+    }
+
+    _debugOverrides[key] = value;
+  }
+
+  @override
+  bool hasDebugOverride(FirebaseConfigKeys key) {
+    return _debugOverrides.containsKey(key);
+  }
+
+  @override
+  void clearAllDebugOverrides() {
+    _debugOverrides.clear();
   }
 
   @override

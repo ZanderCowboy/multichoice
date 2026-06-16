@@ -8,3 +8,8 @@ typings/
 # Node.js dependency directory
 node_modules/
 *.local
+
+# Environment files (EMAIL_USER, EMAIL_PASS per Firebase project)
+.env
+.env.*
+!.env.example

@@ -1,0 +1,23 @@
+---
+description: Test structure, mocks, and validation conventions
+globs: ["**/*.test.dart", "**/*_test.dart", "**/test/**"]
+alwaysApply: false
+---
+
+# Testing Rules
+
+- Mirror source path under the package `test/` directory.
+- Descriptive `group()` / `test()` names; arrange-act-assert; test behavior not privates.
+- Bloc tests: `bloc_test` package; see `.cursor/templates/bloc-test-template.dart`.
+- Validation commands: see `development-workflow.mdc`.
+
+## Mocks (preferred over hand-written fakes)
+
+Central mock definitions live in `packages/core/test/mocks.dart`; generated classes in `mocks.mocks.dart` (regenerate via `make db` or `melos run rebuild:core`).
+
+- **All packages** (`packages/core`, `apps/multichoice`): use generated mocks from `packages/core/test/mocks.mocks.dart` for core interfaces (`IFirebaseService`, `ILoginService`, `IAppStorageService`, repositories, etc.).
+- **Do not** add new hand-written `Fake*` classes for interfaces already covered by `mocks.dart`. Stub behavior with `mockito` (`when`, `thenAnswer`, `thenReturn`) in `setUp` or per test.
+- **New interface to mock**: add `MockSpec<I*>` to `packages/core/test/mocks.dart`, regenerate, then import `mocks.mocks.dart` — do not create a local fake or duplicate `MockSpec` in the app.
+- **`apps/multichoice` tests**: add `mockito` to `dev_dependencies` when using `when`/`verify`. Import generated mocks via a relative path, e.g. `import '../../../../packages/core/test/mocks.mocks.dart';` (depth varies by test file).
+- **DI in widget tests**: register `Mock*` instances on `coreSl` in `setUp`/`tearDown` (see `UserAccountsTestHelper` pattern); prefer typed `Mock*` fields over `Fake*` implementations.
+- **Exceptions** (rare): a small in-test fake is acceptable only when mockito stubbing would be significantly more complex than a few lines of real in-memory behavior, and the type is not worth adding to `mocks.dart`. Prefer migrating existing `Fake*` helpers to mocks when touching those tests.

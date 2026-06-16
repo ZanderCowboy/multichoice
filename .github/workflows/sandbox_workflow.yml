@@ -64,7 +64,7 @@ jobs:
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
@@ -72,7 +72,7 @@ jobs:
 
       - name: Download Android Keystore File
         id: android_keystore
-        uses: timheuer/base64-to-file@v1.2.4
+        uses: timheuer/base64-to-file@v2.0.0
         with:
           fileName: upload-keystore.jks
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}

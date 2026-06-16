@@ -23,7 +23,10 @@ void main() {
       test('should pick a file successfully', () async {
         // Arrange
         final filePath = 'path/to/file.txt';
-        when(mockFilePicker.pickFiles()).thenAnswer(
+        when(mockFilePicker.pickFiles(
+          type: anyNamed('type'),
+          allowedExtensions: anyNamed('allowedExtensions'),
+        )).thenAnswer(
           (_) async => FilePickerResult(
             [
               PlatformFile(
@@ -40,19 +43,28 @@ void main() {
 
         // Assert
         expect(result, filePath);
-        verify(mockFilePicker.pickFiles()).called(1);
+        verify(mockFilePicker.pickFiles(
+          type: FileType.any,
+          allowedExtensions: null,
+        )).called(1);
       });
 
       test('should return null when no file is picked', () async {
         // Arrange
-        when(mockFilePicker.pickFiles()).thenAnswer((_) async => null);
+        when(mockFilePicker.pickFiles(
+          type: anyNamed('type'),
+          allowedExtensions: anyNamed('allowedExtensions'),
+        )).thenAnswer((_) async => null);
 
         // Act
         final result = await filePickerWrapper.pickFile();
 
         // Assert
         expect(result, isNull);
-        verify(mockFilePicker.pickFiles()).called(1);
+        verify(mockFilePicker.pickFiles(
+          type: FileType.any,
+          allowedExtensions: null,
+        )).called(1);
       });
     });
 
