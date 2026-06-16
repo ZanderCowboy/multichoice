@@ -15,11 +15,6 @@ name: production-workflow
 on:
   workflow_dispatch:
     inputs:
-      release_version:
-        description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
-        required: false
-        type: string
-        default: ""
       dry_run:
         description: "Dry run (manual testing): do not commit, tag, or publish"
         required: true
@@ -35,6 +30,11 @@ on:
         required: true
         type: boolean
         default: false
+      release_version:
+          description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
+          required: false
+          type: string
+          default: ""
 
 concurrency:
   group: production-workflow

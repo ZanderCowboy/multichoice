@@ -1,0 +1,37 @@
+---
+# Validates PR version labels before merge into develop or rc.
+# Fails when labels conflict across tiers or violate branch-specific bump rules.
+# Config: .github/config/version-labels.json
+#
+name: PR Version Labels
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - rc
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+concurrency:
+  group: pr-version-labels-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate-version-labels:
+    name: Validate Version Labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Check Version Labels
+        uses: ./.github/actions/check-version-labels
+        with:
+          labels: ${{ toJson(github.event.pull_request.labels) }}
+          target_branch: ${{ github.base_ref }}
+          mode: validate

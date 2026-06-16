@@ -1,0 +1,12 @@
+{
+  "categories": {
+    "major": ["major"],
+    "minor": ["minor", "feature"],
+    "patch": ["patch", "bug"]
+  },
+  "no_build": ["no-build"],
+  "branches": {
+    "develop": { "allowed_bumps": ["minor", "patch", "none"] },
+    "rc": { "allowed_bumps": ["major", "minor", "patch", "none"] }
+  }
+}

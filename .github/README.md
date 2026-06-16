@@ -18,11 +18,23 @@ If you ever switch back to “commit before deploy”, you’ll likely need a ro
 
 ### Version Bumping
 
-Version bumps are controlled through PR labels:
-- `major`: Increments the major version (1.0.0 -> 2.0.0)
-- `minor`: Increments the minor version (1.0.0 -> 1.1.0)
-- `patch`: Increments the patch version (1.0.0 -> 1.0.1)
-- `no-build`: Skips version bumping
+Version bumps are controlled through PR labels. Configuration lives in [`.github/config/version-labels.json`](config/version-labels.json).
+
+| Bump | Labels (any one or aliases together) |
+|------|--------------------------------------|
+| major | `major` |
+| minor | `minor`, `feature` |
+| patch | `patch`, `bug` |
+| build only | no version label (other labels like `documentation` are ignored) |
+| skip deploy | `no-build` |
+
+**Rules:**
+- Aliases in the same tier (e.g. `patch` + `bug`, `minor` + `feature`) are valid and resolve to that tier.
+- Cross-tier labels (e.g. `minor` + `patch`) fail the **PR Version Labels** check.
+- `no-build` cannot be combined with any version bump label.
+- `major` is only allowed on PRs into `rc`, not `develop`.
+
+The [`pr_version_labels.yml`](workflows/pr_version_labels.yml) workflow validates labels on every PR to `develop` or `rc` before merge. Add **Validate Version Labels** as a required status check on those branches.
 
 ### Version Suffixes
 
