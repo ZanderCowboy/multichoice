@@ -58,5 +58,6 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<GoogleSignIn>(as: #MockGoogleSignIn),
   MockSpec<GoogleSignInAccount>(as: #MockGoogleSignInAccount),
   MockSpec<GoogleSignInAuthentication>(as: #MockGoogleSignInAuthentication),
+  MockSpec<FeedbackBloc>(as: #MockFeedbackBloc),
 ])
 void main() {}
