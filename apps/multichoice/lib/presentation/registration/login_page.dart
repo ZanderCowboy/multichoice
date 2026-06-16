@@ -109,6 +109,13 @@ class _LoginPageState extends State<LoginPage> {
           _syncControllersFromState(state);
           if (state.isSuccess) {
             context.read<AuthNotifier>().notifyAuthChanged();
+            if (state.needsUsernameSetup) {
+              if (widget.isModal) {
+                Navigator.of(context).pop();
+              }
+              unawaited(context.router.push(const SetUsernamePageRoute()));
+              return;
+            }
             if (_loadingAction == _AuthAction.signIn) {
               _showLoginButtonMessage(
                 context.t.auth.signInSuccessfully,

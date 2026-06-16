@@ -15,11 +15,6 @@ name: production-workflow
 on:
   workflow_dispatch:
     inputs:
-      release_version:
-        description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
-        required: false
-        type: string
-        default: ""
       dry_run:
         description: "Dry run (manual testing): do not commit, tag, or publish"
         required: true
@@ -35,9 +30,14 @@ on:
         required: true
         type: boolean
         default: false
+      release_version:
+          description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
+          required: false
+          type: string
+          default: ""
 
 concurrency:
-  group: production-workflow-${{ github.event.pull_request.number || github.run_id }}
+  group: production-workflow
   cancel-in-progress: true
 
 jobs:
@@ -132,6 +132,9 @@ jobs:
     name: Builds Android App
     needs: [preBuild]
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/app-dashboard
     permissions:
       contents: write
       packages: read
@@ -267,6 +270,21 @@ jobs:
           tag_strategy: "version-only"
           allowed_formats: "standard"
 
+      ##############################################
+      # Send Dry Run Success Notification
+      ##############################################
+      - name: Send Dry Run Success Notification
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: production
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: ${{ inputs.target_branch }}
+          dry_run: true
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
   create-release:
     name: Create GitHub Release
     needs: [build]
@@ -329,6 +347,7 @@ jobs:
           environment: production
           version: ${{ needs.build.outputs.tag_version }}
           branch: main
+          dry_run: false
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
 
@@ -357,5 +376,6 @@ jobs:
           environment: production
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: main
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

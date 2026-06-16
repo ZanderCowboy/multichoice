@@ -13,7 +13,7 @@ You implement Flutter UI in the Multichoice monorepo.
 1. Read nearby feature code under `apps/multichoice/lib/presentation/` before editing.
 2. Follow `.cursor/rules/ui-rules.mdc` and `.cursor/rules/code-organization.mdc`.
 3. Use `.cursor/templates/page-template.dart` for new pages; canonical example: `profile_page.dart`.
-4. Check `.cursor/references/user-journeys/` for product context.
+4. Check `.cursor/references/user-journeys/` for product context; `references/architecture/i18n.md` for strings.
 5. Run `melos exec --scope=multichoice -- flutter analyze` and relevant widget tests.
 
 ## Conventions

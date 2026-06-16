@@ -7,30 +7,20 @@ import 'package:multichoice/presentation/home/widgets/profile_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helpers/export.dart';
-import '../../../helpers/fake_firebase_service.dart';
-import '../../../helpers/fake_login_service.dart';
-import '../../../helpers/user_accounts_test_helper.dart';
 
 void main() {
   late UserAccountsTestHelper helper;
-  late FakeFirebaseService firebaseService;
-  late FakeLoginService loginService;
   late AuthNotifier authNotifier;
   late RemoteConfigDebugNotifier remoteConfigDebugNotifier;
 
   setUp(() {
-    firebaseService = FakeFirebaseService();
-    loginService = FakeLoginService();
-    helper = UserAccountsTestHelper(
-      firebaseService: firebaseService,
-      loginService: loginService,
-    )..register();
+    helper = UserAccountsTestHelper.withLoginService()..register();
     authNotifier = AuthNotifier();
     remoteConfigDebugNotifier = RemoteConfigDebugNotifier();
   });
 
-  tearDown(() {
-    helper.unregister();
+  tearDown(() async {
+    await helper.unregister();
     authNotifier.dispose();
     remoteConfigDebugNotifier.dispose();
   });
@@ -50,8 +40,9 @@ void main() {
   testWidgets('hides profile and sign in when user accounts are disabled', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = false;
-    loginService.loggedIn = false;
+    helper
+      ..userAccountsEnabled = false
+      ..loggedIn = false;
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
@@ -63,8 +54,9 @@ void main() {
   testWidgets('shows sign in when flag is on and user is logged out', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = true;
-    loginService.loggedIn = false;
+    helper
+      ..userAccountsEnabled = true
+      ..loggedIn = false;
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
@@ -75,8 +67,9 @@ void main() {
   testWidgets('shows profile icon when flag is on and user is logged in', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = true;
-    loginService.loggedIn = true;
+    helper
+      ..userAccountsEnabled = true
+      ..loggedIn = true;
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
@@ -88,8 +81,9 @@ void main() {
   testWidgets('hides sign in when user accounts flag is overridden off', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = true;
-    loginService.loggedIn = false;
+    helper
+      ..userAccountsEnabled = true
+      ..loggedIn = false;
 
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();

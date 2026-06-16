@@ -12,6 +12,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: HomePageWrapperRoute.page, initial: true),
     AutoRoute(page: LoginPageRoute.page),
     AutoRoute(page: SignupPageRoute.page),
+    AutoRoute(page: SetUsernamePageRoute.page),
     AutoRoute(page: ForgotPasswordPageRoute.page),
     AutoRoute(page: ResetPasswordPageRoute.page),
     AutoRoute(page: DebugPageRoute.page),

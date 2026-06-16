@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -35,13 +37,10 @@ class UsernameField extends StatefulWidget {
   final Iterable<String>? autofillHints;
 
   static String? defaultValidator(String? value, Translations t) {
-    if (value == null || value.isEmpty) {
-      return t.validation.usernameRequired;
-    }
-    if (value.trim().length < 2) {
-      return t.validation.usernameMinLength;
-    }
-    return null;
+    final error =
+        coreSl<ICredentialValidationService>().validateUsername(value);
+    if (error == null) return null;
+    return localizeCoreMessageWithTranslations(t, error);
   }
 
   @override

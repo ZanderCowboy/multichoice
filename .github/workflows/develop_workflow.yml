@@ -3,11 +3,11 @@
 # It is responsible for building the Android app, running tests, and uploading artifacts.
 # It also manages versioning based on labels applied to the pull request.
 #
-# The versioning works as follows:
-# - If the pull request is merged and has labels 'minor' or 'patch', it will bump the version accordingly with build number.
-#   For example, if the current version is 1.0.0+5 and the label is 'patch', it will become 1.0.1+6.
-# - If the pull request is merged and has no labels, it will bump the build number only.
+# The versioning works as follows (see .github/config/version-labels.json):
+# - minor / feature → minor bump; patch / bug → patch bump (aliases in the same tier are OK)
+# - If the pull request is merged and has no version labels, it will bump the build number only.
 #   For example, if the current version is 1.0.0+5, it will become 1.0.0+6.
+# - Cross-tier labels (e.g. minor + patch) are blocked by pr_version_labels.yml before merge.
 # - If the pull request is merged and has the label 'no-build', it will skip the build process.
 #
 name: develop-workflow
@@ -34,7 +34,7 @@ on:
         default: true
 
 concurrency:
-  group: develop-workflow-${{ github.event.pull_request.number || github.run_id }}
+  group: develop-workflow-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -77,9 +77,8 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: ./.github/actions/check-version-labels
         with:
-          labels: ${{ toJson(github.event.pull_request.labels) }}
-          allowed_labels: "minor,patch"
-          no_build_label: "no-build"
+          labels: ${{ github.event_name == 'pull_request' && toJson(github.event.pull_request.labels) || '[]' }}
+          target_branch: develop
 
       ##############################################
       # Resolve Bump Type
@@ -256,6 +255,7 @@ jobs:
           environment: develop
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: develop
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
 
@@ -284,5 +284,6 @@ jobs:
           environment: develop
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: develop
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

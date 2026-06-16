@@ -12,6 +12,7 @@ void main() {
   late MockRegistrationRepository mockRepository;
   late MockCredentialValidationService mockCredentialValidationService;
   late MockAppStorageService mockAppStorage;
+  late MockLoginService mockLoginService;
 
   final authSuccess = AuthResultDTO(accessToken: 't', userId: 'uid');
 
@@ -24,6 +25,7 @@ void main() {
     bool isSuccess = false,
     bool isError = false,
     String? errorMessage,
+    bool needsUsernameSetup = false,
   }) => RegistrationState(
     email: email,
     username: username,
@@ -33,16 +35,19 @@ void main() {
     isSuccess: isSuccess,
     isError: isError,
     errorMessage: errorMessage,
+    needsUsernameSetup: needsUsernameSetup,
   );
 
   setUp(() {
     mockRepository = MockRegistrationRepository();
     mockCredentialValidationService = MockCredentialValidationService();
     mockAppStorage = MockAppStorageService();
+    mockLoginService = MockLoginService();
     bloc = RegistrationBloc(
       mockRepository,
       mockCredentialValidationService,
       mockAppStorage,
+      mockLoginService,
     );
   });
 
@@ -88,6 +93,50 @@ void main() {
             .having((s) => s.username, 'username', 'x')
             .having((s) => s.isError, 'isError', false)
             .having((s) => s.errorMessage, 'errorMessage', null),
+      ],
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signupClicked emits error when email validation fails',
+      build: () {
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn('Email is required');
+        return bloc;
+      },
+      seed: () => seededState(email: ''),
+      act: (b) => b.add(const RegistrationEvent.signupClicked()),
+      expect: () => [
+        isA<RegistrationState>()
+            .having((s) => s.isError, 'isError', true)
+            .having((s) => s.errorMessage, 'errorMessage', 'Email is required'),
+      ],
+      verify: (_) {
+        verifyNever(mockRepository.signUp(any));
+      },
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signupClicked emits error when username validation fails',
+      build: () {
+        when(
+          mockCredentialValidationService.validateEmail(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validateUsername(any),
+        ).thenReturn('Username must be at least 2 characters');
+        return bloc;
+      },
+      seed: () => seededState(username: 'a'),
+      act: (b) => b.add(const RegistrationEvent.signupClicked()),
+      expect: () => [
+        isA<RegistrationState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Username must be at least 2 characters',
+            ),
       ],
     );
 
@@ -210,7 +259,8 @@ void main() {
         isA<RegistrationState>()
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.isSuccess, 'isSuccess', true)
-            .having((s) => s.isError, 'isError', false),
+            .having((s) => s.isError, 'isError', false)
+            .having((s) => s.needsUsernameSetup, 'needsUsernameSetup', false),
       ],
       verify: (_) {
         verify(
@@ -261,21 +311,25 @@ void main() {
     );
 
     blocTest<RegistrationBloc, RegistrationState>(
-      'signInClicked emits error when email is empty',
+      'signInClicked emits error when identifier is empty',
       build: () => bloc,
       seed: () => seededState(email: '', password: 'x'),
       setUp: () {
-        when(mockCredentialValidationService.validateEmail(any)).thenReturn(
-          'Email is required',
-        );
+        when(mockCredentialValidationService.validateLoginIdentifier(any))
+            .thenReturn('Email or username is required');
       },
       act: (b) => b.add(const RegistrationEvent.signInClicked()),
       expect: () => [
         isA<RegistrationState>()
             .having((s) => s.isError, 'isError', true)
-            .having((s) => s.errorMessage, 'errorMessage', 'Email is required'),
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Email or username is required',
+            ),
       ],
       verify: (_) {
+        verifyNever(mockLoginService.resolveEmailForLogin(any));
         verifyNever(mockRepository.signIn(any, any));
       },
     );
@@ -286,7 +340,7 @@ void main() {
       seed: () => seededState(password: ''),
       setUp: () {
         when(
-          mockCredentialValidationService.validateEmail(any),
+          mockCredentialValidationService.validateLoginIdentifier(any),
         ).thenReturn(null);
         when(
           mockCredentialValidationService.validatePasswordRequired(any),
@@ -305,14 +359,85 @@ void main() {
     );
 
     blocTest<RegistrationBloc, RegistrationState>(
-      'signInClicked emits loading then success when sign in succeeds',
+      'signInClicked emits error when resolveEmailForLogin returns null',
       build: () {
         when(
-          mockCredentialValidationService.validateEmail(any),
+          mockCredentialValidationService.validateLoginIdentifier(any),
         ).thenReturn(null);
         when(
           mockCredentialValidationService.validatePasswordRequired(any),
         ).thenReturn(null);
+        when(
+          mockLoginService.resolveEmailForLogin('alice'),
+        ).thenAnswer((_) async => null);
+        return bloc;
+      },
+      seed: () => seededState(email: 'alice', password: 'Secure1!'),
+      act: (b) => b.add(const RegistrationEvent.signInClicked()),
+      expect: () => [
+        isA<RegistrationState>().having((s) => s.isLoading, 'isLoading', true),
+        isA<RegistrationState>()
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'No account found for this username.',
+            ),
+      ],
+      verify: (_) {
+        verifyNever(mockRepository.signIn(any, any));
+      },
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signInClicked resolves username to email before sign in',
+      build: () {
+        when(
+          mockCredentialValidationService.validateLoginIdentifier(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn(null);
+        when(
+          mockLoginService.resolveEmailForLogin('alice'),
+        ).thenAnswer((_) async => 'alice@example.com');
+        when(
+          mockRepository.signIn('alice@example.com', 'Secure1!'),
+        ).thenAnswer((_) async => Right(authSuccess));
+        return bloc;
+      },
+      seed: () => seededState(email: 'alice', password: 'Secure1!'),
+      act: (b) => b.add(const RegistrationEvent.signInClicked()),
+      expect: () => [
+        seededState(
+          email: 'alice',
+          password: 'Secure1!',
+          isLoading: true,
+        ),
+        seededState(
+          email: 'alice',
+          password: 'Secure1!',
+          isSuccess: true,
+        ),
+      ],
+      verify: (_) {
+        verify(mockRepository.signIn('alice@example.com', 'Secure1!')).called(1);
+      },
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signInClicked emits loading then success when sign in succeeds',
+      build: () {
+        when(
+          mockCredentialValidationService.validateLoginIdentifier(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn(null);
+        when(
+          mockLoginService.resolveEmailForLogin('test@example.com'),
+        ).thenAnswer((_) async => 'test@example.com');
         when(
           mockRepository.signIn('test@example.com', 'Secure1!'),
         ).thenAnswer((_) async => Right(authSuccess));
@@ -324,7 +449,41 @@ void main() {
         isA<RegistrationState>().having((s) => s.isLoading, 'isLoading', true),
         isA<RegistrationState>()
             .having((s) => s.isLoading, 'isLoading', false)
-            .having((s) => s.isSuccess, 'isSuccess', true),
+            .having((s) => s.isSuccess, 'isSuccess', true)
+            .having((s) => s.needsUsernameSetup, 'needsUsernameSetup', false),
+      ],
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'signInClicked emits loading then error when sign in fails',
+      build: () {
+        when(
+          mockCredentialValidationService.validateLoginIdentifier(any),
+        ).thenReturn(null);
+        when(
+          mockCredentialValidationService.validatePasswordRequired(any),
+        ).thenReturn(null);
+        when(
+          mockLoginService.resolveEmailForLogin('test@example.com'),
+        ).thenAnswer((_) async => 'test@example.com');
+        when(mockRepository.signIn('test@example.com', 'Secure1!')).thenAnswer(
+          (_) async => const Left(AuthException('Invalid credentials')),
+        );
+        return bloc;
+      },
+      seed: () => seededState(),
+      act: (b) => b.add(const RegistrationEvent.signInClicked()),
+      expect: () => [
+        isA<RegistrationState>().having((s) => s.isLoading, 'isLoading', true),
+        isA<RegistrationState>()
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.isSuccess, 'isSuccess', false)
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Invalid credentials',
+            ),
       ],
     );
 
@@ -341,7 +500,54 @@ void main() {
         isA<RegistrationState>().having((s) => s.isLoading, 'isLoading', true),
         isA<RegistrationState>()
             .having((s) => s.isLoading, 'isLoading', false)
-            .having((s) => s.isSuccess, 'isSuccess', true),
+            .having((s) => s.isSuccess, 'isSuccess', true)
+            .having((s) => s.needsUsernameSetup, 'needsUsernameSetup', false),
+      ],
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'googleSignInClicked sets needsUsernameSetup from auth result',
+      build: () {
+        when(mockRepository.signInWithGoogle()).thenAnswer(
+          (_) async => const Right(
+            AuthResultDTO(
+              accessToken: 't',
+              userId: 'uid',
+              needsUsernameSetup: true,
+            ),
+          ),
+        );
+        return bloc;
+      },
+      seed: () => seededState(),
+      act: (b) => b.add(const RegistrationEvent.googleSignInClicked()),
+      expect: () => [
+        seededState(isLoading: true),
+        seededState(isSuccess: true, needsUsernameSetup: true),
+      ],
+    );
+
+    blocTest<RegistrationBloc, RegistrationState>(
+      'googleSignInClicked emits loading then error when sign in fails',
+      build: () {
+        when(mockRepository.signInWithGoogle()).thenAnswer(
+          (_) async => const Left(AuthException('Google sign-in cancelled')),
+        );
+        return bloc;
+      },
+      act: (b) => b.add(const RegistrationEvent.googleSignInClicked()),
+      expect: () => [
+        isA<RegistrationState>().having((s) => s.isLoading, 'isLoading', true),
+        isA<RegistrationState>()
+            .having((s) => s.isLoading, 'isLoading', false)
+            .having((s) => s.isSuccess, 'isSuccess', false)
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Google sign-in cancelled',
+            )
+            .having((s) => s.needsUsernameSetup, 'needsUsernameSetup', false),
       ],
     );
 

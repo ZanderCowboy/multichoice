@@ -9,6 +9,7 @@ class MoreSection extends StatelessWidget {
     final isChangelogEnabled = coreSl<IFirebaseService>().isEnabled(
       FirebaseConfigKeys.enableChangelogPage,
     );
+    final tutorialEnabled = isTutorialEnabled();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,44 +23,45 @@ class MoreSection extends StatelessWidget {
             ),
           ),
         ),
-        ListTile(
-          title: Text(
-            context.t.drawer.restartTutorial,
-            style: context.appTextTheme.denseTitle,
-          ),
-          subtitle: Text(
-            context.t.drawer.restartTutorialDesc,
-            style: context.appTextTheme.bodyMedium,
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              final appLayout = context.read<AppLayout>();
-              final originalLayout = appLayout.isLayoutVertical;
-              await appLayout.setLayoutVertical(isVertical: false);
+        if (tutorialEnabled)
+          ListTile(
+            title: Text(
+              context.t.drawer.restartTutorial,
+              style: context.appTextTheme.denseTitle,
+            ),
+            subtitle: Text(
+              context.t.drawer.restartTutorialDesc,
+              style: context.appTextTheme.bodyMedium,
+            ),
+            trailing: IconButton(
+              onPressed: () async {
+                final appLayout = context.read<AppLayout>();
+                final originalLayout = appLayout.isLayoutVertical;
+                await appLayout.setLayoutVertical(isVertical: false);
 
-              await Future.value(
-                coreSl<IProductTourController>().resetTour(),
-              ).whenComplete(() async {
-                if (context.mounted) {
-                  Navigator.of(context).pop();
+                await Future.value(
+                  coreSl<IProductTourController>().resetTour(),
+                ).whenComplete(() async {
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
 
-                  await context.router.push(
-                    TutorialPageRoute(
-                      onCallback: () async {
-                        await appLayout.setLayoutVertical(
-                          isVertical: originalLayout,
-                        );
-                      },
-                    ),
-                  );
-                }
-              });
-            },
-            icon: const Icon(
-              Icons.refresh_outlined,
+                    await context.router.push(
+                      TutorialPageRoute(
+                        onCallback: () async {
+                          await appLayout.setLayoutVertical(
+                            isVertical: originalLayout,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                });
+              },
+              icon: const Icon(
+                Icons.refresh_outlined,
+              ),
             ),
           ),
-        ),
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
           title: Text(

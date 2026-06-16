@@ -4,11 +4,18 @@ import 'package:multichoice/i18n/strings.g.dart';
 /// Maps English error/success strings emitted by [packages/core] to localized
 /// copy at the presentation boundary.
 String localizeCoreMessage(BuildContext context, String message) {
+  return localizeCoreMessageWithTranslations(context.t, message);
+}
+
+String localizeCoreMessageWithTranslations(
+  Translations translations,
+  String message,
+) {
   final trimmed = message.trim();
   if (trimmed.isEmpty) return message;
 
-  final errors = context.t.errors;
-  final validation = context.t.validation;
+  final errors = translations.errors;
+  final validation = translations.validation;
 
   if (trimmed.startsWith('Password must include: ')) {
     final requirements = trimmed.substring('Password must include: '.length);

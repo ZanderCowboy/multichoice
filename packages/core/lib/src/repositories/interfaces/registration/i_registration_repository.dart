@@ -12,6 +12,16 @@ abstract class IRegistrationRepository {
 
   Future<Either<AuthException, AuthResultDTO>> signInWithGoogle();
 
+  Future<Either<AuthException, void>> setUsername(String username);
+
+  Future<bool> hasPasswordProvider();
+
+  Future<Either<AuthException, void>> linkPassword(String newPassword);
+
+  Future<Either<AuthException, void>> reauthenticateWithPassword(
+    String currentPassword,
+  );
+
   Future<Either<AuthException, void>> updatePassword(String newPassword);
 
   Future<Either<AuthException, void>> confirmPasswordReset({
@@ -20,4 +30,6 @@ abstract class IRegistrationRepository {
   });
 
   Future<Either<AuthException, void>> sendPasswordResetEmail(String email);
+
+  Future<Either<AuthException, void>> signOut();
 }

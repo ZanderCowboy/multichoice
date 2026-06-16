@@ -10,6 +10,7 @@ class AuthResultDTO extends Equatable {
   const AuthResultDTO({
     required this.accessToken,
     required this.userId,
+    this.needsUsernameSetup = false,
   });
 
   factory AuthResultDTO.fromJson(Map<String, dynamic> json) =>
@@ -17,9 +18,10 @@ class AuthResultDTO extends Equatable {
 
   final String accessToken;
   final String userId;
+  final bool needsUsernameSetup;
 
   Map<String, dynamic> toJson() => _$AuthResultDTOToJson(this);
 
   @override
-  List<Object?> get props => [accessToken, userId];
+  List<Object?> get props => [accessToken, userId, needsUsernameSetup];
 }

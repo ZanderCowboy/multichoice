@@ -6,6 +6,7 @@ packages:
 
 ignore:
   - apps/showcase
+  - "**/build/**"
 
 scripts:
   analyze:

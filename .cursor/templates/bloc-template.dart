@@ -15,7 +15,7 @@ part '<feature>_event.dart';
 part '<feature>_state.dart';
 part '<feature>_bloc.g.dart';
 
-@injectable
+@Injectable()
 class <Feature>Bloc extends Bloc<<Feature>Event, <Feature>State> {
   <Feature>Bloc(
     this._dependency,

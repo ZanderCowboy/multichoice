@@ -5,6 +5,7 @@ enum FirebaseConfigKeys {
   enableChangelogPage('enable_changelog_page'),
   feedbackImagesEnabled('feedback_images_enabled'),
   enableUserAccounts('enable_user_accounts'),
+  enableTutorial('enable_tutorial'),
 
   /// JSON configs
   // example: appConfig('app_config'),
@@ -31,5 +32,6 @@ enum FirebaseConfigKeys {
     enableChangelogPage,
     feedbackImagesEnabled,
     enableUserAccounts,
+    enableTutorial,
   ];
 }

@@ -3,34 +3,51 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:multichoice/presentation/profile/profile_page.dart';
 
 import '../../helpers/export.dart';
-import '../../helpers/fake_firebase_service.dart';
-import '../../helpers/user_accounts_test_helper.dart';
 
 void main() {
   late UserAccountsTestHelper helper;
-  late FakeFirebaseService firebaseService;
 
   setUp(() {
-    firebaseService = FakeFirebaseService();
-    helper = UserAccountsTestHelper(firebaseService: firebaseService)
-      ..register();
+    helper = UserAccountsTestHelper.withLoginService()
+      ..register()
+      ..registerProfileBloc();
   });
 
-  tearDown(() {
-    helper.unregister();
+  tearDown(() async {
+    await helper.unregister();
   });
 
-  testWidgets('does not show profile content when user accounts are disabled', (
+  testWidgets('pops profile route when user accounts are disabled', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = false;
+    helper.userAccountsEnabled = false;
 
     await tester.pumpWidget(
-      widgetWrapper(child: const ProfilePage()),
+      widgetWrapper(
+        child: Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () async {
+                await Navigator.of(context).push<void>(
+                  PageRouteBuilder<void>(
+                    pageBuilder: (_, _, _) => const ProfilePage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              },
+              child: const Text('Open profile'),
+            );
+          },
+        ),
+      ),
     );
+
+    await tester.tap(find.text('Open profile'));
+    await tester.pump();
     await tester.pump();
 
-    expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.text('Email'), findsNothing);
+    expect(find.text('Open profile'), findsOneWidget);
   });
 }

@@ -7,6 +7,10 @@ alwaysApply: true
 
 Use Melos and the root Makefile. Prefer the narrowest validation that covers the touched area.
 
+## Shell (Windows)
+
+The default shell is **PowerShell**, where `&&` is not a valid statement separator. Chain commands with `;` instead, or run separate Shell tool calls. Example: `cd "c:\path"; git status` — not `cd "c:\path" && git status`.
+
 ## Commands
 
 - `melos exec --scope=<package> -- flutter analyze` — single package (preferred)
@@ -16,7 +20,9 @@ Use Melos and the root Makefile. Prefer the narrowest validation that covers the
 
 ## Code generation
 
-Generated: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `*.auto_mappr.dart`, `*.gr.dart`, `*.mocks.dart`. Do not hand-edit. Mocks: `packages/core/test/mocks.dart` → regenerate via Melos.
+Generated: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `*.auto_mappr.dart`, `*.gr.dart`, `*.mocks.dart`, `strings*.g.dart` (slang). Do not hand-edit. **All are gitignored** — verify on disk, not via `git diff`. Mocks: `packages/core/test/mocks.dart` → regenerate via Melos.
+
+- i18n: edit `apps/multichoice/lib/i18n/*.i18n.json`, then `make slang` or `melos slang` (included in `make db` / `make fb`).
 
 ## Validation
 

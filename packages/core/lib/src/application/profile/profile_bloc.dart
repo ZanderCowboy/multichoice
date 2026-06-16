@@ -10,17 +10,19 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 part 'profile_bloc.g.dart';
 
-@injectable
+@Injectable()
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc(
     this._loginService,
     this._appStorageService,
+    this._registrationRepository,
   ) : super(ProfileState.initial()) {
     on<ProfileEvent>(_onEvent);
   }
 
   final ILoginService _loginService;
   final IAppStorageService _appStorageService;
+  final IRegistrationRepository _registrationRepository;
 
   Future<void> _onEvent(
     ProfileEvent event,
@@ -46,11 +48,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       email = await _appStorageService.lastUsedEmail;
     }
 
+    final hasPasswordProvider = await _registrationRepository
+        .hasPasswordProvider();
+
     emit(
       state.copyWith(
         isLoading: false,
         email: email,
         username: username,
+        hasPasswordProvider: hasPasswordProvider,
       ),
     );
   }
@@ -59,7 +65,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     required Emitter<ProfileState> emit,
   }) async {
     emit(state.copyWith(isLoading: true));
-    await _loginService.deleteLoginInfo();
+    await _registrationRepository.signOut();
     emit(
       state.copyWith(
         isLoading: false,

@@ -14,6 +14,7 @@
 | `enableChangelogPage` | `enable_changelog_page` | Changelog drawer link + route |
 | `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback image attachments |
 | `enableUserAccounts` | `enable_user_accounts` | Auth, profile, related routes |
+| `enableTutorial` | `enable_tutorial` | Guided product-tour journey, welcome Follow Tutorial, drawer Restart |
 
 ## JSON / Strings
 
@@ -25,10 +26,20 @@
 
 - [`user_accounts_feature.dart`](../../../apps/multichoice/lib/utils/user_accounts_feature.dart) — central guard for user-account surfaces.
 
+## Debug overrides (DEV only)
+
+`AppFlavor.allowsDebugPage` gates `DebugPageRoute`. Feature Flags tab uses `RemoteConfigDebugNotifier` + `IFirebaseService`:
+
+- `setDebugOverride(key, value | null)` — per-flag override
+- `hasDebugOverride(key)` — whether local override is active
+- `clearAllDebugOverrides()` — reset all
+- `getRemoteBool(key)` — Firebase value without override
+
+Overrides affect `isEnabled()` for bool flags. Refetch action calls `notifyRemoteConfigRefreshed()` after fetch.
+
 ## Rollout
 
 - Ship with safe defaults (usually `false` for new flags).
 - Enable in Firebase console after QA.
-- Debug page may expose overrides in dev builds only.
 
 See [`docs/setting-up-dev-prod-environments.md`](../../../docs/setting-up-dev-prod-environments.md).

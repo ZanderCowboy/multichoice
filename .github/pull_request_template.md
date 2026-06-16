@@ -18,11 +18,11 @@ Fixes #(issue number)
 - [ ] ⚡ Performance improvements
 
 ### 🏷️ Version Bump
-<!-- Select the appropriate label for version bumping -->
-- [ ] `major` - Breaking changes (1.0.0 → 2.0.0)
-- [ ] `minor` - New features (1.0.0 → 1.1.0)
-- [ ] `patch` - Bug fixes (1.0.0 → 1.0.1)
-- [ ] `no-build` - Documentation/non-code changes
+<!-- Select the appropriate label for version bumping (aliases: feature = minor, bug = patch) -->
+- [ ] `major` - Breaking changes (1.0.0 → 2.0.0) — **rc only**
+- [ ] `minor` / `feature` - New features (1.0.0 → 1.1.0)
+- [ ] `patch` / `bug` - Bug fixes (1.0.0 → 1.0.1)
+- [ ] `no-build` - Documentation/non-code changes (cannot combine with version labels)
 
 ## 🔄 Changes Made
 <!-- List the specific changes you made -->

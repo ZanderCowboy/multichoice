@@ -4,7 +4,11 @@
 
 Flutter app for managing and organizing choices across categories (tabs). Users create tabs, add entries (choices), search, export/import data, and get an in-app product tour.
 
-Shipped on Google Play. Monorepo managed by Melos.
+Shipped on Google Play (Android only). Monorepo managed by Melos.
+
+**Flavors**: `dev` and `prod` via compile-time `APP_FLAVOR` (`AppFlavor` in `lib/config/app_flavor.dart`). DEV enables debug page and dev launcher icon.
+
+**Locales**: English and Dutch via slang (`lib/i18n/`). See [architecture/i18n.md](architecture/i18n.md).
 
 ## Monorepo Map
 

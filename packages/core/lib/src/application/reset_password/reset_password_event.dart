@@ -7,8 +7,11 @@ sealed class ResetPasswordEvent {
       ResetPasswordNewPasswordChanged;
   const factory ResetPasswordEvent.confirmPasswordChanged(String value) =
       ResetPasswordConfirmPasswordChanged;
+  const factory ResetPasswordEvent.currentPasswordChanged(String value) =
+      ResetPasswordCurrentPasswordChanged;
   const factory ResetPasswordEvent.submitPressed({
     required bool isChangePassword,
+    required bool isSetPassword,
     required String? oobCode,
   }) = ResetPasswordSubmitPressed;
   const factory ResetPasswordEvent.successConsumed() =
@@ -27,13 +30,21 @@ final class ResetPasswordConfirmPasswordChanged extends ResetPasswordEvent {
   final String value;
 }
 
+final class ResetPasswordCurrentPasswordChanged extends ResetPasswordEvent {
+  const ResetPasswordCurrentPasswordChanged(this.value);
+
+  final String value;
+}
+
 final class ResetPasswordSubmitPressed extends ResetPasswordEvent {
   const ResetPasswordSubmitPressed({
     required this.isChangePassword,
+    required this.isSetPassword,
     required this.oobCode,
   });
 
   final bool isChangePassword;
+  final bool isSetPassword;
   final String? oobCode;
 }
 

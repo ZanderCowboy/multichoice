@@ -12,12 +12,19 @@ Match nearby layouts, spacing, typography, and loading/empty/error states.
 
 - Public page class owns `Scaffold` and `AppBar`; body in private `_FeaturePage` child.
 - `@RoutePage()` for auto_route pages. See `.cursor/templates/page-template.dart`.
+- Page-scoped blocs: `BlocProvider(create: (_) => coreSl<FeatureBloc>(), …)` — never nullable `_bloc`, manual `close()`, or null checks in `build`. See `.cursor/references/architecture/codegen-and-di.md`.
+- Feature-flagged auth routes: `guardUserAccountsRoute(context)` in `initState`; still create the bloc via `BlocProvider`.
 
 ## Constants and theme
 
 - Spacing: `packages/ui_kit/lib/src/constants/spacing_constants.dart`
 - Borders: `packages/ui_kit/lib/src/constants/border_constants.dart`
 - Also check `ui_constants.dart`, theme extensions, app colors before adding values.
+
+## Copy and localization
+
+- User-facing strings: `lib/i18n/*.i18n.json` + `context.t` — see `.cursor/references/architecture/i18n.md`.
+- Core error/success strings: `localizeCoreMessage(context, message)` at the presentation boundary.
 
 ## Widgets
 

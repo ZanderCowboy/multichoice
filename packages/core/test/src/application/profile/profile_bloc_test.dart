@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -9,11 +10,17 @@ void main() {
   late ProfileBloc bloc;
   late MockLoginService mockLoginService;
   late MockAppStorageService mockAppStorageService;
+  late MockRegistrationRepository mockRegistrationRepository;
 
   setUp(() {
     mockLoginService = MockLoginService();
     mockAppStorageService = MockAppStorageService();
-    bloc = ProfileBloc(mockLoginService, mockAppStorageService);
+    mockRegistrationRepository = MockRegistrationRepository();
+    bloc = ProfileBloc(
+      mockLoginService,
+      mockAppStorageService,
+      mockRegistrationRepository,
+    );
   });
 
   tearDown(() {
@@ -34,6 +41,9 @@ void main() {
         when(mockLoginService.getProfileUsername()).thenAnswer(
           (_) async => 'alice',
         );
+        when(mockRegistrationRepository.hasPasswordProvider()).thenAnswer(
+          (_) async => true,
+        );
         return bloc;
       },
       act: (b) => b.add(const ProfileLoadStarted()),
@@ -42,7 +52,8 @@ void main() {
         isA<ProfileState>()
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.email, 'email', 'user@example.com')
-            .having((s) => s.username, 'username', 'alice'),
+            .having((s) => s.username, 'username', 'alice')
+            .having((s) => s.hasPasswordProvider, 'hasPasswordProvider', true),
       ],
     );
 
@@ -56,6 +67,9 @@ void main() {
         when(mockAppStorageService.lastUsedEmail).thenAnswer(
           (_) async => 'stored@example.com',
         );
+        when(mockRegistrationRepository.hasPasswordProvider()).thenAnswer(
+          (_) async => false,
+        );
         return bloc;
       },
       act: (b) => b.add(const ProfileLoadStarted()),
@@ -64,14 +78,21 @@ void main() {
         isA<ProfileState>()
             .having((s) => s.isLoading, 'isLoading', false)
             .having((s) => s.email, 'email', 'stored@example.com')
-            .having((s) => s.username, 'username', 'alice'),
+            .having((s) => s.username, 'username', 'alice')
+            .having(
+              (s) => s.hasPasswordProvider,
+              'hasPasswordProvider',
+              false,
+            ),
       ],
     );
 
     blocTest<ProfileBloc, ProfileState>(
-      'ProfileLogoutRequested clears session and marks logged out',
+      'ProfileLogoutRequested signs out and marks logged out',
       build: () {
-        when(mockLoginService.deleteLoginInfo()).thenAnswer((_) async {});
+        when(mockRegistrationRepository.signOut()).thenAnswer(
+          (_) async => const Right(null),
+        );
         return bloc;
       },
       act: (b) => b.add(const ProfileLogoutRequested()),
@@ -82,7 +103,7 @@ void main() {
             .having((s) => s.isLoggedOut, 'isLoggedOut', true),
       ],
       verify: (_) {
-        verify(mockLoginService.deleteLoginInfo()).called(1);
+        verify(mockRegistrationRepository.signOut()).called(1);
       },
     );
   });

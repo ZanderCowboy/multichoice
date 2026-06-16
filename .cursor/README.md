@@ -8,6 +8,7 @@ Cursor configuration for the Multichoice monorepo.
 ├── commands/     # Slash commands (_workflow-base.md is shared internals)
 ├── references/   # Product and journey context (read on demand)
 ├── rules/        # Behavioral constraints (some always apply)
+├── skills/       # Multi-step workflows (ticket-to-draft-pr, refresh-pr)
 └── templates/    # Canonical code scaffolds
 ```
 
@@ -68,3 +69,14 @@ Adapt templates to nearby code before committing.
 ## References (`references/`)
 
 See [references/README.md](references/README.md) for the index.
+
+## Skills (`skills/`)
+
+| Skill | Purpose |
+|-------|---------|
+| `ticket-to-draft-pr` | Issue → implement → changelog → commits → draft PR |
+| `refresh-pr` | Update existing PR with latest base, rewrite body from diff |
+
+## Maintenance
+
+See [LAST_UPDATE.md](LAST_UPDATE.md) for audit history and when context was last refreshed.

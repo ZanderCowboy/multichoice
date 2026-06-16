@@ -5,6 +5,7 @@ class ResetPasswordState extends Equatable {
   const ResetPasswordState({
     required this.newPassword,
     required this.confirmPassword,
+    required this.currentPassword,
     required this.isLoading,
     required this.isError,
     required this.errorMessage,
@@ -15,6 +16,7 @@ class ResetPasswordState extends Equatable {
   factory ResetPasswordState.initial() => const ResetPasswordState(
     newPassword: '',
     confirmPassword: '',
+    currentPassword: '',
     isLoading: false,
     isError: false,
     errorMessage: null,
@@ -24,6 +26,7 @@ class ResetPasswordState extends Equatable {
 
   final String newPassword;
   final String confirmPassword;
+  final String currentPassword;
   final bool isLoading;
   final bool isError;
   final String? errorMessage;
@@ -34,6 +37,7 @@ class ResetPasswordState extends Equatable {
   List<Object?> get props => [
     newPassword,
     confirmPassword,
+    currentPassword,
     isLoading,
     isError,
     errorMessage,

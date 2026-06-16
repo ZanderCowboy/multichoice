@@ -16,3 +16,5 @@
 | **Product tour** | Guided onboarding highlighting UI elements |
 | **Either** | `dartz` `Either<Exception, T>` for auth/repository results |
 | **auto_route** | Declarative routing; `@RoutePage()` on pages |
+| **slang** | i18n codegen; JSON locale files → `strings.g.dart` |
+| **localizeCoreMessage** | App helper mapping core English strings to `context.t` |

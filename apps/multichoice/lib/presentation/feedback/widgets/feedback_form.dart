@@ -9,6 +9,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/extensions/extension_getters.dart';
 import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -33,10 +34,6 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   final _formKey = GlobalKey<FormState>();
   final _messageController = TextEditingController();
   final _emailController = TextEditingController();
-
-  static final RegExp _emailRegex = RegExp(
-    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-  );
 
   bool _hasTypedEmail = false;
   int _formVersion = 0;
@@ -65,12 +62,10 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   }
 
   String? _validateOptionalEmail(String? value) {
-    final trimmed = value?.trim() ?? '';
-    if (trimmed.isEmpty) return null;
-    if (!_emailRegex.hasMatch(trimmed)) {
-      return context.t.feedback.invalidEmail;
-    }
-    return null;
+    final error =
+        coreSl<ICredentialValidationService>().validateOptionalEmail(value);
+    if (error == null) return null;
+    return localizeCoreMessage(context, error);
   }
 
   void _resetFormFields() {

@@ -86,10 +86,14 @@ class _SignupPageState extends State<SignupPage> {
     return BlocProvider(
       create: (_) => coreSl<RegistrationBloc>(),
       child: BlocConsumer<RegistrationBloc, RegistrationState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           _syncControllersFromState(state);
           if (state.isSuccess) {
             context.read<AuthNotifier>().notifyAuthChanged();
+            if (state.needsUsernameSetup) {
+              await context.router.push(const SetUsernamePageRoute());
+              return;
+            }
             if (_loadingAction == _AuthAction.google) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(context.t.auth.signInSuccessfully)),
@@ -227,10 +231,12 @@ class _SignupPageContentState extends State<_SignupPageContent> {
     if (!mounted) return;
     final email = widget.emailController.text.trim();
     final emailOk =
-        email.isNotEmpty && EmailField.defaultValidator(email, context.t) == null;
+        email.isNotEmpty &&
+        EmailField.defaultValidator(email, context.t) == null;
     final user = widget.usernameController.text.trim();
     final userOk =
-        user.isNotEmpty && UsernameField.defaultValidator(user, context.t) == null;
+        user.isNotEmpty &&
+        UsernameField.defaultValidator(user, context.t) == null;
     final passOk = PasswordValidator.isValid(widget.passwordController.text);
     final confirm = widget.confirmPasswordController.text;
     final confirmOk =
@@ -271,17 +277,20 @@ class _SignupPageContentState extends State<_SignupPageContent> {
           onPressed: () => context.router.maybePop(),
         ),
         actions: [
-          SizedBox(
-            height: 28,
-            width: 60,
-            child: TextButton(
-              onPressed: widget.isLoading || widget.isSuccess
-                  ? null
-                  : () => showLoginModal(context),
-              style: const ButtonStyle(
-                padding: WidgetStatePropertyAll(EdgeInsets.zero),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: SizedBox(
+              height: 28,
+              width: 60,
+              child: TextButton(
+                onPressed: widget.isLoading || widget.isSuccess
+                    ? null
+                    : () => showLoginModal(context),
+                style: const ButtonStyle(
+                  padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                ),
+                child: Text(context.t.auth.signIn),
               ),
-              child: Text(context.t.auth.signIn),
             ),
           ),
         ],
