@@ -45,17 +45,19 @@ class _DetailsSectionState extends State<_DetailsSection> {
         final isEditing = state.isEditingMode;
 
         return Card(
-          elevation: 2,
+          elevation: 3,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: borderCircular12),
           margin: horizontal12 + top12 + bottom6,
-          color: context.theme.appColors.primary,
+          color: context.appColorsTheme.primary,
           child: Padding(
             padding: allPadding8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _DetailsListTile(
-                  title: 'Title',
+                  title: context.t.common.title,
                   subtitle: state.title,
                   isEditing: isEditing,
                   controller: _titleController,
@@ -64,12 +66,14 @@ class _DetailsSectionState extends State<_DetailsSection> {
                       DetailsEvent.onChangeTitle(value),
                     );
                   },
-                  labelText: 'Edit Title',
+                  labelText: context.t.details.editTitle,
                 ),
                 gap3,
                 _DetailsListTile(
-                  title: 'Subtitle',
-                  subtitle: state.subtitle.isEmpty ? 'None' : state.subtitle,
+                  title: context.t.common.subtitle,
+                  subtitle: state.subtitle.isEmpty
+                      ? context.t.common.none
+                      : state.subtitle,
                   isEditing: isEditing,
                   controller: _subtitleController,
                   onChanged: (value) {
@@ -77,11 +81,11 @@ class _DetailsSectionState extends State<_DetailsSection> {
                       DetailsEvent.onChangeSubtitle(value),
                     );
                   },
-                  labelText: 'Edit Subtitle',
+                  labelText: context.t.details.editSubtitle,
                 ),
                 gap3,
                 _DetailsListTile(
-                  title: 'Date Added',
+                  title: context.t.details.dateAdded,
                   subtitle: '${state.timestamp.toLocal()}'.split('.')[0],
                 ),
               ],

@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/tutorial/widgets/export.dart';
 import 'package:multichoice/utils/product_tour/product_tour.dart';
 import 'package:multichoice/utils/product_tour/tour_widget_wrapper.dart';
+import 'package:multichoice/utils/tutorial_feature.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -29,6 +31,7 @@ class _TutorialPageState extends State<TutorialPage> {
   @override
   void initState() {
     super.initState();
+    guardTutorialRoute(context);
 
     /// Dispatch init events once so that rebuilds do not re-trigger
     /// them and cause inconsistent tour state.
@@ -63,7 +66,7 @@ class _TutorialPageState extends State<TutorialPage> {
             return Scaffold(
               key: scaffoldKeyTutorial,
               appBar: AppBar(
-                title: const Text('Multichoice'),
+                title: Text(context.t.about.appName),
                 leading: TourWidgetWrapper(
                   step: ProductTourStep.showSettings,
                   child: IconButton(
@@ -77,7 +80,7 @@ class _TutorialPageState extends State<TutorialPage> {
                       );
                       scaffoldKeyTutorial.currentState?.openDrawer();
                     },
-                    tooltip: TooltipEnums.settings.tooltip,
+                    tooltip: TooltipEnums.settings.label(context.t),
                     icon: const Icon(Icons.settings_outlined),
                   ),
                 ),
@@ -96,7 +99,7 @@ class _TutorialPageState extends State<TutorialPage> {
                               ),
                             );
                           },
-                          tooltip: 'Edit order',
+                          tooltip: TooltipEnums.editOrder.label(context.t),
                           icon: const Icon(Icons.edit_outlined),
                         ),
                         IconButton(
@@ -109,7 +112,7 @@ class _TutorialPageState extends State<TutorialPage> {
                               ),
                             );
                           },
-                          tooltip: TooltipEnums.search.tooltip,
+                          tooltip: TooltipEnums.search.label(context.t),
                           icon: const Icon(Icons.search_outlined),
                         ),
                       ],

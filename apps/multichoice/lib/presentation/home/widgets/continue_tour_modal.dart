@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class ContinueTourModal extends StatelessWidget {
@@ -21,20 +23,18 @@ class ContinueTourModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Continue tutorial?',
-                style: TextStyle(
+              Text(
+                context.t.common.continueTutorial,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               gap16,
-              const Text(
-                'You have already started the Multichoice tutorial. '
-                'Would you like to continue from where you left off, '
-                'or finish the tutorial now?',
+              Text(
+                context.t.common.continueTutorialBody,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               Row(
@@ -42,11 +42,11 @@ class ContinueTourModal extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: onFinishTour,
-                    child: const Text('Finish Tour'),
+                    child: Text(context.t.common.finishTour),
                   ),
                   ElevatedButton(
                     onPressed: onContinueTour,
-                    child: const Text('Continue Tour'),
+                    child: Text(context.t.common.continueTour),
                   ),
                 ],
               ),

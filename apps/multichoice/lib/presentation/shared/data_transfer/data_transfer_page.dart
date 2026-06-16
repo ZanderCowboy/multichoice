@@ -7,6 +7,7 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/engine/tooltip_enums.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/shared/data_transfer/data_transfer_service.dart';
 import 'package:multichoice/presentation/shared/data_transfer/utils/data_transfer_handlers.dart';
 import 'package:multichoice/presentation/shared/data_transfer/widgets/data_transfer_content.dart';
@@ -44,10 +45,10 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
       page: AnalyticsPage.dataTransfer,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Data Transfer'),
+          title: Text(context.t.dataTransfer.title),
           leading: IconButton(
             onPressed: _handleBackNavigation,
-            tooltip: TooltipEnums.back.tooltip,
+            tooltip: TooltipEnums.back.label(context.t),
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
           actions: [
@@ -56,7 +57,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
                 context.router.popUntilRoot();
                 scaffoldKey.currentState?.closeDrawer();
               },
-              tooltip: TooltipEnums.home.tooltip,
+              tooltip: TooltipEnums.home.label(context.t),
               icon: const Icon(Icons.home),
             ),
           ],

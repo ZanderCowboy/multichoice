@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
+
+enum _SearchMenuAction { edit, delete }
 
 class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
@@ -25,12 +28,12 @@ class SearchResultCard extends StatelessWidget {
     // TODO: Create a reusable card widget for search results and details.
     return Card(
       elevation: 3,
-      shadowColor: Colors.grey[400],
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular5,
       ),
       margin: allPadding4,
-      color: context.theme.appColors.secondary,
       child: InkWell(
         borderRadius: borderCircular5,
         onTap: onTap,
@@ -41,7 +44,6 @@ class SearchResultCard extends StatelessWidget {
               Icon(
                 isTab ? Icons.calendar_view_month : Icons.crop_landscape,
                 size: 24,
-                color: context.theme.appColors.primary,
               ),
               gap8,
               Expanded(
@@ -50,45 +52,38 @@ class SearchResultCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontSize: 16,
-                        letterSpacing: 0.3,
-                        height: 1,
-                      ),
+                      style: context.theme.appTextTheme.denseTitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                     gap4,
                     Text(
                       subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12,
-                        letterSpacing: 0.5,
-                        height: 1.25,
-                      ),
+                      style: context.theme.appTextTheme.denseSubtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                     ),
                   ],
                 ),
               ),
-              PopupMenuButton<String>(
+              PopupMenuButton<_SearchMenuAction>(
                 icon: const Icon(Icons.more_vert),
                 onSelected: (value) {
-                  if (value == 'Edit') {
-                    onEdit();
-                  } else if (value == 'Delete') {
-                    onDelete();
+                  switch (value) {
+                    case _SearchMenuAction.edit:
+                      onEdit();
+                    case _SearchMenuAction.delete:
+                      onDelete();
                   }
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'Edit',
-                    child: Text('Edit'),
+                  PopupMenuItem(
+                    value: _SearchMenuAction.edit,
+                    child: Text(context.t.common.edit),
                   ),
-                  const PopupMenuItem(
-                    value: 'Delete',
-                    child: Text('Delete'),
+                  PopupMenuItem(
+                    value: _SearchMenuAction.delete,
+                    child: Text(context.t.common.delete),
                   ),
                 ],
               ),

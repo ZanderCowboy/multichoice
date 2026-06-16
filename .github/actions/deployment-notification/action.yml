@@ -1,0 +1,330 @@
+name: "Deployment Notification"
+description: "Sends deployment status notifications"
+
+inputs:
+  github_token:
+    description: "GitHub token (used for creating issues on failure)"
+    required: false
+    default: "${{ github.token }}"
+  deployment_status:
+    description: "Status of deployment (success, failure, cancelled)"
+    required: true
+  environment:
+    description: "Environment being deployed to (develop, staging, production)"
+    required: true
+  version:
+    description: "Version being deployed"
+    required: true
+  branch:
+    description: "Branch being deployed from"
+    required: true
+  commit_sha:
+    description: "Commit SHA being deployed"
+    required: false
+    default: "${{ github.sha }}"
+  commit_message:
+    description: "Commit message"
+    required: false
+    default: "${{ github.event.head_commit.message || 'No commit message' }}"
+  author:
+    description: "Author of the commit"
+    required: false
+    default: "${{ github.actor }}"
+  pr_number:
+    description: "Pull request number"
+    required: false
+    default: "${{ github.event.pull_request.number || '' }}"
+  pr_title:
+    description: "Pull request title"
+    required: false
+    default: "${{ github.event.pull_request.title || '' }}"
+  webhook_url:
+    description: "Webhook URL for notifications (Slack, Discord, etc.)"
+    required: false
+  email_recipients:
+    description: "Comma-separated list of email recipients"
+    required: false
+  dry_run:
+    description: "When true, send notifications but do not create GitHub issues on failure"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate Notification Message
+      id: generate_message
+      shell: bash
+      env:
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        BRANCH: ${{ inputs.branch }}
+        COMMIT_SHA: ${{ inputs.commit_sha }}
+        COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        AUTHOR: ${{ inputs.author }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_TITLE: ${{ inputs.pr_title }}
+        DRY_RUN: ${{ inputs.dry_run }}
+        REPOSITORY: ${{ github.repository }}
+        WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        status="$DEPLOYMENT_STATUS"
+        environment="$DEPLOYMENT_ENVIRONMENT"
+        version="$VERSION"
+        branch="$BRANCH"
+        commit_sha="$COMMIT_SHA"
+        commit_message="$COMMIT_MESSAGE"
+        author="$AUTHOR"
+        pr_number="$PR_NUMBER"
+        pr_title="$PR_TITLE"
+        dry_run="$DRY_RUN"
+        repository="$REPOSITORY"
+        workflow_run_url="$WORKFLOW_RUN_URL"
+
+        case "$status" in
+          "success") status_emoji="✅" ;;
+          "failure") status_emoji="❌" ;;
+          "cancelled") status_emoji="⚠️" ;;
+          *) status_emoji="ℹ️" ;;
+        esac
+
+        case "$environment" in
+          "develop") env_emoji="🔧" ;;
+          "staging") env_emoji="🚀" ;;
+          "production") env_emoji="🎯" ;;
+          *) env_emoji="🌍" ;;
+        esac
+
+        message="$(printf '%s\n' \
+          "${status_emoji} **Deployment ${status}**" \
+          "${env_emoji} **Environment:** ${environment}" \
+          "📦 **Version:** ${version}" \
+          "🌿 **Branch:** ${branch}" \
+          "👤 **Author:** ${author}")"
+
+        if [[ "$dry_run" == "true" || "$dry_run" == "True" ]]; then
+          message+="$(printf '\n🧪 **Dry run:** yes (no publish/commit/tag; issues not created on failure)')"
+        fi
+
+        if [[ -n "$pr_number" ]]; then
+          message+="$(printf '\n🔗 **PR:** #%s - %s' "$pr_number" "$pr_title")"
+        fi
+
+        message+="$(printf '\n📝 **Commit:** `%s`' "${commit_sha:0:8}")"
+        message+="$(printf '\n💬 **Message:** %s' "$commit_message")"
+        message+="$(printf '\n⏰ **Time:** %s' "$(date -u +'%Y-%m-%d %H:%M:%S UTC')")"
+        message+="$(printf '\n🔗 **Repository:** https://github.com/%s' "$repository")"
+        message+="$(printf '\n🔗 **Workflow run:** %s' "$workflow_run_url")"
+
+        if [[ -n "$pr_number" ]]; then
+          message+="$(printf '\n🔗 **PR link:** https://github.com/%s/pull/%s' "$repository" "$pr_number")"
+        fi
+
+        {
+          echo "message<<EOF"
+          printf '%s\n' "$message"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+        echo "Generated notification message"
+
+    - name: Send Webhook Notification
+      if: inputs.webhook_url != ''
+      shell: bash
+      env:
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+        WEBHOOK_URL: ${{ inputs.webhook_url }}
+        IS_DISCORD: ${{ contains(inputs.webhook_url, 'discord.com/api/webhooks/') || contains(inputs.webhook_url, 'discordapp.com/api/webhooks/') }}
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        BRANCH: ${{ inputs.branch }}
+        COMMIT_SHA: ${{ inputs.commit_sha }}
+        COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        AUTHOR: ${{ inputs.author }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_TITLE: ${{ inputs.pr_title }}
+        DRY_RUN: ${{ inputs.dry_run }}
+        REPOSITORY: ${{ github.repository }}
+        WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        payload="$(python3 - <<'PY'
+        import json
+        import os
+        from datetime import datetime, timezone
+
+        message = os.environ["MESSAGE"]
+        is_discord = os.environ.get("IS_DISCORD", "false").lower() == "true"
+        status = os.environ["DEPLOYMENT_STATUS"]
+        environment = os.environ["DEPLOYMENT_ENVIRONMENT"]
+        version = os.environ["VERSION"]
+        branch = os.environ["BRANCH"]
+        commit_sha = os.environ["COMMIT_SHA"]
+        commit_message = os.environ["COMMIT_MESSAGE"]
+        author = os.environ["AUTHOR"]
+        pr_number = os.environ.get("PR_NUMBER", "")
+        pr_title = os.environ.get("PR_TITLE", "")
+        dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
+        repository = os.environ["REPOSITORY"]
+        workflow_run_url = os.environ["WORKFLOW_RUN_URL"]
+
+        status_meta = {
+            "success": {"emoji": "✅", "color": 5763719},
+            "failure": {"emoji": "❌", "color": 15158332},
+            "cancelled": {"emoji": "⚠️", "color": 16763904},
+        }
+        meta = status_meta.get(status, {"emoji": "ℹ️", "color": 9807270})
+        title_suffix = " (dry run)" if dry_run else ""
+
+        if is_discord:
+            fields = [
+                {"name": "Environment", "value": environment, "inline": True},
+                {"name": "Version", "value": version, "inline": True},
+                {"name": "Branch", "value": branch, "inline": True},
+                {"name": "Author", "value": author, "inline": True},
+                {"name": "Commit", "value": f"`{commit_sha[:8]}`", "inline": True},
+            ]
+
+            if dry_run:
+                fields.append(
+                    {
+                        "name": "Dry run",
+                        "value": "Yes — no publish/commit/tag; issues not created on failure",
+                        "inline": False,
+                    }
+                )
+
+            if pr_number:
+                fields.append(
+                    {
+                        "name": "Pull request",
+                        "value": f"[#{pr_number} {pr_title}](https://github.com/{repository}/pull/{pr_number})",
+                        "inline": False,
+                    }
+                )
+
+            fields.extend(
+                [
+                    {
+                        "name": "Commit message",
+                        "value": commit_message[:1024] or "No commit message",
+                        "inline": False,
+                    },
+                    {
+                        "name": "Workflow run",
+                        "value": f"[Open run]({workflow_run_url})",
+                        "inline": False,
+                    },
+                ]
+            )
+
+            print(
+                json.dumps(
+                    {
+                        "username": "Deployment Bot",
+                        "embeds": [
+                            {
+                                "title": f"{meta['emoji']} Deployment {status}{title_suffix}",
+                                "url": workflow_run_url,
+                                "color": meta["color"],
+                                "fields": fields,
+                                "timestamp": datetime.now(timezone.utc).isoformat(),
+                            }
+                        ],
+                    }
+                )
+            )
+        else:
+            print(
+                json.dumps(
+                    {
+                        "text": message,
+                        "username": "Deployment Bot",
+                        "icon_emoji": ":rocket:",
+                    }
+                )
+            )
+        PY
+        )"
+
+        http_code="$(curl -sS -o /dev/null -w "%{http_code}" \
+          -X POST -H "Content-Type: application/json" \
+          -d "$payload" \
+          "$WEBHOOK_URL" || true)"
+
+        if [[ "$http_code" =~ ^2[0-9]{2}$ ]]; then
+          echo "✅ Webhook notification sent (HTTP $http_code)"
+        else
+          echo "::warning::Webhook notification returned HTTP $http_code"
+          echo "::warning::If this is Discord, ensure the payload uses {\"embeds\": ...} or {\"content\": ...} and the webhook URL is correct."
+        fi
+
+    - name: Send Email Notification
+      if: inputs.email_recipients != ''
+      shell: bash
+      env:
+        EMAIL_RECIPIENTS: ${{ inputs.email_recipients }}
+        DEPLOYMENT_STATUS: ${{ inputs.deployment_status }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+      run: |
+        echo "📧 Email notification would be sent to: $EMAIL_RECIPIENTS"
+        echo "Subject: Deployment $DEPLOYMENT_STATUS - $DEPLOYMENT_ENVIRONMENT v$VERSION"
+        printf '%s\n' "Body:"
+        printf '%s\n' "$MESSAGE"
+
+    - name: Create GitHub Issue for Failed Deployments
+      id: create_issue
+      if: inputs.deployment_status == 'failure' && inputs.dry_run != true && inputs.dry_run != 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ steps.generate_message.outputs.message }}
+        WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        title="🚨 Deployment Failed - ${DEPLOYMENT_ENVIRONMENT} v${VERSION}"
+        body="$(printf '%s\n\n%s\n' "$MESSAGE" "**Workflow run:** ${WORKFLOW_RUN_URL}")"
+
+        if gh issue create --title "$title" --body "$body"; then
+          echo "created=true" >> "$GITHUB_OUTPUT"
+          echo "✅ GitHub issue created for failed deployment"
+        else
+          echo "created=false" >> "$GITHUB_OUTPUT"
+          echo "::warning::Failed to create GitHub issue. Ensure the workflow job grants issues: write permission."
+        fi
+
+    - name: Log Notification Summary
+      shell: bash
+      env:
+        ISSUE_CREATED: ${{ steps.create_issue.outputs.created }}
+        DRY_RUN: ${{ inputs.dry_run }}
+      run: |
+        if [[ "${{ inputs.deployment_status }}" == "failure" ]]; then
+          if [[ "$DRY_RUN" == "true" || "$DRY_RUN" == "True" ]]; then
+            issue_status="Skipped (dry run)"
+          elif [[ "${ISSUE_CREATED:-false}" == "true" ]]; then
+            issue_status="Created"
+          else
+            issue_status="Failed"
+          fi
+        else
+          issue_status="Not needed"
+        fi
+
+        echo "📊 Notification Summary:"
+        echo "Status: ${{ inputs.deployment_status }}"
+        echo "Environment: ${{ inputs.environment }}"
+        echo "Version: ${{ inputs.version }}"
+        echo "Webhook: ${{ inputs.webhook_url != '' && 'Sent' || 'Not configured' }}"
+        echo "Email: ${{ inputs.email_recipients != '' && 'Logged (not sent)' || 'Not configured' }}"
+        echo "GitHub Issue: ${issue_status}"

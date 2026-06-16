@@ -1,0 +1,64 @@
+# Auth / password-reset / set-username — review follow-ups
+
+From code review of uncommitted auth work (#220 / #335). Codegen items withdrawn — generated files are gitignored and verified on disk.
+
+**Merge readiness:** needs work
+
+---
+
+## Blockers (before merge)
+
+- [x] **Restore registration bloc tests** — `packages/core/test/src/application/registration/registration_bloc_test.dart` lost ~10 cases (signup validation, sign-in errors, prefill, cancel, etc.). Restore deleted coverage; add tests for `resolveEmailForLogin` returning null and `needsUsernameSetup` on Google sign-in.
+
+- [ ] **i18n: map new core error strings** — Hardcoded English in core is not wired in `apps/multichoice/lib/i18n/localize_core_message.dart`. Add keys to `en.i18n.json` / `nl.i18n.json` and switch cases for e.g. `No account found for this username.`, password success messages, invalid reset link, reauth-before-change messages. Run `make slang`.
+
+- [ ] **PROD App Links** — `firebase/public/.well-known/assetlinks.json` only lists `co.za.zanderkotze.multichoice.dev`. Add prod package `co.za.zanderkotze.multichoice` + release SHA-256, or separate Hosting deploy per Firebase project (see `docs/password-reset-deep-links.md`).
+
+- [ ] **Flavor-specific deep-link hosts** — `AndroidManifest.xml` declares both DEV and PROD `firebaseapp.com` hosts in one manifest while `assetlinks.json` only verifies DEV. Use flavor manifest overlays so each build matches its Hosting `assetlinks.json`.
+
+- [ ] **Run validation** — `melos test:core`, `melos exec --scope=multichoice -- flutter analyze` after test/i18n fixes.
+
+---
+
+## Should fix (same PR or immediate follow-up)
+
+- [ ] **Username login limitation** — `LoginService.resolveEmailForLogin` reads username→email from local secure storage only; fails on new device/reinstall. Document as MVP in user-facing copy/docs, or persist mapping server-side before shipping username login UX.
+
+- [ ] **Username setup confirmation** — `isUsernameConfirmed` / `markUsernameConfirmed` are per-device, not per Firebase user. Google users may be re-prompted on every new device. Persist in Firebase (custom claim, Firestore user doc, or authoritative `displayName`).
+
+- [x] **Set-username tests** — Add `SetUsernameBloc` tests (mirror `reset_password_bloc_test.dart`). Consider blocking home navigation until username is set, or re-prompt on next launch.
+
+- [x] **Reset-password bloc tests** — Add coverage for `isSetPassword: true` (`linkPassword`) and reauth failure paths.
+
+- [ ] **Profile password row flash** — `ProfileState.initial()` defaults `hasPasswordProvider` to `true`; Google-only users may briefly see “Update Password”. Default to `false` or hide until `ProfileLoadStarted` completes.
+
+- [ ] **Server-side username uniqueness** — `RegistrationService.setUsername` only updates Firebase `displayName`; no uniqueness check. Add Firestore/Cloud Function check before `updateDisplayName`.
+
+- [ ] **Firebase Hosting landing page** — `firebase/public/index.html` is default boilerplate with `useEmulator=true`. Replace with minimal landing page or remove; set `useEmulator=false` for production.
+
+- [ ] **iOS deep links** — No Universal Links / associated-domains in diff. Document as Android-only for this release, or add iOS entitlements before claiming cross-platform deep links.
+
+---
+
+## Nice to have
+
+- [ ] Remove dead no-op `await _loginService.getProfileUsername()` in `registration_service.dart` (`_completeGoogleLocalSession`).
+- [ ] Extend `password_reset_link_parser_test.dart` — non-reset modes, malformed URLs, `continueUrl` edge cases.
+- [ ] Add focused `LoginService` unit tests for `resolveEmailForLogin` and username confirmation helpers.
+- [ ] Widget/deep-link listener test for `PasswordResetDeepLinkListener` (optional).
+
+---
+
+## PR hygiene (do not include in auth PR)
+
+- [ ] Revert or split `.cursor/commands/commit.md` commit-message convention change.
+- [ ] Split `melos.yaml` `**/build/**` ignore if unrelated to auth.
+- [ ] Do not commit `.cursor/plans/*.plan.md`.
+
+---
+
+## Already done / withdrawn from review
+
+- Codegen (`set_username_bloc.g.dart`, `app_router.gr.dart`, `strings_en.g.dart` / `strings_nl.g.dart`) — present on disk; gitignored, not a blocker.
+- Auth hardening (real reset flow, signOut, reauth) — implemented per plan.
+- Feature-flag gating — `isUserAccountsEnabled()` guards pages and deep-link listener.

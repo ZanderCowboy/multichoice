@@ -24,7 +24,7 @@ class _FailedChangelog extends StatelessWidget {
             ),
             gap16,
             Text(
-              'Failed to load changelog',
+              context.t.changelog.failedToLoad,
               style:
                   context.theme.appTextTheme.titleMedium ??
                   Theme.of(context).textTheme.titleMedium,
@@ -32,7 +32,7 @@ class _FailedChangelog extends StatelessWidget {
             ),
             gap8,
             Text(
-              message,
+              localizeCoreMessage(context, message),
               style:
                   context.theme.appTextTheme.bodySmall ??
                   Theme.of(context).textTheme.bodySmall,

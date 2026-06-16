@@ -3,6 +3,11 @@ enum FirebaseConfigKeys {
   /// example: enableNewFeature('enable_new_feature'),
   usePillStyleBanner('use_pill_style_banner'),
   enableChangelogPage('enable_changelog_page'),
+  feedbackImagesEnabled('feedback_images_enabled'),
+  enableUserAccounts('enable_user_accounts'),
+  enableTutorial('enable_tutorial'),
+  enableUpdatePrompt('enable_update_prompt'),
+  enableAboutPage('enable_about_page'),
 
   /// JSON configs
   // example: appConfig('app_config'),
@@ -10,10 +15,28 @@ enum FirebaseConfigKeys {
 
   /// Strings
   welcomeMessage('welcome_message'),
-  googlePlayStoreUrl('google_play_store_url')
+  googlePlayStoreUrl('google_play_store_url'),
+  latestAppVersion('latest_app_version'),
+  aboutInstagramUrl('about_instagram_url'),
+  aboutWebsiteUrl('about_website_url'),
+  aboutContactEmail('about_contact_email'),
+  aboutPrivacyPolicyUrl('about_privacy_policy_url'),
+  aboutTermsUrl('about_terms_url'),
+  aboutAcknowledgementsUrl('about_acknowledgements_url')
   ;
 
   const FirebaseConfigKeys(this.key);
 
   final String key;
+
+  /// Boolean feature flags exposed in Firebase Remote Config.
+  static const List<FirebaseConfigKeys> featureFlags = [
+    usePillStyleBanner,
+    enableChangelogPage,
+    feedbackImagesEnabled,
+    enableUserAccounts,
+    enableTutorial,
+    enableUpdatePrompt,
+    enableAboutPage,
+  ];
 }

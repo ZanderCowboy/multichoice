@@ -7,61 +7,80 @@ class DataSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> openDataTransfer() async {
+      await context.router.push(
+        DataTransferScreenRoute(
+          onCallback: () {
+            context.read<HomeBloc>().add(
+              const HomeEvent.onGetTabs(),
+            );
+          },
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'Data',
-            style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+            context.t.drawer.data,
+            style: context.appTextTheme.titleSmall?.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
         BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
+            final canDeleteAll = state.tabs != null && state.tabs!.isNotEmpty;
+
+            Future<void> showDeleteAllDialog() async {
+              if (!canDeleteAll) return;
+
+              CustomDialog<AlertDialog>.show(
+                context: context,
+                title: Text(
+                  context.t.drawer.deleteAllDataTitle,
+                ),
+                content: Text(
+                  context.t.drawer.deleteAllDataContent,
+                ),
+                actions: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(context.t.common.noCancel),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await coreSl<IAnalyticsService>().logEvent(
+                        const CrudEventData(
+                          page: AnalyticsPage.settings,
+                          entity: AnalyticsEntity.allTabs,
+                          action: AnalyticsAction.delete,
+                        ),
+                      );
+                      context.read<HomeBloc>().add(
+                        const HomeEvent.onPressedDeleteAll(),
+                      );
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(context.t.common.yesDelete),
+                  ),
+                ],
+              );
+            }
+
             return ListTile(
-              title: const Text('Delete All Data'),
+              title: Text(
+                context.t.drawer.deleteAllData,
+                style: context.appTextTheme.denseTitle,
+              ),
+              onTap: canDeleteAll ? showDeleteAllDialog : null,
               trailing: IconButton(
                 key: context.keys.deleteAllDataButton,
-                onPressed: state.tabs != null && state.tabs!.isNotEmpty
-                    ? () {
-                        CustomDialog<AlertDialog>.show(
-                          context: context,
-                          title: const Text(
-                            'Delete all tabs and entries?',
-                          ),
-                          content: const Text(
-                            'Are you sure you want to delete all tabs and their entries?',
-                          ),
-                          actions: [
-                            OutlinedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('No, cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await coreSl<IAnalyticsService>().logEvent(
-                                  const CrudEventData(
-                                    page: AnalyticsPage.settings,
-                                    entity: AnalyticsEntity.allTabs,
-                                    action: AnalyticsAction.delete,
-                                  ),
-                                );
-                                context.read<HomeBloc>().add(
-                                  const HomeEvent.onPressedDeleteAll(),
-                                );
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Yes, delete'),
-                            ),
-                          ],
-                        );
-                      }
-                    : null,
-                tooltip: TooltipEnums.deleteAllData.tooltip,
+                onPressed: canDeleteAll ? showDeleteAllDialog : null,
+                tooltip: TooltipEnums.deleteAllData.label(context.t),
                 icon: state.tabs == null || state.tabs!.isEmpty
                     ? Icon(
                         Icons.delete_sweep_outlined,
@@ -76,19 +95,15 @@ class DataSection extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text('Import / Export Data'),
+          title: Text(
+            context.t.drawer.importExportData,
+            style: context.appTextTheme.denseTitle,
+          ),
+          onTap: () async => openDataTransfer(),
           trailing: IconButton(
             key: context.keys.importExportDataButton,
-            onPressed: () => context.router.push(
-              DataTransferScreenRoute(
-                onCallback: () {
-                  context.read<HomeBloc>().add(
-                    const HomeEvent.onGetTabs(),
-                  );
-                },
-              ),
-            ),
-            tooltip: TooltipEnums.importExport.tooltip,
+            onPressed: () async => openDataTransfer(),
+            tooltip: TooltipEnums.importExport.label(context.t),
             icon: const Icon(
               Icons.import_export_outlined,
             ),

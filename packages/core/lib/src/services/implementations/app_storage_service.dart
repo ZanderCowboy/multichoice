@@ -6,7 +6,51 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: IAppStorageService)
 class AppStorageService implements IAppStorageService {
+  static const int _maxFeedbackSubmissionsPerCalendarDay = 5;
+
   final _sharedPreferences = coreSl<SharedPreferences>();
+
+  String _localCalendarDayKey(DateTime now) =>
+      '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+  @override
+  Future<bool> canSubmitMoreFeedbackToday() async {
+    final today = _localCalendarDayKey(DateTime.now());
+    final storedDay = _sharedPreferences.getString(
+      StorageKeys.feedbackSubmissionDay.key,
+    );
+    final count =
+        _sharedPreferences.getInt(
+          StorageKeys.feedbackSubmissionCount.key,
+        ) ??
+        0;
+    if (storedDay != today) {
+      return true;
+    }
+    return count < _maxFeedbackSubmissionsPerCalendarDay;
+  }
+
+  @override
+  Future<void> recordFeedbackSubmissionForToday() async {
+    final today = _localCalendarDayKey(DateTime.now());
+    final storedDay = _sharedPreferences.getString(
+      StorageKeys.feedbackSubmissionDay.key,
+    );
+    final previousCount =
+        _sharedPreferences.getInt(
+          StorageKeys.feedbackSubmissionCount.key,
+        ) ??
+        0;
+    final nextCount = storedDay != today ? 1 : previousCount + 1;
+    await _sharedPreferences.setString(
+      StorageKeys.feedbackSubmissionDay.key,
+      today,
+    );
+    await _sharedPreferences.setInt(
+      StorageKeys.feedbackSubmissionCount.key,
+      nextCount,
+    );
+  }
 
   @override
   Future<bool> get isDarkMode async {
@@ -90,6 +134,22 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<bool> get hasPreviouslySignedIn async {
+    final hasSignedIn = _sharedPreferences.getBool(
+      StorageKeys.hasPreviouslySignedIn.key,
+    );
+    return hasSignedIn ?? false;
+  }
+
+  @override
+  Future<void> setHasPreviouslySignedIn(bool hasSignedIn) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.hasPreviouslySignedIn.key,
+      hasSignedIn,
+    );
+  }
+
+  @override
   Future<bool> get isPermissionsChecked async {
     final isChecked = _sharedPreferences.getBool(
       StorageKeys.isPermissionsChecked.key,
@@ -122,6 +182,54 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<bool> get isSignupBannerDismissed async {
+    final isDismissed = _sharedPreferences.getBool(
+      StorageKeys.isSignupBannerDismissed.key,
+    );
+    return isDismissed ?? false;
+  }
+
+  @override
+  Future<void> setIsSignupBannerDismissed(bool isDismissed) async {
+    await _sharedPreferences.setBool(
+      StorageKeys.isSignupBannerDismissed.key,
+      isDismissed,
+    );
+  }
+
+  @override
+  Future<String?> get lastUsedEmail async {
+    return _sharedPreferences.getString(StorageKeys.lastUsedEmail.key);
+  }
+
+  @override
+  Future<void> setLastUsedEmail(String email) async {
+    await _sharedPreferences.setString(
+      StorageKeys.lastUsedEmail.key,
+      email,
+    );
+  }
+
+  @override
+  Future<void> clearLastUsedEmail() async {
+    await _sharedPreferences.remove(StorageKeys.lastUsedEmail.key);
+  }
+
+  @override
+  Future<String?> get appLocale async {
+    return _sharedPreferences.getString(StorageKeys.appLocale.key);
+  }
+
+  @override
+  Future<void> setAppLocale(String? locale) async {
+    if (locale == null) {
+      await _sharedPreferences.remove(StorageKeys.appLocale.key);
+      return;
+    }
+    await _sharedPreferences.setString(StorageKeys.appLocale.key, locale);
+  }
+
+  @override
   Future<void> clearAllData() async {
     if (!kDebugMode) return;
 
@@ -129,7 +237,13 @@ class AppStorageService implements IAppStorageService {
     await setIsDarkMode(false);
     await setIsLayoutVertical(false);
     await setIsExistingUser(false);
+    await setHasPreviouslySignedIn(false);
     await setIsPermissionsChecked(false);
     await setIsImportDataBannerDismissed(false);
+    await setIsSignupBannerDismissed(false);
+    await clearLastUsedEmail();
+    await _sharedPreferences.remove(StorageKeys.appLocale.key);
+    await _sharedPreferences.remove(StorageKeys.feedbackSubmissionDay.key);
+    await _sharedPreferences.remove(StorageKeys.feedbackSubmissionCount.key);
   }
 }

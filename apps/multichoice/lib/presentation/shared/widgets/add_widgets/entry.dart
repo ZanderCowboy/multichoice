@@ -21,7 +21,7 @@ class AddEntryCard extends StatelessWidget {
     return _BaseCard(
       semanticLabel: semanticLabel ?? '',
       elevation: 0,
-      color: color ?? context.theme.appColors.secondaryLight,
+      color: color ?? context.appColorsTheme.secondaryLight,
       shape: RoundedRectangleBorder(
         borderRadius: borderCircular5,
       ),

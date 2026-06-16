@@ -4,15 +4,15 @@ GEN_FILES = \( -name '*.g.dart' -o -name '*.gr.dart' -o -name '*.config.dart' -o
 
 # Flutter Build
 fb:
-	cd "$(WORKDIR)" && flutter pub get && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && flutter pub get && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Dart Build Runner
 db:
-	cd "$(WORKDIR)" && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Flutter Rebuild
 frb:
-	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete && flutter pub get && $(BUILD_RUNNER)
+	cd "$(WORKDIR)" && flutter clean && find . -type f $(GEN_FILES) -delete && flutter pub get && $(BUILD_RUNNER) && (dart run slang || echo "No slang configured")
 
 # Clean
 clean:
@@ -21,6 +21,31 @@ clean:
 # Plain Rebuild
 mr:
 	cd "$(WORKDIR)" && melos rebuild:all
+
+slang:
+	cd "$(WORKDIR)/apps/multichoice" && dart run slang && cd "$(WORKDIR)"
+
+# Analyze (scoped)
+# Usage:
+# - make analyze WORKDIR=apps/multichoice
+# - make analyze WORKDIR=packages/core
+analyze:
+	cd "$(WORKDIR)" && flutter analyze
+
+analyze_multichoice:
+	$(MAKE) analyze WORKDIR=apps/multichoice
+
+analyze_core:
+	$(MAKE) analyze WORKDIR=packages/core
+
+analyze_models:
+	$(MAKE) analyze WORKDIR=packages/models
+
+analyze_theme:
+	$(MAKE) analyze WORKDIR=packages/theme
+
+analyze_ui_kit:
+	$(MAKE) analyze WORKDIR=packages/ui_kit
 
 # Enable DebugView for Firebase Analytics
 debug_view:
@@ -33,3 +58,14 @@ kill_emulator:
 # Launch emulator
 launch_emulator:
 	flutter emulators --launch Pixel_9_36.1
+
+# Firebase deploy (functions, Firestore rules/indexes, Storage rules)
+# Usage: make firebase_deploy_dev | firebase_deploy_prod | firebase_deploy_all
+firebase_deploy_dev:
+	bash scripts/deploy-firebase.sh dev
+
+firebase_deploy_prod:
+	bash scripts/deploy-firebase.sh prod
+
+firebase_deploy_all:
+	bash scripts/deploy-firebase.sh all

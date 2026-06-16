@@ -2,20 +2,25 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
-import 'package:multichoice/app/view/theme/app_typography.dart';
+import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/generated/assets.gen.dart';
+import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/utils/about_feature.dart';
+import 'package:multichoice/utils/tutorial_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'app_version.dart';
+part 'account_section.dart';
 part 'appearance_section.dart';
 part 'data_section.dart';
 part 'drawer_header_section.dart';
 part 'more_section.dart';
 part 'light_dark_mode_button.dart';
 part 'horizontal_vertical_layout_button.dart';
+part 'language_tile.dart';

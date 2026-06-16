@@ -1,0 +1,159 @@
+name: 🐛 Bug Report
+description: File a bug report to help us improve
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: 
+  - ZanderCowboy
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        
+        Thank you for taking the time to report a bug! Please fill out this form as completely as possible.
+        
+        > **Tip**: Before submitting, check if a similar bug report already exists.
+
+  - type: input
+    id: summary
+    attributes:
+      label: 📋 Bug Summary
+      description: A clear and concise description of what the bug is
+      placeholder: "Example: App crashes when trying to add a new entry with special characters"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: bug-type
+    attributes:
+      label: 🏷️ Bug Type
+      description: What area does this bug relate to?
+      options:
+        - "💥 Crash"
+        - "🎨 UI / Layout"
+        - "📦 Data / Storage"
+        - "🔐 Auth / Login"
+        - "⚡ Performance"
+        - "🔔 Notifications"
+        - "🧪 Tests"
+        - "🏗️ Build / CI"
+        - "✨ Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Step-by-step instructions to reproduce the bug
+      placeholder: |
+        1. Open the app
+        2. Navigate to '...'
+        3. Click on '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✅ Expected Behavior
+      description: What you expected to happen
+      placeholder: "The entry should be added successfully without any crashes."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: ❌ Actual Behavior
+      description: What actually happened instead
+      placeholder: "The app crashes and returns to the home screen."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 📱 Platform
+      description: Which platform are you using?
+      options:
+        - Android
+        - iOS
+        - Web
+        - Windows
+        - macOS
+        - Linux
+      multiple: true
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: 📦 App Version (optional)
+      description: If known, include the version (or commit hash)
+      placeholder: "Example: 1.2.3+45"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 🚨 Severity Level (optional)
+      description: Rough impact assessment
+      options:
+        - "🔥 Critical - App unusable/crashes"
+        - "🚨 High - Major feature broken"
+        - "⚠️ Medium - Feature partially works"
+        - "🔧 Low - Minor issue/cosmetic"
+    validations:
+      required: false
+
+  - type: textarea
+    id: device-info
+    attributes:
+      label: 📱 Device Information
+      description: Information about your device
+      placeholder: |
+        - Device: (e.g., Pixel 7, iPhone 14)
+        - OS Version: (e.g., Android 13, iOS 16.1)
+        - Flutter Version: (if applicable)
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📄 Error Logs/Screenshots
+      description: Any relevant logs, error messages, or screenshots
+      placeholder: |
+        ```
+        Paste error logs here
+        ```
+        
+        Or drag and drop screenshots here
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📝 Additional Context
+      description: Any other context about the problem
+      placeholder: "This bug started happening after updating to version X.X.X"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Quick check
+      options:
+        - label: I have searched for existing issues
+          required: true
+        - label: I included steps to reproduce
+          required: true

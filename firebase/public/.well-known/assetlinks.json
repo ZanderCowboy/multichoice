@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "co.za.zanderkotze.multichoice.dev",
+            "sha256_cert_fingerprints": [
+                "74:9A:B5:C6:22:24:6F:6A:A2:00:47:83:18:22:24:89:0A:57:AC:50:7A:13:5F:2A:4E:6B:6D:FC:01:6E:02:88"
+            ]
+        }
+    }
+]

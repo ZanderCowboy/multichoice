@@ -11,8 +11,15 @@ class FilePickerWrapper implements IFilePickerWrapper {
   FilePickerWrapper(this._filePicker);
 
   @override
-  Future<String?> pickFile() async {
-    final result = await _filePicker.pickFiles();
+  Future<String?> pickFile({
+    List<String>? allowedExtensions,
+  }) async {
+    final useCustomExtensions =
+        allowedExtensions != null && allowedExtensions.isNotEmpty;
+    final result = await _filePicker.pickFiles(
+      type: useCustomExtensions ? FileType.custom : FileType.any,
+      allowedExtensions: useCustomExtensions ? allowedExtensions : null,
+    );
 
     if (result != null && result.files.isNotEmpty) {
       return result.files.single.path;
