@@ -34,6 +34,9 @@ class FirebaseService implements IFirebaseService {
       await _remoteConfig.setDefaults({
         FirebaseConfigKeys.enableUserAccounts.key: false,
         FirebaseConfigKeys.enableTutorial.key: false,
+        FirebaseConfigKeys.enableUpdatePrompt.key: false,
+        FirebaseConfigKeys.enableAboutPage.key: false,
+        FirebaseConfigKeys.feedbackImagesEnabled.key: false,
       });
 
       _isInitialized = true;

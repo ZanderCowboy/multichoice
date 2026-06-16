@@ -19,6 +19,7 @@ class AppearanceSection extends StatelessWidget {
         ),
         const LightDarkModeButton(),
         const HorizontalVerticalLayoutButton(),
+        const LanguageTile(),
       ],
     );
   }

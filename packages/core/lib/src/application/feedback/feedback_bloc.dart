@@ -138,6 +138,29 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             );
           }
         case FeedbackImageAdded(:final file):
+          final validationError = _validateImageFile(file);
+          if (validationError != null) {
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage: validationError,
+              ),
+            );
+            return;
+          }
+          if (state.imageFiles.length >= FeedbackImageLimits.maxCount) {
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage: feedbackMaxImagesReachedMessage,
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
               imageFiles: [...state.imageFiles, file],
@@ -178,5 +201,16 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           ? value as int
           : state.feedback.rating,
     );
+  }
+
+  String? _validateImageFile(PlatformFile file) {
+    final size = file.size;
+    if (size <= 0) {
+      return feedbackImageEmptyMessage;
+    }
+    if (size > FeedbackImageLimits.maxBytesPerImage) {
+      return feedbackImageTooLargeMessage;
+    }
+    return null;
   }
 }

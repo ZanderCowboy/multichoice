@@ -36,6 +36,10 @@ abstract class IAppStorageService {
   /// Records one successful feedback submission for the daily cap.
   Future<void> recordFeedbackSubmissionForToday();
 
+  /// Persisted app locale preference: `system`, `en`, or `nl`. Null means system.
+  Future<String?> get appLocale;
+  Future<void> setAppLocale(String? locale);
+
   /// Clears all storage data by resetting all values to their defaults.
   /// This method should only be used in debug mode.
   Future<void> clearAllData();

@@ -64,6 +64,10 @@ class _UpdateModalHandlerState extends State<UpdateModalHandler> {
   Future<void> _checkAndShow() async {
     try {
       final firebaseService = coreSl<IFirebaseService>();
+      if (!firebaseService.isEnabled(FirebaseConfigKeys.enableUpdatePrompt)) {
+        return;
+      }
+
       final appInfoService = coreSl<IAppInfoService>();
 
       // In debug we want Remote Config updates to reflect immediately while

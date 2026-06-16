@@ -15,6 +15,8 @@
 | `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback image attachments |
 | `enableUserAccounts` | `enable_user_accounts` | Auth, profile, related routes |
 | `enableTutorial` | `enable_tutorial` | Guided product-tour journey, welcome Follow Tutorial, drawer Restart |
+| `enableUpdatePrompt` | `enable_update_prompt` | Home update-available prompt |
+| `enableAboutPage` | `enable_about_page` | Full About page with RC links (drawer falls back to dialog when off) |
 
 ## JSON / Strings
 

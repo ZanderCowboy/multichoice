@@ -4,22 +4,22 @@ overview: Fix feedback form clear/paste issues, gate Update Prompt and About pag
 todos:
   - id: fix-feedback-clear
     content: Fix feedback form reset (remove FormState.reset, value-based dropdown, rating 0 default) + widget test
-    status: pending
+    status: completed
   - id: fix-feedback-paste
     content: Fix Android clipboard paste (manifest provider, format fallbacks, error handling) + manual Android QA
-    status: pending
+    status: completed
   - id: feedback-image-validation
     content: Add per-image size + max-count validation for Add Images and paste paths with localized errors
-    status: pending
+    status: completed
   - id: ff-update-prompt
     content: Add enable_update_prompt flag and gate UpdateModalHandler
-    status: pending
+    status: completed
   - id: ff-about-page
     content: Add enable_about_page flag, guard route, drawer fallback to showAboutDialog when off
-    status: pending
+    status: completed
   - id: language-setting
     content: Persist app locale in AppStorageService, apply on startup, add Appearance language tile + i18n/analytics
-    status: pending
+    status: completed
 isProject: false
 ---
 

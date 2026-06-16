@@ -5,12 +5,24 @@ import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/utils/about_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  @override
+  void initState() {
+    super.initState();
+    guardAboutPageRoute(context);
+  }
 
   static const _sectionMaxWidth = 420.0;
 

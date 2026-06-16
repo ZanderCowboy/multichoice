@@ -71,7 +71,6 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   void _resetFormFields() {
     _messageController.clear();
     _emailController.clear();
-    _formKey.currentState?.reset();
     setState(() {
       _hasTypedEmail = false;
       _formVersion++;
@@ -128,6 +127,37 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
     );
   }
 
+  void _showUnsupportedClipboardImageSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.t.feedback.unsupportedClipboardImage)),
+    );
+  }
+
+  void _showClipboardReadFailedSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.t.feedback.clipboardReadFailed)),
+    );
+  }
+
+  ({FileFormat format, String extension})? _detectClipboardImageFormat(
+    ClipboardReader reader,
+  ) {
+    const candidates = <(FileFormat, String)>[
+      (Formats.png, 'png'),
+      (Formats.jpeg, 'jpg'),
+      (Formats.webp, 'webp'),
+      (Formats.gif, 'gif'),
+    ];
+
+    for (final (format, extension) in candidates) {
+      if (reader.canProvide(format)) {
+        return (format: format, extension: extension);
+      }
+    }
+
+    return null;
+  }
+
   Future<void> _pasteImageFromClipboard(BuildContext context) async {
     final clipboard = SystemClipboard.instance;
     if (clipboard == null) {
@@ -137,33 +167,40 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
       return;
     }
 
-    final reader = await clipboard.read();
-
-    final FileFormat? format;
-    final String extension;
-    if (reader.canProvide(Formats.png)) {
-      format = Formats.png;
-      extension = 'png';
-    } else if (reader.canProvide(Formats.jpeg)) {
-      format = Formats.jpeg;
-      extension = 'jpg';
-    } else {
+    ClipboardReader reader;
+    try {
+      reader = await clipboard.read();
+    } on Object {
       if (context.mounted) {
-        _showNoImageInClipboardSnackBar(context);
+        _showClipboardReadFailedSnackBar(context);
+      }
+      return;
+    }
+
+    final detected = _detectClipboardImageFormat(reader);
+    if (detected == null) {
+      if (context.mounted) {
+        _showUnsupportedClipboardImageSnackBar(context);
       }
       return;
     }
 
     final completer = Completer<void>();
-    final progress = reader.getFile(format, (file) async {
+    final progress = reader.getFile(detected.format, (file) async {
       try {
         final bytes = await file.readAll();
         if (!context.mounted) return;
+        if (bytes.isEmpty) {
+          if (!completer.isCompleted) {
+            completer.completeError(Object());
+          }
+          return;
+        }
         context.read<FeedbackBloc>().add(
           FeedbackEvent.imageAdded(
             PlatformFile(
               name:
-                  'screenshot_${DateTime.now().millisecondsSinceEpoch}.$extension',
+                  'screenshot_${DateTime.now().millisecondsSinceEpoch}.${detected.extension}',
               size: bytes.length,
               bytes: bytes,
             ),
@@ -181,7 +218,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
 
     if (progress == null) {
       if (context.mounted) {
-        _showNoImageInClipboardSnackBar(context);
+        _showClipboardReadFailedSnackBar(context);
       }
       return;
     }
@@ -190,7 +227,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
       await completer.future;
     } on Object {
       if (context.mounted) {
-        _showNoImageInClipboardSnackBar(context);
+        _showClipboardReadFailedSnackBar(context);
       }
     }
   }
@@ -274,16 +311,18 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
       },
       child: BlocBuilder<FeedbackBloc, FeedbackState>(
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: allPadding16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  DropdownButtonFormField<String>(
-                    key: ValueKey(_formVersion),
-                    initialValue: state.feedback.category,
+          return KeyedSubtree(
+            key: ValueKey(_formVersion),
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: allPadding16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      key: ValueKey(state.feedback.category),
+                      initialValue: state.feedback.category,
                     decoration: InputDecoration(
                       labelText: context.t.feedback.categoryLabelRequired,
                       border: const OutlineInputBorder(),
@@ -438,6 +477,7 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                 ],
               ),
             ),
+          ),
           );
         },
       ),
