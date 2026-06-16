@@ -314,7 +314,10 @@ void main() {
           ),
         ).called(1);
         verify(
-          mockLogin.storeUsernameEmailMapping('Display', 'resolved@firebase.com'),
+          mockLogin.storeUsernameEmailMapping(
+            'Display',
+            'resolved@firebase.com',
+          ),
         ).called(1);
         verify(mockAppStorage.setIsExistingUser(true)).called(1);
       },
@@ -568,7 +571,9 @@ void main() {
       when(mockUser.getIdToken()).thenAnswer((_) async => 'firebase-token');
       when(mockUser.email).thenReturn('firebase@mail.com');
       when(mockUser.displayName).thenReturn('Firebase Name');
-      when(mockLogin.isUsernameConfirmed('fb-uid')).thenAnswer((_) async => false);
+      when(
+        mockLogin.isUsernameConfirmed('fb-uid'),
+      ).thenAnswer((_) async => false);
       when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
       when(
         mockLogin.storeUserProfile(
@@ -612,7 +617,9 @@ void main() {
         when(mockUser.getIdToken()).thenAnswer((_) async => 't');
         when(mockUser.email).thenReturn('user@mail.com');
         when(mockUser.displayName).thenReturn('Saved Username');
-        when(mockLogin.isUsernameConfirmed('fb-uid')).thenAnswer((_) async => true);
+        when(
+          mockLogin.isUsernameConfirmed('fb-uid'),
+        ).thenAnswer((_) async => true);
         when(mockLogin.storeLoginInfo(any)).thenAnswer((_) async {});
         when(
           mockLogin.storeUserProfile(
@@ -732,35 +739,38 @@ void main() {
       );
     });
 
-    test('updates display name and persists profile for signed-in user', () async {
-      when(mockAuth.currentUser).thenReturn(mockUser);
-      when(mockUser.uid).thenReturn('uid-1');
-      when(mockUser.email).thenReturn('user@example.com');
-      when(mockUser.updateDisplayName('alice')).thenAnswer((_) async {});
-      when(mockLogin.markUsernameConfirmed('uid-1')).thenAnswer((_) async {});
-      when(
-        mockLogin.storeUserProfile(
-          email: anyNamed('email'),
-          username: anyNamed('username'),
-        ),
-      ).thenAnswer((_) async {});
-      when(
-        mockLogin.storeUsernameEmailMapping('alice', 'user@example.com'),
-      ).thenAnswer((_) async {});
+    test(
+      'updates display name and persists profile for signed-in user',
+      () async {
+        when(mockAuth.currentUser).thenReturn(mockUser);
+        when(mockUser.uid).thenReturn('uid-1');
+        when(mockUser.email).thenReturn('user@example.com');
+        when(mockUser.updateDisplayName('alice')).thenAnswer((_) async {});
+        when(mockLogin.markUsernameConfirmed('uid-1')).thenAnswer((_) async {});
+        when(
+          mockLogin.storeUserProfile(
+            email: anyNamed('email'),
+            username: anyNamed('username'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          mockLogin.storeUsernameEmailMapping('alice', 'user@example.com'),
+        ).thenAnswer((_) async {});
 
-      final result = await service.setUsername('alice');
+        final result = await service.setUsername('alice');
 
-      expect(result, const Right<AuthException, void>(null));
-      verify(mockUser.updateDisplayName('alice')).called(1);
-      verify(mockLogin.markUsernameConfirmed('uid-1')).called(1);
-    });
+        expect(result, const Right<AuthException, void>(null));
+        verify(mockUser.updateDisplayName('alice')).called(1);
+        verify(mockLogin.markUsernameConfirmed('uid-1')).called(1);
+      },
+    );
 
     test('uses google local token when firebase user is absent', () async {
       when(mockAuth.currentUser).thenReturn(null);
-      when(mockLogin.getAccessToken())
-          .thenAnswer((_) async => 'google_local_acc-id');
-      when(mockLogin.getProfileEmail())
-          .thenAnswer((_) async => 'g@mail.com');
+      when(
+        mockLogin.getAccessToken(),
+      ).thenAnswer((_) async => 'google_local_acc-id');
+      when(mockLogin.getProfileEmail()).thenAnswer((_) async => 'g@mail.com');
       when(mockLogin.markUsernameConfirmed('acc-id')).thenAnswer((_) async {});
       when(
         mockLogin.storeUserProfile(
@@ -810,7 +820,9 @@ void main() {
     test('links email/password credential for signed-in user', () async {
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.email).thenReturn('user@example.com');
-      when(mockUser.linkWithCredential(any)).thenAnswer((_) async => mockCredential);
+      when(
+        mockUser.linkWithCredential(any),
+      ).thenAnswer((_) async => mockCredential);
 
       final result = await service.linkPassword('ValidPass1!');
 
@@ -929,7 +941,9 @@ void main() {
   group('RegistrationService signOut', () {
     test('signs out remotely and clears local session', () async {
       when(mockAuth.signOut()).thenAnswer((_) async {});
-      when(mockGoogleSignIn.signOut()).thenAnswer((_) async {});
+      when(mockGoogleSignIn.signOut()).thenAnswer((_) async {
+        return null;
+      });
       when(mockLogin.deleteLoginInfo()).thenAnswer((_) async {});
 
       final result = await service.signOut();
@@ -942,7 +956,9 @@ void main() {
 
     test('clears local session when remote sign-out fails', () async {
       when(mockAuth.signOut()).thenThrow(Exception('network'));
-      when(mockGoogleSignIn.signOut()).thenAnswer((_) async {});
+      when(mockGoogleSignIn.signOut()).thenAnswer((_) async {
+        return null;
+      });
       when(mockLogin.deleteLoginInfo()).thenAnswer((_) async {});
 
       final result = await service.signOut();

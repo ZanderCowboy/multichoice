@@ -7,6 +7,10 @@ alwaysApply: true
 
 Use Melos and the root Makefile. Prefer the narrowest validation that covers the touched area.
 
+## Shell (Windows)
+
+The default shell is **PowerShell**, where `&&` is not a valid statement separator. Chain commands with `;` instead, or run separate Shell tool calls. Example: `cd "c:\path"; git status` — not `cd "c:\path" && git status`.
+
 ## Commands
 
 - `melos exec --scope=<package> -- flutter analyze` — single package (preferred)
