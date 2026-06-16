@@ -37,7 +37,7 @@ on:
         default: false
 
 concurrency:
-  group: production-workflow-${{ github.event.pull_request.number || github.run_id }}
+  group: production-workflow
   cancel-in-progress: true
 
 jobs:
@@ -133,7 +133,7 @@ jobs:
     needs: [preBuild]
     runs-on: ubuntu-latest
     environment:
-      name: google-play-production
+      name: production
       url: https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/app-dashboard
     permissions:
       contents: write
