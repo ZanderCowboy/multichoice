@@ -74,12 +74,12 @@ runs:
             exit 1
           fi
 
-          grep '^version:' "$pubspec_path" || {
+          if ! grep -qE '^[[:space:]]*version:[[:space:]]*' "$pubspec_path"; then
             echo "::error::No version field found in $pubspec_path"
             exit 1
-          }
+          fi
 
-          v="$(grep '^version:' "$pubspec_path" | sed 's/version:[[:space:]]*//')"
+          v="$(grep -E '^[[:space:]]*version:[[:space:]]*' "$pubspec_path" | head -n1 | sed -E 's/^[[:space:]]*version:[[:space:]]*//' | tr -d '\r' | xargs)"
           local escaped_suffix version_re expected_hint
           escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
           if [[ -n "$version_suffix" ]]; then
@@ -143,7 +143,7 @@ runs:
 
         commit_version() {
           local new_version="$1"
-          sed -i "s/^version: .*/version: $new_version/" "$pubspec_path"
+          sed -i -E "s/^[[:space:]]*version:[[:space:]]*.*/version: ${new_version}/" "$pubspec_path"
           git add "$pubspec_path"
           git commit -m "Bump version to $new_version [skip ci]" >/dev/null
         }
