@@ -96,8 +96,9 @@ runs:
           local escaped_suffix version_re expected_hint
           escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
           if [[ -n "$version_suffix" ]]; then
-            version_re="^[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
-            expected_hint="x.y.z${version_suffix}+build"
+            # Accept versions with or without the suffix (develop→rc merges bring x.y.z+build).
+            version_re="^[0-9]+\\.[0-9]+\\.[0-9]+(${escaped_suffix})?\\+[0-9]+$"
+            expected_hint="x.y.z${version_suffix}+build or x.y.z+build"
           else
             version_re="^[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
             expected_hint="x.y.z+build"
@@ -176,8 +177,8 @@ runs:
             next_version="$target_version"
             escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
             if [[ -n "$version_suffix" ]]; then
-              version_re="^[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
-              expected_hint="x.y.z${version_suffix}+build"
+              version_re="^[0-9]+\\.[0-9]+\\.[0-9]+(${escaped_suffix})?\\+[0-9]+$"
+              expected_hint="x.y.z${version_suffix}+build or x.y.z+build"
             else
               version_re="^[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
               expected_hint="x.y.z+build"
