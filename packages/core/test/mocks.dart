@@ -28,6 +28,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   MockSpec<IProductTourController>(as: #MockProductTourController),
   MockSpec<SharedPreferences>(as: #MockSharedPreferences),
   MockSpec<IAppStorageService>(as: #MockAppStorageService),
+  MockSpec<IAppInfoService>(as: #MockAppInfoService),
   MockSpec<IFeedbackRepository>(as: #MockFeedbackRepository),
   MockSpec<FirebaseFirestore>(as: #MockFirebaseFirestore),
   MockSpec<FirebaseStorage>(as: #MockFirebaseStorage),

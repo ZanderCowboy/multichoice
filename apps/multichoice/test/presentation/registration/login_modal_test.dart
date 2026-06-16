@@ -3,27 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:multichoice/presentation/registration/login_modal.dart';
 
 import '../../helpers/export.dart';
-import '../../helpers/fake_firebase_service.dart';
-import '../../helpers/user_accounts_test_helper.dart';
 
 void main() {
   late UserAccountsTestHelper helper;
-  late FakeFirebaseService firebaseService;
 
   setUp(() {
-    firebaseService = FakeFirebaseService();
-    helper = UserAccountsTestHelper(firebaseService: firebaseService)
-      ..register();
+    helper = UserAccountsTestHelper()..register();
   });
 
-  tearDown(() {
-    helper.unregister();
+  tearDown(() async {
+    await helper.unregister();
   });
 
   testWidgets('does not open login modal when user accounts are disabled', (
     tester,
   ) async {
-    firebaseService.userAccountsEnabled = false;
+    helper.userAccountsEnabled = false;
 
     await tester.pumpWidget(
       widgetWrapper(
@@ -43,5 +38,4 @@ void main() {
 
     expect(find.byType(AlertDialog), findsNothing);
   });
-
 }
