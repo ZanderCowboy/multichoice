@@ -132,4 +132,121 @@ void main() {
       expect(await service.getProfileUsername(), 'alice');
     });
   });
+
+  group('LoginService storeUsernameEmailMapping', () {
+    test('persists normalized username to email mapping', () async {
+      when(mockStorage.read(key: 'username_email_map'))
+          .thenAnswer((_) async => null);
+      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
+          .thenAnswer((_) async {});
+
+      await service.storeUsernameEmailMapping('Alice', 'alice@example.com');
+
+      final captured = verify(
+        mockStorage.write(key: 'username_email_map', value: captureAnyNamed('value')),
+      ).captured.single as String;
+      expect(captured, contains('"alice":"alice@example.com"'));
+    });
+
+    test('merges with existing map', () async {
+      when(mockStorage.read(key: 'username_email_map')).thenAnswer(
+        (_) async => '{"bob":"bob@example.com"}',
+      );
+      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
+          .thenAnswer((_) async {});
+
+      await service.storeUsernameEmailMapping('alice', 'alice@example.com');
+
+      final captured = verify(
+        mockStorage.write(key: 'username_email_map', value: captureAnyNamed('value')),
+      ).captured.single as String;
+      expect(captured, contains('"bob":"bob@example.com"'));
+      expect(captured, contains('"alice":"alice@example.com"'));
+    });
+
+    test('skips when username or email is empty', () async {
+      await service.storeUsernameEmailMapping('', 'a@b.com');
+      await service.storeUsernameEmailMapping('user', '');
+
+      verifyNever(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')));
+    });
+  });
+
+  group('LoginService resolveEmailForLogin', () {
+    test('returns trimmed email when identifier contains @', () async {
+      expect(
+        await service.resolveEmailForLogin('  user@example.com  '),
+        'user@example.com',
+      );
+      verifyNever(mockStorage.read(key: anyNamed('key')));
+    });
+
+    test('returns mapped email for username', () async {
+      when(mockStorage.read(key: 'username_email_map')).thenAnswer(
+        (_) async => '{"alice":"alice@example.com"}',
+      );
+
+      expect(await service.resolveEmailForLogin('Alice'), 'alice@example.com');
+    });
+
+    test('returns null when username is not mapped', () async {
+      when(mockStorage.read(key: 'username_email_map'))
+          .thenAnswer((_) async => '{}');
+
+      expect(await service.resolveEmailForLogin('unknown'), null);
+    });
+
+    test('returns empty map when stored json is invalid', () async {
+      when(mockStorage.read(key: 'username_email_map'))
+          .thenAnswer((_) async => 'not-json');
+
+      expect(await service.resolveEmailForLogin('alice'), null);
+    });
+  });
+
+  group('LoginService username confirmation', () {
+    test('markUsernameConfirmed skips empty user id', () async {
+      await service.markUsernameConfirmed('');
+
+      verifyNever(mockStorage.read(key: anyNamed('key')));
+      verifyNever(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')));
+    });
+
+    test('markUsernameConfirmed persists user id', () async {
+      when(mockStorage.read(key: 'username_confirmed_user_ids'))
+          .thenAnswer((_) async => null);
+      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
+          .thenAnswer((_) async {});
+
+      await service.markUsernameConfirmed('uid-1');
+
+      verify(
+        mockStorage.write(
+          key: 'username_confirmed_user_ids',
+          value: '["uid-1"]',
+        ),
+      ).called(1);
+    });
+
+    test('isUsernameConfirmed returns false for empty user id', () async {
+      expect(await service.isUsernameConfirmed(''), false);
+      verifyNever(mockStorage.read(key: anyNamed('key')));
+    });
+
+    test('isUsernameConfirmed returns true when user id is stored', () async {
+      when(mockStorage.read(key: 'username_confirmed_user_ids')).thenAnswer(
+        (_) async => '["uid-1","uid-2"]',
+      );
+
+      expect(await service.isUsernameConfirmed('uid-2'), true);
+      expect(await service.isUsernameConfirmed('uid-3'), false);
+    });
+
+    test('isUsernameConfirmed returns false when stored json is invalid', () async {
+      when(mockStorage.read(key: 'username_confirmed_user_ids'))
+          .thenAnswer((_) async => 'not-json');
+
+      expect(await service.isUsernameConfirmed('uid-1'), false);
+    });
+  });
 }

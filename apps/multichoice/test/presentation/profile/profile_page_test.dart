@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multichoice/presentation/profile/profile_page.dart';
@@ -29,12 +27,12 @@ void main() {
         child: Builder(
           builder: (context) {
             return ElevatedButton(
-              onPressed: () {
-                unawaited(
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const ProfilePage(),
-                    ),
+              onPressed: () async {
+                await Navigator.of(context).push<void>(
+                  PageRouteBuilder<void>(
+                    pageBuilder: (_, _, _) => const ProfilePage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               },

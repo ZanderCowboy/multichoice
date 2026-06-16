@@ -22,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     guardUserAccountsRoute(context);
+    coreSl<ProfileBloc>().add(const ProfileLoadStarted());
   }
 
   String _display(String? value) =>
@@ -29,8 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => coreSl<ProfileBloc>()..add(const ProfileLoadStarted()),
+    return BlocProvider.value(
+      value: coreSl<ProfileBloc>(),
       child: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state.isLoggedOut) {

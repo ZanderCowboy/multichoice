@@ -95,5 +95,56 @@ void main() {
       expect(result, const Right<AuthException, void>(null));
       verify(mockService.sendPasswordResetEmail('a@b.com')).called(1);
     });
+
+    test('setUsername delegates to registration service', () async {
+      when(
+        mockService.setUsername('alice'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.setUsername('alice');
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.setUsername('alice')).called(1);
+    });
+
+    test('hasPasswordProvider delegates to registration service', () async {
+      when(mockService.hasPasswordProvider()).thenAnswer((_) async => true);
+
+      final result = await repository.hasPasswordProvider();
+
+      expect(result, true);
+      verify(mockService.hasPasswordProvider()).called(1);
+    });
+
+    test('linkPassword delegates to registration service', () async {
+      when(
+        mockService.linkPassword('ValidPass1!'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.linkPassword('ValidPass1!');
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.linkPassword('ValidPass1!')).called(1);
+    });
+
+    test('reauthenticateWithPassword delegates to registration service', () async {
+      when(
+        mockService.reauthenticateWithPassword('OldPass1!'),
+      ).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.reauthenticateWithPassword('OldPass1!');
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.reauthenticateWithPassword('OldPass1!')).called(1);
+    });
+
+    test('signOut delegates to registration service', () async {
+      when(mockService.signOut()).thenAnswer((_) async => const Right(null));
+
+      final result = await repository.signOut();
+
+      expect(result, const Right<AuthException, void>(null));
+      verify(mockService.signOut()).called(1);
+    });
   });
 }
