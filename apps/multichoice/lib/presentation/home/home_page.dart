@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
@@ -24,9 +22,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 part 'utils/_check_and_request_permissions.dart';
-part 'utils/_trigger_edit_mode_haptic.dart';
 part 'widgets/collection_tab.dart';
-part 'widgets/edit_mode_button.dart';
 part 'widgets/entry_card.dart';
 part 'widgets/menu_widget.dart';
 part 'widgets/new_entry.dart';
