@@ -12,6 +12,7 @@ enum StorageKeys {
   lastUsedEmail('_lastUsedEmail'),
   feedbackSubmissionDay('_feedbackSubmissionDay'),
   feedbackSubmissionCount('_feedbackSubmissionCount'),
+  appLocale('_appLocale'),
   ;
 
   const StorageKeys(this.key);

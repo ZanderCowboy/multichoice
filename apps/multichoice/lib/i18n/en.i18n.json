@@ -41,6 +41,10 @@
     "about": "About",
     "horizontalLayout": "Horizontal / Vertical Layout",
     "lightDarkMode": "Light / Dark Mode",
+    "language": "Language",
+    "languageSystem": "System default",
+    "languageEnglish": "English",
+    "languageDutch": "Nederlands",
     "deleteAllData": "Delete All Data",
     "deleteAllDataTitle": "Delete all tabs and entries?",
     "deleteAllDataContent": "Are you sure you want to delete all tabs and their entries?",
@@ -191,6 +195,9 @@
     "chooseRating": "Please choose a rating from 1 to 5 stars.",
     "feedbackDailyLimit": "You can submit up to 5 feedback reports per day. Try again tomorrow.",
     "feedbackSubmitFailed": "We couldn't send your feedback. Please check your connection and try again.",
+    "feedbackMaxImagesReached": "You can attach up to 3 images per feedback report.",
+    "feedbackImageTooLarge": "Each image must be 5 MB or smaller.",
+    "feedbackImageEmpty": "The selected image is empty or could not be read.",
     "accountAlreadyExists": "An account already exists for this email.",
     "invalidEmailAddress": "Invalid email address.",
     "emailPasswordNotEnabled": "Email/password accounts are not enabled.",
@@ -232,7 +239,10 @@
       "usePillStyleBanner": "Pill-style home banners",
       "enableChangelogPage": "Changelog page",
       "feedbackImagesEnabled": "Feedback image attachments",
-      "enableUserAccounts": "User accounts"
+      "enableUserAccounts": "User accounts",
+      "enableTutorial": "Tutorial",
+      "enableUpdatePrompt": "Update prompt",
+      "enableAboutPage": "About page"
     }
   },
   "details": {
@@ -285,6 +295,8 @@
     "addImages": "Add Images",
     "pasteScreenshot": "Paste Screenshot",
     "noImageInClipboard": "No image found in clipboard",
+    "unsupportedClipboardImage": "Clipboard image format is not supported. Try a PNG or JPEG screenshot.",
+    "clipboardReadFailed": "Could not read the image from your clipboard. Try again.",
     "submitFeedback": "Submit Feedback",
     "categoryLabel": "Category",
     "categoryLabelRequired": "Category *",
@@ -307,6 +319,7 @@
   "about": {
     "title": "About",
     "appName": "Multichoice",
+    "dialogDescription": "Multichoice is a powerful tool for managing your choices and decisions.",
     "socialTitle": "Social",
     "instagram": "Instagram",
     "website": "Website",

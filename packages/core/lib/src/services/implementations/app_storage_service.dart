@@ -214,6 +214,20 @@ class AppStorageService implements IAppStorageService {
   }
 
   @override
+  Future<String?> get appLocale async {
+    return _sharedPreferences.getString(StorageKeys.appLocale.key);
+  }
+
+  @override
+  Future<void> setAppLocale(String? locale) async {
+    if (locale == null) {
+      await _sharedPreferences.remove(StorageKeys.appLocale.key);
+      return;
+    }
+    await _sharedPreferences.setString(StorageKeys.appLocale.key, locale);
+  }
+
+  @override
   Future<void> clearAllData() async {
     if (!kDebugMode) return;
 
@@ -226,6 +240,7 @@ class AppStorageService implements IAppStorageService {
     await setIsImportDataBannerDismissed(false);
     await setIsSignupBannerDismissed(false);
     await clearLastUsedEmail();
+    await _sharedPreferences.remove(StorageKeys.appLocale.key);
     await _sharedPreferences.remove(StorageKeys.feedbackSubmissionDay.key);
     await _sharedPreferences.remove(StorageKeys.feedbackSubmissionCount.key);
   }

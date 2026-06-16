@@ -11,6 +11,7 @@ import 'package:multichoice/app/view/theme/app_theme.dart';
 import 'package:multichoice/config/app_flavor.dart';
 import 'package:multichoice/generated/assets.gen.dart';
 import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/utils/about_feature.dart';
 import 'package:multichoice/utils/tutorial_feature.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -22,3 +23,4 @@ part 'drawer_header_section.dart';
 part 'more_section.dart';
 part 'light_dark_mode_button.dart';
 part 'horizontal_vertical_layout_button.dart';
+part 'language_tile.dart';

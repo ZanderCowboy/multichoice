@@ -42,6 +42,10 @@
     "about": "Over",
     "horizontalLayout": "Horizontale / verticale lay-out",
     "lightDarkMode": "Lichte / donkere modus",
+    "language": "Taal",
+    "languageSystem": "Systeemstandaard",
+    "languageEnglish": "Engels",
+    "languageDutch": "Nederlands",
     "deleteAllData": "Alle gegevens verwijderen",
     "deleteAllDataTitle": "Alle tabbladen en invoeren verwijderen?",
     "deleteAllDataContent": "Weet je zeker dat je alle tabbladen en hun invoeren wilt verwijderen?",
@@ -192,6 +196,9 @@
     "chooseRating": "Kies een beoordeling van 1 tot 5 sterren.",
     "feedbackDailyLimit": "Je kunt maximaal 5 feedbackrapporten per dag indienen. Probeer het morgen opnieuw.",
     "feedbackSubmitFailed": "We konden je feedback niet verzenden. Controleer je verbinding en probeer het opnieuw.",
+    "feedbackMaxImagesReached": "Je kunt maximaal 3 afbeeldingen per feedbackrapport toevoegen.",
+    "feedbackImageTooLarge": "Elke afbeelding mag maximaal 5 MB zijn.",
+    "feedbackImageEmpty": "De geselecteerde afbeelding is leeg of kon niet worden gelezen.",
     "accountAlreadyExists": "Er bestaat al een account voor dit e-mailadres.",
     "invalidEmailAddress": "Ongeldig e-mailadres.",
     "emailPasswordNotEnabled": "E-mail/wachtwoord-accounts zijn niet ingeschakeld.",
@@ -233,7 +240,10 @@
       "usePillStyleBanner": "Pill-stijl home-banners",
       "enableChangelogPage": "Changelogpagina",
       "feedbackImagesEnabled": "Feedback-afbeeldingsbijlagen",
-      "enableUserAccounts": "Gebruikersaccounts"
+      "enableUserAccounts": "Gebruikersaccounts",
+      "enableTutorial": "Tutorial",
+      "enableUpdatePrompt": "Updateprompt",
+      "enableAboutPage": "Over-pagina"
     }
   },
   "details": {
@@ -286,6 +296,8 @@
     "addImages": "Afbeeldingen toevoegen",
     "pasteScreenshot": "Plak screenshot",
     "noImageInClipboard": "Geen afbeelding gevonden in klembord",
+    "unsupportedClipboardImage": "Klembordafbeeldingsformaat wordt niet ondersteund. Probeer een PNG- of JPEG-screenshot.",
+    "clipboardReadFailed": "Kon de afbeelding niet van het klembord lezen. Probeer het opnieuw.",
     "submitFeedback": "Verstuur feedback",
     "categoryLabel": "Categorie",
     "categoryLabelRequired": "Categorie *",
@@ -308,6 +320,7 @@
   "about": {
     "title": "Over",
     "appName": "Multichoice",
+    "dialogDescription": "Multichoice is een krachtige tool voor het beheren van je keuzes en beslissingen.",
     "socialTitle": "Sociaal",
     "instagram": "Instagram",
     "website": "Website",

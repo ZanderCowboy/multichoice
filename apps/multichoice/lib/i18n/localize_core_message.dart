@@ -58,6 +58,11 @@ String localizeCoreMessageWithTranslations(
       errors.resetLinkExpired,
     'This reset link is invalid or was already used.' =>
       errors.resetLinkInvalid,
+    'You can attach up to 3 images per feedback report.' =>
+      errors.feedbackMaxImagesReached,
+    'Each image must be 5 MB or smaller.' => errors.feedbackImageTooLarge,
+    'The selected image is empty or could not be read.' =>
+      errors.feedbackImageEmpty,
     _ => message,
   };
 }
