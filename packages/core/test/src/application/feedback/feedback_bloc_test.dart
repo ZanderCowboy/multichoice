@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
 import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
 import 'package:core/src/services/implementations/noop_analytics_service.dart';
 import 'package:dartz/dartz.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
@@ -51,7 +54,7 @@ void main() {
       expect(initialState.errorMessage, null);
       expect(initialState.feedback.id, '');
       expect(initialState.feedback.message, '');
-      expect(initialState.feedback.rating, 1);
+      expect(initialState.feedback.rating, 0);
       expect(initialState.feedback.deviceInfo, '');
       expect(initialState.feedback.appVersion, '');
       expect(initialState.feedback.userId, null);
@@ -312,6 +315,89 @@ void main() {
           ),
         ),
         expect: () => <FeedbackState>[],
+      );
+    });
+
+    group('imageAdded event', () {
+      final smallFile = PlatformFile(
+        name: 'test.png',
+        size: 1024,
+        bytes: Uint8List(1024),
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'adds image when within limits',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(FeedbackEvent.imageAdded(smallFile)),
+        expect: () => [
+          isA<FeedbackState>().having(
+            (state) => state.imageFiles.length,
+            'imageFiles length',
+            1,
+          ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects empty image',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(
+          FeedbackEvent.imageAdded(
+            PlatformFile(name: 'empty.png', size: 0),
+          ),
+        ),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackImageEmptyMessage,
+              ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects oversized image',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(
+          FeedbackEvent.imageAdded(
+            PlatformFile(
+              name: 'large.png',
+              size: FeedbackImageLimits.maxBytesPerImage + 1,
+            ),
+          ),
+        ),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackImageTooLargeMessage,
+              ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects when max image count is reached',
+        build: () => feedbackBloc,
+        seed: () => FeedbackState.initial().copyWith(
+          imageFiles: List.generate(
+            FeedbackImageLimits.maxCount,
+            (index) => PlatformFile(name: '$index.png', size: 1),
+          ),
+        ),
+        act: (bloc) => bloc.add(FeedbackEvent.imageAdded(smallFile)),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackMaxImagesReachedMessage,
+              ),
+        ],
       );
     });
   });
