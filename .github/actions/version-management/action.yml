@@ -44,7 +44,20 @@ runs:
   using: "composite"
   steps:
     ##############################################
-    # Update Version (bash-only; no nested checkout)
+    # Commit mode: checkout target branch with the GitHub App token so pushes
+    # bypass branch rulesets. Compute-only mode uses the job checkout instead
+    # (no nested checkout — avoids ref/state issues in preBuild).
+    ##############################################
+    - name: Checkout Branch
+      if: inputs.commit_changes == 'true'
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ inputs.branch_name }}
+        fetch-depth: 0
+        token: ${{ inputs.github_token }}
+
+    ##############################################
+    # Update Version
     ##############################################
     - name: Update Version
       id: version_update

@@ -10,7 +10,7 @@
 # - Cross-tier labels are blocked by pr_version_labels.yml before merge.
 # - If the pull request is merged and has the label 'no-build', it will skip the build process.
 #
-name: rc-workflow
+name: staging-workflow
 on:
   pull_request:
     branches: ["rc"]
