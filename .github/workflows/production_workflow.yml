@@ -270,6 +270,21 @@ jobs:
           tag_strategy: "version-only"
           allowed_formats: "standard"
 
+      ##############################################
+      # Send Dry Run Success Notification
+      ##############################################
+      - name: Send Dry Run Success Notification
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: production
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: ${{ inputs.target_branch }}
+          dry_run: true
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
   create-release:
     name: Create GitHub Release
     needs: [build]
@@ -332,6 +347,7 @@ jobs:
           environment: production
           version: ${{ needs.build.outputs.tag_version }}
           branch: main
+          dry_run: false
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
 
@@ -360,5 +376,6 @@ jobs:
           environment: production
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: main
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

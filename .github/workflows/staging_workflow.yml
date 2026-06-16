@@ -205,6 +205,7 @@ jobs:
           environment: staging
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: rc
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
 
@@ -233,5 +234,6 @@ jobs:
           environment: staging
           version: ${{ needs.preBuild.outputs.version_number }}
           branch: rc
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
           email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

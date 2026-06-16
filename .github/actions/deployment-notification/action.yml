@@ -44,6 +44,10 @@ inputs:
   email_recipients:
     description: "Comma-separated list of email recipients"
     required: false
+  dry_run:
+    description: "When true, send notifications but do not create GitHub issues on failure"
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -61,6 +65,7 @@ runs:
         AUTHOR: ${{ inputs.author }}
         PR_NUMBER: ${{ inputs.pr_number }}
         PR_TITLE: ${{ inputs.pr_title }}
+        DRY_RUN: ${{ inputs.dry_run }}
         REPOSITORY: ${{ github.repository }}
         WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
@@ -75,6 +80,7 @@ runs:
         author="$AUTHOR"
         pr_number="$PR_NUMBER"
         pr_title="$PR_TITLE"
+        dry_run="$DRY_RUN"
         repository="$REPOSITORY"
         workflow_run_url="$WORKFLOW_RUN_URL"
 
@@ -98,6 +104,10 @@ runs:
           "📦 **Version:** ${version}" \
           "🌿 **Branch:** ${branch}" \
           "👤 **Author:** ${author}")"
+
+        if [[ "$dry_run" == "true" || "$dry_run" == "True" ]]; then
+          message+="$(printf '\n🧪 **Dry run:** yes (no publish/commit/tag; issues not created on failure)')"
+        fi
 
         if [[ -n "$pr_number" ]]; then
           message+="$(printf '\n🔗 **PR:** #%s - %s' "$pr_number" "$pr_title")"
@@ -137,6 +147,7 @@ runs:
         AUTHOR: ${{ inputs.author }}
         PR_NUMBER: ${{ inputs.pr_number }}
         PR_TITLE: ${{ inputs.pr_title }}
+        DRY_RUN: ${{ inputs.dry_run }}
         REPOSITORY: ${{ github.repository }}
         WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
@@ -158,6 +169,7 @@ runs:
         author = os.environ["AUTHOR"]
         pr_number = os.environ.get("PR_NUMBER", "")
         pr_title = os.environ.get("PR_TITLE", "")
+        dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
         repository = os.environ["REPOSITORY"]
         workflow_run_url = os.environ["WORKFLOW_RUN_URL"]
 
@@ -167,6 +179,7 @@ runs:
             "cancelled": {"emoji": "⚠️", "color": 16763904},
         }
         meta = status_meta.get(status, {"emoji": "ℹ️", "color": 9807270})
+        title_suffix = " (dry run)" if dry_run else ""
 
         if is_discord:
             fields = [
@@ -176,6 +189,15 @@ runs:
                 {"name": "Author", "value": author, "inline": True},
                 {"name": "Commit", "value": f"`{commit_sha[:8]}`", "inline": True},
             ]
+
+            if dry_run:
+                fields.append(
+                    {
+                        "name": "Dry run",
+                        "value": "Yes — no publish/commit/tag; issues not created on failure",
+                        "inline": False,
+                    }
+                )
 
             if pr_number:
                 fields.append(
@@ -207,7 +229,7 @@ runs:
                         "username": "Deployment Bot",
                         "embeds": [
                             {
-                                "title": f"{meta['emoji']} Deployment {status}",
+                                "title": f"{meta['emoji']} Deployment {status}{title_suffix}",
                                 "url": workflow_run_url,
                                 "color": meta["color"],
                                 "fields": fields,
@@ -259,7 +281,7 @@ runs:
 
     - name: Create GitHub Issue for Failed Deployments
       id: create_issue
-      if: inputs.deployment_status == 'failure'
+      if: inputs.deployment_status == 'failure' && inputs.dry_run != true && inputs.dry_run != 'true'
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github_token }}
@@ -285,9 +307,12 @@ runs:
       shell: bash
       env:
         ISSUE_CREATED: ${{ steps.create_issue.outputs.created }}
+        DRY_RUN: ${{ inputs.dry_run }}
       run: |
         if [[ "${{ inputs.deployment_status }}" == "failure" ]]; then
-          if [[ "${ISSUE_CREATED:-false}" == "true" ]]; then
+          if [[ "$DRY_RUN" == "true" || "$DRY_RUN" == "True" ]]; then
+            issue_status="Skipped (dry run)"
+          elif [[ "${ISSUE_CREATED:-false}" == "true" ]]; then
             issue_status="Created"
           else
             issue_status="Failed"

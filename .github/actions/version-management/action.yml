@@ -44,56 +44,7 @@ runs:
   using: "composite"
   steps:
     ##############################################
-    # Checkout Branch
-    ##############################################
-    - name: Checkout Branch
-      uses: actions/checkout@v6
-      with:
-        ref: ${{ inputs.branch_name }}
-        fetch-depth: 0
-        token: ${{ inputs.github_token }}
-
-    ##############################################
-    # Get Current Version From pubspec.yaml
-    ##############################################
-    - name: Get Current Version From pubspec.yaml
-      id: get_current_version
-      shell: bash
-      run: |
-        set -euo pipefail
-        echo "Checking version in ${{ inputs.pubspec_path }}:"
-        if [[ ! -f "${{ inputs.pubspec_path }}" ]]; then
-          echo "::error::File not found: ${{ inputs.pubspec_path }}"
-          exit 1
-        fi
-
-        grep '^version:' "${{ inputs.pubspec_path }}" || {
-          echo "::error::No version field found in ${{ inputs.pubspec_path }}"
-          exit 1
-        }
-
-        version_suffix="${{ inputs.version_suffix }}"
-        # Escape regex metacharacters in version_suffix before embedding in grep -E.
-        escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
-        if [[ -n "$version_suffix" ]]; then
-          expected_regex="^version:[[:space:]]*[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
-          expected_hint="x.y.z${version_suffix}+build"
-        else
-          expected_regex="^version:[[:space:]]*[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
-          expected_hint="x.y.z+build"
-        fi
-
-        if ! grep -qE "$expected_regex" "${{ inputs.pubspec_path }}"; then
-          echo "::error::Invalid version format in ${{ inputs.pubspec_path }}. Expected format: ${expected_hint}"
-          exit 1
-        fi
-        current_version=$(grep 'version:' ${{ inputs.pubspec_path }} | sed 's/version:[[:space:]]*//')
-        echo "current_version=$current_version" >> $GITHUB_OUTPUT
-        echo "Current version: $current_version"
-        echo "***********************************"
-
-    ##############################################
-    # Update Version
+    # Update Version (bash-only; no nested checkout)
     ##############################################
     - name: Update Version
       id: version_update
@@ -110,22 +61,37 @@ runs:
         commit_changes="${{ inputs.commit_changes }}"
         target_version="${{ inputs.target_version }}"
 
+        echo "Checking version in ${pubspec_path}:"
+
         git config user.name "VersionBumpingBot"
         git config user.email "bot@versionbumpingbot.com"
+        git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
         read_current_version() {
           local v
+          if [[ ! -f "$pubspec_path" ]]; then
+            echo "::error::File not found: $pubspec_path"
+            exit 1
+          fi
+
+          grep '^version:' "$pubspec_path" || {
+            echo "::error::No version field found in $pubspec_path"
+            exit 1
+          }
+
           v="$(grep '^version:' "$pubspec_path" | sed 's/version:[[:space:]]*//')"
-          local escaped_suffix version_re
+          local escaped_suffix version_re expected_hint
           escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
           if [[ -n "$version_suffix" ]]; then
             version_re="^[0-9]+\\.[0-9]+\\.[0-9]+${escaped_suffix}\\+[0-9]+$"
+            expected_hint="x.y.z${version_suffix}+build"
           else
             version_re="^[0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$"
+            expected_hint="x.y.z+build"
           fi
 
           if ! echo "$v" | grep -qE "$version_re"; then
-            echo "::error::Invalid version format in $pubspec_path: $v"
+            echo "::error::Invalid version format in $pubspec_path: $v (expected ${expected_hint})"
             exit 1
           fi
           echo "$v"
@@ -143,7 +109,6 @@ runs:
             exit 1
           fi
 
-          # Strip any existing suffix (we re-apply version_suffix deterministically below)
           base_part="${current_part%%-*}"
           if ! echo "$base_part" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::Invalid version part: $current_part"
@@ -187,11 +152,13 @@ runs:
         for attempt in $(seq 1 "$max_retries"); do
           echo "Version bump attempt $attempt/$max_retries"
 
-          # Ensure we are on the latest remote tip before computing the next version.
           git fetch origin "$branch_name"
           git reset --hard "origin/$branch_name"
 
           current_version="$(read_current_version)"
+          echo "Current version: $current_version"
+          echo "***********************************"
+
           if [[ -n "$target_version" ]]; then
             next_version="$target_version"
             escaped_suffix="$(printf '%s' "$version_suffix" | sed -e 's/[][(){}.^$+*?|\\/]/\\&/g')"
@@ -219,7 +186,6 @@ runs:
 
           echo "Updating version: $current_version -> $next_version"
 
-          # Compute-only mode (no commit/push)
           if [[ "$commit_changes" != "true" ]]; then
             version_part="$(echo "$next_version" | cut -d'+' -f1)"
             build_number="$(echo "$next_version" | cut -d'+' -f2)"
