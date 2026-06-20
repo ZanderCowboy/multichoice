@@ -46,6 +46,15 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
 
+# Upstream super_clipboard/super_native_extensions prebuilts are not 16 KB aligned
+# (required for Android 15+ / Pixel 9 class devices). Remove when pub.dev ships a fix.
+dependency_overrides:
+  super_native_extensions:
+    git:
+      url: https://github.com/dilumdesilva/super_native_extensions
+      path: super_native_extensions
+      ref: main
+
 dev_dependencies:
   auto_route_generator: ^10.0.1
   build_runner: ^2.4.8
