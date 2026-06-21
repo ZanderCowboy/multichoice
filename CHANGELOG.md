@@ -28,3 +28,5 @@
 - Import / export data
 - Language selection (System / English / Nederlands) in drawer
 - Submit feedback with and without images
+
+- Trigger comment
