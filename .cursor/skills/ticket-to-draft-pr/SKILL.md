@@ -37,8 +37,9 @@ Use this skill when the user wants a GitHub ticket handled from implementation t
 
 5. **Update the changelog**
    - Follow `.cursor/commands/changelog.md`.
+   - **Replace** `CHANGELOG.md` entirely — QA-facing: what to test, what changed for users.
+   - Put implementation details in the PR description, not the changelog.
    - Base the changelog on the actual diff.
-   - Keep it concise and ticket-focused.
 
 6. **Create commits**
    - Follow `.cursor/commands/commit.md`.

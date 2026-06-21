@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -11,7 +10,7 @@ import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
-import 'package:super_clipboard/super_clipboard.dart';
+import 'package:multichoice/utils/screenshot_image_reader.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatelessWidget {
@@ -128,109 +127,36 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
     );
   }
 
-  void _showUnsupportedClipboardImageSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.unsupportedClipboardImage)),
-    );
-  }
-
   void _showClipboardReadFailedSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.t.feedback.clipboardReadFailed)),
     );
   }
 
-  ({FileFormat format, String extension})? _detectClipboardImageFormat(
-    ClipboardReader reader,
-  ) {
-    const candidates = <(FileFormat, String)>[
-      (Formats.png, 'png'),
-      (Formats.jpeg, 'jpg'),
-      (Formats.webp, 'webp'),
-      (Formats.gif, 'gif'),
-    ];
-
-    for (final (format, extension) in candidates) {
-      if (reader.canProvide(format)) {
-        return (format: format, extension: extension);
-      }
-    }
-
-    return null;
-  }
-
   Future<void> _pasteImageFromClipboard(BuildContext context) async {
-    final clipboard = SystemClipboard.instance;
-    if (clipboard == null) {
-      if (context.mounted) {
-        _showNoImageInClipboardSnackBar(context);
-      }
+    final image = await ScreenshotImageReader.readImageBytes();
+    if (!context.mounted) return;
+
+    if (image == null) {
+      _showNoImageInClipboardSnackBar(context);
       return;
     }
 
-    ClipboardReader reader;
-    try {
-      reader = await clipboard.read();
-    } on Object {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
-      }
+    if (image.bytes.isEmpty) {
+      _showClipboardReadFailedSnackBar(context);
       return;
     }
 
-    final detected = _detectClipboardImageFormat(reader);
-    if (detected == null) {
-      if (context.mounted) {
-        _showUnsupportedClipboardImageSnackBar(context);
-      }
-      return;
-    }
-
-    final completer = Completer<void>();
-    final progress = reader.getFile(detected.format, (file) async {
-      try {
-        final bytes = await file.readAll();
-        if (!context.mounted) return;
-        if (bytes.isEmpty) {
-          if (!completer.isCompleted) {
-            completer.completeError(Object());
-          }
-          return;
-        }
-        context.read<FeedbackBloc>().add(
-          FeedbackEvent.imageAdded(
-            PlatformFile(
-              name:
-                  'screenshot_${DateTime.now().millisecondsSinceEpoch}.${detected.extension}',
-              size: bytes.length,
-              bytes: bytes,
-            ),
-          ),
-        );
-        if (!completer.isCompleted) {
-          completer.complete();
-        }
-      } on Object {
-        if (!completer.isCompleted) {
-          completer.completeError(Object());
-        }
-      }
-    });
-
-    if (progress == null) {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
-      }
-      return;
-    }
-
-    try {
-      await completer.future;
-    } on Object {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
-      }
-    }
+    context.read<FeedbackBloc>().add(
+      FeedbackEvent.imageAdded(
+        PlatformFile(
+          name:
+              'screenshot_${DateTime.now().millisecondsSinceEpoch}.${image.extension}',
+          size: image.bytes.length,
+          bytes: image.bytes,
+        ),
+      ),
+    );
   }
 
   Widget _buildImageThumbnails(BuildContext context, FeedbackState state) {

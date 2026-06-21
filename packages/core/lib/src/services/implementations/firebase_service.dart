@@ -30,13 +30,8 @@ class FirebaseService implements IFirebaseService {
         ),
       );
 
-      // Set default values if needed
       await _remoteConfig.setDefaults({
-        FirebaseConfigKeys.enableUserAccounts.key: false,
-        FirebaseConfigKeys.enableTutorial.key: false,
-        FirebaseConfigKeys.enableUpdatePrompt.key: false,
-        FirebaseConfigKeys.enableAboutPage.key: false,
-        FirebaseConfigKeys.feedbackImagesEnabled.key: false,
+        for (final key in FirebaseConfigKeys.featureFlags) key.key: false,
       });
 
       _isInitialized = true;

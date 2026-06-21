@@ -1,34 +1,32 @@
-# Feedback Improvements
+# 413 - Hotfix v0.13.2 RC
 
-## Feedback form
+## Feedback — paste screenshot (Android)
 
-- Enforced client-side image limits (3 images, 5 MB each) in `FeedbackBloc` with localized error messages
-- Improved clipboard paste: supports PNG, JPEG, WebP, and GIF; clearer snackbars for unsupported formats, read failures, and empty images
-- Fixed form reset after successful submit so category and validation state stay in sync (`KeyedSubtree` + version key)
+- **Paste Screenshot** attaches an image from the clipboard (PNG, JPEG, WebP, GIF)
+- After taking a screenshot, paste should work even when the clipboard appears empty (Samsung / One UI)
+- App may request **Photos** permission the first time you paste
+- Still capped at **3 images**, **5 MB** each — verify limit messages still appear
+- Empty clipboard or read failure shows a snackbar (no crash)
+- **Add Images** (file picker) still works as before
 
-## Language selection
+## Remote Config — first launch
 
-- Added drawer language tile with System / English / Nederlands options persisted via `IAppStorageService`
-- App startup applies saved locale preference through `applySavedAppLocale()`
+- On a **fresh install**, verify feature flags match Firebase without needing an app restart:
+  - Tutorial visibility
+  - Update prompt
+  - About page vs simple about dialog
+  - Feedback image attachments (Add Images / Paste Screenshot buttons)
 
-## Feature flags
+## Android — install & permissions
 
-- Gated update prompt modal behind Remote Config `enable_update_prompt`
-- Gated full About page behind `enable_about_page`; drawer falls back to a simple `showAboutDialog` when disabled
-- Documented new flags in debug feature-flags UI and architecture reference
+- App installs and launches on **16 KB page-size** devices (Android 15+)
+- No regression on standard page-size devices
 
-## CI / DevOps
+## Regression smoke tests
 
-- Fixed version-management action: checkout target branch with GitHub App token when `commit_changes` is true (bypasses branch rulesets)
+- Create, edit, reorder, and delete tab entries
+- Import / export data
+- Language selection (System / English / Nederlands) in drawer
+- Submit feedback with and without images
 
-## Platform
-
-- Registered Android `DataProvider` for super_clipboard image paste on feedback form
-
-## i18n
-
-- Added drawer language strings and feedback clipboard error messages (en/nl)
-
-## Tests
-
-- Added `feedback_form_test.dart` widget tests and expanded `FeedbackBloc` / `AppStorageService` unit tests
+- Trigger comment

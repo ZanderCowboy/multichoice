@@ -296,7 +296,6 @@
     "addImages": "Afbeeldingen toevoegen",
     "pasteScreenshot": "Plak screenshot",
     "noImageInClipboard": "Geen afbeelding gevonden in klembord",
-    "unsupportedClipboardImage": "Klembordafbeeldingsformaat wordt niet ondersteund. Probeer een PNG- of JPEG-screenshot.",
     "clipboardReadFailed": "Kon de afbeelding niet van het klembord lezen. Probeer het opnieuw.",
     "submitFeedback": "Verstuur feedback",
     "categoryLabel": "Categorie",

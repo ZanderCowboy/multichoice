@@ -12,7 +12,7 @@ alwaysApply: false
 - `layouts/` — home layout, tabs
 - `presentation/` — pages, feature widgets, dialogs
 - `i18n/` — slang locale files (`*.i18n.json`), `localize_core_message.dart`
-- `utils/` — app-only helpers (e.g. product tour)
+- `utils/` — app-only helpers (e.g. product tour, `screenshot_image_reader.dart`)
 
 ## Packages
 
