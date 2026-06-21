@@ -8,7 +8,18 @@ import 'package:flutter/foundation.dart';
 import 'package:models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> initializeNonCriticalServices() async {
+Future<void>? _nonCriticalServicesFuture;
+
+/// Shared startup future for Remote Config fetch and analytics setup.
+///
+/// Safe to await from multiple callers; work runs at most once.
+Future<void> get nonCriticalServicesInitialization =>
+    _nonCriticalServicesFuture ??= _initializeNonCriticalServices();
+
+Future<void> initializeNonCriticalServices() =>
+    nonCriticalServicesInitialization;
+
+Future<void> _initializeNonCriticalServices() async {
   // Run Remote Config fetch after first frame to avoid blocking startup.
   try {
     final firebaseService = coreSl<IFirebaseService>();
