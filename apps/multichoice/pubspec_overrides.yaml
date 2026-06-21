@@ -9,8 +9,3 @@ dependency_overrides:
     path: ../../packages/theme
   ui_kit:
     path: ../../packages/ui_kit
-  super_native_extensions:
-    git:
-      url: https://github.com/dilumdesilva/super_native_extensions
-      path: super_native_extensions
-      ref: main

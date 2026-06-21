@@ -37,7 +37,6 @@ dependencies:
   showcaseview: ^5.0.1
   slang: ^4.14.0
   slang_flutter: ^4.14.0
-  super_clipboard: ^0.9.1
   theme: ^0.0.1
   ui_kit: ^0.0.1
   url_launcher: ^6.2.0
@@ -45,15 +44,6 @@ dependencies:
     git:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
-
-# Upstream super_clipboard/super_native_extensions prebuilts are not 16 KB aligned
-# (required for Android 15+ / Pixel 9 class devices). Remove when pub.dev ships a fix.
-dependency_overrides:
-  super_native_extensions:
-    git:
-      url: https://github.com/dilumdesilva/super_native_extensions
-      path: super_native_extensions
-      ref: main
 
 dev_dependencies:
   auto_route_generator: ^10.0.1
