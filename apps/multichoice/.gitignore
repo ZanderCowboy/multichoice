@@ -9,6 +9,7 @@ pubspec.lock
 **/ios/Flutter/.last_build_id
 .pub-cache/
 .pub/
+**/ios/
 
 # Generated Code
 **/*.g.dart
