@@ -1,11 +1,17 @@
 # Last Update
 
-**Date:** 2026-06-15  
+**Date:** 2026-06-21  
 **Previous major overhaul:** 2026-06-13 — PR #385 (`feat: update .cursor folder to ensure context engineering…`)
 
 ## Audit summary
 
 Reviewed `.cursor/` against the repo after the slang i18n migration (#388), DEV/PROD flavors, Android-only scope, and Remote Config debug overrides. The June 13 overhaul structure remains sound: slim always-apply rules, on-demand references, shared `_workflow-base.md`, deduplicated commands.
+
+## Gaps found (since 2026-06-21)
+
+| Gap | Resolution |
+|-----|------------|
+| Feedback paste-screenshot not documented | Expanded `feedback-and-settings.md` with `ScreenshotImageReader` bridge, limits, Android flow; updated product overview, glossary, feature-flags, layers-and-ownership, `code-organization`, `flutter-developer` agent |
 
 ## Gaps found (since 2026-06-13)
 
