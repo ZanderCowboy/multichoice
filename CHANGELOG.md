@@ -1,32 +1,20 @@
-# 413 - Hotfix v0.13.2 RC
+# 425 - Play Photo Picker Policy
 
-## Feedback — paste screenshot (Android)
+## Feedback — images
 
-- **Paste Screenshot** attaches an image from the clipboard (PNG, JPEG, WebP, GIF)
-- After taking a screenshot, paste should work even when the clipboard appears empty (Samsung / One UI)
-- App may request **Photos** permission the first time you paste
+- **Paste Screenshot** is removed
+- Attach images only via **Add Images** (system photo picker)
+- App should **not** request Photos / media library access for feedback
 - Still capped at **3 images**, **5 MB** each — verify limit messages still appear
-- Empty clipboard or read failure shows a snackbar (no crash)
-- **Add Images** (file picker) still works as before
+- Feature flag `feedback_images_enabled` still gates the Add Images button
 
-## Remote Config — first launch
+## Android — permissions
 
-- On a **fresh install**, verify feature flags match Firebase without needing an app restart:
-  - Tutorial visibility
-  - Update prompt
-  - About page vs simple about dialog
-  - Feedback image attachments (Add Images / Paste Screenshot buttons)
-
-## Android — install & permissions
-
-- App installs and launches on **16 KB page-size** devices (Android 15+)
-- No regression on standard page-size devices
+- Fresh install should not prompt for broad photo/media access for feedback
+- App installs and launches normally on Android devices
 
 ## Regression smoke tests
 
+- Submit feedback with and without images (Add Images only)
 - Create, edit, reorder, and delete tab entries
-- Import / export data
 - Language selection (System / English / Nederlands) in drawer
-- Submit feedback with and without images
-
-- Trigger comment

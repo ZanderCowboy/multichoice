@@ -2,7 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Play Photo & Video policy: photo picker only; strip if plugins merge these in -->
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_VIDEO"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove" />
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
