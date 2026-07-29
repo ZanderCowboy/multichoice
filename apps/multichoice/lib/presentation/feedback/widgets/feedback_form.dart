@@ -10,7 +10,6 @@ import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
-import 'package:multichoice/utils/screenshot_image_reader.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatelessWidget {
@@ -119,44 +118,6 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
         }
       }
     }
-  }
-
-  void _showNoImageInClipboardSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.noImageInClipboard)),
-    );
-  }
-
-  void _showClipboardReadFailedSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.clipboardReadFailed)),
-    );
-  }
-
-  Future<void> _pasteImageFromClipboard(BuildContext context) async {
-    final image = await ScreenshotImageReader.readImageBytes();
-    if (!context.mounted) return;
-
-    if (image == null) {
-      _showNoImageInClipboardSnackBar(context);
-      return;
-    }
-
-    if (image.bytes.isEmpty) {
-      _showClipboardReadFailedSnackBar(context);
-      return;
-    }
-
-    context.read<FeedbackBloc>().add(
-      FeedbackEvent.imageAdded(
-        PlatformFile(
-          name:
-              'screenshot_${DateTime.now().millisecondsSinceEpoch}.${image.extension}',
-          size: image.bytes.length,
-          bytes: image.bytes,
-        ),
-      ),
-    );
   }
 
   Widget _buildImageThumbnails(BuildContext context, FeedbackState state) {
@@ -369,25 +330,10 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                     if (coreSl<IFirebaseService>().isEnabled(
                       FirebaseConfigKeys.feedbackImagesEnabled,
                     )) ...[
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _pickImage(context),
-                              icon: const Icon(Icons.image),
-                              label: Text(context.t.feedback.addImages),
-                            ),
-                          ),
-                          gap8,
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () =>
-                                  _pasteImageFromClipboard(context),
-                              icon: const Icon(Icons.content_paste),
-                              label: Text(context.t.feedback.pasteScreenshot),
-                            ),
-                          ),
-                        ],
+                      OutlinedButton.icon(
+                        onPressed: () => _pickImage(context),
+                        icon: const Icon(Icons.image),
+                        label: Text(context.t.feedback.addImages),
                       ),
                       _buildImageThumbnails(context, state),
                       gap24,
