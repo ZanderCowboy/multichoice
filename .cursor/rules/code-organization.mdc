@@ -1,65 +1,25 @@
 ---
-description: 
-globs: 
+description: Dart code organization and architecture boundaries
+globs: ["apps/**/*.dart", "packages/**/*.dart"]
 alwaysApply: false
 ---
-# Code Organization Guide
 
-## Package Structure
-Each package should follow this structure:
-```
-package_name/
-├── lib/
-│   ├── src/           # Implementation files
-│   ├── package_name.dart  # Public API
-│   └── models/        # Data models
-├── test/              # Test files
-└── pubspec.yaml       # Package configuration
-```
+# Code Organization
 
-## App Structure
-Each Flutter app should follow this structure:
-```
-app_name/
-├── lib/
-│   ├── main.dart      # Entry point
-│   ├── app.dart       # App configuration
-│   ├── features/      # Feature modules
-│   ├── shared/        # Shared components
-│   └── utils/         # Utility functions
-├── test/              # Test files
-└── pubspec.yaml       # App configuration
-```
+## App
 
-## Feature Organization
-Features should be organized as follows:
-```
-feature_name/
-├── data/             # Data layer
-│   ├── repositories/
-│   └── datasources/
-├── domain/           # Business logic
-│   ├── entities/
-│   └── usecases/
-└── presentation/     # UI layer
-    ├── pages/
-    ├── widgets/
-    └── controllers/
-```
+- `app/` — setup, routing, theme, auth layout, exports
+- `layouts/` — home layout, tabs
+- `presentation/` — pages, feature widgets, dialogs
+- `i18n/` — slang locale files (`*.i18n.json`), `localize_core_message.dart`
+- `utils/` — app-only helpers (e.g. product tour, `screenshot_image_reader.dart`)
 
-## Best Practices
-1. Keep files focused and single-responsibility. Multiple files is prefered with part/part-of instead of large files. 
-2. Use barrel files (index.dart) for clean exports, named export.dart
-3. Follow the dependency rule: presentation → domain → data
-4. Keep business logic in the domain layer
-5. Use dependency injection for better testability
+## Packages
 
-## Linting
-1. Avoid missing commas
+- `core/.../application` — blocs
+- `core/.../services`, `repositories`, `controllers`, `wrappers` — interfaces + implementations
+- `models/lib/src` — DTOs, DB models, enums, mappers
+- `ui_kit/lib/src` — widgets and constants
+- `theme/lib/src` — colors and extensions
 
-## Testing
-- Unit tests for business logic
-- Widget tests for UI components
-- Integration tests for feature flows
-- Place tests next to the code they test
-
+Follow the folder nearest the change before creating a new one. Keep files focused; use trailing commas.

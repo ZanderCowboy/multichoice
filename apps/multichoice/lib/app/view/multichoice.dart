@@ -1,8 +1,15 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/app/view/auth/password_reset_deep_link_listener.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
+import 'package:multichoice/app/view/remote_config_activation_listener.dart';
 import 'package:multichoice/app/view/theme/app_theme.dart';
+import 'package:multichoice/config/app_flavor.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:provider/provider.dart';
 
 class Multichoice extends StatelessWidget {
@@ -14,6 +21,12 @@ class Multichoice extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RemoteConfigDebugNotifier(),
+        ),
         ChangeNotifierProvider(
           create: (context) => AppTheme(),
         ),
@@ -27,18 +40,39 @@ class Multichoice extends StatelessWidget {
             ),
         ),
       ],
-      builder: (context, child) => MaterialApp.router(
-        title: 'Multichoice',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: context.watch<AppTheme>().themeMode,
-        debugShowCheckedModeBanner: false,
-        routerConfig: _appRouter.config(),
-        builder: (context, child) => ColoredBox(
-          color:
-              context.theme.appColors.foreground ??
-              Theme.of(context).scaffoldBackgroundColor,
-          child: child ?? const SizedBox.shrink(),
+      builder: (context, child) => RemoteConfigActivationListener(
+        child: MaterialApp.router(
+          onGenerateTitle: (context) => context.t.appTitle,
+          theme: AppTheme.lightThemeData,
+          darkTheme: AppTheme.darkThemeData,
+          themeMode: context.watch<AppTheme>().themeMode,
+          locale: TranslationProvider.of(context).flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          debugShowCheckedModeBanner: false,
+          routerConfig: _appRouter.config(),
+          builder: (context, child) {
+            final content = ColoredBox(
+              color:
+                  context.theme.appColors.appBarBackground ??
+                  Theme.of(context).scaffoldBackgroundColor,
+              child: PasswordResetDeepLinkListener(
+                router: _appRouter,
+                child: child ?? const SizedBox.shrink(),
+              ),
+            );
+
+            if (!AppFlavor.showsEnvironmentBanner) {
+              return content;
+            }
+
+            return Banner(
+              message: AppFlavor.isDev ? 'DEV' : 'PROD',
+              location: BannerLocation.topEnd,
+              color: AppFlavor.isDev ? Colors.orange : Colors.red,
+              child: content,
+            );
+          },
         ),
       ),
     );

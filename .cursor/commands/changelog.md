@@ -1,18 +1,21 @@
 # Changelog Command
 
-Please look at the `git diffs` and update the CHANGELOG.md (path: `CHANGELOG.md`) in a bullet list format.
+Update `CHANGELOG.md` for the current branch ticket.
 
-First, run `git branch --show-current` to get the current branch name and extract the ticket number from the start of the branch name.
+1. `git branch --show-current` — extract ticket # from branch prefix (e.g. `7-implement-draggable` → #7).
+2. Review `git diff` for actual changes on this branch.
+3. **Replace the entire file** — do not prepend or append. `CHANGELOG.md` is **QA-facing**: what changed from a tester’s perspective and what to verify in the build.
 
-Follow this structure:
+**Audience:** QA / manual test plan — user-visible behavior, permissions, feature flags, regression areas. Not implementation details.
+
+**Put elsewhere:** class names, MethodChannels, dependency bumps, repo/tooling, and store-listing docs belong in the **PR description**, not `CHANGELOG.md`.
+
 ```md
-#<ticket-number> - GitHub Issue Title
+# <ticket-number> - <Title in Title Case>
 
-- Item
-- Item
+## <User-facing area>
+
+- What to test or what changed for the user
 ```
 
-To get the ticket number, extract it from the start of the current branch name (e.g., "7-implement-draggable" -> ticket #7).
-The title should be in Camel Case based on the branch name (e.g., "implement-draggable" -> "Implement Draggable").
-Replace the existing contents.
-Do not over explain. It should just have enough details to capture the purpose of the code changes.
+Title from branch slug (`implement-draggable` → `Implement Draggable`). Bullets: testable outcomes, not code paths.

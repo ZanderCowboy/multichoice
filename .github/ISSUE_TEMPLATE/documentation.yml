@@ -1,0 +1,101 @@
+name: 📚 Documentation
+description: Improve or request documentation
+title: "[Docs]: "
+labels: ["documentation", "good first issue"]
+assignees:
+  - ZanderCowboy
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📚 Documentation Request
+        
+        Help us improve our docs! Keep it short—details can go in comments.
+        
+        > **Perfect for first-time contributors!**
+
+  - type: input
+    id: doc-title
+    attributes:
+      label: 📝 Documentation Title
+      description: What documentation needs attention?
+      placeholder: "Example: Add setup instructions for development environment"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: 📂 Documentation Type
+      description: What kind of docs change is this?
+      options:
+        - "📖 README"
+        - "🚀 Getting Started"
+        - "🏗️ Architecture"
+        - "🧪 Testing"
+        - "🔧 Configuration"
+        - "🐛 Troubleshooting"
+        - "🎯 Contributing"
+        - "✨ Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: 📄 Current State
+      description: What's wrong with the current documentation (if any)?
+      placeholder: |
+        - Missing information about...
+        - Outdated instructions for...
+        - Confusing explanation of...
+        - No documentation exists for...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-improvement
+    attributes:
+      label: ✨ Proposed Improvement
+      description: What should be added, changed, or improved?
+      placeholder: |
+        - Add section about...
+        - Update instructions to include...
+        - Clarify the explanation of...
+        - Create examples for...
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-files
+    attributes:
+      label: 📁 Affected Files/Sections
+      description: Which files or sections need updates?
+      placeholder: |
+        - README.md (section: Getting Started)
+        - docs/contributing.md
+        - lib/src/services/README.md
+        - Code comments in auth_service.dart
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 📖 References
+      description: Any relevant links, examples from other projects, or resources
+      placeholder: |
+        - Similar documentation: https://example.com/docs
+        - Related issue: #123
+        - Inspiration from: flutter.dev/docs
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Quick check
+      options:
+        - label: I searched for an existing docs issue
+          required: true

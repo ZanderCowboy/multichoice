@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
 abstract class IFilePickerWrapper {
-  Future<String?> pickFile();
+  Future<String?> pickFile({
+    List<String>? allowedExtensions,
+  });
 
   Future<String?> saveFile({
     required String dialogTitle,

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/search/search_result_card.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -71,7 +73,7 @@ class _SearchView extends StatelessWidget {
               if (state.errorMessage != null) {
                 return Center(
                   child: Text(
-                    state.errorMessage!,
+                    localizeCoreMessage(context, state.errorMessage!),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),

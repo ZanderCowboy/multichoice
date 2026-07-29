@@ -1,0 +1,55 @@
+{
+  "_comment": "Copy snippets into .vscode/snippets.code-snippets as needed",
+  "Service Interface": {
+    "scope": "dart",
+    "prefix": "iservice",
+    "body": [
+      "abstract class I${1:Feature}Service {",
+      "  Future<void> ${2:methodName}();",
+      "}"
+    ],
+    "description": "Service interface"
+  },
+  "Service Implementation": {
+    "scope": "dart",
+    "prefix": "service",
+    "body": [
+      "@LazySingleton(as: I${1:Feature}Service)",
+      "class ${1:Feature}Service implements I${1:Feature}Service {",
+      "  ${1:Feature}Service();",
+      "",
+      "  @override",
+      "  Future<void> ${2:methodName}() async {",
+      "    // Implementation",
+      "  }",
+      "}"
+    ],
+    "description": "LazySingleton service implementation"
+  },
+  "Flutter Page": {
+    "scope": "dart",
+    "prefix": "fpage",
+    "body": [
+      "@RoutePage()",
+      "class ${1:Feature}Page extends StatelessWidget {",
+      "  const ${1:Feature}Page({super.key});",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return Scaffold(",
+      "      appBar: AppBar(title: const Text('${2:Title}')),",
+      "      body: _${1:Feature}Page(),",
+      "    );",
+      "  }",
+      "}",
+      "",
+      "class _${1:Feature}Page extends StatelessWidget {",
+      "  const _${1:Feature}Page();",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) => const Placeholder();",
+      "}"
+    ],
+    "description": "RoutePage with scaffold pattern"
+  }
+}

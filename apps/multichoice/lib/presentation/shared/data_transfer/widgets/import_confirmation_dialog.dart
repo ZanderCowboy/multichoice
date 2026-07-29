@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 
 class ImportConfirmationDialog extends StatelessWidget {
   const ImportConfirmationDialog({super.key});
@@ -6,22 +7,22 @@ class ImportConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Warning!'),
-      content: const Text(
-        'Importing data will alter existing data. Do you want to overwrite or append?',
+      title: Text(context.t.common.warning),
+      content: Text(
+        context.t.dataTransfer.importConfirmationBody,
       ),
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.t.common.cancel),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Overwrite'),
+          child: Text(context.t.common.overwrite),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Append'),
+          child: Text(context.t.common.append),
         ),
       ],
     );

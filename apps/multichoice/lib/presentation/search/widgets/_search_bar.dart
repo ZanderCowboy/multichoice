@@ -44,7 +44,7 @@ class _SearchBarState extends State<_SearchBar> {
         cursorHeight: 18,
         style: const TextStyle(color: Colors.black87),
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: context.t.search.hint,
           hintStyle: const TextStyle(color: Colors.black54),
           filled: true,
           fillColor: Colors.white,

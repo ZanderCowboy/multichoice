@@ -1,0 +1,25 @@
+---
+description: Core service, repository, wrapper, and controller conventions
+globs: ["packages/core/**/*.dart", "packages/models/**/*.dart"]
+alwaysApply: false
+---
+
+# Core Services And Data
+
+## Interfaces and implementations
+
+- Match local pattern: `interfaces/` + `implementations/` (services) or `implementation/` (repositories).
+- Names: `i_<name>.dart`, `I<Name>Service`, `I<Name>Repository`.
+- Register with `@LazySingleton(as: I*)` or `@injectable` per nearby code.
+- Blocs: `@injectable`, sealed events, `@CopyWith()` + Equatable states (not Freezed).
+
+## Results and errors
+
+- Preserve `Either<Exception, T>` and existing error types (e.g. `AuthException`).
+- Do not expose internal service details to UI.
+- Avoid public interface changes unless required and confirmed.
+
+## Models
+
+- DTOs, DB models, API models, enums, mappers in `packages/models`.
+- Use existing mappers; regenerate Freezed/JSON via Melos.

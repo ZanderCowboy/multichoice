@@ -6,6 +6,16 @@
 
 /apps/showcase/
 /tools/
+.agent/scratch/
+
+# Multichoice V2
+**/gradle-wrapper.jar
+**/.gradle
+**/captures/
+**/gradlew
+**/gradlew.bat
+**/local.properties
+**/GeneratedPluginRegistrant.java
 
 # Multichoice V2
 **/gradle-wrapper.jar
@@ -51,9 +61,6 @@ upload-keystore.*
 **/**/.ssh
 **/.secrets
 
-# Running Workflows Locally
-**/.secrets
-
 # dotenv environment variables file
 .env*
 **/tmp.*
@@ -90,3 +97,4 @@ devtools_options.yaml
 
 # FVM Version Cache
 .fvm/
+**/.credentials/*.key

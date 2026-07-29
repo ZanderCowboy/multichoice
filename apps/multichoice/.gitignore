@@ -9,6 +9,7 @@ pubspec.lock
 **/ios/Flutter/.last_build_id
 .pub-cache/
 .pub/
+**/ios/
 
 # Generated Code
 **/*.g.dart
@@ -27,8 +28,14 @@ upload-keystore.*
 **/key.properties
 **/multichoice-*.json
 **/**/.ssh
-**/lib/auth/
-**/lib/auth/secrets.dart
+config/develop_config.json
+config/develop_config.md
+config/production_config.json
+config/production_config.md
+android/app/src/dev/google-services.json
+android/app/src/dev/google-services.md
+android/app/src/prod/google-services.json
+android/app/src/prod/google-services.md
 
 # dotenv environment variables file
 .env*

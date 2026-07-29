@@ -11,15 +11,15 @@ class AppearanceSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'Appearance',
-            style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+            context.t.drawer.appearance,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
         const LightDarkModeButton(),
         const HorizontalVerticalLayoutButton(),
+        const LanguageTile(),
       ],
     );
   }

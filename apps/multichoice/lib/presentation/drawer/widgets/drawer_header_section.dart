@@ -33,17 +33,13 @@ class DrawerHeaderSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Multichoice',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: Colors.white,
-                        ),
+                        context.t.appTitle,
+                        style: context.appTextTheme.headingMedium,
                       ),
                       gap4,
                       Text(
-                        asyncSnapshot.data ?? 'Welcome back!',
-                        style: AppTypography.subtitleMedium.copyWith(
-                          color: Colors.white70,
-                        ),
+                        asyncSnapshot.data ?? context.t.drawer.welcomeBack,
+                        style: context.appTextTheme.subtitleMedium,
                       ),
                     ],
                   ),
@@ -52,7 +48,7 @@ class DrawerHeaderSection extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  tooltip: TooltipEnums.close.tooltip,
+                  tooltip: TooltipEnums.close.label(context.t),
                   icon: const Icon(
                     Icons.close_outlined,
                     size: 28,

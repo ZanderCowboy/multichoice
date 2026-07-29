@@ -4,23 +4,55 @@ import 'package:core/core.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:models/models.dart';
+import 'package:file_picker/file_picker.dart';
 
 part 'feedback_event.dart';
 part 'feedback_state.dart';
 part 'feedback_bloc.g.dart';
 
+/// Shown in the UI when Firestore/network submission fails (details go to analytics only).
+const _feedbackSubmitFailedUserMessage =
+    "We couldn't send your feedback. Please check your connection and try again.";
+
 @Injectable()
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final IFeedbackRepository _feedbackRepository;
   final IAnalyticsService _analyticsService;
+  final IAppStorageService _appStorageService;
 
   FeedbackBloc(
     this._feedbackRepository,
     this._analyticsService,
+    this._appStorageService,
   ) : super(FeedbackState.initial()) {
     on<FeedbackEvent>((event, emit) async {
       switch (event) {
         case SubmitFeedback(:final feedback):
+          if (feedback.rating < 1) {
+            emit(
+              state.copyWith(
+                feedback: feedback,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage: 'Please choose a rating from 1 to 5 stars.',
+              ),
+            );
+            return;
+          }
+          if (!await _appStorageService.canSubmitMoreFeedbackToday()) {
+            emit(
+              state.copyWith(
+                feedback: feedback,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage:
+                    'You can submit up to 5 feedback reports per day. Try again tomorrow.',
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
               feedback: feedback,
@@ -39,7 +71,10 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
             ),
           );
 
-          final result = await _feedbackRepository.submitFeedback(feedback);
+          final result = await _feedbackRepository.submitFeedback(
+            feedback,
+            imageFiles: state.imageFiles,
+          );
 
           await result.fold(
             (error) async {
@@ -59,7 +94,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                   isLoading: false,
                   isSuccess: false,
                   isError: true,
-                  errorMessage: error.message,
+                  errorMessage: _feedbackSubmitFailedUserMessage,
                 ),
               );
             },
@@ -72,6 +107,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
                   rating: feedback.rating,
                 ),
               );
+
+              await _appStorageService.recordFeedbackSubmissionForToday();
 
               emit(
                 state.copyWith(
@@ -100,6 +137,51 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
               ),
             );
           }
+        case FeedbackImageAdded(:final file):
+          final validationError = _validateImageFile(file);
+          if (validationError != null) {
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage: validationError,
+              ),
+            );
+            return;
+          }
+          if (state.imageFiles.length >= FeedbackImageLimits.maxCount) {
+            emit(
+              state.copyWith(
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                errorMessage: feedbackMaxImagesReachedMessage,
+              ),
+            );
+            return;
+          }
+          emit(
+            state.copyWith(
+              imageFiles: [...state.imageFiles, file],
+              isLoading: false,
+              isSuccess: false,
+              isError: false,
+              errorMessage: null,
+            ),
+          );
+        case FeedbackImageRemoved(:final index):
+          final updatedFiles = List<PlatformFile>.from(state.imageFiles)
+            ..removeAt(index);
+          emit(
+            state.copyWith(
+              imageFiles: updatedFiles,
+              isLoading: false,
+              isSuccess: false,
+              isError: false,
+              errorMessage: null,
+            ),
+          );
       }
     });
   }
@@ -119,5 +201,16 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           ? value as int
           : state.feedback.rating,
     );
+  }
+
+  String? _validateImageFile(PlatformFile file) {
+    final size = file.size;
+    if (size <= 0) {
+      return feedbackImageEmptyMessage;
+    }
+    if (size > FeedbackImageLimits.maxBytesPerImage) {
+      return feedbackImageTooLargeMessage;
+    }
+    return null;
   }
 }

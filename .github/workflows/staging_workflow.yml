@@ -3,32 +3,43 @@
 # It is responsible for building the Android app, running tests, and uploading artifacts.
 # It also manages versioning based on labels applied to the pull request.
 #
-# The versioning works as follows:
-# - If the pull request is merged and has labels 'major', 'minor', or 'patch', it will bump the version accordingly with -RC suffix.
-#   For example, 1.0.0+5, and the label is 'minor', it will become 1.1.0-RC+6.
-# - If the pull request is merged and has no labels, it will bump the build number only.
+# The versioning works as follows (see .github/config/version-labels.json):
+# - major → major bump; minor / feature → minor; patch / bug → patch (aliases in the same tier are OK)
+# - If the pull request is merged and has no version labels, it will bump the build number only.
 #   For example, if the current version is 1.0.0+5, it will become 1.0.0-RC+6.
+# - Cross-tier labels are blocked by pr_version_labels.yml before merge.
 # - If the pull request is merged and has the label 'no-build', it will skip the build process.
 #
-name: rc-workflow
+name: staging-workflow
 on:
   pull_request:
     branches: ["rc"]
+    paths-ignore:
+      # The workflow updates pubspec version after a successful deploy.
+      # Ignoring pubspec changes prevents any accidental feedback-loop triggers
+      # if this workflow ever adds push-based triggers in the future.
+      - "apps/multichoice/pubspec.yaml"
     types:
       - closed
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
+        required: true
+        type: boolean
+        default: true
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: staging-workflow-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   preBuild:
     name: Prebuild - Version Management
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'no-build') == false) }}
     runs-on: ubuntu-latest
     concurrency:
-      group: build-group
+      group: version-management-staging
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.version_management.outputs.version_number }}
@@ -49,7 +60,7 @@ jobs:
       ##############################################
       - name: Generate GitHub App Token
         id: generate_token
-        uses: peter-murray/workflow-application-token-action@v4
+        uses: peter-murray/workflow-application-token-action@v5
         with:
           application_id: ${{ secrets.VERSION_BOT_APP_ID }}
           application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
@@ -61,9 +72,8 @@ jobs:
         id: check_labels
         uses: ./.github/actions/check-version-labels
         with:
-          labels: ${{ toJson(github.event.pull_request.labels) }}
-          allowed_labels: "major,minor,patch"
-          no_build_label: "no-build"
+          labels: ${{ github.event_name == 'pull_request' && toJson(github.event.pull_request.labels) || '[]' }}
+          target_branch: rc
 
       ##############################################
       # Version Management
@@ -77,11 +87,15 @@ jobs:
           branch_name: rc
           bump_type: ${{ steps.check_labels.outputs.bump_type }}
           version_suffix: "-RC"
+          commit_changes: "false"
 
   build:
     name: Builds Android App
     needs: [preBuild]
     runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/tracks/internal-testing
     permissions:
       contents: write
       packages: read
@@ -100,31 +114,19 @@ jobs:
         uses: ./.github/actions/setup-flutter-with-java
 
       ##############################################
-      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
+      # Download and Prepare Android Keystore, Config, Google Services
       ##############################################
-      - name: Download Android Keystore File
-        id: android_keystore
-        uses: timheuer/base64-to-file@v1.2.4
+      - name: Prepare Android release files (PROD)
+        uses: ./.github/actions/prepare-android-release-files
         with:
-          fileName: upload-keystore.jks
-          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      - name: Create key.properties File
-        run: |
-          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
-          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
-        working-directory: apps/multichoice/android/
-      - name: Create secrets.dart File
-        run: |
-          mkdir auth
-          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
-          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
-          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
-          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
-          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
-          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
-        working-directory: apps/multichoice/lib/
+          android_keystore_base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          store_password: ${{ secrets.STORE_PASSWORD }}
+          key_password: ${{ secrets.KEY_PASSWORD }}
+          key_alias: ${{ secrets.KEY_ALIAS }}
+          config_b64: ${{ secrets.PROD_CONFIG_B64 }}
+          google_services_b64: ${{ secrets.PROD_GOOGLE_SERVICES_B64 }}
+          flavor: prod
+          package_name: co.za.zanderkotze.multichoice
 
       - name: Create and Validate google-services.json file
         working-directory: apps/multichoice/android/app/
@@ -179,7 +181,7 @@ jobs:
         env:
           FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
           FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        run: flutter build appbundle --release --target lib/main_production.dart --flavor prod --dart-define-from-file=config/production_config.json --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
 
       ##############################################
@@ -189,15 +191,16 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: "android-release-appbundle"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          path: ./apps/multichoice/build/app/outputs/bundle/prodRelease/app-prod-release.aab
 
       ###############################################
       # Release to Google Play Internal Track
       ###############################################
       - name: Release Build to internal track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: r0adkll/upload-google-play@v1
         with:
-          releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          releaseFiles: apps/multichoice/build/app/outputs/bundle/prodRelease/app-prod-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "co.za.zanderkotze.multichoice"
           track: "internal"
@@ -205,11 +208,78 @@ jobs:
           status: "completed"
 
       ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v5
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/version-management
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          pubspec_path: apps/multichoice/pubspec.yaml
+          branch_name: rc
+          bump_type: none
+          target_version: ${{ needs.preBuild.outputs.version_number }}
+          version_suffix: "-RC"
+          commit_changes: "true"
+
+      ##############################################
       # Create New Tag
       ##############################################
       - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: ./.github/actions/create-git-tag
         with:
           version_number: ${{ needs.preBuild.outputs.version_number }}
           tag_strategy: "full"
           allowed_formats: "rc"
+
+      ##############################################
+      # Send Success Notification
+      ##############################################
+      - name: Send Success Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: staging
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: rc
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
+  notify-failure:
+    name: Notify Deployment Failure
+    needs: [preBuild, build]
+    runs-on: ubuntu-latest
+    if: failure() && needs.preBuild.result != 'skipped'
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      ##############################################
+      # Send Failure Notification
+      ##############################################
+      - name: Send Failure Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: failure
+          environment: staging
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: rc
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

@@ -4,25 +4,22 @@
 # and can optionally create a GitHub release.
 #
 # Versioning works as follows:
-# - Reads the latest RC tag matching: vX.Y.Z-RC+N
-# - Bumps semantic version based on input: patch, minor, or major
-# - Always increments build number by 1
-#   Example: v2.4.1-RC+125 with release_type=minor -> v2.5.0+126
-# - Creates a version-only tag from the finalized version (for example, v2.5.0)
+# - Reads the current version from apps/multichoice/pubspec.yaml on the target branch
+# - Expects an RC version (X.Y.Z-RC+N) and promotes it to production (X.Y.Z+N+1)
+#   Example: 2.4.1-RC+125 -> 2.4.1+126
+# - Optional release_version input overrides the semver (X.Y.Z) while still incrementing build
+# - Semantic bumps are handled in the staging (RC) workflow; this workflow only strips RC
+# - Creates a version-only tag from the finalized version (for example, v2.4.1)
 #
-name: main-workflow
+name: production-workflow
 on:
   workflow_dispatch:
     inputs:
-      release_type:
-        description: "Semantic version bump type"
+      dry_run:
+        description: "Dry run (manual testing): do not commit, tag, or publish"
         required: true
-        type: choice
-        default: patch
-        options:
-          - patch
-          - minor
-          - major
+        type: boolean
+        default: true
       target_branch:
         description: "Branch to build and update"
         required: true
@@ -33,9 +30,14 @@ on:
         required: true
         type: boolean
         default: false
+      release_version:
+          description: "Optional manual version override (e.g. 2.4.1). Takes precedence over RC suffix removal."
+          required: false
+          type: string
+          default: ""
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: production-workflow
   cancel-in-progress: true
 
 jobs:
@@ -43,7 +45,7 @@ jobs:
     name: Prebuild - Version Management
     runs-on: ubuntu-latest
     concurrency:
-      group: build-group
+      group: version-management-production
       cancel-in-progress: false
     outputs:
       version_number: ${{ steps.get_current_version.outputs.version_with_build }}
@@ -61,117 +63,78 @@ jobs:
           ref: ${{ inputs.target_branch }}
 
       ##############################################
-      # Get Current Version From Latest Tag
+      # Get Current Version From pubspec.yaml
       ##############################################
-      - name: Get Current Version From Latest Tag
+      - name: Get Current Version From pubspec.yaml
         id: get_current_version
         shell: bash
-        env:
-          RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
-          # Get the latest tag
-          latest_tag=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-RC)?\+[0-9]+$' | head -n1)
-          if [[ -z "$latest_tag" ]]; then
-            echo "::error::No valid tags found in repository"
-            exit 1
-          fi
-          echo "latest_tag=$latest_tag"
+          set -euo pipefail
 
-          # Remove 'v' prefix if present
-          version_without_v=${latest_tag#v}
-          echo "version_without_v=$version_without_v"
-
-          # Check if version has RC suffix
-          if [[ ! "$version_without_v" =~ -RC ]]; then
-            echo "::error::Latest tag does not have RC suffix: $version_without_v"
+          pubspec_path="apps/multichoice/pubspec.yaml"
+          if [[ ! -f "$pubspec_path" ]]; then
+            echo "::error::pubspec.yaml not found at $pubspec_path"
             exit 1
           fi
 
-          # Extract version parts
-          version_part_RC=$(echo "$version_without_v" | cut -d'+' -f1)
-          build_number=$(echo "$version_without_v" | cut -d'+' -f2)
+          version_line="$(grep -E '^[[:space:]]*version:[[:space:]]*' "$pubspec_path" | head -n1 || true)"
+          if [[ -z "$version_line" ]]; then
+            echo "::error::No version found in $pubspec_path"
+            exit 1
+          fi
+
+          current_version_raw="$(echo "$version_line" | sed -E 's/^[[:space:]]*version:[[:space:]]*//')"
+          current_version_raw="$(echo "$current_version_raw" | tr -d '\r' | xargs)"
+          echo "pubspec_version=$current_version_raw"
+
+          version_part="$(echo "$current_version_raw" | cut -d'+' -f1)"
+          build_number="$(echo "$current_version_raw" | cut -d'+' -f2)"
+
+          if [[ -z "$version_part" || -z "$build_number" ]]; then
+            echo "::error::Invalid pubspec version format (expected X.Y.Z-RC+N): $current_version_raw"
+            exit 1
+          fi
+
+          if [[ "$version_part" != *"-RC" ]]; then
+            echo "::error::Expected RC version in pubspec (X.Y.Z-RC+N), got: $current_version_raw"
+            exit 1
+          fi
+
+          version_without_rc="${version_part%-RC}"
+          if ! echo "$version_without_rc" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid version after removing RC: $version_without_rc"
+            exit 1
+          fi
+
+          manual_override="$(echo "${{ inputs.release_version }}" | tr -d '\r' | xargs || true)"
+          if [[ -n "$manual_override" ]]; then
+            if ! echo "$manual_override" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::Invalid release_version override: $manual_override. Expected format: X.Y.Z"
+              exit 1
+            fi
+            echo "Using manual version override: $manual_override (pubspec RC semver was $version_without_rc)"
+            version_without_rc="$manual_override"
+          fi
+
+          if ! echo "$build_number" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid build number in pubspec: $build_number"
+            exit 1
+          fi
 
           new_build_number=$((build_number + 1))
 
-          # Remove RC suffix to get base version
-          version_without_rc=${version_part_RC%-RC*}
-
-          # Validate the extracted version
-          if ! echo "$version_without_rc" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "::error::Invalid version format after removing RC: $version_without_rc"
-            exit 1
-          fi
-
-          if ! echo "$new_build_number" | grep -qE '^[0-9]+$'; then
-            echo "::error::Invalid build number: $new_build_number"
-            exit 1
-          fi
-
-          IFS='.' read -r major minor patch <<< "$version_without_rc"
-          case "$RELEASE_TYPE" in
-            major)
-              major=$((major + 1))
-              minor=0
-              patch=0
-              ;;
-            minor)
-              minor=$((minor + 1))
-              patch=0
-              ;;
-            patch)
-              patch=$((patch + 1))
-              ;;
-            *)
-              echo "::error::Invalid release_type: $RELEASE_TYPE"
-              exit 1
-              ;;
-          esac
-
-          bumped_version="$major.$minor.$patch"
-
-          if ! echo "$bumped_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "::error::Invalid bumped version: $bumped_version"
-            exit 1
-          fi
-
-          echo "version_without_rc=$bumped_version" >> $GITHUB_OUTPUT
-          echo "build_number=$new_build_number" >> $GITHUB_OUTPUT
-          echo "updated build number: $new_build_number"
-          echo "version_with_build=$bumped_version+$new_build_number" >> $GITHUB_OUTPUT
-          echo "full version: $bumped_version+$new_build_number"
-          echo "current_version=$bumped_version" >> $GITHUB_OUTPUT
-          echo "Current version name: $bumped_version"
-
-          echo "Version without RC suffix: $bumped_version+$new_build_number"
-          echo "Current version: $bumped_version"
-
-      ##############################################
-      # Generate GitHub App Token
-      ##############################################
-      - name: Generate GitHub App Token
-        id: generate_token
-        uses: peter-murray/workflow-application-token-action@v4
-        with:
-          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
-          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
-
-      ##############################################
-      # Commit Version Update
-      ##############################################
-      - name: Commit Version Update
-        uses: ./.github/actions/tokenized-commit
-        with:
-          github_token: ${{ steps.generate_token.outputs.token }}
-          repository: ${{ github.repository }}
-          file_path: apps/multichoice/pubspec.yaml
-          commit_message: "Release version ${{ steps.get_current_version.outputs.version_with_build }} [skip ci]"
-          branch_name: ${{ inputs.target_branch }}
-          version_with_build: ${{ steps.get_current_version.outputs.version_with_build }}
+          echo "version_without_rc=$version_without_rc" >> "$GITHUB_OUTPUT"
+          echo "build_number=$new_build_number" >> "$GITHUB_OUTPUT"
+          echo "version_with_build=$version_without_rc+$new_build_number" >> "$GITHUB_OUTPUT"
+          echo "current_version=$version_without_rc" >> "$GITHUB_OUTPUT"
 
   build:
     name: Builds Android App
     needs: [preBuild]
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://play.google.com/console/u/0/developers/8783535225973670504/app/4976133683768209199/app-dashboard
     permissions:
       contents: write
       packages: read
@@ -200,38 +163,26 @@ jobs:
       - name: Melos Coverage for Core
         run: melos coverage:core
       - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: packages/core/coverage/lcov.info
           fail_ci_if_error: true
 
       ##############################################
-      # Download and Prepare Android Keystore, Key Properties, Secrets Dart, Google Services
+      # Download and Prepare Android Keystore, Config, Google Services
       ##############################################
-      - name: Download Android Keystore File
-        id: android_keystore
-        uses: timheuer/base64-to-file@v1.2.4
+      - name: Prepare Android release files (PROD)
+        uses: ./.github/actions/prepare-android-release-files
         with:
-          fileName: upload-keystore.jks
-          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      - name: Create key.properties File
-        run: |
-          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > key.properties
-          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
-        working-directory: apps/multichoice/android/
-      - name: Create secrets.dart File
-        run: |
-          mkdir auth
-          echo "String webApiKey = '${{ secrets.WEB_API_KEY }}';" > auth/secrets.dart
-          echo "String webAppId = '${{ secrets.WEB_APP_ID }}';" >> auth/secrets.dart
-          echo "String androidApiKey = '${{ secrets.ANDROID_API_KEY }}';" >> auth/secrets.dart
-          echo "String androidAppId = '${{ secrets.ANDROID_APP_ID }}';" >> auth/secrets.dart
-          echo "String iosApiKey = '${{ secrets.IOS_API_KEY }}';" >> auth/secrets.dart
-          echo "String iosAppId = '${{ secrets.IOS_APP_ID }}';" >> auth/secrets.dart
-        working-directory: apps/multichoice/lib/
+          android_keystore_base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          store_password: ${{ secrets.STORE_PASSWORD }}
+          key_password: ${{ secrets.KEY_PASSWORD }}
+          key_alias: ${{ secrets.KEY_ALIAS }}
+          config_b64: ${{ secrets.PROD_CONFIG_B64 }}
+          google_services_b64: ${{ secrets.PROD_GOOGLE_SERVICES_B64 }}
+          flavor: prod
+          package_name: co.za.zanderkotze.multichoice
 
       - name: Create and Validate google-services.json file
         working-directory: apps/multichoice/android/app/
@@ -286,7 +237,7 @@ jobs:
         env:
           FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
           FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-        run: flutter build apk --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        run: flutter build apk --release --target lib/main_production.dart --flavor prod --dart-define-from-file=config/production_config.json --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
 
       ##############################################
@@ -296,7 +247,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: "android-release-apk"
-          path: ./apps/multichoice/build/app/outputs/flutter-apk/app-release.apk
+          path: ./apps/multichoice/build/app/outputs/flutter-apk/app-prod-release.apk
 
       ##############################################
       # Build App Bundle
@@ -305,7 +256,7 @@ jobs:
         env:
           FLUTTER_BUILD_NAME: ${{ needs.preBuild.outputs.version_part }}
           FLUTTER_BUILD_NUMBER: ${{ needs.preBuild.outputs.build_number }}
-        run: flutter build appbundle --release --build-name=${{ env.FLUTTER_BUILD_NAME }}  --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
+        run: flutter build appbundle --release --target lib/main_production.dart --flavor prod --dart-define-from-file=config/production_config.json --build-name=${{ env.FLUTTER_BUILD_NAME }} --build-number=${{ env.FLUTTER_BUILD_NUMBER }}
         working-directory: apps/multichoice/
 
       ##############################################
@@ -315,15 +266,16 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: "android-release-appbundle"
-          path: ./apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          path: ./apps/multichoice/build/app/outputs/bundle/prodRelease/app-prod-release.aab
 
       ###############################################
       # Release to Google Play Production Track
       ###############################################.
       - name: Release Build to production track
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         uses: r0adkll/upload-google-play@v1
         with:
-          releaseFiles: apps/multichoice/build/app/outputs/bundle/release/app-release.aab
+          releaseFiles: apps/multichoice/build/app/outputs/bundle/prodRelease/app-prod-release.aab
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "co.za.zanderkotze.multichoice"
           track: "production"
@@ -331,9 +283,32 @@ jobs:
           status: "completed"
 
       ##############################################
+      # Commit Version Update (after successful deploy)
+      ##############################################
+      - name: Generate GitHub App Token (for version commit)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        id: generate_token_commit
+        uses: peter-murray/workflow-application-token-action@v5
+        with:
+          application_id: ${{ secrets.VERSION_BOT_APP_ID }}
+          application_private_key: ${{ secrets.VERSION_BOT_APP_PRIVATE_KEY }}
+
+      - name: Commit Version Update
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: ./.github/actions/tokenized-commit
+        with:
+          github_token: ${{ steps.generate_token_commit.outputs.token }}
+          repository: ${{ github.repository }}
+          file_path: apps/multichoice/pubspec.yaml
+          commit_message: "Release version ${{ needs.preBuild.outputs.version_number }} [skip ci]"
+          branch_name: ${{ inputs.target_branch }}
+          version_with_build: ${{ needs.preBuild.outputs.version_number }}
+
+      ##############################################
       # Create New Tag
       ##############################################
       - name: Create New Tag
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         id: create_tag
         uses: ./.github/actions/create-git-tag
         with:
@@ -341,13 +316,28 @@ jobs:
           tag_strategy: "version-only"
           allowed_formats: "standard"
 
+      ##############################################
+      # Send Dry Run Success Notification
+      ##############################################
+      - name: Send Dry Run Success Notification
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: success
+          environment: production
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: ${{ inputs.target_branch }}
+          dry_run: true
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
   create-release:
     name: Create GitHub Release
     needs: [build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release
+    if: needs.build.outputs.tag_version != '' && !inputs.skip_github_release && !inputs.dry_run
     steps:
       ##############################################
       # Checkout Repository
@@ -369,42 +359,69 @@ jobs:
       ##############################################
       # Create GitHub Release
       ##############################################
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ needs.build.outputs.tag_version }}
+      - name: Create GitHub Release (and upload APK)
+        uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
+          tag_name: v${{ needs.build.outputs.tag_version }}
+          name: Release v${{ needs.build.outputs.tag_version }}
           body: |
-            ## What's New in v${{ env.VERSION }}
+            ## What's New in v${{ needs.build.outputs.tag_version }}
 
             This release includes the latest features and improvements for MultiChoice.
 
-            ### 📱 Download
+            ### Download
             - **APK**: Available for direct download below
             - **Google Play**: Available on the [Google Play Store](https://play.google.com/store/apps/details?id=co.za.zanderkotze.multichoice)
 
-            ### 🔧 Technical Details
-            - Build Number: ${{ needs.build.outputs.build_number }}
+            ### Technical Details
             - Platform: Android
 
-            ### 📋 Release Notes
+            ### Release Notes
             For detailed release notes, please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) file.
+          files: |
+            ./artifacts/app-prod-release.apk
           draft: false
           prerelease: false
 
       ##############################################
-      # Upload APK to Release
+      # Send Success Notification
       ##############################################
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Send Success Notification
+        uses: ./.github/actions/deployment-notification
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/app-release.apk
-          asset_name: multichoice-v${{ needs.build.outputs.tag_version }}.apk
-          asset_content_type: application/vnd.android.package-archive
+          deployment_status: success
+          environment: production
+          version: ${{ needs.build.outputs.tag_version }}
+          branch: main
+          dry_run: false
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}
+
+  notify-failure:
+    name: Notify Deployment Failure
+    needs: [preBuild, build, create-release]
+    runs-on: ubuntu-latest
+    if: failure() && needs.preBuild.result != 'skipped'
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      ##############################################
+      # Checkout Repository
+      ##############################################
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      ##############################################
+      # Send Failure Notification
+      ##############################################
+      - name: Send Failure Notification
+        uses: ./.github/actions/deployment-notification
+        with:
+          deployment_status: failure
+          environment: production
+          version: ${{ needs.preBuild.outputs.version_number }}
+          branch: main
+          dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          webhook_url: ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
+          email_recipients: ${{ secrets.DEPLOYMENT_EMAIL_RECIPIENTS }}

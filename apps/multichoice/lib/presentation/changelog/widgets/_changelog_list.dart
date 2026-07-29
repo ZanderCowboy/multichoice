@@ -21,7 +21,7 @@ class _ChangelogList extends StatelessWidget {
             borderRadius: borderCircular12,
           ),
           margin: bottom12,
-          color: context.theme.appColors.primary,
+          color: context.theme.appColors.linkColor,
           child: Padding(
             padding: allPadding16,
             child: Column(
@@ -35,17 +35,9 @@ class _ChangelogList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Version $version',
-                            style:
-                                context.theme.appTextTheme.titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ) ??
-                                Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            context.t.changelog.versionLabel(version: version),
+                            style: context.theme.appTextTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           gap4,
                           Text(
@@ -68,27 +60,18 @@ class _ChangelogList extends StatelessWidget {
                       children: [
                         Text(
                           '• ',
-                          style:
-                              context.theme.appTextTheme.bodyMedium?.copyWith(
-                                color: context.theme.appColors.ternary,
-                                fontWeight: FontWeight.bold,
-                              ) ??
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: context.theme.appColors.ternary,
+                          style: context.theme.appTextTheme.bodyMedium
+                              ?.copyWith(
+                                color: context.theme.appColors.textTertiary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                         Expanded(
                           child: Text(
                             change,
-                            style:
-                                context.theme.appTextTheme.bodyMedium?.copyWith(
-                                  color: context.theme.appColors.ternary,
-                                ) ??
-                                Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  color: context.theme.appColors.ternary,
+                            style: context.theme.appTextTheme.bodyMedium
+                                ?.copyWith(
+                                  color: context.theme.appColors.textTertiary,
                                 ),
                           ),
                         ),

@@ -1,9 +1,32 @@
-# Release Candidate
+# 413 - Hotfix v0.13.2 RC
 
-- v0.6.0
-- Move Codecov from staging_workflow to linting_workflow
-- Changelog not loading, data model issues
-- Update search body for empty search
-  - Change tabs and entries to collections and items
-- In horizontal mode, menu is hidden behind OS navigation bar
-- Update AndroidManifest with permission `com.google.android.gms.permission.AD_ID`
+## Feedback — paste screenshot (Android)
+
+- **Paste Screenshot** attaches an image from the clipboard (PNG, JPEG, WebP, GIF)
+- After taking a screenshot, paste should work even when the clipboard appears empty (Samsung / One UI)
+- App may request **Photos** permission the first time you paste
+- Still capped at **3 images**, **5 MB** each — verify limit messages still appear
+- Empty clipboard or read failure shows a snackbar (no crash)
+- **Add Images** (file picker) still works as before
+
+## Remote Config — first launch
+
+- On a **fresh install**, verify feature flags match Firebase without needing an app restart:
+  - Tutorial visibility
+  - Update prompt
+  - About page vs simple about dialog
+  - Feedback image attachments (Add Images / Paste Screenshot buttons)
+
+## Android — install & permissions
+
+- App installs and launches on **16 KB page-size** devices (Android 15+)
+- No regression on standard page-size devices
+
+## Regression smoke tests
+
+- Create, edit, reorder, and delete tab entries
+- Import / export data
+- Language selection (System / English / Nederlands) in drawer
+- Submit feedback with and without images
+
+- Trigger comment

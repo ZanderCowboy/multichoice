@@ -1,6 +1,11 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
+import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/utils/tutorial_feature.dart';
+import 'package:provider/provider.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class WelcomeModal extends StatelessWidget {
@@ -15,6 +20,9 @@ class WelcomeModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
+    final tutorialEnabled = isTutorialEnabled();
+
     return PopScope(
       canPop: false,
       child: Dialog(
@@ -23,23 +31,24 @@ class WelcomeModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Welcome to Multichoice',
-                style: TextStyle(
+              Text(
+                context.t.common.welcomeToMultichoice,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               gap16,
-              const Text(
-                'Multichoice helps you organize your thoughts and ideas into customizable collections. '
-                'Would you like to follow a quick tutorial to learn how to use the app?',
+              Text(
+                context.t.common.welcomeToMultichoiceBody,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: context.theme.appTextTheme.bodyLarge,
               ),
               gap24,
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: tutorialEnabled
+                    ? MainAxisAlignment.spaceEvenly
+                    : MainAxisAlignment.center,
                 children: [
                   TextButton(
                     onPressed: () async {
@@ -53,22 +62,23 @@ class WelcomeModal extends StatelessWidget {
                       );
                       onGoHome();
                     },
-                    child: const Text('Go Home'),
+                    child: Text(context.t.common.goHome),
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await coreSl<IAnalyticsService>().logEvent(
-                        const UiActionEventData(
-                          page: AnalyticsPage.home,
-                          button: AnalyticsButton.followTutorial,
-                          action: AnalyticsAction.tap,
-                          source: 'tutorial',
-                        ),
-                      );
-                      onFollowTutorial();
-                    },
-                    child: const Text('Follow Tutorial'),
-                  ),
+                  if (tutorialEnabled)
+                    ElevatedButton(
+                      onPressed: () async {
+                        await coreSl<IAnalyticsService>().logEvent(
+                          const UiActionEventData(
+                            page: AnalyticsPage.home,
+                            button: AnalyticsButton.followTutorial,
+                            action: AnalyticsAction.tap,
+                            source: 'tutorial',
+                          ),
+                        );
+                        onFollowTutorial();
+                      },
+                      child: Text(context.t.tutorial.followTutorial),
+                    ),
                 ],
               ),
             ],

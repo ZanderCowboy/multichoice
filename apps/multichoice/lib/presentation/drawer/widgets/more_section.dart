@@ -5,9 +5,11 @@ class MoreSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteConfigDebugNotifier>();
     final isChangelogEnabled = coreSl<IFirebaseService>().isEnabled(
       FirebaseConfigKeys.enableChangelogPage,
     );
+    final tutorialEnabled = isTutorialEnabled();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -15,51 +17,57 @@ class MoreSection extends StatelessWidget {
         Padding(
           padding: horizontal16 + vertical8,
           child: Text(
-            'More',
-            style: AppTypography.titleSmall.copyWith(
-              color: Colors.white70,
+            context.t.drawer.more,
+            style: context.appTextTheme.titleSmall!.copyWith(
               letterSpacing: 1.1,
             ),
           ),
         ),
-        ListTile(
-          title: const Text('Restart Tutorial'),
-          subtitle: const Text(
-            'Temporarily switches to demo data to show app features, then restores your original data',
-            style: TextStyle(fontSize: 12),
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              final appLayout = context.read<AppLayout>();
-              final originalLayout = appLayout.isLayoutVertical;
-              await appLayout.setLayoutVertical(isVertical: false);
+        if (tutorialEnabled)
+          ListTile(
+            title: Text(
+              context.t.drawer.restartTutorial,
+              style: context.appTextTheme.denseTitle,
+            ),
+            subtitle: Text(
+              context.t.drawer.restartTutorialDesc,
+              style: context.appTextTheme.bodyMedium,
+            ),
+            trailing: IconButton(
+              onPressed: () async {
+                final appLayout = context.read<AppLayout>();
+                final originalLayout = appLayout.isLayoutVertical;
+                await appLayout.setLayoutVertical(isVertical: false);
 
-              await Future.value(
-                coreSl<IProductTourController>().resetTour(),
-              ).whenComplete(() async {
-                if (context.mounted) {
-                  Navigator.of(context).pop();
+                await Future.value(
+                  coreSl<IProductTourController>().resetTour(),
+                ).whenComplete(() async {
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
 
-                  await context.router.push(
-                    TutorialPageRoute(
-                      onCallback: () async {
-                        await appLayout.setLayoutVertical(
-                          isVertical: originalLayout,
-                        );
-                      },
-                    ),
-                  );
-                }
-              });
-            },
-            icon: const Icon(
-              Icons.refresh_outlined,
+                    await context.router.push(
+                      TutorialPageRoute(
+                        onCallback: () async {
+                          await appLayout.setLayoutVertical(
+                            isVertical: originalLayout,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                });
+              },
+              icon: const Icon(
+                Icons.refresh_outlined,
+              ),
             ),
           ),
-        ),
         ListTile(
           leading: const Icon(Icons.feedback_outlined),
-          title: const Text('Send Feedback'),
+          title: Text(
+            context.t.drawer.sendFeedback,
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
             await context.router.push(const FeedbackPageRoute());
           },
@@ -67,14 +75,20 @@ class MoreSection extends StatelessWidget {
         if (isChangelogEnabled)
           ListTile(
             leading: const Icon(Icons.history),
-            title: const Text('Changelog'),
+            title: Text(
+              context.t.drawer.changelog,
+              style: context.appTextTheme.denseTitle,
+            ),
             onTap: () async {
               await context.router.push(const ChangelogPageRoute());
             },
           ),
         ListTile(
           leading: const Icon(Icons.info_outline),
-          title: const Text('About'),
+          title: Text(
+            context.t.drawer.about,
+            style: context.appTextTheme.denseTitle,
+          ),
           onTap: () async {
             await coreSl<IAnalyticsService>().logEvent(
               const UiActionEventData(
@@ -84,19 +98,26 @@ class MoreSection extends StatelessWidget {
                 source: 'about',
               ),
             );
-            final appVersion = await coreSl<IAppInfoService>().getAppVersion();
+            if (!context.mounted) return;
+            if (isAboutPageEnabled()) {
+              await context.router.push(const AboutPageRoute());
+              return;
+            }
 
+            final appVersion = await coreSl<IAppInfoService>().getAppVersion();
             if (!context.mounted) return;
 
             showAboutDialog(
               context: context,
-              applicationName: 'Multichoice',
+              applicationName: context.t.about.appName,
               applicationVersion: appVersion,
-              applicationIcon: const FlutterLogo(size: 64),
+              applicationIcon: Image.asset(
+                Assets.images.playstore.path,
+                width: 64,
+                height: 64,
+              ),
               children: [
-                const Text(
-                  'Multichoice is a powerful tool for managing your choices and decisions.',
-                ),
+                Text(context.t.about.dialogDescription),
               ],
             );
           },

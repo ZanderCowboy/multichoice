@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/tutorial/widgets/thanks_modal.dart';
 import 'package:multichoice/presentation/tutorial/widgets/tutorial_welcome_modal.dart';
 import 'package:multichoice/utils/product_tour/utils/get_product_tour_key.dart';
@@ -216,23 +217,20 @@ class _ProductTourState extends State<ProductTour> {
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Exit tutorial?'),
-            content: const Text(
-              'Are you sure you want to exit the tutorial? Your tutorial '
-              'progress will be skipped.',
-            ),
+            title: Text(context.t.tutorial.exitTitle),
+            content: Text(context.t.tutorial.exitBody),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(dialogContext, rootNavigator: true).pop(false);
                 },
-                child: const Text('Stay'),
+                child: Text(context.t.tutorial.stay),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(dialogContext, rootNavigator: true).pop(true);
                 },
-                child: const Text('Exit'),
+                child: Text(context.t.tutorial.exit),
               ),
             ],
           );

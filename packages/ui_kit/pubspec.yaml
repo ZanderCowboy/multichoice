@@ -1,7 +1,7 @@
 name: ui_kit
 description: A collection of reusable UI widgets for the Multichoice app.
 version: 0.0.1
-homepage: https://github.com/yourusername/multichoice 
+homepage: https://github.com/yourusername/multichoice
 
 environment:
   sdk: ">=3.10.8 <4.0.0"

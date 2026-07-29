@@ -14,8 +14,10 @@ enum AnalyticsButton {
   continueTutorial('continue_tutorial'),
   layout('layout_switch'),
   theme('theme_switch'),
+  language('language'),
   about('about'),
   dismissBanner('dismiss_banner'),
+  signUp('sign_up'),
   ;
 
   const AnalyticsButton(this.key);

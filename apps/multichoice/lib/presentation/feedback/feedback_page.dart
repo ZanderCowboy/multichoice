@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/engine/static_keys.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/feedback/widgets/feedback_form.dart';
 
 @RoutePage()
@@ -17,25 +19,34 @@ class FeedbackPage extends StatelessWidget {
       create: (_) => coreSl<FeedbackBloc>(),
       child: BlocListener<FeedbackBloc, FeedbackState>(
         listener: (context, state) {
+          final messenger = ScaffoldMessenger.of(context);
+          if (state.isLoading) {
+            messenger.clearSnackBars();
+            return;
+          }
           if (state.isSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Thank you for your feedback!'),
-                action: SnackBarAction(
-                  label: 'Go Home',
-                  onPressed: () {
-                    context.router.popUntilRoot();
-                    scaffoldKey.currentState?.closeDrawer();
-                  },
+            messenger
+              ..clearSnackBars()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(context.t.feedback.thankYouMessage),
+                  action: SnackBarAction(
+                    label: context.t.common.goHome,
+                    onPressed: () {
+                      messenger.clearSnackBars();
+                      context.router.popUntilRoot();
+                      scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
                 ),
-              ),
-            );
+              );
           } else if (state.isError) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            messenger.clearSnackBars();
+            final message = state.errorMessage?.trim();
+            if (message == null || message.isEmpty) return;
+            messenger.showSnackBar(
               SnackBar(
-                content: Text(
-                  'Error submitting feedback: ${state.errorMessage}',
-                ),
+                content: Text(localizeCoreMessage(context, message)),
               ),
             );
           }
@@ -44,7 +55,7 @@ class FeedbackPage extends StatelessWidget {
           page: AnalyticsPage.feedback,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Send Feedback'),
+              title: Text(context.t.feedback.sendFeedback),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_outlined),
                 onPressed: () async {
@@ -71,6 +82,7 @@ class FeedbackPage extends StatelessWidget {
                       ),
                     );
                     if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     context.router.popUntilRoot();
                     scaffoldKey.currentState?.closeDrawer();
                   },

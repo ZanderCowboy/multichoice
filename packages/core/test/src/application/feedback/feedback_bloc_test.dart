@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/core.dart';
 import 'package:core/src/repositories/implementation/feedback/feedback_repository.dart';
 import 'package:core/src/services/implementations/noop_analytics_service.dart';
 import 'package:dartz/dartz.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:models/models.dart';
@@ -12,13 +15,19 @@ import '../../../mocks.mocks.dart';
 void main() {
   late FeedbackBloc feedbackBloc;
   late MockFeedbackRepository mockRepository;
+  late MockAppStorageService mockAppStorage;
   final fixedTimestamp = DateTime(2024, 1, 1);
 
   setUp(() {
     mockRepository = MockFeedbackRepository();
+    mockAppStorage = MockAppStorageService();
+    when(
+      mockAppStorage.canSubmitMoreFeedbackToday(),
+    ).thenAnswer((_) async => true);
     feedbackBloc = FeedbackBloc(
       mockRepository,
       const NoopAnalyticsService(),
+      mockAppStorage,
     );
   });
 
@@ -60,7 +69,10 @@ void main() {
       'emits [loading, success] when feedback is submitted successfully',
       build: () {
         when(
-          mockRepository.submitFeedback(testFeedback),
+          mockRepository.submitFeedback(
+            testFeedback,
+            imageFiles: anyNamed('imageFiles'),
+          ),
         ).thenAnswer((_) async => const Right(null));
         return feedbackBloc;
       },
@@ -95,7 +107,67 @@ void main() {
             ),
       ],
       verify: (_) {
-        verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verify(
+          mockRepository.submitFeedback(testFeedback, imageFiles: const []),
+        ).called(1);
+        verify(mockAppStorage.recordFeedbackSubmissionForToday()).called(1);
+      },
+    );
+
+    blocTest<FeedbackBloc, FeedbackState>(
+      'emits error when rating is below one without calling repository',
+      build: () => feedbackBloc,
+      act: (bloc) => bloc.add(
+        FeedbackEvent.submit(testFeedback.copyWith(rating: 0)),
+      ),
+      expect: () => [
+        isA<FeedbackState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'Please choose a rating from 1 to 5 stars.',
+            )
+            .having((s) => s.isLoading, 'isLoading', false),
+      ],
+      verify: (_) {
+        verifyNever(
+          mockRepository.submitFeedback(
+            any,
+            imageFiles: anyNamed('imageFiles'),
+          ),
+        );
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
+      },
+    );
+
+    blocTest<FeedbackBloc, FeedbackState>(
+      'emits error when daily feedback cap is reached',
+      build: () {
+        when(
+          mockAppStorage.canSubmitMoreFeedbackToday(),
+        ).thenAnswer((_) async => false);
+        return feedbackBloc;
+      },
+      act: (bloc) => bloc.add(FeedbackEvent.submit(testFeedback)),
+      expect: () => [
+        isA<FeedbackState>()
+            .having((s) => s.isError, 'isError', true)
+            .having(
+              (s) => s.errorMessage,
+              'errorMessage',
+              'You can submit up to 5 feedback reports per day. Try again tomorrow.',
+            )
+            .having((s) => s.isLoading, 'isLoading', false),
+      ],
+      verify: (_) {
+        verifyNever(
+          mockRepository.submitFeedback(
+            any,
+            imageFiles: anyNamed('imageFiles'),
+          ),
+        );
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
 
@@ -103,7 +175,10 @@ void main() {
       'emits [loading, error] when feedback submission fails',
       build: () {
         when(
-          mockRepository.submitFeedback(testFeedback),
+          mockRepository.submitFeedback(
+            testFeedback,
+            imageFiles: anyNamed('imageFiles'),
+          ),
         ).thenAnswer((_) async => Left(FeedbackException('Failed to submit')));
         return feedbackBloc;
       },
@@ -134,7 +209,7 @@ void main() {
             .having(
               (state) => state.errorMessage,
               'errorMessage',
-              'Failed to submit',
+              "We couldn't send your feedback. Please check your connection and try again.",
             )
             .having(
               (state) => state.feedback,
@@ -143,7 +218,10 @@ void main() {
             ),
       ],
       verify: (_) {
-        verify(mockRepository.submitFeedback(testFeedback)).called(1);
+        verify(
+          mockRepository.submitFeedback(testFeedback, imageFiles: const []),
+        ).called(1);
+        verifyNever(mockAppStorage.recordFeedbackSubmissionForToday());
       },
     );
 
@@ -259,6 +337,89 @@ void main() {
           ),
         ),
         expect: () => <FeedbackState>[],
+      );
+    });
+
+    group('imageAdded event', () {
+      final smallFile = PlatformFile(
+        name: 'test.png',
+        size: 1024,
+        bytes: Uint8List(1024),
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'adds image when within limits',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(FeedbackEvent.imageAdded(smallFile)),
+        expect: () => [
+          isA<FeedbackState>().having(
+            (state) => state.imageFiles.length,
+            'imageFiles length',
+            1,
+          ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects empty image',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(
+          FeedbackEvent.imageAdded(
+            PlatformFile(name: 'empty.png', size: 0),
+          ),
+        ),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackImageEmptyMessage,
+              ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects oversized image',
+        build: () => feedbackBloc,
+        act: (bloc) => bloc.add(
+          FeedbackEvent.imageAdded(
+            PlatformFile(
+              name: 'large.png',
+              size: FeedbackImageLimits.maxBytesPerImage + 1,
+            ),
+          ),
+        ),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackImageTooLargeMessage,
+              ),
+        ],
+      );
+
+      blocTest<FeedbackBloc, FeedbackState>(
+        'rejects when max image count is reached',
+        build: () => feedbackBloc,
+        seed: () => FeedbackState.initial().copyWith(
+          imageFiles: List.generate(
+            FeedbackImageLimits.maxCount,
+            (index) => PlatformFile(name: '$index.png', size: 1),
+          ),
+        ),
+        act: (bloc) => bloc.add(FeedbackEvent.imageAdded(smallFile)),
+        expect: () => [
+          isA<FeedbackState>()
+              .having((s) => s.isError, 'isError', true)
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                feedbackMaxImagesReachedMessage,
+              ),
+        ],
       );
     });
   });

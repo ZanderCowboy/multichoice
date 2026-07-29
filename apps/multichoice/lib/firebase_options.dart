@@ -3,7 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kIsWeb;
-import 'package:multichoice/auth/secrets.dart';
+import 'package:multichoice/config/app_config.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -14,21 +14,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
       case TargetPlatform.linux:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'DefaultFirebaseOptions are only configured for Android and web.',
         );
       default:
         throw UnsupportedError(
@@ -37,30 +27,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions web = FirebaseOptions(
-    apiKey: webApiKey,
-    appId: webAppId,
-    messagingSenderId: '82796040762',
-    projectId: 'multichoice-412309',
-    authDomain: 'multichoice-412309.firebaseapp.com',
-    storageBucket: 'multichoice-412309.firebasestorage.app',
-    measurementId: 'G-RKRDGDJMDK',
+  static FirebaseOptions get web => FirebaseOptions(
+    apiKey: AppConfig.webApiKey,
+    appId: AppConfig.webAppId,
+    messagingSenderId: AppConfig.messagingSenderId,
+    projectId: AppConfig.firebaseProjectId,
+    authDomain: AppConfig.authDomain,
+    storageBucket: AppConfig.storageBucket,
+    measurementId: AppConfig.webMeasurementId,
   );
 
-  static FirebaseOptions android = FirebaseOptions(
-    apiKey: androidApiKey,
-    appId: androidAppId,
-    messagingSenderId: '82796040762',
-    projectId: 'multichoice-412309',
-    storageBucket: 'multichoice-412309.firebasestorage.app',
-  );
-
-  static FirebaseOptions ios = FirebaseOptions(
-    apiKey: iosApiKey,
-    appId: iosAppId,
-    messagingSenderId: '82796040762',
-    projectId: 'multichoice-412309',
-    storageBucket: 'multichoice-412309.firebasestorage.app',
-    iosBundleId: 'com.example.multichoice',
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: AppConfig.androidApiKey,
+    appId: AppConfig.androidAppId,
+    messagingSenderId: AppConfig.messagingSenderId,
+    projectId: AppConfig.firebaseProjectId,
+    storageBucket: AppConfig.storageBucket,
   );
 }

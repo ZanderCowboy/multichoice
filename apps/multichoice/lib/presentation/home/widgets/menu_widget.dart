@@ -15,8 +15,7 @@ class MenuWidget extends StatelessWidget {
         final appColors = context.theme.appColors;
         final menuTextStyle = Theme.of(
           context,
-        ).textTheme.bodyMedium?.copyWith(color: appColors.foreground);
-        final menuIconColor = appColors.foreground;
+        ).textTheme.bodyMedium?.copyWith(color: appColors.textPrimary);
 
         Widget buildMenuItem({
           required IconData icon,
@@ -28,10 +27,15 @@ class MenuWidget extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: menuIconColor,
+                color: appColors.textPrimary,
               ),
               gap8,
-              Text(label, style: menuTextStyle),
+              Text(
+                label,
+                style: context.appTextTheme.bodyMedium?.copyWith(
+                  color: appColors.textPrimary,
+                ),
+              ),
             ],
           );
         }
@@ -45,35 +49,23 @@ class MenuWidget extends StatelessWidget {
               case MenuItems.deleteEntries:
                 CustomDialog<AlertDialog>.show(
                   context: context,
-                  title: RichText(
-                    text: TextSpan(
-                      text: 'Delete all entries of ',
-                      style: DefaultTextStyle.of(
-                        context,
-                      ).style.copyWith(fontSize: 24),
-                      children: [
-                        TextSpan(
-                          text: tab.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  title: Text.rich(
+                    context.t.home.deleteAllEntriesTitle(
+                      title: TextSpan(
+                        text: tab.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
-                        TextSpan(
-                          text: '?',
-                          style: DefaultTextStyle.of(
-                            context,
-                          ).style.copyWith(fontSize: 24),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   content: Text(
-                    'Are you sure you want to delete all the entries of ${tab.title}?',
+                    context.t.home.deleteAllEntriesContent(title: tab.title),
                   ),
                   actions: [
                     OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: Text(context.t.common.cancel),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -82,7 +74,7 @@ class MenuWidget extends StatelessWidget {
                         );
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Delete Entries'),
+                      child: Text(context.t.common.deleteEntries),
                     ),
                   ],
                 );
@@ -91,7 +83,7 @@ class MenuWidget extends StatelessWidget {
                   context: context,
                   title: tab.title,
                   content: Text(
-                    "Are you sure you want to delete ${tab.title} and all it's entries?",
+                    context.t.home.deleteTabAndEntriesContent(title: tab.title),
                   ),
                   onConfirm: () {
                     context.read<HomeBloc>().add(
@@ -110,7 +102,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.edit_outlined,
-                label: MenuItems.edit.name,
+                label: context.t.common.editTab,
               ),
             ),
             PopupMenuItem<MenuItems>(
@@ -119,7 +111,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.delete_sweep_outlined,
-                label: MenuItems.deleteEntries.name,
+                label: context.t.common.deleteEntries,
               ),
             ),
             PopupMenuItem<MenuItems>(
@@ -127,7 +119,7 @@ class MenuWidget extends StatelessWidget {
               textStyle: menuTextStyle,
               child: buildMenuItem(
                 icon: Icons.delete_outline,
-                label: MenuItems.delete.name,
+                label: context.t.tooltips.deleteTab,
               ),
             ),
           ],
@@ -135,8 +127,7 @@ class MenuWidget extends StatelessWidget {
             Icons.more_vert_outlined,
             color: appColors.ternary,
           ),
-          iconSize: 18,
-          color: appColors.background,
+          color: appColors.scaffoldBackground,
           padding: zeroPadding,
         );
       },

@@ -23,9 +23,9 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Permission Required'),
-          content: const Text(
-            'Storage permission is required for import/export.',
+          title: Text(context.t.common.permissionRequired),
+          content: Text(
+            context.t.common.storagePermissionNeeded,
           ),
           actions: [
             TextButton(
@@ -35,7 +35,7 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Deny'),
+              child: Text(context.t.common.deny),
             ),
             TextButton(
               onPressed: () async {
@@ -47,7 +47,7 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
                   await appStorageService.setIsPermissionsChecked(true);
                 }
               },
-              child: const Text('Open Settings'),
+              child: Text(context.t.common.openSettings),
             ),
           ],
         );
@@ -56,8 +56,8 @@ Future<void> _checkAndRequestPermissions(BuildContext context) async {
 
     if (status.isPermanentlyDenied && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Storage permission will be needed for import/export.'),
+        SnackBar(
+          content: Text(context.t.common.storagePermissionNeeded),
         ),
       );
     }

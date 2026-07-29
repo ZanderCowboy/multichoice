@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "multichoice-app-develop",
+    "prod": "multichoice-412309",
+    "dev": "multichoice-app-develop"
+  }
+}

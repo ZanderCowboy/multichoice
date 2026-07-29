@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 @RoutePage()
@@ -23,7 +24,7 @@ class EditTabPage extends StatelessWidget {
         page: AnalyticsPage.editTab,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Edit Tab'),
+            title: Text(context.t.common.editTab),
             centerTitle: false,
             leading: IconButton(
               onPressed: () {
@@ -71,8 +72,8 @@ class _EditPage extends StatelessWidget {
                       HomeEvent.onChangedTabTitle(value),
                     );
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
+                  decoration: InputDecoration(
+                    labelText: context.t.common.title,
                   ),
                 ),
                 gap20,
@@ -83,8 +84,8 @@ class _EditPage extends StatelessWidget {
                       HomeEvent.onChangedTabSubtitle(value),
                     );
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Subtitle',
+                  decoration: InputDecoration(
+                    labelText: context.t.common.subtitle,
                   ),
                 ),
                 gap20,
@@ -98,7 +99,7 @@ class _EditPage extends StatelessWidget {
                         );
                         context.router.popUntilRoot();
                       },
-                      child: const Text('Cancel'),
+                      child: Text(context.t.common.cancel),
                     ),
                     ElevatedButton(
                       onPressed: state.isValid && state.tab.title.isNotEmpty
@@ -110,7 +111,7 @@ class _EditPage extends StatelessWidget {
                               context.router.popUntilRoot();
                             }
                           : null,
-                      child: const Text('Ok'),
+                      child: Text(context.t.common.ok),
                     ),
                   ],
                 ),

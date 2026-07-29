@@ -1,0 +1,482 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:auto_route/auto_route.dart';
+import 'package:core/core.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multichoice/app/export.dart';
+import 'package:multichoice/app/view/auth/auth_notifier.dart';
+import 'package:multichoice/i18n/localize_core_message.dart';
+import 'package:multichoice/i18n/strings.g.dart';
+import 'package:multichoice/presentation/registration/login_modal.dart';
+import 'package:multichoice/presentation/registration/utils/password_validator.dart';
+import 'package:multichoice/presentation/registration/widgets/email_field.dart';
+import 'package:multichoice/presentation/registration/widgets/google_sign_in_button.dart';
+import 'package:multichoice/presentation/registration/widgets/password_field.dart';
+import 'package:multichoice/presentation/registration/widgets/signup_button.dart';
+import 'package:multichoice/presentation/registration/widgets/username_field.dart';
+import 'package:multichoice/presentation/shared/widgets/shine_card.dart';
+import 'package:multichoice/utils/user_accounts_feature.dart';
+import 'package:ui_kit/ui_kit.dart';
+
+@RoutePage()
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+enum _AuthAction { signup, google }
+
+class _SignupPageState extends State<SignupPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _hasOpenedSignupForm = false;
+  _AuthAction? _loadingAction;
+
+  @override
+  void initState() {
+    super.initState();
+    guardUserAccountsRoute(context);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _syncControllersFromState(RegistrationState state) {
+    if (_emailController.text != state.email) {
+      _emailController.text = state.email;
+      _emailController.selection = TextSelection.collapsed(
+        offset: _emailController.text.length,
+      );
+    }
+    if (_usernameController.text != state.username) {
+      _usernameController.text = state.username;
+      _usernameController.selection = TextSelection.collapsed(
+        offset: _usernameController.text.length,
+      );
+    }
+    if (_passwordController.text != state.password) {
+      _passwordController.text = state.password;
+      _passwordController.selection = TextSelection.collapsed(
+        offset: _passwordController.text.length,
+      );
+    }
+    if (_confirmPasswordController.text != state.confirmPassword) {
+      _confirmPasswordController.text = state.confirmPassword;
+      _confirmPasswordController.selection = TextSelection.collapsed(
+        offset: _confirmPasswordController.text.length,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => coreSl<RegistrationBloc>(),
+      child: BlocConsumer<RegistrationBloc, RegistrationState>(
+        listener: (context, state) async {
+          _syncControllersFromState(state);
+          if (state.isSuccess) {
+            context.read<AuthNotifier>().notifyAuthChanged();
+            if (state.needsUsernameSetup) {
+              await context.router.push(const SetUsernamePageRoute());
+              return;
+            }
+            if (_loadingAction == _AuthAction.google) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(context.t.auth.signInSuccessfully)),
+              );
+              context.router.popUntilRoot();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.t.auth.verificationEmailSent),
+                ),
+              );
+              Future<void>.delayed(const Duration(milliseconds: 800), () {
+                if (!mounted) return;
+                context.router.popUntilRoot();
+              });
+            }
+          } else if (state.isError && state.errorMessage != null) {
+            setState(() => _loadingAction = null);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  localizeCoreMessage(context, state.errorMessage!),
+                ),
+              ),
+            );
+          } else if (!state.isLoading) {
+            setState(() => _loadingAction = null);
+          }
+        },
+        buildWhen: (previous, current) =>
+            previous.email != current.email ||
+            previous.username != current.username ||
+            previous.password != current.password ||
+            previous.confirmPassword != current.confirmPassword ||
+            previous.isLoading != current.isLoading ||
+            previous.isSuccess != current.isSuccess,
+        builder: (context, state) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_hasOpenedSignupForm) {
+              _hasOpenedSignupForm = true;
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.signupFormOpened(),
+              );
+            }
+            _syncControllersFromState(state);
+          });
+          return _SignupPageContent(
+            formKey: _formKey,
+            emailController: _emailController,
+            usernameController: _usernameController,
+            passwordController: _passwordController,
+            confirmPasswordController: _confirmPasswordController,
+            loadingAction: _loadingAction,
+            isLoading: state.isLoading,
+            isSuccess: state.isSuccess,
+            onSignupPressed: () {
+              setState(() => _loadingAction = _AuthAction.signup);
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.signupClicked(),
+              );
+            },
+            onGooglePressed: () {
+              setState(() => _loadingAction = _AuthAction.google);
+              context.read<RegistrationBloc>().add(
+                const RegistrationEvent.googleSignInClicked(),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SignupPageContent extends StatefulWidget {
+  const _SignupPageContent({
+    required this.formKey,
+    required this.emailController,
+    required this.usernameController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+    required this.loadingAction,
+    required this.isLoading,
+    required this.isSuccess,
+    required this.onSignupPressed,
+    required this.onGooglePressed,
+  });
+
+  final GlobalKey<FormState> formKey;
+  final TextEditingController emailController;
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
+  final _AuthAction? loadingAction;
+  final bool isLoading;
+  final bool isSuccess;
+  final VoidCallback onSignupPressed;
+  final VoidCallback onGooglePressed;
+
+  @override
+  State<_SignupPageContent> createState() => _SignupPageContentState();
+}
+
+class _SignupPageContentState extends State<_SignupPageContent> {
+  bool _emailValid = false;
+  bool _usernameValid = false;
+  bool _passwordValid = false;
+  bool _confirmPasswordValid = false;
+
+  bool get _formReady =>
+      _emailValid && _usernameValid && _passwordValid && _confirmPasswordValid;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.emailController.addListener(_onControllerTextChanged);
+    widget.usernameController.addListener(_onControllerTextChanged);
+    widget.passwordController.addListener(_onControllerTextChanged);
+    widget.confirmPasswordController.addListener(_onControllerTextChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onControllerTextChanged();
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.emailController.removeListener(_onControllerTextChanged);
+    widget.usernameController.removeListener(_onControllerTextChanged);
+    widget.passwordController.removeListener(_onControllerTextChanged);
+    widget.confirmPasswordController.removeListener(_onControllerTextChanged);
+    super.dispose();
+  }
+
+  void _onControllerTextChanged() {
+    if (!mounted) return;
+    final email = widget.emailController.text.trim();
+    final emailOk =
+        email.isNotEmpty &&
+        EmailField.defaultValidator(email, context.t) == null;
+    final user = widget.usernameController.text.trim();
+    final userOk =
+        user.isNotEmpty &&
+        UsernameField.defaultValidator(user, context.t) == null;
+    final passOk = PasswordValidator.isValid(widget.passwordController.text);
+    final confirm = widget.confirmPasswordController.text;
+    final confirmOk =
+        confirm.isNotEmpty && confirm == widget.passwordController.text;
+    setState(() {
+      _emailValid = emailOk;
+      _usernameValid = userOk;
+      _passwordValid = passOk;
+      _confirmPasswordValid = confirmOk;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final signupInputTheme = theme.inputDecorationTheme.copyWith(
+      labelStyle: TextStyle(color: colorScheme.onSurface),
+      floatingLabelStyle: TextStyle(color: colorScheme.onSurface),
+      hintStyle: TextStyle(
+        color: colorScheme.onSurface.withValues(alpha: 0.72),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: colorScheme.onSurface.withValues(alpha: 0.35),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primary),
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.t.auth.signUp),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () => context.router.maybePop(),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: SizedBox(
+              height: 28,
+              width: 60,
+              child: TextButton(
+                onPressed: widget.isLoading || widget.isSuccess
+                    ? null
+                    : () => showLoginModal(context),
+                style: const ButtonStyle(
+                  padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                ),
+                child: Text(context.t.auth.signIn),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: allPadding16,
+          child: ShineCard(
+            child: Theme(
+              data: theme.copyWith(inputDecorationTheme: signupInputTheme),
+              child: AutofillGroup(
+                child: Form(
+                  key: widget.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      gap8,
+                      EmailField(
+                        controller: widget.emailController,
+                        onValidityChanged: (valid) {
+                          setState(() => _emailValid = valid);
+                        },
+                        onChanged: (value) =>
+                            context.read<RegistrationBloc>().add(
+                              RegistrationEvent.fieldsChanged(
+                                field: RegistrationField.email,
+                                value: value,
+                              ),
+                            ),
+                      ),
+                      gap16,
+                      UsernameField(
+                        controller: widget.usernameController,
+                        onValidityChanged: (valid) {
+                          setState(() => _usernameValid = valid);
+                        },
+                        onChanged: (value) =>
+                            context.read<RegistrationBloc>().add(
+                              RegistrationEvent.fieldsChanged(
+                                field: RegistrationField.username,
+                                value: value,
+                              ),
+                            ),
+                      ),
+                      gap16,
+                      PasswordField(
+                        controller: widget.passwordController,
+                        showRequirements: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        onValidityChanged: (valid) {
+                          setState(() => _passwordValid = valid);
+                        },
+                        onChanged: (value) =>
+                            context.read<RegistrationBloc>().add(
+                              RegistrationEvent.fieldsChanged(
+                                field: RegistrationField.password,
+                                value: value,
+                              ),
+                            ),
+                      ),
+                      gap16,
+                      PasswordField(
+                        controller: widget.confirmPasswordController,
+                        labelText: context.t.auth.confirmPassword,
+                        hintText: context.t.auth.reenterPassword,
+                        validatePolicy: false,
+                        showErrorText: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        onValidityChanged: (valid) {
+                          setState(() => _confirmPasswordValid = valid);
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return context.t.validation.confirmPasswordRequired;
+                          }
+                          if (value != widget.passwordController.text) {
+                            return context.t.validation.passwordsDoNotMatch;
+                          }
+                          return null;
+                        },
+                        onChanged: (value) =>
+                            context.read<RegistrationBloc>().add(
+                              RegistrationEvent.fieldsChanged(
+                                field: RegistrationField.confirmPassword,
+                                value: value,
+                              ),
+                            ),
+                      ),
+                      gap24,
+                      SignupButton(
+                        enabled: _formReady,
+                        onPressed: widget.isLoading
+                            ? null
+                            : () {
+                                if (widget.formKey.currentState!.validate()) {
+                                  widget.onSignupPressed();
+                                }
+                              },
+                        isLoading:
+                            widget.isLoading &&
+                            widget.loadingAction == _AuthAction.signup,
+                        overrideLabel:
+                            widget.isSuccess &&
+                                widget.loadingAction == _AuthAction.signup
+                            ? context.t.auth.registrationSuccessful
+                            : null,
+                        overrideIcon:
+                            widget.isSuccess &&
+                                widget.loadingAction == _AuthAction.signup
+                            ? Icon(
+                                Icons.check_circle_outline,
+                                size: 20,
+                                color: colorScheme.onPrimary,
+                              )
+                            : null,
+                      ),
+                      gap16,
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: horizontal16,
+                            child: Text(
+                              context.t.common.or,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
+                            ),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+                      gap16,
+                      GoogleSignInButton(
+                        onPressed: widget.isLoading
+                            ? null
+                            : widget.onGooglePressed,
+                        isLoading:
+                            widget.isLoading &&
+                            widget.loadingAction == _AuthAction.google,
+                      ),
+                      gap16,
+                      Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                ),
+                            children: [
+                              TextSpan(
+                                text: context.t.auth.alreadyHaveAnAccount,
+                              ),
+                              TextSpan(
+                                text: context.t.auth.signIn,
+                                style: TextStyle(
+                                  color: context.theme.appColors.linkColor,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    if (!widget.isLoading &&
+                                        !widget.isSuccess) {
+                                      await context.router.replace(
+                                        LoginPageRoute(),
+                                      );
+                                    }
+                                  },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -8,6 +8,7 @@ class FeedbackState extends Equatable {
     required this.isSuccess,
     required this.isError,
     required this.errorMessage,
+    required this.imageFiles,
   });
 
   factory FeedbackState.initial() => FeedbackState(
@@ -16,6 +17,7 @@ class FeedbackState extends Equatable {
     isSuccess: false,
     isError: false,
     errorMessage: null,
+    imageFiles: const [],
   );
 
   final FeedbackDTO feedback;
@@ -23,6 +25,7 @@ class FeedbackState extends Equatable {
   final bool isSuccess;
   final bool isError;
   final String? errorMessage;
+  final List<PlatformFile> imageFiles;
 
   @override
   List<Object?> get props => [
@@ -31,5 +34,6 @@ class FeedbackState extends Equatable {
     isSuccess,
     isError,
     errorMessage,
+    imageFiles,
   ];
 }

@@ -10,12 +10,15 @@ class _ParentTab extends StatelessWidget {
         final tab = state.parent;
 
         if (tab == null) {
-          return const Text('Failed to load parent tab');
+          return Text(context.t.common.failedToLoadParentTab);
         }
 
-        return _ResultListTile(
-          title: tab.title,
-          subtitle: tab.subtitle,
+        return Padding(
+          padding: vertical8,
+          child: _ResultListTile(
+            title: tab.title,
+            subtitle: tab.subtitle,
+          ),
         );
       },
     );

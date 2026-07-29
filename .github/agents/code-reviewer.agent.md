@@ -118,7 +118,9 @@ void main() {
 ### 6. Git & CI/CD
 
 #### Version Management
-- [ ] PR has appropriate version label (major, minor, patch, or no-build)
+- [ ] PR has appropriate version label (`major`, `minor`/`feature`, `patch`/`bug`, or `no-build`)
+- [ ] No conflicting version labels across tiers (validated by PR Version Labels CI)
+- [ ] `major` only on PRs targeting `rc`
 - [ ] Changes align with semantic versioning principles
 
 #### CI/CD

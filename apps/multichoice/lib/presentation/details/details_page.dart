@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:multichoice/app/export.dart';
 import 'package:multichoice/app/view/analytics/analytics_page_tracker.dart';
+import 'package:multichoice/i18n/strings.g.dart';
 import 'package:multichoice/presentation/shared/widgets/modals/delete_modal.dart';
 import 'package:ui_kit/ui_kit.dart';
 
@@ -95,14 +96,14 @@ class _DetailsView extends StatelessWidget {
                       const _DetailsSection(),
                       Divider(
                         thickness: 1.5,
-                        color: context.theme.appColors.primary,
+                        color: context.theme.appColors.iconColor,
                       ),
                     ],
                   ),
                 ),
                 if (state.children != null) ...[
                   SliverToBoxAdapter(
-                    child: _titleWidget(context, 'Items'),
+                    child: _titleWidget(context, context.t.common.items),
                   ),
                   // TODO: Add logic to switch between grid and list view
                   const _ChildrenListView(),
@@ -110,7 +111,7 @@ class _DetailsView extends StatelessWidget {
                 ],
                 if (state.parent != null) ...[
                   SliverToBoxAdapter(
-                    child: _titleWidget(context, 'Collection'),
+                    child: _titleWidget(context, context.t.common.collections),
                   ),
                   const SliverToBoxAdapter(child: _ParentTab()),
                 ],
@@ -138,7 +139,7 @@ class _DetailsView extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: context.theme.appColors.ternary,
+          color: context.appColorsTheme.ternary,
         ),
       ),
     );
