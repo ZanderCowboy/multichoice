@@ -34,7 +34,7 @@ App-only platform bridge — not in `packages/core`.
 1. System clipboard — content URIs and inline bitmap items (PNG/JPEG/WebP/GIF).
 2. Fallback: most recent screenshot in MediaStore (≤ 3 minutes old; helps Samsung/One UI where clipboard is empty after capture).
 
-**Permissions:** Dart requests `Permission.photos` before calling native code (MediaStore fallback).
+**Permissions:** `READ_MEDIA_IMAGES` (manifest) + runtime `Permission.photos` before native read (MediaStore fallback). Requires Play Console **Photo and video permissions** declaration before publish — see [play-console-permissions.md](../operations/play-console-permissions.md).
 
 **UX / i18n:** `feedback.pasteScreenshot`, `noImageInClipboard`, `clipboardReadFailed` (en/nl).
 
