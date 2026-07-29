@@ -9,6 +9,7 @@ On-demand product and architecture context. **Rules** (`.cursor/rules/`) say how
 | [user-journeys/search-and-details.md](user-journeys/search-and-details.md) | Search, details, add/edit items |
 | [user-journeys/registration-and-profile.md](user-journeys/registration-and-profile.md) | Auth, profile, account deletion |
 | [user-journeys/feedback-and-settings.md](user-journeys/feedback-and-settings.md) | Feedback (incl. paste screenshot), changelog, about, data transfer |
+| [operations/play-console-permissions.md](operations/play-console-permissions.md) | Update Play Console App content when Android permissions change — before publish |
 | [architecture/layers-and-ownership.md](architecture/layers-and-ownership.md) | Where code belongs |
 | [architecture/feature-flags.md](architecture/feature-flags.md) | Firebase Remote Config flags |
 | [architecture/codegen-and-di.md](architecture/codegen-and-di.md) | Build runner, injectable, mocks |
