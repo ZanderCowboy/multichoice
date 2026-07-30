@@ -57,7 +57,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ inputs.target_branch }}
@@ -147,7 +147,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.target_branch }}
 
@@ -343,7 +343,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.target_branch }}
 
@@ -410,7 +410,7 @@ jobs:
       # Checkout Repository
       ##############################################
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       ##############################################
       # Send Failure Notification
