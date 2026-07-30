@@ -42,7 +42,8 @@ class _ChangelogList extends StatelessWidget {
                           gap4,
                           Text(
                             changelogEntry.date,
-                            style: context.theme.appTextTheme.bodySmall ??
+                            style:
+                                context.theme.appTextTheme.bodySmall ??
                                 Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

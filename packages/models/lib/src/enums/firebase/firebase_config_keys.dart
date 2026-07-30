@@ -22,7 +22,8 @@ enum FirebaseConfigKeys {
   aboutContactEmail('about_contact_email'),
   aboutPrivacyPolicyUrl('about_privacy_policy_url'),
   aboutTermsUrl('about_terms_url'),
-  aboutAcknowledgementsUrl('about_acknowledgements_url');
+  aboutAcknowledgementsUrl('about_acknowledgements_url')
+  ;
 
   const FirebaseConfigKeys(this.key);
 

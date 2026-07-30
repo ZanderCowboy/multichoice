@@ -1,18 +1,25 @@
 # Last Update
 
-**Date:** 2026-06-15  
+**Date:** 2026-06-21  
 **Previous major overhaul:** 2026-06-13 — PR #385 (`feat: update .cursor folder to ensure context engineering…`)
 
 ## Audit summary
 
 Reviewed `.cursor/` against the repo after the slang i18n migration (#388), DEV/PROD flavors, Android-only scope, and Remote Config debug overrides. The June 13 overhaul structure remains sound: slim always-apply rules, on-demand references, shared `_workflow-base.md`, deduplicated commands.
 
+## Gaps found (since 2026-06-21)
+
+| Gap | Resolution |
+|-----|------------|
+| Feedback paste-screenshot not documented | Expanded `feedback-and-settings.md` with `ScreenshotImageReader` bridge, limits, Android flow; updated product overview, glossary, feature-flags, layers-and-ownership, `code-organization`, `flutter-developer` agent |
+| `changelog` command said prepend | Reverted to **replace entire file** — `CHANGELOG.md` is PR-scoped, not cumulative |
+
 ## Gaps found (since 2026-06-13)
 
 | Gap | Resolution |
 |-----|------------|
 | No i18n/slang documentation | Added `references/architecture/i18n.md`; pointers in `ui-rules`, `code-organization`, `codegen-and-di`, agents |
-| `changelog` command said "replace all contents" | Fixed to **prepend** section — matches real `CHANGELOG.md` shape, avoids destructive edits |
+| `changelog` command said "replace all contents" | Temporarily changed to prepend (June 13); reverted to replace-only (June 21) |
 | Product overview stale (platform, flavors, locales) | Updated `product-overview.md` |
 | Debug RC overrides underspecified | Expanded `feature-flags.md` and `feedback-and-settings.md` |
 | `skills/` not indexed | Added to `README.md` |

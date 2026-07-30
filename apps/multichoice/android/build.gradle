@@ -10,8 +10,8 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 
-// Some Flutter plugins (e.g. super_native_extensions via super_clipboard) still
-// declare compileSdk 31 while their AndroidX deps require 34+. Force libraries up.
+// Some Flutter plugins still declare compileSdk 31 while their AndroidX deps
+// require 34+. Force libraries up.
 // Must run before evaluationDependsOn so afterEvaluate hooks register in time.
 subprojects { subproject ->
     subproject.afterEvaluate {

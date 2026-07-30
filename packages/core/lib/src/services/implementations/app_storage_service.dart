@@ -19,7 +19,8 @@ class AppStorageService implements IAppStorageService {
     final storedDay = _sharedPreferences.getString(
       StorageKeys.feedbackSubmissionDay.key,
     );
-    final count = _sharedPreferences.getInt(
+    final count =
+        _sharedPreferences.getInt(
           StorageKeys.feedbackSubmissionCount.key,
         ) ??
         0;
@@ -35,7 +36,8 @@ class AppStorageService implements IAppStorageService {
     final storedDay = _sharedPreferences.getString(
       StorageKeys.feedbackSubmissionDay.key,
     );
-    final previousCount = _sharedPreferences.getInt(
+    final previousCount =
+        _sharedPreferences.getInt(
           StorageKeys.feedbackSubmissionCount.key,
         ) ??
         0;

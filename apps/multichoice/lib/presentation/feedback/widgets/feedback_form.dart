@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:core/core.dart';
@@ -11,7 +10,6 @@ import 'package:multichoice/app/view/debug/remote_config_debug_notifier.dart';
 import 'package:multichoice/app/view/theme/extensions/app_theme_extension.dart';
 import 'package:multichoice/i18n/localize_core_message.dart';
 import 'package:multichoice/i18n/strings.g.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 import 'package:ui_kit/ui_kit.dart';
 
 class FeedbackForm extends StatelessWidget {
@@ -62,8 +60,9 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
   }
 
   String? _validateOptionalEmail(String? value) {
-    final error =
-        coreSl<ICredentialValidationService>().validateOptionalEmail(value);
+    final error = coreSl<ICredentialValidationService>().validateOptionalEmail(
+      value,
+    );
     if (error == null) return null;
     return localizeCoreMessage(context, error);
   }
@@ -117,117 +116,6 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
         for (final file in result.files) {
           context.read<FeedbackBloc>().add(FeedbackEvent.imageAdded(file));
         }
-      }
-    }
-  }
-
-  void _showNoImageInClipboardSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.noImageInClipboard)),
-    );
-  }
-
-  void _showUnsupportedClipboardImageSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.unsupportedClipboardImage)),
-    );
-  }
-
-  void _showClipboardReadFailedSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.t.feedback.clipboardReadFailed)),
-    );
-  }
-
-  ({FileFormat format, String extension})? _detectClipboardImageFormat(
-    ClipboardReader reader,
-  ) {
-    const candidates = <(FileFormat, String)>[
-      (Formats.png, 'png'),
-      (Formats.jpeg, 'jpg'),
-      (Formats.webp, 'webp'),
-      (Formats.gif, 'gif'),
-    ];
-
-    for (final (format, extension) in candidates) {
-      if (reader.canProvide(format)) {
-        return (format: format, extension: extension);
-      }
-    }
-
-    return null;
-  }
-
-  Future<void> _pasteImageFromClipboard(BuildContext context) async {
-    final clipboard = SystemClipboard.instance;
-    if (clipboard == null) {
-      if (context.mounted) {
-        _showNoImageInClipboardSnackBar(context);
-      }
-      return;
-    }
-
-    ClipboardReader reader;
-    try {
-      reader = await clipboard.read();
-    } on Object {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
-      }
-      return;
-    }
-
-    final detected = _detectClipboardImageFormat(reader);
-    if (detected == null) {
-      if (context.mounted) {
-        _showUnsupportedClipboardImageSnackBar(context);
-      }
-      return;
-    }
-
-    final completer = Completer<void>();
-    final progress = reader.getFile(detected.format, (file) async {
-      try {
-        final bytes = await file.readAll();
-        if (!context.mounted) return;
-        if (bytes.isEmpty) {
-          if (!completer.isCompleted) {
-            completer.completeError(Object());
-          }
-          return;
-        }
-        context.read<FeedbackBloc>().add(
-          FeedbackEvent.imageAdded(
-            PlatformFile(
-              name:
-                  'screenshot_${DateTime.now().millisecondsSinceEpoch}.${detected.extension}',
-              size: bytes.length,
-              bytes: bytes,
-            ),
-          ),
-        );
-        if (!completer.isCompleted) {
-          completer.complete();
-        }
-      } on Object {
-        if (!completer.isCompleted) {
-          completer.completeError(Object());
-        }
-      }
-    });
-
-    if (progress == null) {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
-      }
-      return;
-    }
-
-    try {
-      await completer.future;
-    } on Object {
-      if (context.mounted) {
-        _showClipboardReadFailedSnackBar(context);
       }
     }
   }
@@ -323,161 +211,147 @@ class _FeedbackFormBodyState extends State<_FeedbackFormBody> {
                     DropdownButtonFormField<String>(
                       key: ValueKey(state.feedback.category),
                       initialValue: state.feedback.category,
-                    decoration: InputDecoration(
-                      labelText: context.t.feedback.categoryLabelRequired,
-                      border: const OutlineInputBorder(),
-                    ),
-                    items: _categories(context).map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      context.read<FeedbackBloc>().add(
-                        FeedbackEvent.fieldChanged(
-                          field: FeedbackField.category,
-                          value: value,
-                        ),
-                      );
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.t.feedback.selectCategory;
-                      }
-                      return null;
-                    },
-                  ),
-                  gap16,
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: context.t.feedback.emailLabel,
-                      border: const OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: _hasTypedEmail
-                        ? AutovalidateMode.onUserInteraction
-                        : AutovalidateMode.disabled,
-                    onChanged: (value) {
-                      if (!_hasTypedEmail && value.trim().isNotEmpty) {
-                        setState(() {
-                          _hasTypedEmail = true;
-                        });
-                      }
-                      context.read<FeedbackBloc>().add(
-                        FeedbackEvent.fieldChanged(
-                          field: FeedbackField.email,
-                          value: value,
-                        ),
-                      );
-                    },
-                    validator: _validateOptionalEmail,
-                  ),
-                  gap16,
-                  TextFormField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      labelText: context.t.feedback.messageLabelRequired,
-                      hintText: _messageHintForCategory(
-                        context,
-                        state.feedback.category,
+                      decoration: InputDecoration(
+                        labelText: context.t.feedback.categoryLabelRequired,
+                        border: const OutlineInputBorder(),
                       ),
-                      alignLabelWithHint: true,
-                      border: const OutlineInputBorder(),
+                      items: _categories(context).map((category) {
+                        return DropdownMenuItem(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        context.read<FeedbackBloc>().add(
+                          FeedbackEvent.fieldChanged(
+                            field: FeedbackField.category,
+                            value: value,
+                          ),
+                        );
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.t.feedback.selectCategory;
+                        }
+                        return null;
+                      },
                     ),
-                    maxLines: 5,
-                    textAlignVertical: TextAlignVertical.top,
-                    onChanged: (value) {
-                      context.read<FeedbackBloc>().add(
-                        FeedbackEvent.fieldChanged(
-                          field: FeedbackField.message,
-                          value: value,
+                    gap16,
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: context.t.feedback.emailLabel,
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      autovalidateMode: _hasTypedEmail
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled,
+                      onChanged: (value) {
+                        if (!_hasTypedEmail && value.trim().isNotEmpty) {
+                          setState(() {
+                            _hasTypedEmail = true;
+                          });
+                        }
+                        context.read<FeedbackBloc>().add(
+                          FeedbackEvent.fieldChanged(
+                            field: FeedbackField.email,
+                            value: value,
+                          ),
+                        );
+                      },
+                      validator: _validateOptionalEmail,
+                    ),
+                    gap16,
+                    TextFormField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        labelText: context.t.feedback.messageLabelRequired,
+                        hintText: _messageHintForCategory(
+                          context,
+                          state.feedback.category,
                         ),
-                      );
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.t.feedback.enterFeedback;
-                      }
-                      return null;
-                    },
-                  ),
-                  gap16,
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      context.t.feedback.ratingLabel,
-                      style: context.theme.appTextTheme.bodyLarge?.copyWith(
-                        color: context.theme.appColors.textPrimary,
+                        alignLabelWithHint: true,
+                        border: const OutlineInputBorder(),
+                      ),
+                      maxLines: 5,
+                      textAlignVertical: TextAlignVertical.top,
+                      onChanged: (value) {
+                        context.read<FeedbackBloc>().add(
+                          FeedbackEvent.fieldChanged(
+                            field: FeedbackField.message,
+                            value: value,
+                          ),
+                        );
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.t.feedback.enterFeedback;
+                        }
+                        return null;
+                      },
+                    ),
+                    gap16,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        context.t.feedback.ratingLabel,
+                        style: context.theme.appTextTheme.bodyLarge?.copyWith(
+                          color: context.theme.appColors.textPrimary,
+                        ),
                       ),
                     ),
-                  ),
-                  gap8,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return IconButton(
-                        icon: Icon(
-                          index < state.feedback.rating
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: index < state.feedback.rating
-                              ? Colors.amber
-                              : Colors.grey,
-                          size: 32,
-                        ),
-                        onPressed: () {
-                          context.read<FeedbackBloc>().add(
-                            FeedbackEvent.fieldChanged(
-                              field: FeedbackField.rating,
-                              value: index + 1,
-                            ),
-                          );
-                        },
-                      );
-                    }),
-                  ),
-                  gap16,
-                  if (coreSl<IFirebaseService>().isEnabled(
-                    FirebaseConfigKeys.feedbackImagesEnabled,
-                  )) ...[
+                    gap8,
                     Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => _pickImage(context),
-                            icon: const Icon(Icons.image),
-                            label: Text(context.t.feedback.addImages),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (index) {
+                        return IconButton(
+                          icon: Icon(
+                            index < state.feedback.rating
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: index < state.feedback.rating
+                                ? Colors.amber
+                                : Colors.grey,
+                            size: 32,
                           ),
-                        ),
-                        gap8,
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => _pasteImageFromClipboard(context),
-                            icon: const Icon(Icons.content_paste),
-                            label: Text(context.t.feedback.pasteScreenshot),
-                          ),
-                        ),
-                      ],
+                          onPressed: () {
+                            context.read<FeedbackBloc>().add(
+                              FeedbackEvent.fieldChanged(
+                                field: FeedbackField.rating,
+                                value: index + 1,
+                              ),
+                            );
+                          },
+                        );
+                      }),
                     ),
-                    _buildImageThumbnails(context, state),
-                    gap24,
-                  ] else ...[
-                    gap24,
+                    gap16,
+                    if (coreSl<IFirebaseService>().isEnabled(
+                      FirebaseConfigKeys.feedbackImagesEnabled,
+                    )) ...[
+                      OutlinedButton.icon(
+                        onPressed: () => _pickImage(context),
+                        icon: const Icon(Icons.image),
+                        label: Text(context.t.feedback.addImages),
+                      ),
+                      _buildImageThumbnails(context, state),
+                      gap24,
+                    ] else ...[
+                      gap24,
+                    ],
+                    ElevatedButton(
+                      onPressed: state.isLoading
+                          ? null
+                          : () => _submitFeedback(context),
+                      child: state.isLoading
+                          ? CircularLoader.small()
+                          : Text(context.t.feedback.submitFeedback),
+                    ),
                   ],
-                  ElevatedButton(
-                    onPressed: state.isLoading
-                        ? null
-                        : () => _submitFeedback(context),
-                    child: state.isLoading
-                        ? CircularLoader.small()
-                        : Text(context.t.feedback.submitFeedback),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
           );
         },
       ),

@@ -351,9 +351,12 @@ void main() {
         null,
       );
 
-      expect(firebaseService.hasDebugOverride(
-        FirebaseConfigKeys.enableUserAccounts,
-      ), isFalse);
+      expect(
+        firebaseService.hasDebugOverride(
+          FirebaseConfigKeys.enableUserAccounts,
+        ),
+        isFalse,
+      );
       expect(
         firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
         isTrue,
@@ -376,12 +379,18 @@ void main() {
 
       firebaseService.clearAllDebugOverrides();
 
-      expect(firebaseService.hasDebugOverride(
-        FirebaseConfigKeys.enableUserAccounts,
-      ), isFalse);
-      expect(firebaseService.hasDebugOverride(
-        FirebaseConfigKeys.enableChangelogPage,
-      ), isFalse);
+      expect(
+        firebaseService.hasDebugOverride(
+          FirebaseConfigKeys.enableUserAccounts,
+        ),
+        isFalse,
+      );
+      expect(
+        firebaseService.hasDebugOverride(
+          FirebaseConfigKeys.enableChangelogPage,
+        ),
+        isFalse,
+      );
       expect(
         firebaseService.isEnabled(FirebaseConfigKeys.enableUserAccounts),
         isTrue,

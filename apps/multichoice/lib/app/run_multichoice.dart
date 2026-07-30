@@ -19,6 +19,10 @@ Future<void> runMultichoice() async {
     setupCrashlytics();
   }
 
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    setupCrashlytics();
+  }
+
   try {
     if (!kIsWeb) {
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {

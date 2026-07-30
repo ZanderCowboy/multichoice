@@ -2,7 +2,7 @@ name: multichoice
 description: "The application for the Multichoice repo"
 publish_to: "none"
 
-version: 0.13.2+255
+version: 0.13.4+261
 
 environment:
   sdk: ">=3.10.8 <4.0.0"
@@ -37,7 +37,6 @@ dependencies:
   showcaseview: ^5.0.1
   slang: ^4.14.0
   slang_flutter: ^4.14.0
-  super_clipboard: ^0.9.1
   theme: ^0.0.1
   ui_kit: ^0.0.1
   url_launcher: ^6.2.0

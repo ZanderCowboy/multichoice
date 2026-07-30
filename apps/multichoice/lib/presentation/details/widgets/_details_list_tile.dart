@@ -27,7 +27,7 @@ class _DetailsListTile extends StatelessWidget {
         borderRadius: borderCircular12,
       ),
       title: !isEditing
-          ? Text(
+          ? SelectableText(
               title,
               style: context.appTextTheme.denseTitle,
             )

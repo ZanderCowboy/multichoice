@@ -12,7 +12,7 @@
 |------|--------|-------|
 | `usePillStyleBanner` | `use_pill_style_banner` | Home banner style |
 | `enableChangelogPage` | `enable_changelog_page` | Changelog drawer link + route |
-| `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback image attachments |
+| `feedbackImagesEnabled` | `feedback_images_enabled` | Feedback **Add Images** + **Paste Screenshot** buttons; uploads gated by same flag |
 | `enableUserAccounts` | `enable_user_accounts` | Auth, profile, related routes |
 | `enableTutorial` | `enable_tutorial` | Guided product-tour journey, welcome Follow Tutorial, drawer Restart |
 | `enableUpdatePrompt` | `enable_update_prompt` | Home update-available prompt |

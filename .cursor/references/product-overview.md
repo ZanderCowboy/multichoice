@@ -30,7 +30,7 @@ Shipped on Google Play (Android only). Monorepo managed by Melos.
 - Search across choices
 - Export/import (data transfer screen)
 - Product tour for onboarding
-- In-app feedback (optional images via Remote Config)
+- In-app feedback (optional image attachments via Remote Config — file picker + Android paste-screenshot)
 - User accounts (sign-in, sign-up, password reset, profile) — gated by `enable_user_accounts`
 - Changelog page (gated by `enable_changelog_page`)
 - About page with remote-config URLs

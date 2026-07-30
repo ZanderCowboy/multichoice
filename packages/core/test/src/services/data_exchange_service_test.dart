@@ -50,9 +50,11 @@ void main() {
         final result = await dataExchangeService.pickFile();
 
         expect(result, filePath);
-        verify(mockFilePickerWrapper.pickFile(
-          allowedExtensions: ['multichoice', 'json'],
-        )).called(1);
+        verify(
+          mockFilePickerWrapper.pickFile(
+            allowedExtensions: ['multichoice', 'json'],
+          ),
+        ).called(1);
       });
 
       test('should return null when no file is selected', () async {
@@ -65,9 +67,11 @@ void main() {
         final result = await dataExchangeService.pickFile();
 
         expect(result, isNull);
-        verify(mockFilePickerWrapper.pickFile(
-          allowedExtensions: ['multichoice', 'json'],
-        )).called(1);
+        verify(
+          mockFilePickerWrapper.pickFile(
+            allowedExtensions: ['multichoice', 'json'],
+          ),
+        ).called(1);
       });
     });
 

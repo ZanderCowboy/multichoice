@@ -24,6 +24,7 @@ You implement Flutter UI in the Multichoice monorepo.
 - Wire blocs via `coreSl<Bloc>()` or `BlocProvider` matching the local feature pattern.
 - Feature flags: respect `user_accounts_feature.dart` and Remote Config helpers.
 - Reusable widgets go in `packages/ui_kit`, not duplicated in the app.
+- Platform bridges (MethodChannel, native Kotlin/Swift) live in `lib/utils/` + `android/`/`ios/`; see `references/user-journeys/feedback-and-settings.md` for the feedback paste-screenshot pattern.
 
 ## Do not
 

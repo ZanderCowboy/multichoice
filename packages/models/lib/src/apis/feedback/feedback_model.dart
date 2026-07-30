@@ -70,7 +70,9 @@ extension FeedbackModelFirestoreX on FeedbackModel {
       timestamp: (data['timestamp'] as Timestamp).toDate(),
       category: data['category'] as String?,
       status: data['status'] as String? ?? 'pending',
-      imageUrls: (data['imageUrls'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      imageUrls: (data['imageUrls'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
   }
 

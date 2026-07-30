@@ -32,5 +32,8 @@
 | Thin repository | `.../registration/registration_repository.dart` |
 | Isar repository | `.../search/search_repository.dart` |
 | Page + bloc | `apps/multichoice/.../search/search_page.dart`, `.../registration/reset_password_page.dart` |
+| App-native bridge | `apps/multichoice/lib/utils/screenshot_image_reader.dart` + `android/.../ScreenshotImageReader.kt` |
+
+**Platform-specific code** stays in the app (`lib/utils/` + `android/` / `ios/`), not in `packages/core`. Wire from presentation; keep business rules (e.g. image limits) in core blocs.
 
 See `.cursor/templates/` for scaffolds.

@@ -455,7 +455,9 @@ void main() {
         when(
           mockSharedPreferences.setString(any, any),
         ).thenAnswer((_) async => true);
-        when(mockSharedPreferences.setInt(any, any)).thenAnswer((_) async => true);
+        when(
+          mockSharedPreferences.setInt(any, any),
+        ).thenAnswer((_) async => true);
 
         await appStorageService.recordFeedbackSubmissionForToday();
 
@@ -491,7 +493,9 @@ void main() {
         when(
           mockSharedPreferences.setString(any, any),
         ).thenAnswer((_) async => true);
-        when(mockSharedPreferences.setInt(any, any)).thenAnswer((_) async => true);
+        when(
+          mockSharedPreferences.setInt(any, any),
+        ).thenAnswer((_) async => true);
 
         await appStorageService.recordFeedbackSubmissionForToday();
 

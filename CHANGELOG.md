@@ -1,34 +1,20 @@
-# Feedback Improvements
+# 425 - Play Photo Picker Policy
 
-## Feedback form
+## Feedback — images
 
-- Enforced client-side image limits (3 images, 5 MB each) in `FeedbackBloc` with localized error messages
-- Improved clipboard paste: supports PNG, JPEG, WebP, and GIF; clearer snackbars for unsupported formats, read failures, and empty images
-- Fixed form reset after successful submit so category and validation state stay in sync (`KeyedSubtree` + version key)
+- **Paste Screenshot** is removed
+- Attach images only via **Add Images** (system photo picker)
+- App should **not** request Photos / media library access for feedback
+- Still capped at **3 images**, **5 MB** each — verify limit messages still appear
+- Feature flag `feedback_images_enabled` still gates the Add Images button
 
-## Language selection
+## Android — permissions
 
-- Added drawer language tile with System / English / Nederlands options persisted via `IAppStorageService`
-- App startup applies saved locale preference through `applySavedAppLocale()`
+- Fresh install should not prompt for broad photo/media access for feedback
+- App installs and launches normally on Android devices
 
-## Feature flags
+## Regression smoke tests
 
-- Gated update prompt modal behind Remote Config `enable_update_prompt`
-- Gated full About page behind `enable_about_page`; drawer falls back to a simple `showAboutDialog` when disabled
-- Documented new flags in debug feature-flags UI and architecture reference
-
-## CI / DevOps
-
-- Fixed version-management action: checkout target branch with GitHub App token when `commit_changes` is true (bypasses branch rulesets)
-
-## Platform
-
-- Registered Android `DataProvider` for super_clipboard image paste on feedback form
-
-## i18n
-
-- Added drawer language strings and feedback clipboard error messages (en/nl)
-
-## Tests
-
-- Added `feedback_form_test.dart` widget tests and expanded `FeedbackBloc` / `AppStorageService` unit tests
+- Submit feedback with and without images (Add Images only)
+- Create, edit, reorder, and delete tab entries
+- Language selection (System / English / Nederlands) in drawer

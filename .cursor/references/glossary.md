@@ -18,3 +18,5 @@
 | **auto_route** | Declarative routing; `@RoutePage()` on pages |
 | **slang** | i18n codegen; JSON locale files → `strings.g.dart` |
 | **localizeCoreMessage** | App helper mapping core English strings to `context.t` |
+| **FeedbackImageLimits** | Core constants: max 3 images, 5 MB each per feedback submission |
+| **ScreenshotImageReader** | Android-only feedback paste bridge (Dart util + Kotlin MethodChannel) |
