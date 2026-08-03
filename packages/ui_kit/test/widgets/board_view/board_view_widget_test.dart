@@ -41,7 +41,7 @@ Widget _harness({
           laneAddBuilder: laneAddBuilder,
           boardAddBuilder: boardAddBuilder,
           onItemMoved: onItemMoved ?? (_) {},
-          onCollectionsReorder: (_, __) {},
+          onCollectionsReorder: (oldIndex, newIndex) {},
         ),
       ),
     ),
