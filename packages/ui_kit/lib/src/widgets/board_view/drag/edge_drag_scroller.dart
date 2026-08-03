@@ -3,6 +3,9 @@ import 'package:flutter/widgets.dart';
 
 /// Auto-scrolls [scrollable] while a drag pointer is near (or past) an edge.
 ///
+/// Package-private helper used by BoardView — not part of the public
+/// `board_view` API (see `export.dart`).
+///
 /// Keeps scrolling when the pointer leaves the scrollable along the scroll
 /// axis so collections/items beyond the viewport stay reachable. Stops only at
 /// scroll extent limits, or when the pointer leaves far off the cross-axis.

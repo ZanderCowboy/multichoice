@@ -1,13 +1,23 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../drag/board_drag_session.dart';
+import '../enums/board_layout.dart';
+import '../enums/drag_axis.dart';
 import '../models/board_builders.dart';
 import '../models/board_item_move.dart';
 import '../models/board_lane.dart';
 import '../models/board_view_config.dart';
 import '../models/board_view_style.dart';
-import 'board_view_state.dart';
+import 'board_collections_view.dart';
+import 'board_view_scope.dart';
+
+part 'board_view_state.dart';
 
 /// A plug-and-play, domain-agnostic drag-and-drop board.
+///
+/// This is the sole public widget entry point; state, drag session, and scroll
+/// helpers are package-private.
 ///
 /// ## Customization
 ///
@@ -131,5 +141,5 @@ class BoardView<T> extends StatefulWidget {
   final Map<String, ScrollController>? laneScrollControllers;
 
   @override
-  State<BoardView<T>> createState() => BoardViewState<T>();
+  State<BoardView<T>> createState() => _BoardViewState<T>();
 }

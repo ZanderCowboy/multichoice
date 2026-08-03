@@ -1,14 +1,7 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+part of 'board_view.dart';
 
-import '../drag/board_drag_session.dart';
-import '../enums/board_layout.dart';
-import '../enums/drag_axis.dart';
-import 'board_collections_view.dart';
-import 'board_view.dart';
-import 'board_view_scope.dart';
-
-class BoardViewState<T> extends State<BoardView<T>> {
+/// Package-private [State] for [BoardView]. Not exported from `board_view`.
+class _BoardViewState<T> extends State<BoardView<T>> {
   late final BoardDragSession<T> _session = BoardDragSession<T>(
     onChanged: () {
       if (mounted) setState(() {});
