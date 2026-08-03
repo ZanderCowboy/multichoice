@@ -82,6 +82,13 @@
                 "--dart-define-from-file=config/production_config.json"
             ],
             "preLaunchTask": "Start Emulator and Run Integration Test"
+        },
+        {
+            "name": "Board Demo",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "apps/board_demo",
+            "program": "lib/main.dart"
         }
     ]
 }
