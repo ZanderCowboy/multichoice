@@ -1,20 +1,17 @@
-# 425 - Play Photo Picker Policy
+# 436 - BoardView Ui Kit Widget
 
-## Feedback — images
+## Multichoice home
 
-- **Paste Screenshot** is removed
-- Attach images only via **Add Images** (system photo picker)
-- App should **not** request Photos / media library access for feedback
-- Still capped at **3 images**, **5 MB** each — verify limit messages still appear
-- Feature flag `feedback_images_enabled` still gates the Add Images button
+- No user-facing change in the main app yet — home collections still use the existing layout
+- Cross-collection drag/drop in Multichoice is tracked separately (#437)
 
-## Android — permissions
+## Board playground (dev / QA)
 
-- Fresh install should not prompt for broad photo/media access for feedback
-- App installs and launches normally on Android devices
+- New local-only `Board Demo` launch config for manual board testing (`apps/board_demo`, Melos-ignored)
+- Verify vertical and horizontal boards: reorder items within a collection, move items across collections, reorder collections via header handle (edit mode)
+- Verify empty collections, insert gap while dragging, and edge auto-scroll while dragging near viewport edges
 
 ## Regression smoke tests
 
-- Submit feedback with and without images (Add Images only)
-- Create, edit, reorder, and delete tab entries
-- Language selection (System / English / Nederlands) in drawer
+- Main app create / edit / reorder / delete tabs and entries still works as before
+- Language selection and feedback flows unchanged

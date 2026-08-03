@@ -6,6 +6,7 @@ packages:
 
 ignore:
   - apps/showcase
+  - apps/board_demo
   - "**/build/**"
 
 scripts:
