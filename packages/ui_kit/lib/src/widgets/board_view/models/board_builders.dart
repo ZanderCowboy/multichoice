@@ -39,6 +39,12 @@ typedef BoardEmptyLaneBuilder<T> =
 typedef BoardPlaceholderBuilder =
     Widget Function(BuildContext context, {double? width, double? height});
 
+/// Builds floating feedback while a collection lane is being dragged.
+///
+/// Prefer a compact title chip — do not show raw lane ids.
+typedef BoardCollectionDragFeedbackBuilder<T> =
+    Widget Function(BuildContext context, BoardLane<T> lane, int index);
+
 /// Default collection shell when [BoardView.laneDecorationBuilder] is omitted.
 BoxDecoration defaultBoardLaneDecoration(
   BuildContext context, {

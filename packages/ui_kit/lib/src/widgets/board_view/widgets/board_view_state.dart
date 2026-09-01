@@ -121,6 +121,7 @@ class _BoardViewState<T> extends State<BoardView<T>> {
         laneAddBuilder: widget.laneAddBuilder,
         boardAddBuilder: widget.boardAddBuilder,
         laneDecorationBuilder: widget.laneDecorationBuilder,
+        collectionDragFeedbackBuilder: widget.collectionDragFeedbackBuilder,
         laneAddPlacement: config.laneAddPlacement,
         boardAddPlacement: config.boardAddPlacement,
         addVisibility: config.addVisibility,

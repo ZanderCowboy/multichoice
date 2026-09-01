@@ -40,6 +40,7 @@ class BoardViewScope<T> extends InheritedWidget {
     this.laneAddBuilder,
     this.boardAddBuilder,
     this.laneDecorationBuilder,
+    this.collectionDragFeedbackBuilder,
   });
 
   final BoardDragSession<T> session;
@@ -65,6 +66,7 @@ class BoardViewScope<T> extends InheritedWidget {
   final BoardLaneAddBuilder<T>? laneAddBuilder;
   final BoardAddBuilder? boardAddBuilder;
   final BoardLaneDecorationBuilder<T>? laneDecorationBuilder;
+  final BoardCollectionDragFeedbackBuilder<T>? collectionDragFeedbackBuilder;
   final BoardSlotPlacement laneAddPlacement;
   final BoardSlotPlacement boardAddPlacement;
   final BoardAddVisibility addVisibility;
@@ -101,6 +103,8 @@ class BoardViewScope<T> extends InheritedWidget {
         laneAddBuilder != oldWidget.laneAddBuilder ||
         boardAddBuilder != oldWidget.boardAddBuilder ||
         laneDecorationBuilder != oldWidget.laneDecorationBuilder ||
+        collectionDragFeedbackBuilder !=
+            oldWidget.collectionDragFeedbackBuilder ||
         laneAddPlacement != oldWidget.laneAddPlacement ||
         boardAddPlacement != oldWidget.boardAddPlacement ||
         addVisibility != oldWidget.addVisibility ||

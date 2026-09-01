@@ -22,20 +22,6 @@ class BoardCollectionSlot<T> extends StatelessWidget {
   final List<BoardLane<T>> originalLanes;
   final double crossExtent;
 
-  Widget _buildPlaceholder(BuildContext context, BoardViewScope<T> scope) {
-    if (scope.placeholderBuilder != null) {
-      return scope.placeholderBuilder!(
-        context,
-        width: scope.isVertical ? null : scope.itemExtent,
-        height: scope.isVertical ? scope.itemExtent : null,
-      );
-    }
-    return DefaultBoardPlaceholder(
-      width: scope.isVertical ? null : scope.itemExtent,
-      height: scope.isVertical ? scope.itemExtent : null,
-    );
-  }
-
   Widget _buildGapTarget(
     BuildContext context,
     BoardViewScope<T> scope, {
@@ -55,17 +41,24 @@ class BoardCollectionSlot<T> extends StatelessWidget {
         );
       },
       builder: (context, candidate, rejected) {
+        // Lane-sized gap while collapsed so the drop zone reads clearly.
         final gapAlong = session.collectionsCollapsed
-            ? scope.style.collapsedLaneExtent * 0.5
+            ? scope.style.collapsedLaneExtent
             : scope.style.collectionGapExtent;
+        final width = scope.isVertical
+            ? gapAlong
+            : (crossExtent.isFinite ? crossExtent : null);
+        final height = scope.isVertical
+            ? (crossExtent.isFinite ? crossExtent : null)
+            : gapAlong;
         return SizedBox(
-          width: scope.isVertical
-              ? gapAlong
-              : (crossExtent.isFinite ? crossExtent : null),
-          height: scope.isVertical
-              ? (crossExtent.isFinite ? crossExtent : null)
-              : gapAlong,
-          child: _buildPlaceholder(context, scope),
+          width: width,
+          height: height,
+          child: DefaultBoardPlaceholder(
+            width: width,
+            height: height,
+            message: 'Drop here',
+          ),
         );
       },
     );

@@ -43,6 +43,9 @@ part 'board_view_state.dart';
 /// Optional shell behind each collection's header + items:
 /// - [laneDecorationBuilder]; if omitted, [defaultBoardLaneDecoration] is used
 ///
+/// Optional collection-drag chrome:
+/// - [collectionDragFeedbackBuilder]; if omitted, the lane id is shown
+///
 /// The parent owns all data. During an active drag, [BoardView] maintains a
 /// local preview (source item collapsed, live insert gap) so hover indices
 /// match what the user sees.
@@ -67,6 +70,7 @@ class BoardView<T> extends StatefulWidget {
     this.laneAddBuilder,
     this.boardAddBuilder,
     this.laneDecorationBuilder,
+    this.collectionDragFeedbackBuilder,
     this.config = const BoardViewConfig(),
     this.style = const BoardViewStyle(),
     this.editMode = false,
@@ -115,6 +119,10 @@ class BoardView<T> extends StatefulWidget {
   /// Optional shell decoration behind header + items for each lane.
   /// If null, [defaultBoardLaneDecoration] is used (radius from [style]).
   final BoardLaneDecorationBuilder<T>? laneDecorationBuilder;
+
+  /// Optional floating feedback while dragging a collection. Prefer a title
+  /// chip; when null, falls back to the lane id.
+  final BoardCollectionDragFeedbackBuilder<T>? collectionDragFeedbackBuilder;
 
   /// Behavior and layout knobs. Defaults when the host has no settings page.
   final BoardViewConfig config;

@@ -12,6 +12,7 @@ class BoardLaneDragHandle extends StatelessWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     required this.style,
+    required this.feedback,
     super.key,
   });
 
@@ -21,6 +22,9 @@ class BoardLaneDragHandle extends StatelessWidget {
   final void Function(LaneDragPayload payload) onDragStarted;
   final VoidCallback onDragEnded;
   final BoardViewStyle style;
+
+  /// Floating drag chrome. Prefer a title; avoid raw lane ids.
+  final Widget feedback;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class BoardLaneDragHandle extends StatelessWidget {
           padding: style.dragHandleFeedbackPadding,
           color: style.dragHandleFeedbackColor ??
               scheme.surfaceContainerHighest,
-          child: Text(laneId, style: Theme.of(context).textTheme.labelLarge),
+          child: feedback,
         ),
       ),
       childWhenDragging: SizedBox(

@@ -33,6 +33,15 @@ class BoardCollectionLane<T> extends StatelessWidget {
             style: scope.style,
             onDragStarted: scope.session.onLaneDragStarted,
             onDragEnded: scope.session.onLaneDragEnded,
+            feedback: scope.collectionDragFeedbackBuilder?.call(
+                  context,
+                  originalLane,
+                  originalIndex,
+                ) ??
+                Text(
+                  lane.id,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
           )
         : const SizedBox.shrink();
 

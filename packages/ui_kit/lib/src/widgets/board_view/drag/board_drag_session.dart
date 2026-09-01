@@ -128,7 +128,9 @@ class BoardDragSession<T> {
     laneDrag = payload;
     itemDrag = null;
     onChanged();
-    laneHover.clear();
+    // Seed a drop gap at the source slot so a placeholder appears immediately
+    // (post-removal index matches BoardItemMove / acceptLaneDrop semantics).
+    laneHover.update(payload.fromIndex);
     itemHover.clear();
     boardEdgeScroller?.onDragStart();
     onPointerRouteNeeded();
