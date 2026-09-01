@@ -79,6 +79,7 @@ class BoardCollectionsView<T> extends StatelessWidget {
                   ? ScrollbarOrientation.bottom
                   : ScrollbarOrientation.right,
               child: CustomScrollView(
+                key: const ValueKey('board_collections'),
                 controller: boardController,
                 scrollDirection: collectionsAxis,
                 physics: const AlwaysScrollableScrollPhysics(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/board_view_style.dart';
+import 'scroll_controller_utils.dart';
 
 /// Edge-aligned, interactive scroll thumb for board and per-lane scroll axes.
 ///
@@ -66,7 +67,8 @@ class _BoardScrollThumbState extends State<BoardScrollThumb> {
   ) {
     final c = widget.controller;
     if (!c.hasClients) return;
-    final position = c.position;
+    final position = primaryScrollPosition(c);
+    if (position == null) return;
     final max = position.maxScrollExtent;
     if (max <= 0) return;
 
@@ -91,7 +93,7 @@ class _BoardScrollThumbState extends State<BoardScrollThumb> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final c = widget.controller;
-        final position = c.hasClients ? c.position : null;
+        final position = primaryScrollPosition(c);
         final show = position != null &&
             position.hasContentDimensions &&
             position.maxScrollExtent > 0.5;
