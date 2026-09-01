@@ -19,6 +19,9 @@ Widget _harness({
   BoardLaneAddBuilder<String>? laneAddBuilder,
   BoardAddBuilder? boardAddBuilder,
   void Function(BoardItemMove move)? onItemMoved,
+  void Function(String itemId, String fromLaneId, int fromIndex)? onItemDeleted,
+  void Function(String laneId, int fromIndex)? onCollectionDeleted,
+  void Function(int oldIndex, int newIndex)? onCollectionsReorder,
 }) {
   return MaterialApp(
     home: Scaffold(
@@ -39,7 +42,7 @@ Widget _harness({
             return Row(
               children: [
                 dragHandle,
-                Text('header:${lane.id}'),
+                Expanded(child: Text('header:${lane.id}')),
               ],
             );
           },
@@ -47,7 +50,9 @@ Widget _harness({
           laneAddBuilder: laneAddBuilder,
           boardAddBuilder: boardAddBuilder,
           onItemMoved: onItemMoved ?? (_) {},
-          onCollectionsReorder: (oldIndex, newIndex) {},
+          onCollectionsReorder: onCollectionsReorder ?? (oldIndex, newIndex) {},
+          onItemDeleted: onItemDeleted,
+          onCollectionDeleted: onCollectionDeleted,
         ),
       ),
     ),
@@ -215,6 +220,197 @@ void main() {
       expect(lastMove!.toLaneId, 'todo');
       expect(lastMove!.fromIndex, 2);
       expect(lastMove!.toIndex, 0);
+    });
+
+    testWidgets('hides delete bin when not in edit mode or callbacks missing', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          editMode: true,
+          onItemDeleted: (_, _, _) {},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('board-delete-bin')), findsOneWidget);
+
+      await tester.pumpWidget(_harness(lanes: _lanes(), editMode: true));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('board-delete-bin')), findsNothing);
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          onItemDeleted: (_, _, _) {},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('board-delete-bin')), findsNothing);
+    });
+
+    testWidgets('dropping item on delete bin calls onItemDeleted only', (
+      tester,
+    ) async {
+      String? deletedItemId;
+      BoardItemMove? moved;
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          editMode: true,
+          onItemDeleted: (itemId, fromLaneId, fromIndex) {
+            deletedItemId = itemId;
+          },
+          onItemMoved: (move) => moved = move,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final binCenter = tester.getCenter(
+        find.byKey(const ValueKey('board-delete-bin')),
+      );
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('item:a')),
+      );
+      await gesture.moveTo(binCenter);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(deletedItemId, 'a');
+      expect(moved, isNull);
+    });
+
+    testWidgets('dropping lane on delete bin calls onCollectionDeleted only', (
+      tester,
+    ) async {
+      String? deletedLaneId;
+      int? reorderedOld;
+      int? reorderedNew;
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          editMode: true,
+          onCollectionDeleted: (laneId, fromIndex) {
+            deletedLaneId = laneId;
+          },
+          onCollectionsReorder: (oldIndex, newIndex) {
+            reorderedOld = oldIndex;
+            reorderedNew = newIndex;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final binCenter = tester.getCenter(
+        find.byKey(const ValueKey('board-delete-bin')),
+      );
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byIcon(Icons.drag_indicator).first),
+      );
+      await gesture.moveTo(binCenter);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(deletedLaneId, 'todo');
+      expect(reorderedOld, isNull);
+      expect(reorderedNew, isNull);
+    });
+
+    testWidgets('in-lane drop still moves when delete callbacks are set', (
+      tester,
+    ) async {
+      BoardItemMove? lastMove;
+      var deleteCount = 0;
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: const [
+            BoardLane(id: 'todo', items: ['a', 'b', 'c']),
+          ],
+          editMode: true,
+          onItemDeleted: (_, _, _) => deleteCount++,
+          onItemMoved: (move) => lastMove = move,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final firstItem = tester.getRect(find.text('item:a'));
+      final lastItem = tester.getCenter(find.text('item:c'));
+      final dropOnFirst = Offset(
+        firstItem.center.dx,
+        firstItem.top + firstItem.height * 0.25,
+      );
+
+      final gesture = await tester.startGesture(lastItem);
+      await gesture.moveTo(dropOnFirst);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(lastMove, isNotNull);
+      expect(lastMove!.fromIndex, 2);
+      expect(lastMove!.toIndex, 0);
+      expect(deleteCount, 0);
+    });
+
+    testWidgets('adding a collection does not crash scroll thumb', (
+      tester,
+    ) async {
+      var lanes = _lanes();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 800,
+              height: 600,
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return BoardView<String>(
+                    lanes: lanes,
+                    editMode: true,
+                    itemIdOf: (item) => item,
+                    itemBuilder: (context, item, isDragging) =>
+                        Text('item:$item'),
+                    collectionHeaderBuilder:
+                        (context, lane, index, dragHandle) {
+                      return Row(
+                        children: [
+                          dragHandle,
+                          Expanded(child: Text('header:${lane.id}')),
+                        ],
+                      );
+                    },
+                    boardAddBuilder: (context) => TextButton(
+                      onPressed: () {
+                        setState(() {
+                          lanes = [
+                            ...lanes,
+                            const BoardLane(id: 'new', items: []),
+                          ];
+                        });
+                      },
+                      child: const Text('board-add'),
+                    ),
+                    onItemMoved: (_) {},
+                    onItemDeleted: (_, _, _) {},
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('board-add'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('header:new'), findsOneWidget);
     });
   });
 }
