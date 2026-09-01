@@ -248,6 +248,42 @@ void main() {
         1,
       );
     });
+
+    testWidgets('start-add leadingExtent keeps first item at index 0', (
+      tester,
+    ) async {
+      final session = _session();
+      final box = await pumpLaneBox(tester);
+      final origin = box.localToGlobal(Offset.zero);
+      const itemExtent = 72.0;
+      // padding + header + start-placed add (same size as an item slot).
+      const leadingExtent = 12.0 + 48.0 + itemExtent;
+
+      expect(
+        session.insertIndexFromPointer(
+          globalPosition: origin + const Offset(0, leadingExtent + 20),
+          laneBox: box,
+          previewItemCount: 3,
+          laneController: null,
+          isVertical: true,
+          itemExtent: itemExtent,
+          leadingExtent: leadingExtent,
+        ),
+        0,
+      );
+      expect(
+        session.insertIndexFromPointer(
+          globalPosition: origin + const Offset(0, leadingExtent + 40),
+          laneBox: box,
+          previewItemCount: 3,
+          laneController: null,
+          isVertical: true,
+          itemExtent: itemExtent,
+          leadingExtent: leadingExtent,
+        ),
+        1,
+      );
+    });
   });
 
   group('BoardDragSessionIndexing.collectionInsertIndexForLane', () {

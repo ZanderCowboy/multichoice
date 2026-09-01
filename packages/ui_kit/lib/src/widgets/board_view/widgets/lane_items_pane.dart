@@ -123,13 +123,20 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     return widget.style.collapsedHeaderCross;
   }
 
+  bool get _hasStartAdd =>
+      widget.addBuilder != null &&
+      widget.addPlacement == BoardSlotPlacement.start;
+
   double get _leadingExtent {
     if (!_scrollingShell) return 0;
-    if (_hmScrollingShell) return _laneScrollPadding;
-    // VM: start inset + header height (pinned overlay or unpinned in-shell).
     var extent = _laneScrollPadding;
-    if (widget.leadingHeader != null) {
+    if (!_hmScrollingShell && widget.leadingHeader != null) {
+      // VM: start inset + header height (pinned overlay or unpinned in-shell).
       extent += _headerReserve;
+    }
+    // Start-placed add is sized to [itemExtent] and sits ahead of item slots.
+    if (_hasStartAdd) {
+      extent += widget.itemExtent;
     }
     return extent;
   }
@@ -191,17 +198,10 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     final items = widget.lane.items;
     final children = <Widget>[];
 
-    SizedBox wrapChild(Widget child) {
-      return SizedBox(
-        width: horizontal ? widget.itemExtent : double.infinity,
-        height: horizontal ? double.infinity : widget.itemExtent,
-        child: child,
-      );
-    }
-
     if (items.isEmpty && gapIndex == null) {
       children.add(
-        wrapChild(
+        _sizedAlongItems(
+          horizontal,
           widget.emptyLaneBuilder?.call(context) ??
               widget.placeholderBuilder(context),
         ),
@@ -210,7 +210,9 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
       final childCount = items.length + (gapIndex != null ? 1 : 0);
       for (var visualIndex = 0; visualIndex < childCount; visualIndex++) {
         if (gapIndex != null && visualIndex == gapIndex) {
-          children.add(wrapChild(widget.placeholderBuilder(context)));
+          children.add(
+            _sizedAlongItems(horizontal, widget.placeholderBuilder(context)),
+          );
           continue;
         }
 
@@ -219,11 +221,20 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
             : visualIndex;
         if (itemIndex < 0 || itemIndex >= items.length) continue;
 
-        children.add(wrapChild(_buildItem(context, itemIndex)));
+        children.add(_sizedAlongItems(horizontal, _buildItem(context, itemIndex)));
       }
     }
 
     return children;
+  }
+
+  /// Fixed along-axis size matching item slots (needed for insert-index math).
+  SizedBox _sizedAlongItems(bool horizontal, Widget child) {
+    return SizedBox(
+      width: horizontal ? widget.itemExtent : double.infinity,
+      height: horizontal ? double.infinity : widget.itemExtent,
+      child: child,
+    );
   }
 
   Widget _wrapWithChrome({
@@ -275,9 +286,10 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     );
     final add = widget.addBuilder?.call(context);
     if (add == null) return children;
+    final sizedAdd = _sizedAlongItems(horizontal, add);
     return widget.addPlacement == BoardSlotPlacement.start
-        ? [add, ...children]
-        : [...children, add];
+        ? [sizedAdd, ...children]
+        : [...children, sizedAdd];
   }
 
   Widget _edgeScrollerBinder() {

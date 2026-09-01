@@ -175,5 +175,46 @@ void main() {
       await gesture.up();
       await tester.pumpAndSettle();
     });
+
+    testWidgets('start-placed lane add does not shift item drop index', (
+      tester,
+    ) async {
+      BoardItemMove? lastMove;
+      await tester.pumpWidget(
+        _harness(
+          lanes: const [
+            BoardLane(id: 'todo', items: ['a', 'b', 'c']),
+          ],
+          editMode: true,
+          config: const BoardViewConfig(
+            laneAddPlacement: BoardSlotPlacement.start,
+            addVisibility: BoardAddVisibility.always,
+          ),
+          laneAddBuilder: (context, lane) => const Text('lane-add'),
+          onItemMoved: (move) => lastMove = move,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final firstItem = tester.getRect(find.text('item:a'));
+      final lastItem = tester.getCenter(find.text('item:c'));
+      // First half of item a — insert index 0 after source-c is removed.
+      final dropOnFirst = Offset(
+        firstItem.center.dx,
+        firstItem.top + firstItem.height * 0.25,
+      );
+
+      final gesture = await tester.startGesture(lastItem);
+      await gesture.moveTo(dropOnFirst);
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      expect(lastMove, isNotNull);
+      expect(lastMove!.fromLaneId, 'todo');
+      expect(lastMove!.toLaneId, 'todo');
+      expect(lastMove!.fromIndex, 2);
+      expect(lastMove!.toIndex, 0);
+    });
   });
 }
