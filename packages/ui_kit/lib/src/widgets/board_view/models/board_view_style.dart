@@ -34,8 +34,6 @@ class BoardViewStyle {
     this.dragHandleFeedbackColor,
     this.itemDragPadding = const EdgeInsets.all(4),
     this.itemDragFeedbackElevation = 6,
-    this.itemDragFeedbackCrossExtent = 240,
-    this.itemDragFeedbackAlongExtent = 120,
   });
 
   /// Along-axis inset for the board collections scroller.
@@ -90,12 +88,6 @@ class BoardViewStyle {
   final EdgeInsets itemDragPadding;
   final double itemDragFeedbackElevation;
 
-  /// Feedback width in vertical layout (cross-axis of the item scroll).
-  final double itemDragFeedbackCrossExtent;
-
-  /// Feedback height in horizontal layout (cross-axis of the item scroll).
-  final double itemDragFeedbackAlongExtent;
-
   BoardViewStyle copyWith({
     double? collectionsAlongPadding,
     double? laneAlongPadding,
@@ -122,8 +114,6 @@ class BoardViewStyle {
     Color? dragHandleFeedbackColor,
     EdgeInsets? itemDragPadding,
     double? itemDragFeedbackElevation,
-    double? itemDragFeedbackCrossExtent,
-    double? itemDragFeedbackAlongExtent,
   }) {
     return BoardViewStyle(
       collectionsAlongPadding:
@@ -159,10 +149,6 @@ class BoardViewStyle {
       itemDragPadding: itemDragPadding ?? this.itemDragPadding,
       itemDragFeedbackElevation:
           itemDragFeedbackElevation ?? this.itemDragFeedbackElevation,
-      itemDragFeedbackCrossExtent:
-          itemDragFeedbackCrossExtent ?? this.itemDragFeedbackCrossExtent,
-      itemDragFeedbackAlongExtent:
-          itemDragFeedbackAlongExtent ?? this.itemDragFeedbackAlongExtent,
     );
   }
 
@@ -194,9 +180,7 @@ class BoardViewStyle {
         other.dragHandleFeedbackPadding == dragHandleFeedbackPadding &&
         other.dragHandleFeedbackColor == dragHandleFeedbackColor &&
         other.itemDragPadding == itemDragPadding &&
-        other.itemDragFeedbackElevation == itemDragFeedbackElevation &&
-        other.itemDragFeedbackCrossExtent == itemDragFeedbackCrossExtent &&
-        other.itemDragFeedbackAlongExtent == itemDragFeedbackAlongExtent;
+        other.itemDragFeedbackElevation == itemDragFeedbackElevation;
   }
 
   @override
@@ -226,7 +210,5 @@ class BoardViewStyle {
         dragHandleFeedbackColor,
         itemDragPadding,
         itemDragFeedbackElevation,
-        itemDragFeedbackCrossExtent,
-        itemDragFeedbackAlongExtent,
       ]);
 }

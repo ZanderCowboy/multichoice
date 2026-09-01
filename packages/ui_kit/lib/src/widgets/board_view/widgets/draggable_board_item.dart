@@ -9,6 +9,7 @@ class DraggableBoardItem<T> extends StatelessWidget {
     required this.payload,
     required this.axis,
     required this.extent,
+    required this.crossExtent,
     required this.isVertical,
     required this.dragEnabled,
     required this.itemBuilder,
@@ -21,6 +22,7 @@ class DraggableBoardItem<T> extends StatelessWidget {
   final ItemDragPayload<T> payload;
   final Axis? axis;
   final double extent;
+  final double crossExtent;
   final bool isVertical;
   final bool dragEnabled;
   final Widget Function(BuildContext context, T item, bool isDragging)
@@ -41,6 +43,13 @@ class DraggableBoardItem<T> extends StatelessWidget {
       return Padding(padding: style.itemDragPadding, child: child);
     }
 
+    final feedbackCross =
+        (crossExtent -
+                (isVertical
+                    ? style.itemDragPadding.horizontal
+                    : style.itemDragPadding.vertical))
+            .clamp(0.0, double.infinity);
+
     return Padding(
       padding: style.itemDragPadding,
       child: Draggable<ItemDragPayload<T>>(
@@ -54,8 +63,8 @@ class DraggableBoardItem<T> extends StatelessWidget {
           type: MaterialType.transparency,
           elevation: style.itemDragFeedbackElevation,
           child: SizedBox(
-            width: isVertical ? style.itemDragFeedbackCrossExtent : extent,
-            height: isVertical ? extent : style.itemDragFeedbackAlongExtent,
+            width: isVertical ? feedbackCross : extent,
+            height: isVertical ? extent : feedbackCross,
             child: itemBuilder(context, payload.item, true),
           ),
         ),

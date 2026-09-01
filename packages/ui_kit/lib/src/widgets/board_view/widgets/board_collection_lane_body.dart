@@ -65,6 +65,7 @@ class BoardCollectionLaneBody<T> extends StatelessWidget {
       lane: lane,
       isVertical: scope.isVertical,
       itemExtent: scope.itemExtent,
+      laneExtent: scope.laneExtent,
       itemsBodyExtent: itemsBodyExtent,
       itemHover: session.itemHover,
       itemBuilder: scope.itemBuilder,

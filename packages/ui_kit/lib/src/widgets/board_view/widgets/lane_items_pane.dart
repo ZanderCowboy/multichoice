@@ -16,6 +16,7 @@ class LaneItemsPane<T> extends StatefulWidget {
     required this.lane,
     required this.isVertical,
     required this.itemExtent,
+    required this.laneExtent,
     required this.itemHover,
     required this.itemBuilder,
     required this.placeholderBuilder,
@@ -44,6 +45,9 @@ class LaneItemsPane<T> extends StatefulWidget {
   final BoardLane<T> lane;
   final bool isVertical;
   final double itemExtent;
+
+  /// Cross-axis size of the lane (width in VM, height in HM).
+  final double laneExtent;
   final ItemHoverPreview itemHover;
   final Widget Function(BuildContext context, T item, bool isDragging)
   itemBuilder;
@@ -169,6 +173,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
       payload: payload,
       axis: widget.dragAxis,
       extent: widget.itemExtent,
+      crossExtent: widget.laneExtent,
       isVertical: widget.isVertical,
       dragEnabled: widget.dragEnabled,
       itemBuilder: widget.itemBuilder,
@@ -332,10 +337,6 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
         final pad = _laneScrollPadding;
         final minShellWidth = (viewportW - pad * 2).clamp(0.0, double.infinity);
         final headerReserve = header == null ? 0.0 : _headerReserve;
-        final bodyHeight = (shellHeight - headerReserve).clamp(
-          0.0,
-          double.infinity,
-        );
 
         final shell = Container(
           height: shellHeight,
@@ -358,8 +359,9 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
                       child: KeyedSubtree(key: _headerKey, child: header),
                     ),
                   ),
-                SizedBox(
-                  height: bodyHeight,
+                // Take remaining height after the header lays out at its
+                // natural size — avoids overflow when _headerReserve is stale.
+                Expanded(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
