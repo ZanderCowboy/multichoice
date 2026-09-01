@@ -13,6 +13,8 @@ Widget _harness({
   required List<BoardLane<String>> lanes,
   bool editMode = false,
   BoardViewConfig config = const BoardViewConfig(),
+  double? laneExtent,
+  double itemExtent = 72,
   BoardEmptyLaneBuilder<String>? emptyLaneBuilder,
   BoardLaneAddBuilder<String>? laneAddBuilder,
   BoardAddBuilder? boardAddBuilder,
@@ -27,8 +29,12 @@ Widget _harness({
           lanes: lanes,
           editMode: editMode,
           config: config,
+          laneExtent: laneExtent,
+          itemExtent: itemExtent,
           itemIdOf: (item) => item,
-          itemBuilder: (context, item, isDragging) => Text('item:$item'),
+          itemBuilder: (context, item, isDragging) => Text(
+            isDragging ? 'feedback:$item' : 'item:$item',
+          ),
           collectionHeaderBuilder: (context, lane, index, dragHandle) {
             return Row(
               children: [
@@ -136,6 +142,38 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('lane-add:todo'), findsOneWidget);
       expect(find.text('board-add'), findsOneWidget);
+    });
+
+    testWidgets('item drag feedback matches lane cross-extent', (tester) async {
+      const laneExtent = 200.0;
+      const itemExtent = 72.0;
+      const padding = EdgeInsets.all(4);
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          editMode: true,
+          laneExtent: laneExtent,
+          itemExtent: itemExtent,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('item:a')),
+      );
+      await gesture.moveBy(const Offset(0, 40));
+      await tester.pump();
+
+      final feedbackSize = tester.getSize(find.text('feedback:a'));
+      expect(
+        feedbackSize.width,
+        laneExtent - padding.horizontal,
+      );
+      expect(feedbackSize.height, itemExtent);
+
+      await gesture.up();
+      await tester.pumpAndSettle();
     });
   });
 }
