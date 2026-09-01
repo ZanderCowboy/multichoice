@@ -30,6 +30,7 @@ class BoardCollectionLane<T> extends StatelessWidget {
             laneId: lane.id,
             fromIndex: originalIndex,
             isVertical: scope.isVertical,
+            allowFreeDragAxis: scope.deleteBinEnabled,
             style: scope.style,
             onDragStarted: scope.session.onLaneDragStarted,
             onDragEnded: scope.session.onLaneDragEnded,

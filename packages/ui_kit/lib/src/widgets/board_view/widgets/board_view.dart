@@ -10,6 +10,7 @@ import '../models/board_lane.dart';
 import '../models/board_view_config.dart';
 import '../models/board_view_style.dart';
 import 'board_collections_view.dart';
+import 'board_delete_bin.dart';
 import 'board_view_scope.dart';
 
 part 'board_view_state.dart';
@@ -65,6 +66,8 @@ class BoardView<T> extends StatefulWidget {
     required this.onItemMoved,
     super.key,
     this.onCollectionsReorder,
+    this.onItemDeleted,
+    this.onCollectionDeleted,
     this.placeholderBuilder,
     this.emptyLaneBuilder,
     this.laneAddBuilder,
@@ -101,6 +104,19 @@ class BoardView<T> extends StatefulWidget {
   /// [newIndex] is the final insertion index after removal
   /// (ReorderableListView-style).
   final void Function(int oldIndex, int newIndex)? onCollectionsReorder;
+
+  /// Called when an item is dropped on the delete bin.
+  ///
+  /// Parent owns confirmation and persistence. When null, item delete via the
+  /// bin is disabled.
+  final void Function(String itemId, String fromLaneId, int fromIndex)?
+      onItemDeleted;
+
+  /// Called when a collection is dropped on the delete bin.
+  ///
+  /// Parent owns confirmation and persistence. When null, collection delete via
+  /// the bin is disabled.
+  final void Function(String laneId, int fromIndex)? onCollectionDeleted;
 
   /// Optional custom insert-gap placeholder.
   final BoardPlaceholderBuilder? placeholderBuilder;

@@ -13,6 +13,7 @@ class BoardLaneDragHandle extends StatelessWidget {
     required this.onDragEnded,
     required this.style,
     required this.feedback,
+    this.allowFreeDragAxis = false,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class BoardLaneDragHandle extends StatelessWidget {
   final void Function(LaneDragPayload payload) onDragStarted;
   final VoidCallback onDragEnded;
   final BoardViewStyle style;
+  final bool allowFreeDragAxis;
 
   /// Floating drag chrome. Prefer a title; avoid raw lane ids.
   final Widget feedback;
@@ -33,7 +35,9 @@ class BoardLaneDragHandle extends StatelessWidget {
 
     return Draggable<LaneDragPayload>(
       data: payload,
-      axis: isVertical ? Axis.horizontal : Axis.vertical,
+      axis: allowFreeDragAxis
+          ? null
+          : (isVertical ? Axis.horizontal : Axis.vertical),
       onDragStarted: () => onDragStarted(payload),
       onDragEnd: (_) => onDragEnded(),
       // Called even after this widget unmounts (preview removes the source lane).

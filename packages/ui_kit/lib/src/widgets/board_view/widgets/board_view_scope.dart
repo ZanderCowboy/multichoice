@@ -35,6 +35,8 @@ class BoardViewScope<T> extends InheritedWidget {
     required super.child,
     super.key,
     this.onCollectionsReorder,
+    this.onItemDeleted,
+    this.onCollectionDeleted,
     this.placeholderBuilder,
     this.emptyLaneBuilder,
     this.laneAddBuilder,
@@ -54,6 +56,10 @@ class BoardViewScope<T> extends InheritedWidget {
   /// Same as [editMode]; kept as a named alias for drag-enable call sites.
   bool get canReorder => editMode;
 
+  /// Whether the floating delete bin is enabled for this board.
+  bool get deleteBinEnabled =>
+      onItemDeleted != null || onCollectionDeleted != null;
+
   final Axis? dragAxis;
   final BoardItemBuilder<T> itemBuilder;
   final BoardCollectionHeaderBuilder<T> collectionHeaderBuilder;
@@ -61,6 +67,9 @@ class BoardViewScope<T> extends InheritedWidget {
   final ScrollController Function(String laneId) laneControllerFor;
   final void Function(BoardItemMove move) onItemMoved;
   final void Function(int oldIndex, int newIndex)? onCollectionsReorder;
+  final void Function(String itemId, String fromLaneId, int fromIndex)?
+      onItemDeleted;
+  final void Function(String laneId, int fromIndex)? onCollectionDeleted;
   final BoardPlaceholderBuilder? placeholderBuilder;
   final BoardEmptyLaneBuilder<T>? emptyLaneBuilder;
   final BoardLaneAddBuilder<T>? laneAddBuilder;
@@ -98,6 +107,8 @@ class BoardViewScope<T> extends InheritedWidget {
         laneControllerFor != oldWidget.laneControllerFor ||
         onItemMoved != oldWidget.onItemMoved ||
         onCollectionsReorder != oldWidget.onCollectionsReorder ||
+        onItemDeleted != oldWidget.onItemDeleted ||
+        onCollectionDeleted != oldWidget.onCollectionDeleted ||
         placeholderBuilder != oldWidget.placeholderBuilder ||
         emptyLaneBuilder != oldWidget.emptyLaneBuilder ||
         laneAddBuilder != oldWidget.laneAddBuilder ||

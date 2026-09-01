@@ -51,3 +51,18 @@ class LaneHoverPreview extends ChangeNotifier {
 
   void clear() => update(null);
 }
+
+/// Whether the pointer is over the delete-bin drop target.
+class DeleteHoverPreview extends ChangeNotifier {
+  bool _active = false;
+
+  bool get active => _active;
+
+  void update(bool next) {
+    if (_active == next) return;
+    _active = next;
+    notifyListeners();
+  }
+
+  void clear() => update(false);
+}

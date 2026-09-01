@@ -34,6 +34,9 @@ class BoardViewStyle {
     this.dragHandleFeedbackColor,
     this.itemDragPadding = const EdgeInsets.all(4),
     this.itemDragFeedbackElevation = 6,
+    this.deleteBinIdleSize = 60,
+    this.deleteBinActiveSize = 96,
+    this.deleteBinBottomInset = 16,
   });
 
   /// Along-axis inset for the board collections scroller.
@@ -88,6 +91,15 @@ class BoardViewStyle {
   final EdgeInsets itemDragPadding;
   final double itemDragFeedbackElevation;
 
+  /// Compact delete-bin diameter while idle in edit mode.
+  final double deleteBinIdleSize;
+
+  /// Expanded delete-bin diameter while a drag is active.
+  final double deleteBinActiveSize;
+
+  /// Bottom inset for the floating delete bin.
+  final double deleteBinBottomInset;
+
   BoardViewStyle copyWith({
     double? collectionsAlongPadding,
     double? laneAlongPadding,
@@ -114,6 +126,9 @@ class BoardViewStyle {
     Color? dragHandleFeedbackColor,
     EdgeInsets? itemDragPadding,
     double? itemDragFeedbackElevation,
+    double? deleteBinIdleSize,
+    double? deleteBinActiveSize,
+    double? deleteBinBottomInset,
   }) {
     return BoardViewStyle(
       collectionsAlongPadding:
@@ -149,6 +164,9 @@ class BoardViewStyle {
       itemDragPadding: itemDragPadding ?? this.itemDragPadding,
       itemDragFeedbackElevation:
           itemDragFeedbackElevation ?? this.itemDragFeedbackElevation,
+      deleteBinIdleSize: deleteBinIdleSize ?? this.deleteBinIdleSize,
+      deleteBinActiveSize: deleteBinActiveSize ?? this.deleteBinActiveSize,
+      deleteBinBottomInset: deleteBinBottomInset ?? this.deleteBinBottomInset,
     );
   }
 
@@ -180,35 +198,41 @@ class BoardViewStyle {
         other.dragHandleFeedbackPadding == dragHandleFeedbackPadding &&
         other.dragHandleFeedbackColor == dragHandleFeedbackColor &&
         other.itemDragPadding == itemDragPadding &&
-        other.itemDragFeedbackElevation == itemDragFeedbackElevation;
+        other.itemDragFeedbackElevation == itemDragFeedbackElevation &&
+        other.deleteBinIdleSize == deleteBinIdleSize &&
+        other.deleteBinActiveSize == deleteBinActiveSize &&
+        other.deleteBinBottomInset == deleteBinBottomInset;
   }
 
   @override
   int get hashCode => Object.hashAll([
-        collectionsAlongPadding,
-        laneAlongPadding,
-        laneScrollPadding,
-        laneShellRadius,
-        collapsedLaneExtent,
-        collapsedHeaderCross,
-        collectionGapExtent,
-        scrollThumbThickness,
-        scrollThumbMinExtent,
-        scrollThumbEdgePadding,
-        scrollThumbOpacity,
-        scrollThumbColor,
-        scrollArrowIconSize,
-        scrollArrowPadding,
-        scrollArrowElevation,
-        scrollArrowIconColor,
-        scrollArrowBackgroundColor,
-        dragHandleIconSize,
-        dragHandleIconColor,
-        dragHandleFeedbackElevation,
-        dragHandleFeedbackRadius,
-        dragHandleFeedbackPadding,
-        dragHandleFeedbackColor,
-        itemDragPadding,
-        itemDragFeedbackElevation,
-      ]);
+    collectionsAlongPadding,
+    laneAlongPadding,
+    laneScrollPadding,
+    laneShellRadius,
+    collapsedLaneExtent,
+    collapsedHeaderCross,
+    collectionGapExtent,
+    scrollThumbThickness,
+    scrollThumbMinExtent,
+    scrollThumbEdgePadding,
+    scrollThumbOpacity,
+    scrollThumbColor,
+    scrollArrowIconSize,
+    scrollArrowPadding,
+    scrollArrowElevation,
+    scrollArrowIconColor,
+    scrollArrowBackgroundColor,
+    dragHandleIconSize,
+    dragHandleIconColor,
+    dragHandleFeedbackElevation,
+    dragHandleFeedbackRadius,
+    dragHandleFeedbackPadding,
+    dragHandleFeedbackColor,
+    itemDragPadding,
+    itemDragFeedbackElevation,
+    deleteBinIdleSize,
+    deleteBinActiveSize,
+    deleteBinBottomInset,
+  ]);
 }

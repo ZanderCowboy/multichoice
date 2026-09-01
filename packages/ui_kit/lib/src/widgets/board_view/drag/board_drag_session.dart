@@ -23,9 +23,12 @@ class BoardDragSession<T> {
 
   final ItemHoverPreview itemHover = ItemHoverPreview();
   final LaneHoverPreview laneHover = LaneHoverPreview();
+  final DeleteHoverPreview deleteHover = DeleteHoverPreview();
 
   ItemDragPayload<T>? itemDrag;
   LaneDragPayload? laneDrag;
+
+  bool _dropHandled = false;
 
   EdgeDragScroller? boardEdgeScroller;
   final Map<String, EdgeDragScroller> laneEdgeScrollers = {};
@@ -37,13 +40,16 @@ class BoardDragSession<T> {
   void dispose() {
     itemHover.dispose();
     laneHover.dispose();
+    deleteHover.dispose();
   }
 
   void onItemDragStarted(ItemDragPayload<T> payload) {
+    _dropHandled = false;
     itemDrag = payload;
     laneDrag = null;
     onChanged();
     itemHover.clear();
+    deleteHover.clear();
     boardEdgeScroller?.onDragStart();
     for (final scroller in laneEdgeScrollers.values) {
       scroller.onDragStart();
@@ -58,10 +64,22 @@ class BoardDragSession<T> {
       scroller.onDragEnd();
     }
     itemHover.clear();
+    deleteHover.clear();
     if (itemDrag != null) {
       itemDrag = null;
       onChanged();
     }
+  }
+
+  void onDeleteHover() {
+    if (deleteHover.active) return;
+    deleteHover.update(true);
+    itemHover.clear();
+    laneHover.clear();
+  }
+
+  void onDeleteHoverEnd() {
+    deleteHover.clear();
   }
 
   void onItemHover({
@@ -74,6 +92,7 @@ class BoardDragSession<T> {
     required double itemExtent,
     double leadingExtent = 0,
   }) {
+    if (deleteHover.active) return;
     final index = insertIndexFromPointer(
       globalPosition: globalPosition,
       laneBox: laneBox,
@@ -93,15 +112,28 @@ class BoardDragSession<T> {
     required int index,
     required Offset globalPosition,
   }) {
+    if (deleteHover.active) return;
     itemHover.update(laneId, index);
     boardEdgeScroller?.onDragUpdate(globalPosition);
     laneEdgeScrollers[laneId]?.onDragUpdate(globalPosition);
+  }
+
+  void acceptItemDelete(
+    ItemDragPayload<T> payload, {
+    required void Function(String itemId, String fromLaneId, int fromIndex)
+        onItemDeleted,
+  }) {
+    if (_dropHandled) return;
+    _dropHandled = true;
+    onItemDragEnded();
+    onItemDeleted(payload.itemId, payload.fromLaneId, payload.fromIndex);
   }
 
   void acceptItemDrop(
     ItemDragPayload<T> payload, {
     required void Function(BoardItemMove move) onItemMoved,
   }) {
+    if (_dropHandled) return;
     final toLaneId = itemHover.laneId;
     final toIndex = itemHover.index;
     onItemDragEnded();
@@ -125,6 +157,7 @@ class BoardDragSession<T> {
   }
 
   void onLaneDragStarted(LaneDragPayload payload) {
+    _dropHandled = false;
     laneDrag = payload;
     itemDrag = null;
     onChanged();
@@ -132,6 +165,7 @@ class BoardDragSession<T> {
     // (post-removal index matches BoardItemMove / acceptLaneDrop semantics).
     laneHover.update(payload.fromIndex);
     itemHover.clear();
+    deleteHover.clear();
     boardEdgeScroller?.onDragStart();
     onPointerRouteNeeded();
   }
@@ -140,16 +174,28 @@ class BoardDragSession<T> {
     onPointerRouteReleased();
     boardEdgeScroller?.onDragEnd();
     laneHover.clear();
+    deleteHover.clear();
     if (laneDrag != null) {
       laneDrag = null;
       onChanged();
     }
   }
 
+  void acceptLaneDelete(
+    LaneDragPayload payload, {
+    required void Function(String laneId, int fromIndex) onCollectionDeleted,
+  }) {
+    if (_dropHandled) return;
+    _dropHandled = true;
+    onLaneDragEnded();
+    onCollectionDeleted(payload.laneId, payload.fromIndex);
+  }
+
   void acceptLaneDrop(
     LaneDragPayload payload, {
     required void Function(int oldIndex, int newIndex)? onCollectionsReorder,
   }) {
+    if (_dropHandled) return;
     final visualIndex = laneHover.index;
     onLaneDragEnded();
 
@@ -168,7 +214,7 @@ class BoardDragSession<T> {
     required bool isVertical,
     required int laneCount,
   }) {
-    if (!isDragging) return;
+    if (!isDragging || deleteHover.active) return;
     boardEdgeScroller?.onDragUpdate(position);
     updateLaneHoverAtBoardEdges(
       globalPosition: position,
