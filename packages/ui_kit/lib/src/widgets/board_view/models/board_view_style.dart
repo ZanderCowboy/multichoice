@@ -10,8 +10,8 @@ class BoardViewStyle {
     this.laneAlongPadding = 4,
     this.laneScrollPadding = 12,
     this.laneShellRadius = 12,
-    this.collapsedLaneExtent = 128,
     this.collapsedHeaderCross = 48,
+    this.laneDragGhostOpacity = 0.45,
     this.collectionGapExtent = 48,
     this.scrollThumbThickness = 12,
     this.scrollThumbMinExtent = 40,
@@ -34,8 +34,9 @@ class BoardViewStyle {
     this.dragHandleFeedbackColor,
     this.itemDragPadding = const EdgeInsets.all(4),
     this.itemDragFeedbackElevation = 6,
-    this.itemDragFeedbackCrossExtent = 240,
-    this.itemDragFeedbackAlongExtent = 120,
+    this.deleteBinIdleSize = 60,
+    this.deleteBinActiveSize = 96,
+    this.deleteBinBottomInset = 16,
   });
 
   /// Along-axis inset for the board collections scroller.
@@ -50,11 +51,11 @@ class BoardViewStyle {
   /// Corner radius for collection shells and pinned-header top corners.
   final double laneShellRadius;
 
-  /// Compact footprint while a collection is being reordered.
-  final double collapsedLaneExtent;
-
-  /// Collapsed stub height under a lane header during collection reorder.
+  /// Fallback header reserve before the header is measured.
   final double collapsedHeaderCross;
+
+  /// Opacity of the lane ghost shown at the collection insert gap.
+  final double laneDragGhostOpacity;
 
   /// Insert-gap extent between collections during collection drag.
   final double collectionGapExtent;
@@ -90,19 +91,22 @@ class BoardViewStyle {
   final EdgeInsets itemDragPadding;
   final double itemDragFeedbackElevation;
 
-  /// Feedback width in vertical layout (cross-axis of the item scroll).
-  final double itemDragFeedbackCrossExtent;
+  /// Compact delete-bin diameter while idle in edit mode.
+  final double deleteBinIdleSize;
 
-  /// Feedback height in horizontal layout (cross-axis of the item scroll).
-  final double itemDragFeedbackAlongExtent;
+  /// Expanded delete-bin diameter while a drag is active.
+  final double deleteBinActiveSize;
+
+  /// Bottom inset for the floating delete bin.
+  final double deleteBinBottomInset;
 
   BoardViewStyle copyWith({
     double? collectionsAlongPadding,
     double? laneAlongPadding,
     double? laneScrollPadding,
     double? laneShellRadius,
-    double? collapsedLaneExtent,
     double? collapsedHeaderCross,
+    double? laneDragGhostOpacity,
     double? collectionGapExtent,
     double? scrollThumbThickness,
     double? scrollThumbMinExtent,
@@ -122,8 +126,9 @@ class BoardViewStyle {
     Color? dragHandleFeedbackColor,
     EdgeInsets? itemDragPadding,
     double? itemDragFeedbackElevation,
-    double? itemDragFeedbackCrossExtent,
-    double? itemDragFeedbackAlongExtent,
+    double? deleteBinIdleSize,
+    double? deleteBinActiveSize,
+    double? deleteBinBottomInset,
   }) {
     return BoardViewStyle(
       collectionsAlongPadding:
@@ -131,8 +136,8 @@ class BoardViewStyle {
       laneAlongPadding: laneAlongPadding ?? this.laneAlongPadding,
       laneScrollPadding: laneScrollPadding ?? this.laneScrollPadding,
       laneShellRadius: laneShellRadius ?? this.laneShellRadius,
-      collapsedLaneExtent: collapsedLaneExtent ?? this.collapsedLaneExtent,
       collapsedHeaderCross: collapsedHeaderCross ?? this.collapsedHeaderCross,
+      laneDragGhostOpacity: laneDragGhostOpacity ?? this.laneDragGhostOpacity,
       collectionGapExtent: collectionGapExtent ?? this.collectionGapExtent,
       scrollThumbThickness: scrollThumbThickness ?? this.scrollThumbThickness,
       scrollThumbMinExtent: scrollThumbMinExtent ?? this.scrollThumbMinExtent,
@@ -159,10 +164,9 @@ class BoardViewStyle {
       itemDragPadding: itemDragPadding ?? this.itemDragPadding,
       itemDragFeedbackElevation:
           itemDragFeedbackElevation ?? this.itemDragFeedbackElevation,
-      itemDragFeedbackCrossExtent:
-          itemDragFeedbackCrossExtent ?? this.itemDragFeedbackCrossExtent,
-      itemDragFeedbackAlongExtent:
-          itemDragFeedbackAlongExtent ?? this.itemDragFeedbackAlongExtent,
+      deleteBinIdleSize: deleteBinIdleSize ?? this.deleteBinIdleSize,
+      deleteBinActiveSize: deleteBinActiveSize ?? this.deleteBinActiveSize,
+      deleteBinBottomInset: deleteBinBottomInset ?? this.deleteBinBottomInset,
     );
   }
 
@@ -174,8 +178,8 @@ class BoardViewStyle {
         other.laneAlongPadding == laneAlongPadding &&
         other.laneScrollPadding == laneScrollPadding &&
         other.laneShellRadius == laneShellRadius &&
-        other.collapsedLaneExtent == collapsedLaneExtent &&
         other.collapsedHeaderCross == collapsedHeaderCross &&
+        other.laneDragGhostOpacity == laneDragGhostOpacity &&
         other.collectionGapExtent == collectionGapExtent &&
         other.scrollThumbThickness == scrollThumbThickness &&
         other.scrollThumbMinExtent == scrollThumbMinExtent &&
@@ -195,38 +199,40 @@ class BoardViewStyle {
         other.dragHandleFeedbackColor == dragHandleFeedbackColor &&
         other.itemDragPadding == itemDragPadding &&
         other.itemDragFeedbackElevation == itemDragFeedbackElevation &&
-        other.itemDragFeedbackCrossExtent == itemDragFeedbackCrossExtent &&
-        other.itemDragFeedbackAlongExtent == itemDragFeedbackAlongExtent;
+        other.deleteBinIdleSize == deleteBinIdleSize &&
+        other.deleteBinActiveSize == deleteBinActiveSize &&
+        other.deleteBinBottomInset == deleteBinBottomInset;
   }
 
   @override
   int get hashCode => Object.hashAll([
-        collectionsAlongPadding,
-        laneAlongPadding,
-        laneScrollPadding,
-        laneShellRadius,
-        collapsedLaneExtent,
-        collapsedHeaderCross,
-        collectionGapExtent,
-        scrollThumbThickness,
-        scrollThumbMinExtent,
-        scrollThumbEdgePadding,
-        scrollThumbOpacity,
-        scrollThumbColor,
-        scrollArrowIconSize,
-        scrollArrowPadding,
-        scrollArrowElevation,
-        scrollArrowIconColor,
-        scrollArrowBackgroundColor,
-        dragHandleIconSize,
-        dragHandleIconColor,
-        dragHandleFeedbackElevation,
-        dragHandleFeedbackRadius,
-        dragHandleFeedbackPadding,
-        dragHandleFeedbackColor,
-        itemDragPadding,
-        itemDragFeedbackElevation,
-        itemDragFeedbackCrossExtent,
-        itemDragFeedbackAlongExtent,
-      ]);
+    collectionsAlongPadding,
+    laneAlongPadding,
+    laneScrollPadding,
+    laneShellRadius,
+    collapsedHeaderCross,
+    laneDragGhostOpacity,
+    collectionGapExtent,
+    scrollThumbThickness,
+    scrollThumbMinExtent,
+    scrollThumbEdgePadding,
+    scrollThumbOpacity,
+    scrollThumbColor,
+    scrollArrowIconSize,
+    scrollArrowPadding,
+    scrollArrowElevation,
+    scrollArrowIconColor,
+    scrollArrowBackgroundColor,
+    dragHandleIconSize,
+    dragHandleIconColor,
+    dragHandleFeedbackElevation,
+    dragHandleFeedbackRadius,
+    dragHandleFeedbackPadding,
+    dragHandleFeedbackColor,
+    itemDragPadding,
+    itemDragFeedbackElevation,
+    deleteBinIdleSize,
+    deleteBinActiveSize,
+    deleteBinBottomInset,
+  ]);
 }

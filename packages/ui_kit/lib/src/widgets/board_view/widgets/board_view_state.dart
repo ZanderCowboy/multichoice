@@ -56,6 +56,7 @@ class _BoardViewState<T> extends State<BoardView<T>> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.editMode && !widget.editMode) {
       _session.onItemDragEnded();
+      _session.cancelPendingLaneDelete();
       _session.onLaneDragEnded();
     }
     _pruneOwnedLaneResources(widget.lanes.map((l) => l.id).toSet());
@@ -100,6 +101,9 @@ class _BoardViewState<T> extends State<BoardView<T>> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
     final config = widget.config;
+    final showDeleteBin =
+        widget.editMode &&
+        (widget.onItemDeleted != null || widget.onCollectionDeleted != null);
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -116,21 +120,44 @@ class _BoardViewState<T> extends State<BoardView<T>> {
         laneControllerFor: _laneControllerFor,
         onItemMoved: widget.onItemMoved,
         onCollectionsReorder: widget.onCollectionsReorder,
+        onItemDeleted: widget.onItemDeleted,
+        onCollectionDeleted: widget.onCollectionDeleted,
         placeholderBuilder: widget.placeholderBuilder,
         emptyLaneBuilder: widget.emptyLaneBuilder,
         laneAddBuilder: widget.laneAddBuilder,
         boardAddBuilder: widget.boardAddBuilder,
         laneDecorationBuilder: widget.laneDecorationBuilder,
+        collectionDragFeedbackBuilder: widget.collectionDragFeedbackBuilder,
         laneAddPlacement: config.laneAddPlacement,
         boardAddPlacement: config.boardAddPlacement,
         addVisibility: config.addVisibility,
         headerPin: config.headerPin,
         scrollIndicator: config.scrollIndicator,
         style: widget.style,
-        child: BoardCollectionsView<T>(
-          previewLanes: _session.previewLanes(widget.lanes),
-          originalLanes: widget.lanes,
-          boardController: _boardController,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            BoardCollectionsView<T>(
+              previewLanes: _session.previewLanes(widget.lanes),
+              originalLanes: widget.lanes,
+              boardController: _boardController,
+            ),
+            if (showDeleteBin)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: widget.style.deleteBinBottomInset,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: BoardDeleteBin<T>(
+                    session: _session,
+                    style: widget.style,
+                    onItemDeleted: widget.onItemDeleted,
+                    onCollectionDeleted: widget.onCollectionDeleted,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

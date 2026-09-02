@@ -39,6 +39,22 @@ typedef BoardEmptyLaneBuilder<T> =
 typedef BoardPlaceholderBuilder =
     Widget Function(BuildContext context, {double? width, double? height});
 
+/// Called when a collection is dropped on the delete bin.
+///
+/// The lane ghost stays visible until [resolve] is called. Pass `true` after
+/// the parent confirms deletion, or `false` to restore the lane.
+typedef BoardCollectionDeletedCallback = void Function(
+  String laneId,
+  int fromIndex,
+  void Function(bool confirmed) resolve,
+);
+
+///
+/// When omitted, [BoardView.collectionHeaderBuilder] is used without a handle.
+/// The full lane preview is shown at the insert gap instead.
+typedef BoardCollectionDragFeedbackBuilder<T> =
+    Widget Function(BuildContext context, BoardLane<T> lane, int index);
+
 /// Default collection shell when [BoardView.laneDecorationBuilder] is omitted.
 BoxDecoration defaultBoardLaneDecoration(
   BuildContext context, {

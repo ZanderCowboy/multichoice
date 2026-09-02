@@ -16,6 +16,7 @@ class LaneItemsPane<T> extends StatefulWidget {
     required this.lane,
     required this.isVertical,
     required this.itemExtent,
+    required this.laneExtent,
     required this.itemHover,
     required this.itemBuilder,
     required this.placeholderBuilder,
@@ -39,11 +40,15 @@ class LaneItemsPane<T> extends StatefulWidget {
     this.addPlacement = BoardSlotPlacement.end,
     this.scrollController,
     this.onEdgeScrollerReady,
+    this.onEdgeScrollerDisposed,
   });
 
   final BoardLane<T> lane;
   final bool isVertical;
   final double itemExtent;
+
+  /// Cross-axis size of the lane (width in VM, height in HM).
+  final double laneExtent;
   final ItemHoverPreview itemHover;
   final Widget Function(BuildContext context, T item, bool isDragging)
   itemBuilder;
@@ -55,6 +60,7 @@ class LaneItemsPane<T> extends StatefulWidget {
   final bool dragEnabled;
   final ScrollController? scrollController;
   final void Function(EdgeDragScroller scroller)? onEdgeScrollerReady;
+  final VoidCallback? onEdgeScrollerDisposed;
   final void Function(ItemDragPayload<T> payload) onItemDragStarted;
   final VoidCallback onItemDragEnded;
   final void Function({
@@ -97,6 +103,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
 
   /// Measured height of the pinned overlay header (0 until first layout).
   double _pinnedHeaderHeight = 0;
+  bool _headerMeasureScheduled = false;
 
   @override
   void didUpdateWidget(covariant LaneItemsPane<T> oldWidget) {
@@ -119,19 +126,29 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     return widget.style.collapsedHeaderCross;
   }
 
+  bool get _hasStartAdd =>
+      widget.addBuilder != null &&
+      widget.addPlacement == BoardSlotPlacement.start;
+
   double get _leadingExtent {
     if (!_scrollingShell) return 0;
-    if (_hmScrollingShell) return _laneScrollPadding;
-    // VM: start inset + header height (pinned overlay or unpinned in-shell).
     var extent = _laneScrollPadding;
-    if (widget.leadingHeader != null) {
+    if (!_hmScrollingShell && widget.leadingHeader != null) {
+      // VM: start inset + header height (pinned overlay or unpinned in-shell).
       extent += _headerReserve;
+    }
+    // Start-placed add is sized to [itemExtent] and sits ahead of item slots.
+    if (_hasStartAdd) {
+      extent += widget.itemExtent;
     }
     return extent;
   }
 
   void _scheduleHeaderMeasure() {
+    if (_headerMeasureScheduled) return;
+    _headerMeasureScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _headerMeasureScheduled = false;
       if (!mounted || widget.leadingHeader == null) return;
       final box = _headerKey.currentContext?.findRenderObject() as RenderBox?;
       if (box == null || !box.hasSize) return;
@@ -169,6 +186,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
       payload: payload,
       axis: widget.dragAxis,
       extent: widget.itemExtent,
+      crossExtent: widget.laneExtent,
       isVertical: widget.isVertical,
       dragEnabled: widget.dragEnabled,
       itemBuilder: widget.itemBuilder,
@@ -186,17 +204,10 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     final items = widget.lane.items;
     final children = <Widget>[];
 
-    SizedBox wrapChild(Widget child) {
-      return SizedBox(
-        width: horizontal ? widget.itemExtent : double.infinity,
-        height: horizontal ? double.infinity : widget.itemExtent,
-        child: child,
-      );
-    }
-
     if (items.isEmpty && gapIndex == null) {
       children.add(
-        wrapChild(
+        _sizedAlongItems(
+          horizontal,
           widget.emptyLaneBuilder?.call(context) ??
               widget.placeholderBuilder(context),
         ),
@@ -205,7 +216,9 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
       final childCount = items.length + (gapIndex != null ? 1 : 0);
       for (var visualIndex = 0; visualIndex < childCount; visualIndex++) {
         if (gapIndex != null && visualIndex == gapIndex) {
-          children.add(wrapChild(widget.placeholderBuilder(context)));
+          children.add(
+            _sizedAlongItems(horizontal, widget.placeholderBuilder(context)),
+          );
           continue;
         }
 
@@ -214,11 +227,20 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
             : visualIndex;
         if (itemIndex < 0 || itemIndex >= items.length) continue;
 
-        children.add(wrapChild(_buildItem(context, itemIndex)));
+        children.add(_sizedAlongItems(horizontal, _buildItem(context, itemIndex)));
       }
     }
 
     return children;
+  }
+
+  /// Fixed along-axis size matching item slots (needed for insert-index math).
+  SizedBox _sizedAlongItems(bool horizontal, Widget child) {
+    return SizedBox(
+      width: horizontal ? widget.itemExtent : double.infinity,
+      height: horizontal ? double.infinity : widget.itemExtent,
+      child: child,
+    );
   }
 
   Widget _wrapWithChrome({
@@ -270,9 +292,10 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
     );
     final add = widget.addBuilder?.call(context);
     if (add == null) return children;
+    final sizedAdd = _sizedAlongItems(horizontal, add);
     return widget.addPlacement == BoardSlotPlacement.start
-        ? [add, ...children]
-        : [...children, add];
+        ? [sizedAdd, ...children]
+        : [...children, sizedAdd];
   }
 
   Widget _edgeScrollerBinder() {
@@ -282,6 +305,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
           EdgeDragScroller(scrollable: scrollable),
         );
       },
+      onDispose: widget.onEdgeScrollerDisposed,
     );
   }
 
@@ -332,10 +356,6 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
         final pad = _laneScrollPadding;
         final minShellWidth = (viewportW - pad * 2).clamp(0.0, double.infinity);
         final headerReserve = header == null ? 0.0 : _headerReserve;
-        final bodyHeight = (shellHeight - headerReserve).clamp(
-          0.0,
-          double.infinity,
-        );
 
         final shell = Container(
           height: shellHeight,
@@ -358,8 +378,9 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
                       child: KeyedSubtree(key: _headerKey, child: header),
                     ),
                   ),
-                SizedBox(
-                  height: bodyHeight,
+                // Take remaining height after the header lays out at its
+                // natural size — avoids overflow when _headerReserve is stale.
+                Expanded(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,

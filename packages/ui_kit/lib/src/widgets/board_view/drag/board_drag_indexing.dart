@@ -105,8 +105,8 @@ extension BoardDragSessionIndexing<T> on BoardDragSession<T> {
     final scroller = boardEdgeScroller;
     if (scroller == null) return;
 
-    final box = scroller.scrollable.context.findRenderObject();
-    if (box is! RenderBox || !box.hasSize) return;
+    final box = scroller.viewportBox;
+    if (box == null) return;
 
     final local = box.globalToLocal(globalPosition);
     final size = box.size;

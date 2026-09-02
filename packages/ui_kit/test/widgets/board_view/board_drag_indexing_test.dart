@@ -102,6 +102,58 @@ void main() {
     });
   });
 
+  group('BoardDragSession.delete hover', () {
+    test('keeps lane gap at source index when hovering delete bin', () {
+      final session = _session();
+      session.laneDrag = const LaneDragPayload(laneId: 'b', fromIndex: 1);
+      session.laneHover.update(2);
+
+      session.onDeleteHover();
+
+      expect(session.deleteHover.active, isTrue);
+      expect(session.laneHover.index, 1);
+      expect(session.collectionSlotCount(2), 3);
+    });
+
+    test('clears item hover when hovering delete bin during item drag', () {
+      final session = _session();
+      session.itemDrag = const ItemDragPayload(
+        item: 'a1',
+        itemId: 'a1',
+        fromLaneId: 'a',
+        fromIndex: 1,
+      );
+      session.itemHover.update('a', 2);
+
+      session.onDeleteHover();
+
+      expect(session.deleteHover.active, isTrue);
+      expect(session.itemHover.laneId, isNull);
+      expect(session.itemHover.index, isNull);
+      expect(session.laneHover.index, isNull);
+    });
+
+    test('keeps lane ghost until resolveLaneDelete is called', () {
+      final session = _session();
+      session.laneDrag = const LaneDragPayload(laneId: 'b', fromIndex: 1);
+      session.laneHover.update(1);
+
+      session.acceptLaneDelete(
+        const LaneDragPayload(laneId: 'b', fromIndex: 1),
+        onCollectionDeleted: (_, _, resolve) {
+          expect(session.pendingLaneDelete, isTrue);
+          expect(session.laneDrag, isNotNull);
+          session.onLaneDragEnded();
+          expect(session.laneDrag, isNotNull);
+
+          resolve(false);
+          expect(session.pendingLaneDelete, isFalse);
+          expect(session.laneDrag, isNull);
+        },
+      );
+    });
+  });
+
   group('BoardDragSessionIndexing.collectionSlotCount', () {
     test('equals lane count when not dragging a collection', () {
       expect(_session().collectionSlotCount(3), 3);
@@ -245,6 +297,42 @@ void main() {
           leadingExtent: 28,
         ),
         // (100 - 28) / 72 ≈ 1.0 → round 1
+        1,
+      );
+    });
+
+    testWidgets('start-add leadingExtent keeps first item at index 0', (
+      tester,
+    ) async {
+      final session = _session();
+      final box = await pumpLaneBox(tester);
+      final origin = box.localToGlobal(Offset.zero);
+      const itemExtent = 72.0;
+      // padding + header + start-placed add (same size as an item slot).
+      const leadingExtent = 12.0 + 48.0 + itemExtent;
+
+      expect(
+        session.insertIndexFromPointer(
+          globalPosition: origin + const Offset(0, leadingExtent + 20),
+          laneBox: box,
+          previewItemCount: 3,
+          laneController: null,
+          isVertical: true,
+          itemExtent: itemExtent,
+          leadingExtent: leadingExtent,
+        ),
+        0,
+      );
+      expect(
+        session.insertIndexFromPointer(
+          globalPosition: origin + const Offset(0, leadingExtent + 40),
+          laneBox: box,
+          previewItemCount: 3,
+          laneController: null,
+          isVertical: true,
+          itemExtent: itemExtent,
+          leadingExtent: leadingExtent,
+        ),
         1,
       );
     });

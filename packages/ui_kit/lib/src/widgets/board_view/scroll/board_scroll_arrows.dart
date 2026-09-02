@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/board_view_style.dart';
+import 'scroll_controller_utils.dart';
 
 /// Edge arrows that appear when the [controller] can scroll in that direction.
 ///
@@ -59,7 +60,8 @@ class _BoardScrollArrowsState extends State<BoardScrollArrows> {
   Future<void> _nudge(double direction) async {
     final c = widget.controller;
     if (!c.hasClients) return;
-    final position = c.position;
+    final position = primaryScrollPosition(c);
+    if (position == null) return;
     if (!position.hasContentDimensions || !position.hasPixels) return;
     final max = position.maxScrollExtent;
     if (max <= BoardScrollArrows._epsilon) return;
@@ -112,7 +114,7 @@ class _BoardScrollArrowsState extends State<BoardScrollArrows> {
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
-    final position = c.hasClients ? c.position : null;
+    final position = primaryScrollPosition(c);
     final metricsReady =
         position != null && position.hasContentDimensions;
     final showable =

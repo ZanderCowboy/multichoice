@@ -29,6 +29,16 @@ class EdgeDragScroller {
   bool _frameScheduled = false;
   Duration? _lastTimestamp;
 
+  /// Viewport box when [scrollable] is still mounted and laid out.
+  ///
+  /// Pointer routes and drag targets can fire after preview rebuilds unmount
+  /// the source lane/board scroller; never read [State.context] without this.
+  RenderBox? get viewportBox {
+    if (!scrollable.mounted) return null;
+    final box = scrollable.context.findRenderObject();
+    return box is RenderBox && box.hasSize ? box : null;
+  }
+
   void onDragStart() {
     _isDragging = true;
     _velocity = 0;
@@ -38,8 +48,8 @@ class EdgeDragScroller {
   void onDragUpdate(Offset globalPosition) {
     if (!_isDragging) return;
 
-    final box = scrollable.context.findRenderObject();
-    if (box is! RenderBox || !box.hasSize) {
+    final box = viewportBox;
+    if (box == null) {
       _velocity = 0;
       return;
     }
@@ -98,6 +108,10 @@ class EdgeDragScroller {
     _lastTimestamp = null;
   }
 
+  void dispose() {
+    onDragEnd();
+  }
+
   void _scheduleFrame() {
     if (_frameScheduled || !_isDragging) return;
     _frameScheduled = true;
@@ -106,8 +120,11 @@ class EdgeDragScroller {
 
   void _onFrame(Duration timestamp) {
     _frameScheduled = false;
-    if (!_isDragging || _velocity == 0) {
+    if (!_isDragging || _velocity == 0 || !scrollable.mounted) {
       _lastTimestamp = null;
+      if (!scrollable.mounted) {
+        onDragEnd();
+      }
       return;
     }
 
@@ -136,6 +153,10 @@ class EdgeDragScroller {
     );
     if ((next - position.pixels).abs() < 0.05) {
       _velocity = 0;
+      return;
+    }
+    if (!scrollable.mounted) {
+      onDragEnd();
       return;
     }
     position.jumpTo(next);

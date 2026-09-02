@@ -2,9 +2,14 @@ import 'package:flutter/widgets.dart';
 
 /// Binds to the ancestor [Scrollable] once mounted (must be a descendant).
 class ScrollableBinder extends StatefulWidget {
-  const ScrollableBinder({required this.onReady, super.key});
+  const ScrollableBinder({
+    required this.onReady,
+    this.onDispose,
+    super.key,
+  });
 
   final void Function(ScrollableState scrollable) onReady;
+  final VoidCallback? onDispose;
 
   @override
   State<ScrollableBinder> createState() => _ScrollableBinderState();
@@ -19,6 +24,12 @@ class _ScrollableBinderState extends State<ScrollableBinder> {
       final scrollable = Scrollable.maybeOf(context);
       if (scrollable != null) widget.onReady(scrollable);
     });
+  }
+
+  @override
+  void dispose() {
+    widget.onDispose?.call();
+    super.dispose();
   }
 
   @override

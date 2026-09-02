@@ -35,11 +35,14 @@ class BoardViewScope<T> extends InheritedWidget {
     required super.child,
     super.key,
     this.onCollectionsReorder,
+    this.onItemDeleted,
+    this.onCollectionDeleted,
     this.placeholderBuilder,
     this.emptyLaneBuilder,
     this.laneAddBuilder,
     this.boardAddBuilder,
     this.laneDecorationBuilder,
+    this.collectionDragFeedbackBuilder,
   });
 
   final BoardDragSession<T> session;
@@ -53,6 +56,10 @@ class BoardViewScope<T> extends InheritedWidget {
   /// Same as [editMode]; kept as a named alias for drag-enable call sites.
   bool get canReorder => editMode;
 
+  /// Whether the floating delete bin is enabled for this board.
+  bool get deleteBinEnabled =>
+      onItemDeleted != null || onCollectionDeleted != null;
+
   final Axis? dragAxis;
   final BoardItemBuilder<T> itemBuilder;
   final BoardCollectionHeaderBuilder<T> collectionHeaderBuilder;
@@ -60,11 +67,15 @@ class BoardViewScope<T> extends InheritedWidget {
   final ScrollController Function(String laneId) laneControllerFor;
   final void Function(BoardItemMove move) onItemMoved;
   final void Function(int oldIndex, int newIndex)? onCollectionsReorder;
+  final void Function(String itemId, String fromLaneId, int fromIndex)?
+      onItemDeleted;
+  final BoardCollectionDeletedCallback? onCollectionDeleted;
   final BoardPlaceholderBuilder? placeholderBuilder;
   final BoardEmptyLaneBuilder<T>? emptyLaneBuilder;
   final BoardLaneAddBuilder<T>? laneAddBuilder;
   final BoardAddBuilder? boardAddBuilder;
   final BoardLaneDecorationBuilder<T>? laneDecorationBuilder;
+  final BoardCollectionDragFeedbackBuilder<T>? collectionDragFeedbackBuilder;
   final BoardSlotPlacement laneAddPlacement;
   final BoardSlotPlacement boardAddPlacement;
   final BoardAddVisibility addVisibility;
@@ -82,6 +93,40 @@ class BoardViewScope<T> extends InheritedWidget {
     return scope!;
   }
 
+  /// Re-provides this scope for widgets rendered outside the board tree (e.g.
+  /// drag feedback overlays).
+  Widget wrapChild(Widget child) {
+    return BoardViewScope<T>(
+      session: session,
+      isVertical: isVertical,
+      laneExtent: laneExtent,
+      itemExtent: itemExtent,
+      editMode: editMode,
+      dragAxis: dragAxis,
+      itemBuilder: itemBuilder,
+      collectionHeaderBuilder: collectionHeaderBuilder,
+      itemIdOf: itemIdOf,
+      laneControllerFor: laneControllerFor,
+      onItemMoved: onItemMoved,
+      style: style,
+      laneAddPlacement: laneAddPlacement,
+      boardAddPlacement: boardAddPlacement,
+      addVisibility: addVisibility,
+      headerPin: headerPin,
+      scrollIndicator: scrollIndicator,
+      onCollectionsReorder: onCollectionsReorder,
+      onItemDeleted: onItemDeleted,
+      onCollectionDeleted: onCollectionDeleted,
+      placeholderBuilder: placeholderBuilder,
+      emptyLaneBuilder: emptyLaneBuilder,
+      laneAddBuilder: laneAddBuilder,
+      boardAddBuilder: boardAddBuilder,
+      laneDecorationBuilder: laneDecorationBuilder,
+      collectionDragFeedbackBuilder: collectionDragFeedbackBuilder,
+      child: child,
+    );
+  }
+
   @override
   bool updateShouldNotify(BoardViewScope<T> oldWidget) {
     return session != oldWidget.session ||
@@ -96,11 +141,15 @@ class BoardViewScope<T> extends InheritedWidget {
         laneControllerFor != oldWidget.laneControllerFor ||
         onItemMoved != oldWidget.onItemMoved ||
         onCollectionsReorder != oldWidget.onCollectionsReorder ||
+        onItemDeleted != oldWidget.onItemDeleted ||
+        onCollectionDeleted != oldWidget.onCollectionDeleted ||
         placeholderBuilder != oldWidget.placeholderBuilder ||
         emptyLaneBuilder != oldWidget.emptyLaneBuilder ||
         laneAddBuilder != oldWidget.laneAddBuilder ||
         boardAddBuilder != oldWidget.boardAddBuilder ||
         laneDecorationBuilder != oldWidget.laneDecorationBuilder ||
+        collectionDragFeedbackBuilder !=
+            oldWidget.collectionDragFeedbackBuilder ||
         laneAddPlacement != oldWidget.laneAddPlacement ||
         boardAddPlacement != oldWidget.boardAddPlacement ||
         addVisibility != oldWidget.addVisibility ||

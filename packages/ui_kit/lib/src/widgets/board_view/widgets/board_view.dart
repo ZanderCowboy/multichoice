@@ -10,6 +10,7 @@ import '../models/board_lane.dart';
 import '../models/board_view_config.dart';
 import '../models/board_view_style.dart';
 import 'board_collections_view.dart';
+import 'board_delete_bin.dart';
 import 'board_view_scope.dart';
 
 part 'board_view_state.dart';
@@ -43,6 +44,9 @@ part 'board_view_state.dart';
 /// Optional shell behind each collection's header + items:
 /// - [laneDecorationBuilder]; if omitted, [defaultBoardLaneDecoration] is used
 ///
+/// Optional collection-drag chrome:
+/// - [collectionDragFeedbackBuilder]; if omitted, the collection header is shown
+///
 /// The parent owns all data. During an active drag, [BoardView] maintains a
 /// local preview (source item collapsed, live insert gap) so hover indices
 /// match what the user sees.
@@ -62,11 +66,14 @@ class BoardView<T> extends StatefulWidget {
     required this.onItemMoved,
     super.key,
     this.onCollectionsReorder,
+    this.onItemDeleted,
+    this.onCollectionDeleted,
     this.placeholderBuilder,
     this.emptyLaneBuilder,
     this.laneAddBuilder,
     this.boardAddBuilder,
     this.laneDecorationBuilder,
+    this.collectionDragFeedbackBuilder,
     this.config = const BoardViewConfig(),
     this.style = const BoardViewStyle(),
     this.editMode = false,
@@ -98,6 +105,20 @@ class BoardView<T> extends StatefulWidget {
   /// (ReorderableListView-style).
   final void Function(int oldIndex, int newIndex)? onCollectionsReorder;
 
+  /// Called when an item is dropped on the delete bin.
+  ///
+  /// Parent owns confirmation and persistence. When null, item delete via the
+  /// bin is disabled.
+  final void Function(String itemId, String fromLaneId, int fromIndex)?
+      onItemDeleted;
+
+  /// Called when a collection is dropped on the delete bin.
+  ///
+  /// The lane ghost remains until [BoardCollectionDeletedCallback]'s [resolve]
+  /// is called. Pass `true` after confirming deletion, or `false` to restore
+  /// the lane. When null, collection delete via the bin is disabled.
+  final BoardCollectionDeletedCallback? onCollectionDeleted;
+
   /// Optional custom insert-gap placeholder.
   final BoardPlaceholderBuilder? placeholderBuilder;
 
@@ -115,6 +136,10 @@ class BoardView<T> extends StatefulWidget {
   /// Optional shell decoration behind header + items for each lane.
   /// If null, [defaultBoardLaneDecoration] is used (radius from [style]).
   final BoardLaneDecorationBuilder<T>? laneDecorationBuilder;
+
+  /// Optional compact feedback under the finger while dragging a collection.
+  /// When null, [collectionHeaderBuilder] is used without a drag handle.
+  final BoardCollectionDragFeedbackBuilder<T>? collectionDragFeedbackBuilder;
 
   /// Behavior and layout knobs. Defaults when the host has no settings page.
   final BoardViewConfig config;
