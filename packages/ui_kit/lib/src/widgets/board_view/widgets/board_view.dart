@@ -45,7 +45,7 @@ part 'board_view_state.dart';
 /// - [laneDecorationBuilder]; if omitted, [defaultBoardLaneDecoration] is used
 ///
 /// Optional collection-drag chrome:
-/// - [collectionDragFeedbackBuilder]; if omitted, the lane id is shown
+/// - [collectionDragFeedbackBuilder]; if omitted, the collection header is shown
 ///
 /// The parent owns all data. During an active drag, [BoardView] maintains a
 /// local preview (source item collapsed, live insert gap) so hover indices
@@ -114,9 +114,10 @@ class BoardView<T> extends StatefulWidget {
 
   /// Called when a collection is dropped on the delete bin.
   ///
-  /// Parent owns confirmation and persistence. When null, collection delete via
-  /// the bin is disabled.
-  final void Function(String laneId, int fromIndex)? onCollectionDeleted;
+  /// The lane ghost remains until [BoardCollectionDeletedCallback]'s [resolve]
+  /// is called. Pass `true` after confirming deletion, or `false` to restore
+  /// the lane. When null, collection delete via the bin is disabled.
+  final BoardCollectionDeletedCallback? onCollectionDeleted;
 
   /// Optional custom insert-gap placeholder.
   final BoardPlaceholderBuilder? placeholderBuilder;
@@ -136,8 +137,8 @@ class BoardView<T> extends StatefulWidget {
   /// If null, [defaultBoardLaneDecoration] is used (radius from [style]).
   final BoardLaneDecorationBuilder<T>? laneDecorationBuilder;
 
-  /// Optional floating feedback while dragging a collection. Prefer a title
-  /// chip; when null, falls back to the lane id.
+  /// Optional compact feedback under the finger while dragging a collection.
+  /// When null, [collectionHeaderBuilder] is used without a drag handle.
   final BoardCollectionDragFeedbackBuilder<T>? collectionDragFeedbackBuilder;
 
   /// Behavior and layout knobs. Defaults when the host has no settings page.

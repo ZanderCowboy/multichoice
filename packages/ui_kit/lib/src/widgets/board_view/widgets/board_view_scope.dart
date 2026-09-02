@@ -69,7 +69,7 @@ class BoardViewScope<T> extends InheritedWidget {
   final void Function(int oldIndex, int newIndex)? onCollectionsReorder;
   final void Function(String itemId, String fromLaneId, int fromIndex)?
       onItemDeleted;
-  final void Function(String laneId, int fromIndex)? onCollectionDeleted;
+  final BoardCollectionDeletedCallback? onCollectionDeleted;
   final BoardPlaceholderBuilder? placeholderBuilder;
   final BoardEmptyLaneBuilder<T>? emptyLaneBuilder;
   final BoardLaneAddBuilder<T>? laneAddBuilder;
@@ -91,6 +91,40 @@ class BoardViewScope<T> extends InheritedWidget {
       'BoardViewScope<$T> not found. Ensure the widget is under BoardView.',
     );
     return scope!;
+  }
+
+  /// Re-provides this scope for widgets rendered outside the board tree (e.g.
+  /// drag feedback overlays).
+  Widget wrapChild(Widget child) {
+    return BoardViewScope<T>(
+      session: session,
+      isVertical: isVertical,
+      laneExtent: laneExtent,
+      itemExtent: itemExtent,
+      editMode: editMode,
+      dragAxis: dragAxis,
+      itemBuilder: itemBuilder,
+      collectionHeaderBuilder: collectionHeaderBuilder,
+      itemIdOf: itemIdOf,
+      laneControllerFor: laneControllerFor,
+      onItemMoved: onItemMoved,
+      style: style,
+      laneAddPlacement: laneAddPlacement,
+      boardAddPlacement: boardAddPlacement,
+      addVisibility: addVisibility,
+      headerPin: headerPin,
+      scrollIndicator: scrollIndicator,
+      onCollectionsReorder: onCollectionsReorder,
+      onItemDeleted: onItemDeleted,
+      onCollectionDeleted: onCollectionDeleted,
+      placeholderBuilder: placeholderBuilder,
+      emptyLaneBuilder: emptyLaneBuilder,
+      laneAddBuilder: laneAddBuilder,
+      boardAddBuilder: boardAddBuilder,
+      laneDecorationBuilder: laneDecorationBuilder,
+      collectionDragFeedbackBuilder: collectionDragFeedbackBuilder,
+      child: child,
+    );
   }
 
   @override

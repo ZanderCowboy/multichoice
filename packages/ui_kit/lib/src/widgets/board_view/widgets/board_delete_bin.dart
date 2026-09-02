@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../drag/board_drag_session.dart';
+import '../models/board_builders.dart';
 import '../models/board_drag_models.dart';
 import '../models/board_view_style.dart';
 
@@ -21,7 +22,7 @@ class BoardDeleteBin<T> extends StatelessWidget {
   final BoardViewStyle style;
   final void Function(String itemId, String fromLaneId, int fromIndex)?
       onItemDeleted;
-  final void Function(String laneId, int fromIndex)? onCollectionDeleted;
+  final BoardCollectionDeletedCallback? onCollectionDeleted;
 
   bool _accepts(Object? data) {
     if (data is ItemDragPayload<T>) return onItemDeleted != null;

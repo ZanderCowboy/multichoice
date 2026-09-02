@@ -56,6 +56,7 @@ class _BoardViewState<T> extends State<BoardView<T>> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.editMode && !widget.editMode) {
       _session.onItemDragEnded();
+      _session.cancelPendingLaneDelete();
       _session.onLaneDragEnded();
     }
     _pruneOwnedLaneResources(widget.lanes.map((l) => l.id).toSet());

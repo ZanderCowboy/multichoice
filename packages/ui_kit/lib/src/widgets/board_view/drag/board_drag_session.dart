@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../models/board_builders.dart';
 import '../models/board_drag_models.dart';
 import '../models/board_item_move.dart';
 import 'board_drag_indexing.dart';
@@ -29,18 +30,26 @@ class BoardDragSession<T> {
   LaneDragPayload? laneDrag;
 
   bool _dropHandled = false;
+  bool _pendingLaneDelete = false;
+
+  /// Whether a collection delete is awaiting parent confirmation.
+  bool get pendingLaneDelete => _pendingLaneDelete;
 
   EdgeDragScroller? boardEdgeScroller;
   final Map<String, EdgeDragScroller> laneEdgeScrollers = {};
 
   bool get isDragging => itemDrag != null || laneDrag != null;
 
-  bool get collectionsCollapsed => laneDrag != null;
-
   void dispose() {
     itemHover.dispose();
     laneHover.dispose();
     deleteHover.dispose();
+    boardEdgeScroller?.dispose();
+    boardEdgeScroller = null;
+    for (final scroller in laneEdgeScrollers.values) {
+      scroller.dispose();
+    }
+    laneEdgeScrollers.clear();
   }
 
   void onItemDragStarted(ItemDragPayload<T> payload) {
@@ -75,7 +84,14 @@ class BoardDragSession<T> {
     if (deleteHover.active) return;
     deleteHover.update(true);
     itemHover.clear();
-    laneHover.clear();
+    final drag = laneDrag;
+    if (drag != null) {
+      // Keep the source slot reserved so the lane list does not collapse
+      // while hovering the delete bin.
+      laneHover.update(drag.fromIndex);
+    } else {
+      laneHover.clear();
+    }
   }
 
   void onDeleteHoverEnd() {
@@ -157,6 +173,9 @@ class BoardDragSession<T> {
   }
 
   void onLaneDragStarted(LaneDragPayload payload) {
+    if (_pendingLaneDelete) {
+      resolveLaneDelete(false);
+    }
     _dropHandled = false;
     laneDrag = payload;
     itemDrag = null;
@@ -171,6 +190,16 @@ class BoardDragSession<T> {
   }
 
   void onLaneDragEnded() {
+    if (_pendingLaneDelete) {
+      onPointerRouteReleased();
+      boardEdgeScroller?.onDragEnd();
+      deleteHover.clear();
+      return;
+    }
+    _clearLaneDrag();
+  }
+
+  void _clearLaneDrag() {
     onPointerRouteReleased();
     boardEdgeScroller?.onDragEnd();
     laneHover.clear();
@@ -181,14 +210,31 @@ class BoardDragSession<T> {
     }
   }
 
+  /// Ends a pending collection delete. Call from the parent after the confirm
+  /// dialog closes. [confirmed] `true` clears the ghost after deletion;
+  /// `false` restores the lane.
+  void resolveLaneDelete(bool confirmed) {
+    if (!_pendingLaneDelete) return;
+    _pendingLaneDelete = false;
+    _clearLaneDrag();
+  }
+
+  void cancelPendingLaneDelete() {
+    resolveLaneDelete(false);
+  }
+
   void acceptLaneDelete(
     LaneDragPayload payload, {
-    required void Function(String laneId, int fromIndex) onCollectionDeleted,
+    required BoardCollectionDeletedCallback onCollectionDeleted,
   }) {
     if (_dropHandled) return;
     _dropHandled = true;
-    onLaneDragEnded();
-    onCollectionDeleted(payload.laneId, payload.fromIndex);
+    _pendingLaneDelete = true;
+    laneHover.update(payload.fromIndex);
+    deleteHover.clear();
+    onPointerRouteReleased();
+    boardEdgeScroller?.onDragEnd();
+    onCollectionDeleted(payload.laneId, payload.fromIndex, resolveLaneDelete);
   }
 
   void acceptLaneDrop(
@@ -229,6 +275,7 @@ class BoardDragSession<T> {
   }
 
   void registerLaneEdgeScroller(String laneId, EdgeDragScroller scroller) {
+    laneEdgeScrollers[laneId]?.dispose();
     laneEdgeScrollers[laneId] = scroller;
     if (itemDrag != null) {
       scroller.onDragStart();
@@ -236,11 +283,16 @@ class BoardDragSession<T> {
   }
 
   void unregisterLaneEdgeScroller(String laneId) {
-    laneEdgeScrollers.remove(laneId);
+    laneEdgeScrollers.remove(laneId)?.dispose();
   }
 
   /// Drop edge-scrollers for lanes that are no longer present.
   void pruneLaneEdgeScrollers(Set<String> activeLaneIds) {
-    laneEdgeScrollers.removeWhere((id, _) => !activeLaneIds.contains(id));
+    final staleIds = laneEdgeScrollers.keys
+        .where((id) => !activeLaneIds.contains(id))
+        .toList(growable: false);
+    for (final id in staleIds) {
+      unregisterLaneEdgeScroller(id);
+    }
   }
 }

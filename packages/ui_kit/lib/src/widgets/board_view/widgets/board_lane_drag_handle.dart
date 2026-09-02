@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 import '../models/board_drag_models.dart';
 import '../models/board_view_style.dart';
 
+/// Wraps [builder] so finger feedback is built only when the drag overlay mounts.
+class _DeferredLaneDragFeedback extends StatelessWidget {
+  const _DeferredLaneDragFeedback({required this.builder});
+
+  final WidgetBuilder builder;
+
+  @override
+  Widget build(BuildContext context) => builder(context);
+}
+
 /// Drag handle for reordering a collection lane via its header.
 class BoardLaneDragHandle extends StatelessWidget {
   const BoardLaneDragHandle({
@@ -12,7 +22,7 @@ class BoardLaneDragHandle extends StatelessWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     required this.style,
-    required this.feedback,
+    required this.feedbackBuilder,
     this.allowFreeDragAxis = false,
     super.key,
   });
@@ -25,8 +35,8 @@ class BoardLaneDragHandle extends StatelessWidget {
   final BoardViewStyle style;
   final bool allowFreeDragAxis;
 
-  /// Floating drag chrome. Prefer a title; avoid raw lane ids.
-  final Widget feedback;
+  /// Compact chrome under the finger. Built lazily when the drag starts.
+  final WidgetBuilder feedbackBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +50,7 @@ class BoardLaneDragHandle extends StatelessWidget {
           : (isVertical ? Axis.horizontal : Axis.vertical),
       onDragStarted: () => onDragStarted(payload),
       onDragEnd: (_) => onDragEnded(),
-      // Called even after this widget unmounts (preview removes the source lane).
+      // Called even after this widget unmounts (e.g. if the lane is removed).
       onDraggableCanceled: (velocity, offset) => onDragEnded(),
       feedback: Material(
         elevation: style.dragHandleFeedbackElevation,
@@ -49,13 +59,10 @@ class BoardLaneDragHandle extends StatelessWidget {
           padding: style.dragHandleFeedbackPadding,
           color: style.dragHandleFeedbackColor ??
               scheme.surfaceContainerHighest,
-          child: feedback,
+          child: _DeferredLaneDragFeedback(builder: feedbackBuilder),
         ),
       ),
-      childWhenDragging: SizedBox(
-        width: style.dragHandleIconSize,
-        height: style.dragHandleIconSize,
-      ),
+      childWhenDragging: const SizedBox.shrink(),
       child: MouseRegion(
         cursor: SystemMouseCursors.grab,
         child: Icon(

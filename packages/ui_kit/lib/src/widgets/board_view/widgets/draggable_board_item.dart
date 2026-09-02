@@ -3,6 +3,39 @@ import 'package:flutter/material.dart';
 import '../models/board_drag_models.dart';
 import '../models/board_view_style.dart';
 
+/// Builds item drag feedback only when the overlay mounts it (on drag start).
+class _DeferredItemDragFeedback<T> extends StatelessWidget {
+  const _DeferredItemDragFeedback({
+    required this.payload,
+    required this.itemBuilder,
+    required this.extent,
+    required this.feedbackCross,
+    required this.isVertical,
+    required this.style,
+  });
+
+  final ItemDragPayload<T> payload;
+  final Widget Function(BuildContext context, T item, bool isDragging)
+      itemBuilder;
+  final double extent;
+  final double feedbackCross;
+  final bool isVertical;
+  final BoardViewStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      elevation: style.itemDragFeedbackElevation,
+      child: SizedBox(
+        width: isVertical ? feedbackCross : extent,
+        height: isVertical ? extent : feedbackCross,
+        child: itemBuilder(context, payload.item, true),
+      ),
+    );
+  }
+}
+
 /// Draggable wrapper for a single board item card.
 class DraggableBoardItem<T> extends StatelessWidget {
   const DraggableBoardItem({
@@ -26,7 +59,7 @@ class DraggableBoardItem<T> extends StatelessWidget {
   final bool isVertical;
   final bool dragEnabled;
   final Widget Function(BuildContext context, T item, bool isDragging)
-  itemBuilder;
+      itemBuilder;
   final VoidCallback onDragStarted;
   final VoidCallback onDragEnd;
   final BoardViewStyle style;
@@ -59,14 +92,13 @@ class DraggableBoardItem<T> extends StatelessWidget {
         onDragEnd: (_) => onDragEnd(),
         // Called even after this widget unmounts (preview removes the source).
         onDraggableCanceled: (velocity, offset) => onDragEnd(),
-        feedback: Material(
-          type: MaterialType.transparency,
-          elevation: style.itemDragFeedbackElevation,
-          child: SizedBox(
-            width: isVertical ? feedbackCross : extent,
-            height: isVertical ? extent : feedbackCross,
-            child: itemBuilder(context, payload.item, true),
-          ),
+        feedback: _DeferredItemDragFeedback<T>(
+          payload: payload,
+          itemBuilder: itemBuilder,
+          extent: extent,
+          feedbackCross: feedbackCross,
+          isVertical: isVertical,
+          style: style,
         ),
         childWhenDragging: const SizedBox.shrink(),
         child: child,

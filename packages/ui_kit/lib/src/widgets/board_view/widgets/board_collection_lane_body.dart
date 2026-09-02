@@ -16,6 +16,7 @@ class BoardCollectionLaneBody<T> extends StatelessWidget {
     this.shellDecoration,
     this.itemsBodyExtent,
     this.pinHeader = false,
+    this.itemsDragEnabled = true,
   });
 
   final BoardLane<T> lane;
@@ -23,6 +24,7 @@ class BoardCollectionLaneBody<T> extends StatelessWidget {
   final BoxDecoration? shellDecoration;
   final double? itemsBodyExtent;
   final bool pinHeader;
+  final bool itemsDragEnabled;
 
   Widget _placeholder(
     BuildContext context,
@@ -47,13 +49,6 @@ class BoardCollectionLaneBody<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = BoardViewScope.of<T>(context);
     final session = scope.session;
-
-    if (session.collectionsCollapsed) {
-      return SizedBox(
-        height: scope.style.collapsedHeaderCross,
-        width: double.infinity,
-      );
-    }
 
     final showAdds =
         scope.editMode || scope.addVisibility == BoardAddVisibility.always;
@@ -84,11 +79,14 @@ class BoardCollectionLaneBody<T> extends StatelessWidget {
           : (ctx) => scope.emptyLaneBuilder!(ctx, lane),
       addBuilder: add == null ? null : (_) => add,
       addPlacement: scope.laneAddPlacement,
-      dragEnabled: scope.canReorder,
+      dragEnabled: itemsDragEnabled && scope.canReorder,
       dragAxis: scope.dragAxis,
       scrollController: scope.laneControllerFor(lane.id),
       onEdgeScrollerReady: (scroller) {
         session.registerLaneEdgeScroller(lane.id, scroller);
+      },
+      onEdgeScrollerDisposed: () {
+        session.unregisterLaneEdgeScroller(lane.id);
       },
       onItemDragStarted: session.onItemDragStarted,
       onItemDragEnded: session.onItemDragEnded,

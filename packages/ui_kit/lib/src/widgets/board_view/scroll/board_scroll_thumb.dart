@@ -35,6 +35,11 @@ class BoardScrollThumb extends StatefulWidget {
 }
 
 class _BoardScrollThumbState extends State<BoardScrollThumb> {
+  bool? _lastShow;
+  double? _lastPixels;
+  double? _lastMaxExtent;
+  bool _metricsUpdateScheduled = false;
+
   @override
   void initState() {
     super.initState();
@@ -56,8 +61,35 @@ class _BoardScrollThumbState extends State<BoardScrollThumb> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (mounted) setState(() {});
+  void _onScroll() => _scheduleMetricsUpdate();
+
+  void _scheduleMetricsUpdate() {
+    if (_metricsUpdateScheduled) return;
+    _metricsUpdateScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _metricsUpdateScheduled = false;
+      if (!mounted) return;
+
+      final position = primaryScrollPosition(widget.controller);
+      final show = position != null &&
+          position.hasContentDimensions &&
+          position.maxScrollExtent > 0.5;
+      final pixels = position?.hasPixels == true ? position!.pixels : 0.0;
+      final max = position?.maxScrollExtent ?? 0.0;
+
+      if (_lastShow == show &&
+          _lastPixels != null &&
+          (pixels - _lastPixels!).abs() < 0.5 &&
+          _lastMaxExtent != null &&
+          (max - _lastMaxExtent!).abs() < 0.5) {
+        return;
+      }
+
+      _lastShow = show;
+      _lastPixels = pixels;
+      _lastMaxExtent = max;
+      setState(() {});
+    });
   }
 
   void _onDragUpdate(
@@ -163,12 +195,9 @@ class _BoardScrollThumbState extends State<BoardScrollThumb> {
 
         return NotificationListener<ScrollMetricsNotification>(
           onNotification: (notification) {
-            // First layout / content-size changes may not notify [controller].
             if (notification.metrics.axis ==
                 (widget._isHorizontal ? Axis.horizontal : Axis.vertical)) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) setState(() {});
-              });
+              _scheduleMetricsUpdate();
             }
             return false;
           },

@@ -16,6 +16,7 @@ class BoardCollectionLane<T> extends StatelessWidget {
     required this.originalLane,
     required this.originalIndex,
     required this.crossExtent,
+    this.ghostPreview = false,
     super.key,
   });
 
@@ -24,36 +25,39 @@ class BoardCollectionLane<T> extends StatelessWidget {
   final int originalIndex;
   final double crossExtent;
 
-  Widget _header(BuildContext context, BoardViewScope<T> scope) {
-    final handle = scope.canReorder && scope.onCollectionsReorder != null
-        ? BoardLaneDragHandle(
-            laneId: lane.id,
-            fromIndex: originalIndex,
-            isVertical: scope.isVertical,
-            allowFreeDragAxis: scope.deleteBinEnabled,
-            style: scope.style,
-            onDragStarted: scope.session.onLaneDragStarted,
-            onDragEnded: scope.session.onLaneDragEnded,
-            feedback: scope.collectionDragFeedbackBuilder?.call(
-                  context,
-                  originalLane,
-                  originalIndex,
-                ) ??
-                Text(
-                  lane.id,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-          )
-        : const SizedBox.shrink();
+  /// Non-interactive insert preview shown at the lane reorder gap.
+  final bool ghostPreview;
 
+  Widget _dragHandle(
+    BuildContext context,
+    BoardViewScope<T> scope, {
+    required WidgetBuilder feedbackBuilder,
+  }) {
+    return BoardLaneDragHandle(
+      laneId: lane.id,
+      fromIndex: originalIndex,
+      isVertical: scope.isVertical,
+      allowFreeDragAxis: scope.deleteBinEnabled,
+      style: scope.style,
+      onDragStarted: scope.session.onLaneDragStarted,
+      onDragEnded: scope.session.onLaneDragEnded,
+      feedbackBuilder: feedbackBuilder,
+    );
+  }
+
+  Widget _header(
+    BuildContext context,
+    BoardViewScope<T> scope, {
+    required Widget dragHandle,
+  }) {
     final content = scope.collectionHeaderBuilder(
       context,
       originalLane,
       originalIndex,
-      handle,
+      dragHandle,
     );
 
-    if (!scope.canReorder) return content;
+    if (ghostPreview || !scope.canReorder) return content;
 
     return DragTarget<ItemDragPayload<T>>(
       onMove: (details) => scope.session.onItemHoverAtIndex(
@@ -76,21 +80,26 @@ class BoardCollectionLane<T> extends StatelessWidget {
     );
   }
 
-  Widget _shelled(BoxDecoration decoration, Widget child) {
-    return Container(
-      decoration: decoration,
-      clipBehavior: Clip.antiAlias,
-      child: child,
-    );
+  WidgetBuilder _fingerFeedbackBuilder(BoardViewScope<T> scope) {
+    return (context) {
+      final custom = scope.collectionDragFeedbackBuilder?.call(
+        context,
+        originalLane,
+        originalIndex,
+      );
+      if (custom != null) return custom;
+
+      return Text(
+        originalLane.id,
+        style: Theme.of(context).textTheme.labelLarge,
+      );
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final scope = BoardViewScope.of<T>(context);
-    final session = scope.session;
-    final collapsed = session.collectionsCollapsed;
-    final extent = collapsed ? scope.style.collapsedLaneExtent : scope.laneExtent;
-    final header = _header(context, scope);
+    final extent = scope.laneExtent;
     final decoration =
         scope.laneDecorationBuilder?.call(context, originalLane) ??
         defaultBoardLaneDecoration(
@@ -98,59 +107,31 @@ class BoardCollectionLane<T> extends StatelessWidget {
           laneShellRadius: scope.style.laneShellRadius,
         );
 
-    // Non-collapsed: shell scrolls with items (HM + VM).
-    final scrollingShell = !collapsed;
-    final hmScrollingShell = scrollingShell && !scope.isVertical;
+    final canReorderLane = !ghostPreview &&
+        scope.canReorder &&
+        scope.onCollectionsReorder != null;
+    final dragHandle = canReorderLane
+        ? _dragHandle(context, scope, feedbackBuilder: _fingerFeedbackBuilder(scope))
+        : const SizedBox.shrink();
 
-    final body = BoardCollectionLaneBody<T>(
+    final content = BoardCollectionLaneBody<T>(
       lane: lane,
-      itemsBodyExtent: hmScrollingShell ? scope.laneExtent : null,
-      leadingHeader: collapsed ? null : header,
-      shellDecoration: scrollingShell ? decoration : null,
+      itemsBodyExtent: !scope.isVertical ? scope.laneExtent : null,
+      leadingHeader: _header(context, scope, dragHandle: dragHandle),
+      shellDecoration: decoration,
       pinHeader: scope.headerPin == BoardHeaderPin.pinned,
+      itemsDragEnabled: !ghostPreview,
     );
 
-    final Widget content;
-    if (scrollingShell) {
-      content = body;
-    } else {
-      // Collapsed during collection reorder: keep the header at the start of
-      // the strip (top in VM). Do not Expanded-wrap it — a Row inside Expanded
-      // vertically centers and hides the title mid-lane.
-      content = _shelled(
-        decoration,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            header,
-            const Spacer(),
-          ],
-        ),
-      );
-    }
-
-    final Widget sized;
-    if (scope.isVertical) {
-      sized = SizedBox(
-        width: extent,
-        height: crossExtent.isFinite ? crossExtent : null,
-        child: content,
-      );
-    } else if (collapsed) {
-      sized = SizedBox(
-        width: crossExtent.isFinite ? crossExtent : null,
-        height: extent,
-        child: content,
-      );
-    } else {
-      // HM: always bind width + height to the board lane viewport so the shell
-      // fits on-screen. Both pin modes split that height as header + items.
-      sized = SizedBox(
-        width: crossExtent.isFinite ? crossExtent : null,
-        height: extent,
-        child: content,
-      );
-    }
+    final sized = SizedBox(
+      width: scope.isVertical
+          ? extent
+          : (crossExtent.isFinite ? crossExtent : null),
+      height: scope.isVertical
+          ? (crossExtent.isFinite ? crossExtent : null)
+          : extent,
+      child: content,
+    );
 
     return Padding(
       padding: boardLaneOuterPadding(

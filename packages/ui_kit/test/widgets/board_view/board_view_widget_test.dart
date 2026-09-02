@@ -20,7 +20,7 @@ Widget _harness({
   BoardAddBuilder? boardAddBuilder,
   void Function(BoardItemMove move)? onItemMoved,
   void Function(String itemId, String fromLaneId, int fromIndex)? onItemDeleted,
-  void Function(String laneId, int fromIndex)? onCollectionDeleted,
+  BoardCollectionDeletedCallback? onCollectionDeleted,
   void Function(int oldIndex, int newIndex)? onCollectionsReorder,
 }) {
   return MaterialApp(
@@ -103,6 +103,60 @@ void main() {
       await tester.pumpWidget(_harness(lanes: _lanes(), editMode: true));
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.drag_indicator), findsNWidgets(2));
+    });
+
+    testWidgets('toggling edit mode completes without hanging', (tester) async {
+      final lanes = [
+        for (var lane = 0; lane < 4; lane++)
+          BoardLane<String>(
+            id: 'lane-$lane',
+            items: [for (var i = 0; i < 8; i++) 'lane-$lane-item-$i'],
+          ),
+      ];
+
+      await tester.pumpWidget(_harness(lanes: lanes));
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(_harness(lanes: lanes, editMode: true));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.drag_indicator), findsNWidgets(4));
+      expect(find.text('item:lane-0-item-0'), findsOneWidget);
+    });
+
+    testWidgets('collection drag removes source and shows lane ghost at gap', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _harness(
+          lanes: const [
+            BoardLane(id: 'todo', items: ['a', 'b']),
+            BoardLane(id: 'done', items: ['c']),
+          ],
+          editMode: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byIcon(Icons.drag_indicator).first),
+      );
+      await gesture.moveBy(const Offset(80, 0));
+      await tester.pump();
+
+      expect(find.text('item:c'), findsOneWidget);
+      expect(find.text('header:done'), findsOneWidget);
+      expect(find.text('header:todo'), findsOneWidget);
+      expect(find.text('item:a'), findsOneWidget);
+      expect(find.text('Drop here'), findsNothing);
+
+      final ghosts = tester.widgetList<Opacity>(find.byType(Opacity)).where(
+        (opacity) => opacity.opacity < 1,
+      );
+      expect(ghosts, isNotEmpty);
+
+      await gesture.up();
+      await tester.pumpAndSettle();
     });
 
     testWidgets('add slots follow BoardAddVisibility', (tester) async {
@@ -293,8 +347,9 @@ void main() {
         _harness(
           lanes: _lanes(),
           editMode: true,
-          onCollectionDeleted: (laneId, fromIndex) {
+          onCollectionDeleted: (laneId, fromIndex, resolve) {
             deletedLaneId = laneId;
+            resolve(true);
           },
           onCollectionsReorder: (oldIndex, newIndex) {
             reorderedOld = oldIndex;
@@ -318,6 +373,45 @@ void main() {
       expect(deletedLaneId, 'todo');
       expect(reorderedOld, isNull);
       expect(reorderedNew, isNull);
+    });
+
+    testWidgets('lane ghost persists until onCollectionDeleted resolve', (
+      tester,
+    ) async {
+      void Function(bool confirmed)? pendingResolve;
+
+      await tester.pumpWidget(
+        _harness(
+          lanes: _lanes(),
+          editMode: true,
+          onCollectionDeleted: (laneId, fromIndex, resolve) {
+            pendingResolve = resolve;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final binCenter = tester.getCenter(
+        find.byKey(const ValueKey('board-delete-bin')),
+      );
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byIcon(Icons.drag_indicator).first),
+      );
+      await gesture.moveTo(binCenter);
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+
+      expect(pendingResolve, isNotNull);
+      final ghostsWhilePending = tester
+          .widgetList<Opacity>(find.byType(Opacity))
+          .where((opacity) => opacity.opacity < 1);
+      expect(ghostsWhilePending, isNotEmpty);
+
+      pendingResolve!(false);
+      await tester.pumpAndSettle();
+
+      expect(find.text('header:todo'), findsOneWidget);
     });
 
     testWidgets('in-lane drop still moves when delete callbacks are set', (

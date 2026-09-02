@@ -10,8 +10,8 @@ class BoardViewStyle {
     this.laneAlongPadding = 4,
     this.laneScrollPadding = 12,
     this.laneShellRadius = 12,
-    this.collapsedLaneExtent = 128,
     this.collapsedHeaderCross = 48,
+    this.laneDragGhostOpacity = 0.45,
     this.collectionGapExtent = 48,
     this.scrollThumbThickness = 12,
     this.scrollThumbMinExtent = 40,
@@ -51,11 +51,11 @@ class BoardViewStyle {
   /// Corner radius for collection shells and pinned-header top corners.
   final double laneShellRadius;
 
-  /// Compact footprint while a collection is being reordered.
-  final double collapsedLaneExtent;
-
-  /// Collapsed stub height under a lane header during collection reorder.
+  /// Fallback header reserve before the header is measured.
   final double collapsedHeaderCross;
+
+  /// Opacity of the lane ghost shown at the collection insert gap.
+  final double laneDragGhostOpacity;
 
   /// Insert-gap extent between collections during collection drag.
   final double collectionGapExtent;
@@ -105,8 +105,8 @@ class BoardViewStyle {
     double? laneAlongPadding,
     double? laneScrollPadding,
     double? laneShellRadius,
-    double? collapsedLaneExtent,
     double? collapsedHeaderCross,
+    double? laneDragGhostOpacity,
     double? collectionGapExtent,
     double? scrollThumbThickness,
     double? scrollThumbMinExtent,
@@ -136,8 +136,8 @@ class BoardViewStyle {
       laneAlongPadding: laneAlongPadding ?? this.laneAlongPadding,
       laneScrollPadding: laneScrollPadding ?? this.laneScrollPadding,
       laneShellRadius: laneShellRadius ?? this.laneShellRadius,
-      collapsedLaneExtent: collapsedLaneExtent ?? this.collapsedLaneExtent,
       collapsedHeaderCross: collapsedHeaderCross ?? this.collapsedHeaderCross,
+      laneDragGhostOpacity: laneDragGhostOpacity ?? this.laneDragGhostOpacity,
       collectionGapExtent: collectionGapExtent ?? this.collectionGapExtent,
       scrollThumbThickness: scrollThumbThickness ?? this.scrollThumbThickness,
       scrollThumbMinExtent: scrollThumbMinExtent ?? this.scrollThumbMinExtent,
@@ -178,8 +178,8 @@ class BoardViewStyle {
         other.laneAlongPadding == laneAlongPadding &&
         other.laneScrollPadding == laneScrollPadding &&
         other.laneShellRadius == laneShellRadius &&
-        other.collapsedLaneExtent == collapsedLaneExtent &&
         other.collapsedHeaderCross == collapsedHeaderCross &&
+        other.laneDragGhostOpacity == laneDragGhostOpacity &&
         other.collectionGapExtent == collectionGapExtent &&
         other.scrollThumbThickness == scrollThumbThickness &&
         other.scrollThumbMinExtent == scrollThumbMinExtent &&
@@ -210,8 +210,8 @@ class BoardViewStyle {
     laneAlongPadding,
     laneScrollPadding,
     laneShellRadius,
-    collapsedLaneExtent,
     collapsedHeaderCross,
+    laneDragGhostOpacity,
     collectionGapExtent,
     scrollThumbThickness,
     scrollThumbMinExtent,

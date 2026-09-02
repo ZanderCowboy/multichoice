@@ -29,9 +29,7 @@ class BoardCollectionsView<T> extends StatelessWidget {
     BoardViewScope<T> scope, {
     required double crossExtent,
   }) {
-    final extent = scope.session.collectionsCollapsed
-        ? scope.style.collapsedLaneExtent
-        : scope.laneExtent;
+    final extent = scope.laneExtent;
     return Padding(
       padding: boardLaneOuterPadding(
         isVertical: scope.isVertical,
@@ -87,9 +85,16 @@ class BoardCollectionsView<T> extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: ScrollableBinder(
                       onReady: (scrollable) {
-                        session.boardEdgeScroller = EdgeDragScroller(
-                          scrollable: scrollable,
-                        );
+                        session.boardEdgeScroller?.dispose();
+                        final next = EdgeDragScroller(scrollable: scrollable);
+                        session.boardEdgeScroller = next;
+                        if (session.isDragging) {
+                          next.onDragStart();
+                        }
+                      },
+                      onDispose: () {
+                        session.boardEdgeScroller?.dispose();
+                        session.boardEdgeScroller = null;
                       },
                     ),
                   ),

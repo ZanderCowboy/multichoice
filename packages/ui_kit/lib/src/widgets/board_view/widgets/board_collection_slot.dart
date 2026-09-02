@@ -5,7 +5,6 @@ import '../models/board_drag_models.dart';
 import '../models/board_lane.dart';
 import 'board_collection_lane.dart';
 import 'board_view_scope.dart';
-import 'default_placeholder.dart';
 
 /// Builds a visual collection slot (lane or insert gap) for the board scroller.
 class BoardCollectionSlot<T> extends StatelessWidget {
@@ -22,10 +21,21 @@ class BoardCollectionSlot<T> extends StatelessWidget {
   final List<BoardLane<T>> originalLanes;
   final double crossExtent;
 
+  BoardLane<T>? _draggedLane(BoardDragSession<T> session) {
+    final drag = session.laneDrag;
+    if (drag == null) return null;
+    for (final lane in originalLanes) {
+      if (lane.id == drag.laneId) return lane;
+    }
+    return null;
+  }
+
   Widget _buildGapTarget(
     BuildContext context,
     BoardViewScope<T> scope, {
     required int insertIndex,
+    required BoardLane<T> draggedLane,
+    required int draggedFromIndex,
   }) {
     final session = scope.session;
     return DragTarget<LaneDragPayload>(
@@ -41,23 +51,17 @@ class BoardCollectionSlot<T> extends StatelessWidget {
         );
       },
       builder: (context, candidate, rejected) {
-        // Lane-sized gap while collapsed so the drop zone reads clearly.
-        final gapAlong = session.collectionsCollapsed
-            ? scope.style.collapsedLaneExtent
-            : scope.style.collectionGapExtent;
-        final width = scope.isVertical
-            ? gapAlong
-            : (crossExtent.isFinite ? crossExtent : null);
-        final height = scope.isVertical
-            ? (crossExtent.isFinite ? crossExtent : null)
-            : gapAlong;
-        return SizedBox(
-          width: width,
-          height: height,
-          child: DefaultBoardPlaceholder(
-            width: width,
-            height: height,
-            message: 'Drop here',
+        final ghost = BoardCollectionLane<T>(
+          lane: draggedLane,
+          originalLane: draggedLane,
+          originalIndex: draggedFromIndex,
+          crossExtent: crossExtent,
+          ghostPreview: true,
+        );
+        return IgnorePointer(
+          child: Opacity(
+            opacity: scope.style.laneDragGhostOpacity,
+            child: ghost,
           ),
         );
       },
@@ -128,9 +132,20 @@ class BoardCollectionSlot<T> extends StatelessWidget {
     final laneCount = previewLanes.length;
     final laneIndex = session.laneIndexForVisualSlot(visualIndex, laneCount);
     final gapIndex = session.laneDrag != null ? session.laneHover.index : null;
+    final draggedLane = _draggedLane(session);
+    final draggedFromIndex = session.laneDrag?.fromIndex;
 
-    if (gapIndex != null && visualIndex == gapIndex) {
-      return _buildGapTarget(context, scope, insertIndex: gapIndex);
+    if (gapIndex != null &&
+        visualIndex == gapIndex &&
+        draggedLane != null &&
+        draggedFromIndex != null) {
+      return _buildGapTarget(
+        context,
+        scope,
+        insertIndex: gapIndex,
+        draggedLane: draggedLane,
+        draggedFromIndex: draggedFromIndex,
+      );
     }
 
     if (laneIndex == null || laneIndex < 0 || laneIndex >= laneCount) {

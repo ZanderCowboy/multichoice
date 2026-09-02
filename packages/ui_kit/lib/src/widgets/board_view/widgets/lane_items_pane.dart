@@ -40,6 +40,7 @@ class LaneItemsPane<T> extends StatefulWidget {
     this.addPlacement = BoardSlotPlacement.end,
     this.scrollController,
     this.onEdgeScrollerReady,
+    this.onEdgeScrollerDisposed,
   });
 
   final BoardLane<T> lane;
@@ -59,6 +60,7 @@ class LaneItemsPane<T> extends StatefulWidget {
   final bool dragEnabled;
   final ScrollController? scrollController;
   final void Function(EdgeDragScroller scroller)? onEdgeScrollerReady;
+  final VoidCallback? onEdgeScrollerDisposed;
   final void Function(ItemDragPayload<T> payload) onItemDragStarted;
   final VoidCallback onItemDragEnded;
   final void Function({
@@ -101,6 +103,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
 
   /// Measured height of the pinned overlay header (0 until first layout).
   double _pinnedHeaderHeight = 0;
+  bool _headerMeasureScheduled = false;
 
   @override
   void didUpdateWidget(covariant LaneItemsPane<T> oldWidget) {
@@ -142,7 +145,10 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
   }
 
   void _scheduleHeaderMeasure() {
+    if (_headerMeasureScheduled) return;
+    _headerMeasureScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _headerMeasureScheduled = false;
       if (!mounted || widget.leadingHeader == null) return;
       final box = _headerKey.currentContext?.findRenderObject() as RenderBox?;
       if (box == null || !box.hasSize) return;
@@ -299,6 +305,7 @@ class _LaneItemsPaneState<T> extends State<LaneItemsPane<T>> {
           EdgeDragScroller(scrollable: scrollable),
         );
       },
+      onDispose: widget.onEdgeScrollerDisposed,
     );
   }
 
